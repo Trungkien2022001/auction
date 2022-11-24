@@ -1,0 +1,58 @@
+
+
+:root {
+    font-family: 'Quicksand', sans-serif;
+}
+html {
+    scroll-behavior: smooth;
+}
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #ccc; 
+    border-radius: 5px;
+  }
+  
+//   /* Handle on hover */
+//   ::-webkit-scrollbar-thumb:hover {
+//     background: #555; 
+//   }
+.container{
+    width: 100vw;
+}
+body{
+    padding: 0;
+    margin: 0;
+}
+.padding__main {
+    padding: 0px 200px;
+    
+    @media only screen and (max-width: 1750px) {
+        padding: 5px 100px;
+    }
+    @media only screen and (max-width: 1520px) {
+        padding: 5px 200px;
+    }
+    @media only screen and (max-width: 1160px) {
+        padding: 5px 100px;
+    }
+
+    @media only screen and (max-width: 960px) {
+        padding: 5px 10px;
+    }
+}
+
+.head-m{
+    font-size: 22px;
+    font-weight: 550;
+}
+.head-l{
+    font-size: 25px;
+    font-weight: 650;
+}
+
+

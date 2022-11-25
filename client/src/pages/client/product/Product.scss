@@ -1,0 +1,83 @@
+.product-container{
+    margin-top: 75px;
+    .product-header{
+        font-size: 30px;
+    }
+    .product-detail{
+        margin-top: 20px;
+        display: flex;
+        width: 100%;
+        .product-main{
+            flex: 3;
+            display: flex;
+            .product__left{
+                flex: 2;
+                .product-image{
+                    display: flex;
+                    justify-content: center;
+                    .product-image__wrapper{
+                        img{
+                            border-radius: 15px;
+                            height: 350px;
+                            max-width: 100%;
+                            object-fit: cover;
+                        }
+                    }
+                }
+                .product-sub-image{
+                    margin-top: 15px;
+                    display: flex;
+                    justify-content: space-around;
+                    flex-wrap: wrap;
+                    .product-sub-image__wrapper{
+                        padding: 0px 10px;
+                        width: 15%;
+                        overflow: hidden;
+                        img{
+                            height: 60px;
+                            width: 100%;
+                            max-width: 100px;
+                            object-fit: cover;
+                        }
+                    }
+                }
+            }
+            .product__right{
+                padding:0px 20px;
+                flex: 3;
+                width: 100%;
+                .product-name{
+                    font-size: 33px;
+                    text-align: center;
+                    height: 75px;
+                    overflow: hidden;
+                }
+                .product-title{
+                    margin: 10px 0px;
+                    font-size: 18px;
+                    height: 41px;
+                    overflow: hidden;
+                }
+                .product-auction{
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 25px;
+                }
+                .product-price-and-action{
+                    display: flex;
+                    .product-price-wrap{
+                        
+                    }
+                }
+            }
+        }
+        .product-seller{
+            border: 1px solid red;
+            flex: 1;
+        }
+
+    }
+}
+.padding__product{
+    padding: 0 200px;
+}

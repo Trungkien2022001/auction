@@ -17,6 +17,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { Link } from 'react-router-dom';
 import { Avatar } from '@mui/material';
+import './Header.scss'
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -188,7 +189,7 @@ export const Header = () => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
+    <Box className='app-header' sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
       <AppBar position="static">
         <Toolbar>
           <IconButton

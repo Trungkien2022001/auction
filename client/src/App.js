@@ -4,6 +4,7 @@ import { NotFound } from './components/notFound/NotFound';
 import { Homepage } from './pages/client/home/Homepage';
 import { Login } from './pages/client/login/Login';
 import { Management } from './pages/client/management/Management';
+import { Product } from './pages/client/product/Product';
 import { Register } from './pages/client/register/Register';
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path='/' element = {<Homepage/>}/>
           <Route path='/management' element = {<Management/>}/>
+          <Route path='/product/:id' element = {<Product/>}/>
           <Route path='/login' element = {<Login/>}/>
           <Route path='/register' element = {<Register/>}/>
           <Route path='/*' element = {<NotFound/>}/>

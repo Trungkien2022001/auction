@@ -51,7 +51,7 @@ export const Homepage = () => {
   return (
     <div>
       <Header />
-      <div className="padding__main homepage-container">
+      <div className="padding__main container">
         <div className='left-container'>
           <div className="head-m">Danh mục sản phẩm</div>
           <List sx={style} component="nav" aria-label="mailbox folders">

@@ -1,6 +1,14 @@
 .choose{
     background-color: rgba(#ccc, 0.8);
 }
+.user-info-container{
+    margin-top: 65px;
+    .user-info-sidebar{
+        position: fixed;
+        top: 65;
+        left: 0;
+    }
+}
 .profile-dashboard{
     margin: 10px auto;
     .avatar-dashboard{

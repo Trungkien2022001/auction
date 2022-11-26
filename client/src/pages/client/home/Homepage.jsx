@@ -146,7 +146,7 @@ export const Homepage = () => {
               </FormControl>
             </Box> */}
           </div>
-          <div className="homepage-part-wrapper">
+          <div className="product-part-wrapper">
           <div className="title">
             <b></b>
             <h2>Sản phẩm nổi bật</h2>
@@ -203,7 +203,7 @@ export const Homepage = () => {
               </div>
             </div>
           </div>
-          <div className="homepage-part-wrapper">
+          <div className="product-part-wrapper">
           <div className="title">
             <b></b>
             <h2>Sản phẩm nổi bật</h2>
@@ -260,7 +260,7 @@ export const Homepage = () => {
               </div>
             </div>
           </div>
-          <div className="homepage-part-wrapper">
+          <div className="product-part-wrapper">
             <div className="head-l">
               Siêu rẻ
             </div>

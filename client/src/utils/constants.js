@@ -1,0 +1,218 @@
+export const THEME = [
+    {
+      id: 0,
+      name: 'Magenta',
+      backgroundColor: '#fad2e3',
+      textColor: 'black',
+      subItemColor: '#f37fb7',
+      selectedItemColor: '#cb2b83'
+    },
+    {
+      id: 1,
+      name: 'Golden Purple',
+      backgroundColor: '#ebd7fa',
+      textColor: 'black',
+      subItemColor: '#ab7ae0',
+      selectedItemColor: '#642ab5'
+    },
+    {
+      id: 2,
+      name: 'Dust Red',
+      backgroundColor: '#fac8c3',
+      textColor: 'black',
+      subItemColor: '#f37370',
+      selectedItemColor: '#d32029'
+    },
+    {
+      id: 3,
+      name: 'Vocano',
+      backgroundColor: '#fad4bc',
+      textColor: 'black',
+      subItemColor: '#f3956a',
+      selectedItemColor: '#d84a1b'
+    },
+    {
+      id: 4,
+      name: 'Orange',
+      backgroundColor: '#fae3b7',
+      textColor: 'black',
+      subItemColor: '#f3b765',
+      selectedItemColor: '#d87a16'
+    },
+    {
+      id: 5,
+      name: 'Calendula Gold',
+      backgroundColor: '#faedb5',
+      textColor: 'black',
+      subItemColor: '#f3cc62',
+      selectedItemColor: '#d89614'
+    },
+    {
+      id: 6,
+      name: 'Sunrise Yellow',
+      backgroundColor: '#fafab5',
+      textColor: 'black',
+      subItemColor: '#f3ea62',
+      selectedItemColor: '#d8bd14'
+    },
+    {
+      id: 7,
+      name: 'Lime',
+      backgroundColor: '#f0fab5',
+      textColor: 'black',
+      subItemColor: '#c9e75d',
+      selectedItemColor: '#8bbb11'
+    },
+    {
+      id: 8,
+      name: 'Polar Green',
+      backgroundColor: '#d5f2bb',
+      textColor: 'black',
+      subItemColor: '#8fd460',
+      selectedItemColor: '#49aa19'
+    },
+    {
+      id: 9,
+      name: 'Cyan',
+      backgroundColor: '#b2f1e8',
+      textColor: 'black',
+      subItemColor: '#58d1c9',
+      selectedItemColor: '#13a8a8'
+    },
+    {
+      id: 10,
+      name: 'Daybreak Blue',
+      backgroundColor: '#b7e3fa',
+      textColor: 'black',
+      subItemColor: '#65b7f3',
+      selectedItemColor: '#177ddc'
+    },
+    {
+      id: 11,
+      name: 'Geek Blue',
+      backgroundColor: '#d2e0fa',
+      textColor: 'black',
+      subItemColor: '#7f9ef3',
+      selectedItemColor: '#2b4acb'
+    },
+    {
+      id: 12,
+      name: 'Light Theme',
+      backgroundColor: '#fff',
+      textColor: 'black',
+      subItemColor: '#dadada',
+      selectedItemColor: '#ababab'
+    },
+    {
+      id: 13,
+      name: 'Default Theme',
+      backgroundColor: '#DADADA',
+      textColor: 'black',
+      subItemColor: '#F1F1F1',
+      selectedItemColor: '#484848'
+    },
+    {
+      id: 14,
+      name: 'Dark Theme',
+      backgroundColor: '#161d40',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#203175',
+      selectedItemColor: '#2b4acb'
+    },
+    {
+      id: 15,
+      name: 'Dust Red',
+      backgroundColor: '#2a1215',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#58181c',
+      selectedItemColor: '#a61d24'
+    },
+    {
+      id: 16,
+      name: 'Vocalno',
+      backgroundColor: '#2b1611',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#592716',
+      selectedItemColor: '#aa3e19'
+    },
+    {
+      id: 17,
+      name: 'Sunset',
+      backgroundColor: '#2b1d11',
+      textColor: 'white',
+      subItemColor: '#593815',
+      selectedItemColor: '#aa6215'
+    },
+    {
+      id: 18,
+      name: 'Calendula Gold',
+      backgroundColor: '#2b2111',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#594214',
+      selectedItemColor: '#aa7714'
+    },
+    {
+      id: 19,
+      name: 'Sunrise Yellow',
+      backgroundColor: '#2b2611',
+      textColor: 'white',
+      subItemColor: '#595014',
+      selectedItemColor: '#aa9514'
+    },
+    {
+      id: 20,
+      name: 'Lime',
+      backgroundColor: '#1f2611',
+      textColor: 'white',
+      subItemColor: '#3e4f13',
+      selectedItemColor: '#6f9412'
+    },
+    {
+      id: 21,
+      name: 'Plar Green',
+      backgroundColor: '#162312',
+      textColor: 'white',
+      subItemColor: '#274916',
+      selectedItemColor: '#3c8618'
+    },
+    {
+      id: 22,
+      name: 'Cyan',
+      backgroundColor: '#112123',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#144848',
+      selectedItemColor: '#138585'
+    },
+    {
+      id: 23,
+      name: 'Daybreak Blue',
+      backgroundColor: '#291321',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#551c3b',
+      selectedItemColor: '#a02669'
+    },
+    {
+      id: 24,
+      name: 'Geek Blue',
+      backgroundColor: '#161d40',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#203175',
+      selectedItemColor: '#2b4acb'
+    },
+    {
+      id: 25,
+      name: 'Golden Blue',
+      backgroundColor: '#1a1325',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#301c4d',
+      selectedItemColor: '#51258f'
+    },
+    {
+      id: 26,
+      name: 'Magenta',
+      backgroundColor: '#291321',
+      textColor: 'rgb(255, 255, 255)',
+      subItemColor: '#551c3b',
+      selectedItemColor: '#a02669'
+    },
+  ];

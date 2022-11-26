@@ -1,5 +1,3 @@
-
-
 :root {
     font-family: 'Quicksand', sans-serif;
 }
@@ -17,10 +15,6 @@ html {
     border-radius: 5px;
   }
   
-//   /* Handle on hover */
-//   ::-webkit-scrollbar-thumb:hover {
-//     background: #555; 
-//   }
 body{
     padding: 0;
     margin: 0;
@@ -50,6 +44,36 @@ body{
 .head-l{
     font-size: 25px;
     font-weight: 650;
+}
+.text-input-100{
+    width: 100%;
+}
+.text-input-95{
+    width: 95%;
+}
+.text-input-90{
+    width: 90%;
+}
+.text-input-80{
+    width: 80%;
+}
+.text-input-70{
+    width: 70%;
+}
+.text-input-60{
+    width: 60%;
+}
+.text-input-50{
+    width: 50%;
+}
+.text-input-40{
+    width: 40%;
+}
+.text-input-30{
+    width: 30%;
+}
+.dashboard-container{
+    margin: 65px 0px 0px 250px;
 }
 
 

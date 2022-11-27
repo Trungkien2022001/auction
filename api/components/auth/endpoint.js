@@ -11,11 +11,11 @@ router.post('/login', validate(loginSchema), async ctx => {
     debug('POST /login')
 
     try {
-        const token = await login(ctx.request.body)
+        const user = await login(ctx.request.body)
         ctx.body = {
             success: true,
             data: {
-                auth_token: token,
+                user,
                 env: config.production ? 'production' : 'staging'
             }
         }

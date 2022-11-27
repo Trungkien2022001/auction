@@ -11,6 +11,13 @@ const login = Joi.object().keys({
 const signup = Joi.object().keys({
     email: Joi.string().required(),
     name: Joi.string().required(),
+    username: Joi.string()
+        .min(4)
+        .max(25)
+        .required(),
+    phone: Joi.string()
+        .length(10)
+        .optional(),
     password: Joi.string().required(),
     avatar: Joi.string().optional(),
     address: Joi.string().optional(),

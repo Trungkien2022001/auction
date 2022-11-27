@@ -3,7 +3,7 @@ const DateExt = require('@hapi/joi-date')
 const ArrayExt = require('joi-array-extensions')
 const _ = require('lodash')
 
-const { logger } = require('../utils/logger')
+const logger = require('../utils/logger')
 
 const Joi = BaseJoi.extend([DateExt, ArrayExt])
 
@@ -44,7 +44,7 @@ function validate(schema, handleLogging) {
     return (ctx, next) => {
         const { body } = ctx.request
         const { params, query } = ctx
-        console.log(schema)
+
         const data = {
             body,
             params,
@@ -73,8 +73,18 @@ function validate(schema, handleLogging) {
                 if (handleLogging) {
                     handleLogging(error, ctx)
                 }
+                logger.error(
+                    {
+                        name: 'validation-error',
+                        acc: ctx.User && ctx.User.email
+                    },
+                    {
+                        body,
+                        error: error.details
+                    }
+                )
 
-                ctx.status = 400
+                ctx.status = 200
                 ctx.body = {
                     success: false,
                     request_id: ctx.request.id,

@@ -21,26 +21,32 @@ exports.login = async params => {
                 .add('7', 'days')
                 .unix()
         }
+        jwt.encode(payload, config.secret)
 
-        return jwt.encode(payload, config.secret)
+        return user
     }
 }
 
 exports.signup = async params => {
+    console.log(params)
     const u = await knex
-        .select('email')
+        .select()
         .from('user')
         .where('email', params.email)
-
+        .orWhere('phone', params.phone)
+        .orWhere('username', params.username)
     if (u.length) {
-        throw new Error(`user ${params.email} already exits`)
+        throw new Error(`username or phone or email already exits`)
     }
     const userInfo = {
         email: params.email,
         name: params.name,
+        username: params.username,
+        phone: params.phone,
+        birthday: params.birthday,
+        address: params.address,
         password_hash: hashPassword(params.password)
     }
     if (params.avatar) userInfo.avatar = params.avatar
-    if (params.birthday) userInfo.birthday = params.birthday
     addUser(userInfo)
 }

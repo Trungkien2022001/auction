@@ -1,3 +1,4 @@
+import { Button } from '@mui/material'
 import React from 'react'
 import './Overview.scss'
 export const Overview = () => {
@@ -6,8 +7,10 @@ export const Overview = () => {
       {/* <div className='overview-header'>Tổng quan</div> */}
       <div className='overview-container'>
         <div className='overview-user'>
-          <div className='overview-header'>
-            Thông tin cá nhân
+          <div className='title-header'>
+            <b></b>
+            <h3>Thông tin cá nhân</h3>
+            <b></b>
           </div>
           <div className='overview-part'>
             <div className='overview-item'>
@@ -43,10 +46,66 @@ export const Overview = () => {
                 <div className='overview-item__content'>Số nhà 10q30b Ngõ 136 Nguyễn An Ninh, Hoàng Mai, Hà Nội</div>
             </div>
           </div>
+          <div className='overview-btn'>
+              <Button variant="contained">Chỉnh sửa thông tin</Button>
+          </div>
 
         </div>
         <div className='overview-chart'>
-g
+          <div className='title-header'>
+            <b></b>
+            <h3>Thông tin giao dịch</h3>
+            <b></b>
+          </div>
+          <div className='overview-part'>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Số phiên</div>
+              <div className='overview-item__content'>3</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Số lần đấu giá</div>
+              <div className='overview-item__content'>15</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Thắng cược</div>
+              <div className='overview-item__content'>3</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Thành công</div>
+              <div className='overview-item__content'>3</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Đã bán</div>
+              <div className='overview-item__content'>15</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Thành công</div>
+              <div className='overview-item__content'>1</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Đã giao hàng</div>
+              <div className='overview-item__content'>3</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Thất bại</div>
+              <div className='overview-item__content'>0</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Số dư</div>
+              <div className='overview-item__content'>15</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Lợi nhuận</div>
+              <div className='overview-item__content'>1</div>
+            </div>
+            <div className='overview-item'>
+              <div className='overview-item__title'>Đã chi</div>
+              <div className='overview-item__content'>0</div>
+            </div>
+          </div>
+          <div className='overview-notif'>
+            <div className='overview-notif-content overview-notif-safe'>Tài khoản của bạn chưa có độ uy tín cao. Đừng có những hành vi gian lận nếu bạn k muốn tài khoản bị khóa vĩnh viễn</div>
+          </div>
         </div>
       </div>
     </div>

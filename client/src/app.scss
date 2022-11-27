@@ -37,6 +37,18 @@ body{
     }
 }
 
+.title-header{
+    padding:0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    b{
+        flex: 1;
+        background-color: rgba(10, 10, 10, 0.286);
+        height: 2px;
+    }
+}
+
 .head-m{
     font-size: 22px;
     font-weight: 550;
@@ -74,6 +86,11 @@ body{
 }
 .dashboard-container{
     margin: 65px 0px 0px 250px;
+}
+@media screen and (max-width: 900px) {
+    .dashboard-container{
+        margin: 65px 0px 0px 0px;
+    }
 }
 
 

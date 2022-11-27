@@ -31,6 +31,8 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 
 import { Overview } from '../../../components/user/overview/Overview'
+import { SaleHistory } from '../../../components/user/sale-history/SaleHistory';
+import { BuyHistory } from '../../../components/user/buy-history/BuyHistory';
 
 const drawerWidth = 250;
 
@@ -39,7 +41,7 @@ export const User = () => {
   const themes = THEME
 
   const [selectedTheme, setSelectedTheme] = useState(themes[14]);
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(3)
   const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -297,6 +299,8 @@ export const User = () => {
         }
         <div className='user-info-item'>
           {currentPage === 1 ? <Overview/> : <></>}
+          {currentPage === 2 ? <BuyHistory/> : <></>}
+          {currentPage === 3 ? <SaleHistory/> : <></>}
         </div>
       </div>
       <SimpleDialog

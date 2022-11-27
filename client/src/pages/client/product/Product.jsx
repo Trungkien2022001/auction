@@ -223,7 +223,7 @@ Outlined buttons are also a lower emphasis alternative to contained buttons, or 
           </div>
         </div>
         <div className="product-part-wrapper">
-          <div className="title">
+          <div className="title-header">
             <b></b>
             <h2>Sản phẩm nổi bật</h2>
             <b></b>

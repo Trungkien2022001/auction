@@ -24,7 +24,6 @@
     "redux-persist": "^6.0.0",
     "sass": "^1.54.8",
     "socket.io-client": "^4.5.1",
-    "sweetalert": "^2.1.2",
     "sweetalert2": "^11.6.1",
     "web-vitals": "^2.1.4"
   },
@@ -51,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "dotenv-webpack": "^8.0.1"
   }
 }

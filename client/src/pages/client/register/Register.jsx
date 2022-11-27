@@ -10,28 +10,24 @@ import { userSlice } from "../../../redux/userSlice";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Button, FormControlLabel, InputAdornment, MenuItem, Select, Switch, TextField } from '@mui/material'
+import { registerValidate } from "../../../utils/validateFormInput";
+import Swal from "sweetalert2";
 
 
 export const Register = () => {
   const dispatch = useDispatch()
   const [check, setCheck] = useState(false)
-  const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
-  const [repassword, setRepassword] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rePassword, setrePassword] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [address, setAddress] = useState("");
 
   const inputRef = useRef()
   const [imageList, setImageList] = useState([])
-  const [type, setType] = useState(1)
-  const [branch, setBranch] = useState(1)
-  const [status, setStatus] = useState(1)
-  const [startTime, setStartTime] = useState(1)
-  const [totalTime, setTotalTime] = useState(1)
-  const [detail, setDetail] = useState(1)
-  const [description, setDescription] = useState(1)
-  const [isReturn, setisReturn] = useState(1)
 
   const handleSubmit = async () => {
 
@@ -46,7 +42,7 @@ export const Register = () => {
           data.append("file", file);
           data.append("upload_preset", "upload");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/nguyenkien2022001/image/upload",
+            "https://api.cloudinary.com/v1_1/trungkien2022001/image/upload",
             data
           );
           const { url } = uploadRes.data;
@@ -62,31 +58,64 @@ export const Register = () => {
   }
 
   const handleRegister = () => {
-    axios.post("auth/register", {
-      password,
-      repassword,
-      phone,
+    const user_register = {
       name,
       username,
-      email
-    }).then((res) => {
-      if (!res.data.err) {
-        axios
-          .post("auth/login", {
-            username,
-            password,
+      email,
+      phone,
+      password,
+      rePassword,
+      birthday,
+      address,
+      avatar: imageList[0] || 'https://i.pinimg.com/564x/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg'
+    }
+    const validate = registerValidate(user_register)
+    if (validate.err) {
+      Swal.fire(
+        'Có lỗi khi đăng ký?',
+        validate.message,
+        'error'
+      )
+      return
+    }
+    delete user_register.rePassword
+    axios
+      .post(`${process.env.REACT_APP_API_ENDPOINT}/signup`, user_register)
+      .then((res) => {
+        if (res.data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Register Successfully',
+            showConfirmButton: false,
+            timer: 1500
+          }).then(res => {
+              axios
+                .post(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
+                  email,
+                  password,
+                })
+                .then((resLogin) => {
+                  if (resLogin.data.success) {
+                    dispatch(userSlice.actions.login(resLogin.data.data.user))
+                    window.location.href = './';
+                  }
+                  else {
+                    Swal.fire({
+                      icon: 'error',
+                      title: "Có lỗi xảy ra",
+                      showConfirmButton: true,
+                    })
+                  }
+                });
           })
-          .then((res) => {
-            if (!res.data.err) {
-              dispatch(userSlice.actions.login(res.data.data[0]))
-            }
-          });
-        alert(res.data.message)
-        setCheck(true)
-      } else {
-        alert(res.data.message)
-      }
-    });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: res.data.message,
+            showConfirmButton: true,
+          })
+        }
+      });
 
   };
 
@@ -108,6 +137,7 @@ export const Register = () => {
               label="Họ và tên"
               variant="outlined"
               helperText=""
+              onChange={e => setName(e.target.value)}
             />
           </div>
           <div className='register-product-item'>
@@ -117,6 +147,7 @@ export const Register = () => {
               label="Username"
               variant="outlined"
               helperText='Tên hiển thị'
+              onChange={e => setUsername(e.target.value)}
             />
           </div>
         </div>
@@ -128,6 +159,7 @@ export const Register = () => {
               label="Email"
               variant="outlined"
               helperText=""
+              onChange={e => setEmail(e.target.value)}
             />
           </div>
           <div className='register-product-item'>
@@ -136,6 +168,28 @@ export const Register = () => {
               id="standard-basic"
               label="Số điện thoại"
               variant="outlined"
+              onChange={e => setPhone(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className='register-product-part'>
+          <div className='register-product-item'>
+            <TextField
+              className='text-input text-input-90'
+              id="standard-basic"
+              label="Mật khẩu"
+              variant="outlined"
+              helperText=""
+              onChange={e => setPassword(e.target.value)}
+            />
+          </div>
+          <div className='register-product-item'>
+            <TextField
+              className='text-input text-input-90'
+              id="standard-basic"
+              label="Nhập lại mật khẩu"
+              variant="outlined"
+              onChange={e => setrePassword(e.target.value)}
             />
           </div>
         </div>
@@ -149,6 +203,7 @@ export const Register = () => {
               InputLabelProps={{
                 shrink: true,
               }}
+              onChange={e => setBirthday(e.target.value)}
             />
           </div>
         </div>
@@ -162,6 +217,7 @@ export const Register = () => {
               label="Địa chỉ"
               variant="outlined"
               placeholder='Địa chỉ hiện nay của bạn'
+              onChange={e => setAddress(e.target.value)}
             />
           </div>
         </div>
@@ -173,32 +229,30 @@ export const Register = () => {
           <div className="register-product-image-review">
             {imageList.length ?
               <>
-                {
-                  imageList.map((item, index) => (
-                    <div className="imageItem" key={index}>
-                      <img src={item} alt="" />
-                      <div onClick={() => handleRemoveImage(item)} className="remove_small_image">
-                        <ClearIcon />
-                      </div>
-                    </div>
-                  ))
-                }
-              </> : <></>}
-            <div className="addImage">
-              <AddAPhotoIcon />
-              <input
-                type="file"
-                id="file"
-                multiple
-                onChange={() => handleAddImage()}
-                ref={inputRef}
-              />
-            </div>
+
+                <div className="imageItem" >
+                  <img src={imageList[0]} alt="" />
+                  <div onClick={() => handleRemoveImage(imageList[0])} className="remove_small_image">
+                    <ClearIcon />
+                  </div>
+                </div>
+
+              </> :
+              <div className="addImage">
+                <AddAPhotoIcon />
+                <input
+                  type="file"
+                  id="file"
+                  multiple
+                  onChange={() => handleAddImage()}
+                  ref={inputRef}
+                />
+              </div>}
           </div>
         </div>
 
         <div className="submit">
-          <Button variant="contained">Submit</Button>
+          <Button onClick={() => handleRegister()} variant="contained">Submit</Button>
         </div>
       </div>
     </div>

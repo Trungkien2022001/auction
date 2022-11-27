@@ -21,10 +21,10 @@ import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Button } from "@mui/material";
+import Swal from "sweetalert2";
 
 
 export const Login = () => {
-  const [check, setCheck] = useState(false)
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -32,17 +32,27 @@ export const Login = () => {
 
   const handleLogin = () => {
     axios
-      .post("auth/login", {
-        username,
+      .post(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
+        email: username,
         password,
       })
       .then((res) => {
-        if (!res.data.err) {
-          alert(res.data.message);
-          dispatch(userSlice.actions.login(res.data.data[0]))
-          setCheck(true)
+        if (res.data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Login Successfully',
+            showConfirmButton: false,
+            timer: 1500
+          }).then(()=>{
+            dispatch(userSlice.actions.login(res.data.data.user))
+            window.location.href = './';
+          })
         } else {
-          alert(res.data.message);
+          Swal.fire({
+            icon: 'error',
+            title: res.data.message,
+            showConfirmButton: true,
+          })
         }
       });
   };
@@ -58,11 +68,10 @@ export const Login = () => {
   return (
     <div>
       <Header></Header>
-      {check && <Navigate to="/" replace={true} />}
       <div className="input-container">
         <div className="login-form">
           <div style={{marginLeft: '8px'}} className="login-input">
-              <TextField id="outlined-basic" label="Email" variant="outlined" />
+              <TextField onChange={e=>setUsername(e.target.value)} id="outlined-basic" label="Email" variant="outlined" />
           </div>
           <div className="login-input">
               <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
@@ -89,7 +98,7 @@ export const Login = () => {
               </FormControl>
           </div>
           <div style={{marginLeft: '70px'}} className="login-input">
-              <Button variant="contained">Đăng nhập</Button>
+              <Button onClick={()=>handleLogin()} variant="contained">Đăng nhập</Button>
           </div>
         </div>
         <div>

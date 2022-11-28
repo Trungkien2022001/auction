@@ -1,7 +1,17 @@
 import { Button } from '@mui/material'
 import React from 'react'
+import { useEffect } from 'react'
 import './Overview.scss'
-export const Overview = () => {
+import { get } from '../../../utils/customRequest'
+const api_endpoint = process.env.REACT_APP_API_ENDPOINT
+export const Overview = ({currentUser}) => {
+  useEffect(()=>{
+    async function getData(){
+      const result =await get(`${api_endpoint}/user/${currentUser.id}`, currentUser)
+      console.log(result)
+    }
+    getData()
+  }, [currentUser])
   return (
     <div className='dashboard-container'>
       {/* <div className='overview-header'>Tổng quan</div> */}

@@ -33,15 +33,16 @@ import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrow
 import { Overview } from '../../../components/user/overview/Overview'
 import { SaleHistory } from '../../../components/user/sale-history/SaleHistory';
 import { BuyHistory } from '../../../components/user/buy-history/BuyHistory';
+import { useSelector } from 'react-redux';
 
 const drawerWidth = 250;
 
 export const User = () => {
 
   const themes = THEME
-
+  const currentUser = useSelector((state) => state.user);
   const [selectedTheme, setSelectedTheme] = useState(themes[14]);
-  const [currentPage, setCurrentPage] = useState(3)
+  const [currentPage, setCurrentPage] = useState(1)
   const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -298,7 +299,7 @@ export const User = () => {
           </div>
         }
         <div className='user-info-item'>
-          {currentPage === 1 ? <Overview/> : <></>}
+          {currentPage === 1 ? <Overview currentUser={currentUser}/> : <></>}
           {currentPage === 2 ? <BuyHistory/> : <></>}
           {currentPage === 3 ? <SaleHistory/> : <></>}
         </div>

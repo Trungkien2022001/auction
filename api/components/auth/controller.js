@@ -21,9 +21,8 @@ exports.login = async params => {
                 .add('7', 'days')
                 .unix()
         }
-        jwt.encode(payload, config.secret)
 
-        return user
+        return { ...user, token: jwt.encode(payload, config.secret) }
     }
 }
 

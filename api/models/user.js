@@ -81,6 +81,14 @@ async function fetchUserByID(id) {
     )
 }
 
+async function getUserTransactionHistory(userId) {
+    try {
+        await knex('user').where('id', userId)
+    } catch (error) {
+        throw new Error(`unable to get user transaction history`)
+    }
+}
+
 async function updateUser(userId, updateCondition) {
     try {
         await knex('user')
@@ -108,5 +116,6 @@ module.exports = {
     fetchUserByEmail,
     fetchUserByID,
     updateUser,
-    addUser
+    addUser,
+    getUserTransactionHistory
 }

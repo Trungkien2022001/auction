@@ -39,7 +39,6 @@ router.get('/user/:user_id', genericSecure, validate(schema.get), async ctx => {
             delete result.password_hash
             delete result.role
             delete result.role_id
-            delete result.phone
             delete result.custom_config
         }
 
@@ -55,6 +54,40 @@ router.get('/user/:user_id', genericSecure, validate(schema.get), async ctx => {
         }
     }
 })
+
+router.get(
+    '/user-overview/:user_id',
+    genericSecure,
+    validate(schema.get),
+    async ctx => {
+        debug('GET /user/:user_id')
+        const userId = ctx.params.user_id
+        const actionUser = ctx.User
+
+        try {
+            const result = await User.fetchUserByID(userId)
+
+            if (actionUser.id !== userId && actionUser.role_id !== 'admin') {
+                delete result.refresh_token
+                delete result.password_hash
+                delete result.role
+                delete result.role_id
+                delete result.custom_config
+            }
+
+            ctx.body = {
+                success: true,
+                user: result
+            }
+        } catch (error) {
+            ctx.status = 500
+            ctx.body = {
+                success: false,
+                message: error.message || JSON.stringify(error)
+            }
+        }
+    }
+)
 
 router.put(
     '/user/:user_id',

@@ -9,6 +9,7 @@ export const userSlice = createSlice({
         email: null,
         phone: null,
         password_hash: null,
+        token: '',
         role_id: null,
         avatar: 'https://i.pinimg.com/564x/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg',
         birthday: null,
@@ -29,6 +30,7 @@ export const userSlice = createSlice({
             state.email = action.payload.email
             state.phone = action.payload.phone
             state.password_hash = action.payload.password_hash
+            state.token = action.payload.token
             state.role_id = action.payload.role_id
             state.avatar = action.payload.avatar
             state.birthday = action.payload.birthday

@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 import './NewProduct.scss'
 import { useRef, useState } from 'react'
 import { Header } from '../../../components/header/Header'
@@ -6,22 +7,67 @@ import axios from 'axios'
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import ClearIcon from '@mui/icons-material/Clear';
 import { Button, FormControlLabel, InputAdornment, MenuItem, Select, Switch, TextField } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
+import { get, post } from '../../../utils/customRequest'
+import { newAuctionValidate } from '../../../utils/validateFormInput'
+import Swal from 'sweetalert2'
+
 
 export const NewProduct = () => {
+
+    const currentUser = useSelector((state) => state.user);
     const inputRef = useRef()
+
+    const [productCategory, setProductCategory] = useState([])
+    const [auctionTime, setAuctionTime] = useState([])
     const [imageList, setImageList] = useState([])
-    const [type, setType] = useState(1)
-    const [name, setName] = useState(1)
-    const [branch, setBranch] = useState(1)
-    const [status, setStatus] = useState(1)
-    const [startTime, setStartTime] = useState(1)
-    const [totalTime, setTotalTime] = useState(1)
-    const [detail, setDetail] = useState(1)
-    const [description, setDescription] = useState(1)
-    const [isReturn, setisReturn] = useState(1)
+    const [product, setProduct] = useState({
+        name: '',
+        branch: '',
+        status: '',
+        title: '',
+        description: '',
+        key_word: '',
+        category_id: 1,
+        starting_price: 1000,
+    })
+    const [auction, setAuction] = useState({
+        start_time: null,
+        auction_time: 13,
+        is_returned: 0,
+        is_finished_soon: 0
+
+    })
+    useEffect(() => {
+        async function getData() {
+            const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+            if (result.status === 200) {
+                setAuctionTime(result.data.auction_time)
+                setProductCategory(result.data.product_category)
+            }
+        }
+        getData()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const handleSubmit = async () => {
+        let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction`, {
+            auction,
+            product : {...product, images: imageList}
+        }, currentUser)
 
+        console.log(result)
+       
+        let validate = newAuctionValidate({...product, ...auction})
+        if (validate.err) {
+            Swal.fire(
+                'Có lỗi khi tạo buổi đấu giá mới?',
+                validate.message,
+                'error'
+            )
+            return
+        }
     }
 
     const handleAddImage = async () => {
@@ -47,47 +93,45 @@ export const NewProduct = () => {
     const handleRemoveImage = (item) => {
         setImageList(imageList.filter(i => i !== item))
     }
-
-
-
-
     return (
         <div>
             <Header />
             <div className="new-container">
-                <div className="new-container-back">
-                    <Link to={'../'} style={{ color: "black" }}>Quay lại trang chủ</Link>
-                </div>
                 <div className="new-container-header">
                     Thêm một phiên đấu giá mới
                 </div>
                 <div className='new-product-part'>
                     <div className='new-product-item'>
-                        <TextField 
-                            className='text-input text-input-90' 
-                            id="standard-basic" 
-                            label="Tên sản phẩm" 
-                            variant="outlined" 
+                        <TextField
+                            className='text-input text-input-90'
+                            id="standard-basic"
+                            label="Tên sản phẩm"
+                            variant="outlined"
                             helperText="Vui lòng nhập tên sản phẩm"
+                            onChange={e => setProduct({ ...product, name: e.target.value })}
                         />
                     </div>
                     <div className='new-product-item'>
-                        <TextField 
-                            className='text-input text-input-90' 
-                            id="standard-basic" 
-                            label="Thương hiệu" 
+                        <TextField
+                            className='text-input text-input-90'
+                            id="standard-basic"
+                            label="Thương hiệu"
                             variant="outlined"
                             placeholder='Không bắt buộc'
+                            onChange={e => setProduct({ ...product, branch: e.target.value })}
                         />
                     </div>
                 </div>
+               
                 <div className='new-product-part'>
                     <div className='new-product-item'>
-                        <TextField  
-                            className='text-input text-input-90' 
-                            id="standard-basic" 
-                            label="Tình trạng sản phẩm" 
-                            variant="outlined" 
+                        <TextField
+                            className='text-input text-input-90'
+                            id="standard-basic"
+                            label="Tình trạng sản phẩm"
+                            variant="outlined"
+                            helperText="VD: Còn mới 90%, đã hỏng..."
+                            onChange={e => setProduct({ ...product, status: e.target.value })}
                         />
                     </div>
                     <div className='new-product-item'>
@@ -96,35 +140,57 @@ export const NewProduct = () => {
                             id="outlined-select-currency"
                             select
                             label="Danh mục sản phẩm"
-                            value={type}
-                            onChange={e => setType(e.target.value)}
-                        // onKeyDown={onEnterWork}
+                            value={product.category_id}
+                            onChange={e => setProduct({ ...product, category_id: e.target.value })}
                         >
-                            <MenuItem key={1} value={1}>Noun</MenuItem>
-                            <MenuItem key={2} value={2}>Verb</MenuItem>
-                            <MenuItem key={3} value={3}>Adjective</MenuItem>
-                            <MenuItem key={4} value={4}>Pronoun</MenuItem>
-                            <MenuItem key={5} value={5}>Adverb</MenuItem>
-                            <MenuItem key={6} value={6}>Determine</MenuItem>
-                            <MenuItem key={7} value={7}>Proposition</MenuItem>
-                            <MenuItem key={8} value={8}>Conjunction</MenuItem>
-                            <MenuItem key={9} value={9}>Interjection</MenuItem>
-                            <MenuItem key={10} value={10}>Phrasal Verb</MenuItem>
+                            {
+                                productCategory && productCategory.length && productCategory.map((item) => (
+                                    <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                                )) || <></>
+
+                            }
                         </TextField>
                     </div>
                 </div>
 
                 <div className='new-product-part'>
                     <div className='new-product-item'>
-                    <TextField
-                             className='text-input text-input-90'
+                        <TextField
+                            className='text-input text-input-90'
+                            id="standard-basic"
+                            label="Giá khởi điểm"
+                            variant="outlined"
+                            type='number'
+                            value={product.starting_price}
+                            onChange={e => setProduct({ ...product, starting_price: e.target.value })}
+                        />
+                    </div>
+                    <div className='new-product-item'>
+                        <TextField
+                            className='text-input text-input-90'
+                            id="standard-basic"
+                            label="Keyword"
+                            variant="outlined"
+                            placeholder=''
+                            helperText='Các keyword giúp người dùng dễ tìm kiếm'
+                            onChange={e => setProduct({ ...product, key_word: e.target.value })}
+                        />
+                    </div>
+                </div>
+                
+                <div className='new-product-part'>
+                    <div className='new-product-item'>
+                        <TextField
+                            className='text-input text-input-90'
                             id="datetime-local"
                             label="Thời gian bắt đầu"
                             type="datetime-local"
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                        />                    
+                            onChange={e => setAuction({ ...auction, start_time: e.target.value })}
+
+                        />
                     </div>
                     <div className='new-product-item'>
                         <TextField
@@ -132,27 +198,23 @@ export const NewProduct = () => {
                             id="outlined-select-currency"
                             select
                             label="Thời gian phiên đấu giá"
-                            value={type}
-                            onChange={e => setType(e.target.value)}
+                            value={auction.auction_time}
+                            onChange={e => setAuction({ ...auction, auction_time: e.target.value })}
                         // onKeyDown={onEnterWork}
                         >
-                            <MenuItem key={1} value={1}>Noun</MenuItem>
-                            <MenuItem key={2} value={2}>Verb</MenuItem>
-                            <MenuItem key={3} value={3}>Adjective</MenuItem>
-                            <MenuItem key={4} value={4}>Pronoun</MenuItem>
-                            <MenuItem key={5} value={5}>Adverb</MenuItem>
-                            <MenuItem key={6} value={6}>Determine</MenuItem>
-                            <MenuItem key={7} value={7}>Proposition</MenuItem>
-                            <MenuItem key={8} value={8}>Conjunction</MenuItem>
-                            <MenuItem key={9} value={9}>Interjection</MenuItem>
-                            <MenuItem key={10} value={10}>Phrasal Verb</MenuItem>
+                            {
+                                auctionTime && auctionTime.length && auctionTime.map((item) => (
+                                    <MenuItem key={item.id} value={item.id}>{item.title}</MenuItem>
+                                )) || <></>
+
+                            }
                         </TextField>
                     </div>
                 </div>
-                
-                <div className='new-product-part' style={{height: '110px'}}>
+
+                <div className='new-product-part' style={{ height: '110px' }}>
                     <div className='new-product-item'>
-                    <TextField
+                        <TextField
                             className='text-input text-input-95'
                             id="standard-basic"
                             multiline
@@ -161,13 +223,14 @@ export const NewProduct = () => {
                             variant="outlined"
                             placeholder='Mô tả ngắn gọn về sản phẩm'
                             helperText='Mô tả một cách ngắn gọn về sản phẩm để có cái nhìn tổng quan về sản phẩm'
+                            onChange={e => setProduct({ ...product, title: e.target.value })}
                         />
                     </div>
                 </div>
-                
+
                 <div className='new-product-part'>
                     <div className='new-product-item'>
-                    <TextField
+                        <TextField
                             className='text-input text-input-95'
                             id="standard-basic"
                             multiline
@@ -175,12 +238,17 @@ export const NewProduct = () => {
                             label="Mô tả chi tiết"
                             variant="outlined"
                             placeholder='Mô tả chi tiết về sản phẩm'
+                            onChange={e => setProduct({ ...product, description: e.target.value })}
                         />
                     </div>
                 </div>
 
                 <div>
-                    <FormControlLabel control={<Switch defaultChecked />} label="Hoàn trả" />
+                    <FormControlLabel
+                        control={<Switch defaultChecked />}
+                        label="Hoàn trả"
+                        onChange={e => setAuction({ ...auction, is_returned: e.target.checked ? 1 : 0 })}
+                    />
                 </div>
                 <div className="new-product-image">
                     <div className="new-product-image-header">
@@ -214,7 +282,7 @@ export const NewProduct = () => {
                 </div>
 
                 <div className="submit">
-                    <Button variant="contained">Submit</Button>
+                    <Button onClick={() => handleSubmit()} variant="contained">Submit</Button>
                 </div>
             </div>
         </div>

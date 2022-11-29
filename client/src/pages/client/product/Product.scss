@@ -65,10 +65,13 @@
                     font-size: 20px;
                     .product-time{
                         display: flex;
-                        align-items: baseline;
+                        align-items: flex-start;
                         .product-time-icon{
                             transform: scale(1.5);
                             margin-right: 5px;
+                        }
+                        .product-success-auction{
+                            color: #0000ff;
                         }
                     }
                 }

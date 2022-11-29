@@ -18,7 +18,7 @@ exports.login = async params => {
             id: user.id,
             email: user.email,
             expire: moment()
-                .add('7', 'days')
+                .add('30', 'days')
                 .unix()
         }
 

@@ -10,31 +10,44 @@ import TimerIcon from '@mui/icons-material/Timer';
 import PaidIcon from '@mui/icons-material/Paid';
 import SellIcon from '@mui/icons-material/Sell';
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide, TextField } from "@mui/material";
+import Countdown, { zeroPad } from 'react-countdown'
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export const Product = () => {
+  
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [openAuctionHistoryDialog, setOpenAuctionHistoryDialog] = useState(false);
+  const [successAuction, setSuccessAuction] = useState(false);
 
   const handleClickOpenAuctionHistoryDialog = () => {
     setOpenAuctionHistoryDialog(true);
   };
-
+  
   const handleCloseAuctionHistoryDialog = () => {
     setOpenAuctionHistoryDialog(false);
   };
-
+  
   const handleClickOpenAuctionDialog = () => {
     setOpenAuctionDialog(true);
   };
-
+  
   const handleCloseAuctionDialog = () => {
     setOpenAuctionDialog(false);
   };
-
+  
+  const renderer = ({ days, hours, minutes, seconds }) => (
+    <span>
+      {hours}d {zeroPad(hours)}h{zeroPad(minutes)}p{zeroPad(seconds)}s
+    </span>
+  );
+  
+  const handleStop = () => {
+    setSuccessAuction(true)
+  }
   return (
     <div>
       <Header />
@@ -48,7 +61,7 @@ export const Product = () => {
               underline="hover"
               color="inherit"
               href="/material-ui/getting-started/installation/"
-            >
+              >
               Core
             </Link>
             <Typography color="text.primary">Breadcrumbs</Typography>
@@ -88,9 +101,20 @@ export const Product = () => {
                   <div className='product-time-icon'>
                     <TimerIcon />
                   </div>
-                  <div className="product-time-title">
-                    1D 20h19'15s
+                 { successAuction ? 
+                  <div className="product-success-auction">
+                    Đã hoàn thành
                   </div>
+                 :
+                  <div className="product-time-title">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 3000}
+                      renderer={renderer}
+                    />
+                  </div>
+                }
                 </div>
                 <div className="product-vote">10 Lượt đấu giá</div>
               </div>
@@ -117,13 +141,13 @@ export const Product = () => {
                 </div>
                 <div className="product-action">
                   <div className="action-button-log">
-                    <Button onClick={()=>handleClickOpenAuctionHistoryDialog()} style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Lịch sử</Button>
+                    <Button onClick={() => handleClickOpenAuctionHistoryDialog()} style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Lịch sử</Button>
                   </div>
                   <div className="action-button-log">
                     <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Theo dõi</Button>
                   </div>
                   <div className="action-button">
-                    <Button onClick={()=>handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} variant="contained">Đấu giá</Button>
+                    <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} variant="contained">Đấu giá</Button>
                   </div>
                 </div>
               </div>
@@ -132,9 +156,9 @@ export const Product = () => {
           <div className="product-seller">
             <div className="product-seller-header">Thông tin người bán</div>
             <div className="product-seller-header-mobile">
-            <b></b>
-            <h2>Thông tin người bán</h2>
-            <b></b>
+              <b></b>
+              <h2>Thông tin người bán</h2>
+              <b></b>
             </div>
             {/* <div className="product-seller-wrapper">
 
@@ -216,10 +240,10 @@ export const Product = () => {
             <b></b>
           </div>
           <div className="product-description__detail">
-          Outlined button
-Outlined buttons are medium-emphasis buttons. They contain actions that are important but aren't the primary action in an app.
+            Outlined button
+            Outlined buttons are medium-emphasis buttons. They contain actions that are important but aren't the primary action in an app.
 
-Outlined buttons are also a lower emphasis alternative to contained buttons, or a higher emphasis alternative to text buttons.
+            Outlined buttons are also a lower emphasis alternative to contained buttons, or a higher emphasis alternative to text buttons.
           </div>
         </div>
         <div className="product-part-wrapper">
@@ -228,57 +252,85 @@ Outlined buttons are also a lower emphasis alternative to contained buttons, or 
             <h2>Sản phẩm nổi bật</h2>
             <b></b>
           </div>
-            <div className="product-wrapper">
-              <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
-                  </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực ngày xưa có một con chó làm hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+          <div className="product-wrapper">
+            <div className="product">
+              <div className="productImg">
+                <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
               </div>
-              <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
-                  </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+              <div className="product-action">
+                <div className="product-time">
+                  <Countdown
+                    onComplete={() => handleStop()}
+                    // onStop={()=>handleStop()}
+                    date={Date.now() + 3000}
+                    renderer={renderer}
+                  />
+                </div>
+                <div className="product-vote">20 Lượt đấu giá</div>
               </div>
-              <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
-                  </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+              <div className="product-name">Đồng hồ</div>
+              <div className="product-detail">Đồng hồ rất đẹp, cực ngày xưa có một con chó làm hồ rất đẹp, cực kì đẹp</div>
+              <div className="product-price">Giá: 2000đ</div>
+            </div>
+            <div className="product">
+              <div className="productImg">
+                <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
               </div>
-              <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
-                  </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+              <div className="product-action">
+                <div className="product-time">
+                  <Countdown
+                    onComplete={() => handleStop()}
+                    // onStop={()=>handleStop()}
+                    date={Date.now() + 3000}
+                    renderer={renderer}
+                  />
+                </div>
+                <div className="product-vote">20 Lượt đấu giá</div>
               </div>
+              <div className="product-name">Đồng hồ</div>
+              <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
+              <div className="product-price">Giá: 2000đ</div>
+            </div>
+            <div className="product">
+              <div className="productImg">
+                <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+              </div>
+              <div className="product-action">
+                <div className="product-time">
+                  <Countdown
+                    onComplete={() => handleStop()}
+                    // onStop={()=>handleStop()}
+                    date={Date.now() + 3000}
+                    renderer={renderer}
+                  />
+                </div>
+                <div className="product-vote">20 Lượt đấu giá</div>
+              </div>
+              <div className="product-name">Đồng hồ</div>
+              <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
+              <div className="product-price">Giá: 2000đ</div>
+            </div>
+            <div className="product">
+              <div className="productImg">
+                <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+              </div>
+              <div className="product-action">
+                <div className="product-time">
+                  <Countdown
+                    onComplete={() => handleStop()}
+                    // onStop={()=>handleStop()}
+                    date={Date.now() + 3000}
+                    renderer={renderer}
+                  />
+                </div>
+                <div className="product-vote">20 Lượt đấu giá</div>
+              </div>
+              <div className="product-name">Đồng hồ</div>
+              <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
+              <div className="product-price">Giá: 2000đ</div>
             </div>
           </div>
+        </div>
       </div>
       <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}>
         <DialogTitle>Đấu giá</DialogTitle>
@@ -302,42 +354,42 @@ Outlined buttons are also a lower emphasis alternative to contained buttons, or 
         </DialogActions>
       </Dialog>
       <Dialog open={openAuctionHistoryDialog} onClose={handleCloseAuctionHistoryDialog}>
-          <div className="auction-history-dialog">
-            <div className="history-dialog-header">Lịch sử đấu giá</div>
-            <div className="history-dialog-wrapper">
-              <div className="history-dialog-item">
-                <div className="history-dialog-stt">STT</div>
-                <div className="history-dialog-user" style={{textAlign:'center'}}>Người đấu giá</div>
-                <div className="history-dialog-amount">Số tiền(VND)</div>
-                <div className="history-dialog-time" style={{textAlign:'center'}}>Thời gian</div>
-              </div>
-              <div className="history-dialog-item">
-                <div className="history-dialog-stt">20</div>
-                <div className="history-dialog-user">TrungKien2022001</div>
-                <div className="history-dialog-amount">120000000</div>
-                <div className="history-dialog-time">11:01:26 26-02-2022</div>
-              </div>
-              <div className="history-dialog-item">
-                <div className="history-dialog-stt">20</div>
-                <div className="history-dialog-user">TrungKien2022001</div>
-                <div className="history-dialog-amount">120000000</div>
-                <div className="history-dialog-time">11:01:26 26-02-2022</div>
-              </div>
-              <div className="history-dialog-item">
-                <div className="history-dialog-stt">20</div>
-                <div className="history-dialog-user">TrungKien2022001</div>
-                <div className="history-dialog-amount">120000000</div>
-                <div className="history-dialog-time">11:01:26 26-02-2022</div>
-              </div>
-              <div className="history-dialog-item">
-                <div className="history-dialog-stt">20</div>
-                <div className="history-dialog-user">TrungKien2022001</div>
-                <div className="history-dialog-amount">120000000</div>
-                <div className="history-dialog-time">11:01:26 26-02-2022</div>
-              </div>
+        <div className="auction-history-dialog">
+          <div className="history-dialog-header">Lịch sử đấu giá</div>
+          <div className="history-dialog-wrapper">
+            <div className="history-dialog-item">
+              <div className="history-dialog-stt">STT</div>
+              <div className="history-dialog-user" style={{ textAlign: 'center' }}>Người đấu giá</div>
+              <div className="history-dialog-amount">Số tiền(VND)</div>
+              <div className="history-dialog-time" style={{ textAlign: 'center' }}>Thời gian</div>
+            </div>
+            <div className="history-dialog-item">
+              <div className="history-dialog-stt">20</div>
+              <div className="history-dialog-user">TrungKien2022001</div>
+              <div className="history-dialog-amount">120000000</div>
+              <div className="history-dialog-time">11:01:26 26-02-2022</div>
+            </div>
+            <div className="history-dialog-item">
+              <div className="history-dialog-stt">20</div>
+              <div className="history-dialog-user">TrungKien2022001</div>
+              <div className="history-dialog-amount">120000000</div>
+              <div className="history-dialog-time">11:01:26 26-02-2022</div>
+            </div>
+            <div className="history-dialog-item">
+              <div className="history-dialog-stt">20</div>
+              <div className="history-dialog-user">TrungKien2022001</div>
+              <div className="history-dialog-amount">120000000</div>
+              <div className="history-dialog-time">11:01:26 26-02-2022</div>
+            </div>
+            <div className="history-dialog-item">
+              <div className="history-dialog-stt">20</div>
+              <div className="history-dialog-user">TrungKien2022001</div>
+              <div className="history-dialog-amount">120000000</div>
+              <div className="history-dialog-time">11:01:26 26-02-2022</div>
             </div>
           </div>
-          <DialogActions>
+        </div>
+        <DialogActions>
           <Button onClick={handleCloseAuctionHistoryDialog}>Đóng</Button>
         </DialogActions>
       </Dialog>

@@ -7,9 +7,18 @@ import { Link } from "react-router-dom";
 import { Divider, FormControl, InputLabel, List, ListItem, ListItemText, MenuItem, Select } from "@mui/material";
 import { Box } from "@mui/system";
 // import InfiniteScroll from "react-infinite-scroll-component";
+import Countdown, { zeroPad } from 'react-countdown'
 
+const renderer = ({ days, hours, minutes, seconds }) => (
+  <span>
+    {zeroPad(hours)}day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
+  </span>
+);;
 
 export const Homepage = () => {
+  const handleStop = () =>{
+    console.log('Hello')
+  }
   const style = {
     width: '100%',
     bgcolor: 'background.paper',
@@ -56,78 +65,78 @@ export const Homepage = () => {
           <div className="head-m">Danh mục sản phẩm</div>
           <List sx={style} component="nav" aria-label="mailbox folders">
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
             <ListItem>
-              <ListItemText primary="Đồng hồ & phụ kiện" />
+              <ListItemText primary="Máy tính & phụ kiện" />
             </ListItem>
-            <Divider/>
+            <Divider />
           </List>
         </div>
         <div className='right-container'>
-            <div className="chat">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/512px-Facebook_Messenger_logo_2020.svg.png?20220118041828"
-                alt=""
-              />
-            </div>
+          <div className="chat">
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/512px-Facebook_Messenger_logo_2020.svg.png?20220118041828"
+              alt=""
+            />
+          </div>
           <div className="homepage-filter">
             {/* <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
@@ -147,116 +156,172 @@ export const Homepage = () => {
             </Box> */}
           </div>
           <div className="product-part-wrapper">
-          <div className="title-header">
-            <b></b>
-            <h2>Sản phẩm nổi bật</h2>
-            <b></b>
-          </div>
+            <div className="title-header">
+              <b></b>
+              <h2>Sản phẩm nổi bật</h2>
+              <b></b>
+            </div>
             <div className="product-wrapper">
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực ngày xưa có một con chó làm hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực ngày xưa có một con chó làm hồ rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
             </div>
           </div>
           <div className="product-part-wrapper">
-          <div className="title-header">
-            <b></b>
-            <h2>Sản phẩm nổi bật</h2>
-            <b></b>
-          </div>
+            <div className="title-header">
+              <b></b>
+              <h2>Sản phẩm nổi bật</h2>
+              <b></b>
+            </div>
             <div className="product-wrapper">
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
             </div>
           </div>
@@ -266,52 +331,80 @@ export const Homepage = () => {
             </div>
             <div className="product-wrapper">
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
               <div className="product">
-                  <div className="productImg">
-                    <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
+                <div className="productImg">
+                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                </div>
+                <div className="product-action">
+                  <div className="product-time">
+                    <Countdown
+                      onComplete={() => handleStop()}
+                      // onStop={()=>handleStop()}
+                      date={Date.now() + 300000}
+                      renderer={renderer}
+                    />
                   </div>
-                  <div className="product-action">
-                    <div className="product-time">3d -20h38'12s</div>
-                    <div className="product-vote">20 Lượt đấu giá</div>
-                  </div>
-                  <div className="product-name">Đồng hồ</div>
-                  <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-                  <div className="product-price">Giá: 2000đ</div>
+                  <div className="product-vote">20 Lượt đấu giá</div>
+                </div>
+                <div className="product-name">Máy tính</div>
+                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
+                <div className="product-price">Giá: 2000đ</div>
               </div>
             </div>
           </div>

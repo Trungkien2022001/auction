@@ -7,6 +7,7 @@ import { Management } from './pages/client/management/Management';
 import { NewProduct } from './pages/client/newProduct/NewProduct';
 import { Product } from './pages/client/product/Product';
 import { Register } from './pages/client/register/Register';
+import { Test } from './pages/client/test/Test';
 import { User } from './pages/client/user/User';
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element = {<Homepage/>}/>
+          <Route path='/test' element = {<Test/>}/>
           <Route path='/management' element = {<Management/>}/>
           <Route path='/user/:id' element = {<User/>}/>
           <Route path='/product/:id' element = {<Product/>}/>

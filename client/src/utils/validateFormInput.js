@@ -15,6 +15,7 @@ export const registerValidate = (data) => {
     }
 
     if (!data.email.match(
+        // eslint-disable-next-line no-useless-escape
         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     )) {
         return {
@@ -60,6 +61,69 @@ export const registerValidate = (data) => {
         return {
             err: true,
             message: 'Địa chỉ không được quá ngắn'
+        }
+    }
+
+    return {
+        err: false
+    }
+}
+
+export const newAuctionValidate = (data) => {
+
+    if(!data.name){
+        return {
+            err: true,
+            message: 'Vui lòng nhập tên sản phẩm'
+        }
+    }
+
+    if(!data.branch){
+        return {
+            err: true,
+            message: 'Vui lòng nhập thương hiệu sản phẩm'
+        }
+    }
+
+    if(!data.status){
+        return {
+            err: true,
+            message: 'Vui lòng nhập tình trạng sản phẩm'
+        }
+    }
+
+    if(data.starting_price < 5000){
+        return {
+            err: true,
+            message: 'Giá sản phẩm phải lớn hơn hoặc bằng 5000VND'
+        }
+    }
+
+    if(!moment(data.start_time).isAfter(moment(new Date()).add('minute', 5))){
+        return {
+            err: true,
+            message: 'Thời gian bắt đầu phải sau hiện tại ít nhất 5 phút'
+        }
+    }
+
+    if(moment(data.start_time).isAfter(moment(new Date()).add('day', 7))){
+        return {
+            err: true,
+            message: 'Thời gian bắt đầu không muộn quá hiện tại 7 ngày'
+        }
+    }
+
+    if(!data.title){
+        return {
+            err: true,
+            message: 'Vui lòng nhập mô tả ngắn gọn sản phẩm'
+        }
+    }
+
+    if(!data.description){
+        return {
+            err: true,
+            message: 'Vui lòng nhập mô tả chi tiết sản phẩm'
         }
     }
 

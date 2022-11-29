@@ -5,10 +5,12 @@ const Router = require('@koa/router')
 // const User = require('../../models/user')
 // const config = require('../../config')
 const { genericSecure, checkPermission } = require('../../middleware/security')
+const { validate } = require('../../middleware/validator')
 // const { validate } = require('../../middleware/validator')
 // const { hashPassword } = require('../../utils/auth')
 // const schema = require('./schema')
 const { getAuctionTime, getProductCategory } = require('../../models/common')
+const { create } = require('./schema')
 
 const router = new Router()
 
@@ -47,11 +49,13 @@ router.get(
 router.post(
     '/auction',
     genericSecure,
+    validate(create),
     checkPermission('auction'),
     async ctx => {
         debug('POST / create auction')
         try {
-            console.log(ctx.request.body)
+            // console.log(ctx.request.body)
+            console.log('Hello')
             ctx.body = {
                 success: true
             }

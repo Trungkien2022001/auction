@@ -8,7 +8,6 @@ export const Test = () => {
     </span>
   );;
   const handleStop = () =>{
-    console.log('Hello')
   }
   return (
     <div>

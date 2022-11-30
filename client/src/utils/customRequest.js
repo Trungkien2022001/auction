@@ -11,7 +11,6 @@ export async function get(url, currentUser){
 }
 
 export async function post(url, data, currentUser){
-    console.log(url, data, currentUser)
     const result = await axios.post(url, data, {
         headers: {
             'x-key': currentUser.email,

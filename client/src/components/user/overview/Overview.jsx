@@ -7,8 +7,7 @@ const api_endpoint = process.env.REACT_APP_API_ENDPOINT
 export const Overview = ({currentUser}) => {
   useEffect(()=>{
     async function getData(){
-      const result =await get(`${api_endpoint}/user/${currentUser.id}`, currentUser)
-      console.log(result)
+      await get(`${api_endpoint}/user/${currentUser.id}`, currentUser)
     }
     getData()
   }, [currentUser])

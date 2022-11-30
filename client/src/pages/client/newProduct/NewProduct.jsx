@@ -2,16 +2,16 @@
 import './NewProduct.scss'
 import { useRef, useState } from 'react'
 import { Header } from '../../../components/header/Header'
-import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import ClearIcon from '@mui/icons-material/Clear';
-import { Button, FormControlLabel, InputAdornment, MenuItem, Select, Switch, TextField } from '@mui/material'
+import { Button, FormControlLabel, MenuItem, Switch, TextField } from '@mui/material'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { get, post } from '../../../utils/customRequest'
 import { newAuctionValidate } from '../../../utils/validateFormInput'
 import Swal from 'sweetalert2'
+import moment from 'moment'
 
 
 export const NewProduct = () => {
@@ -30,7 +30,7 @@ export const NewProduct = () => {
         description: '',
         key_word: '',
         category_id: 1,
-        starting_price: 1000,
+        start_price: 5000,
     })
     const [auction, setAuction] = useState({
         start_time: null,
@@ -52,13 +52,6 @@ export const NewProduct = () => {
     }, [])
 
     const handleSubmit = async () => {
-        let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction`, {
-            auction,
-            product : {...product, images: imageList}
-        }, currentUser)
-
-        console.log(result)
-       
         let validate = newAuctionValidate({...product, ...auction})
         if (validate.err) {
             Swal.fire(
@@ -68,6 +61,28 @@ export const NewProduct = () => {
             )
             return
         }
+        
+        let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction`, {
+            auction,
+            product : {...product, images: imageList}
+        }, currentUser)
+        if (result.data.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Tạo phiên đấu giá mới thành công',
+              showConfirmButton: true,
+              timer: 10000
+            }).then(()=>{
+              window.location.href = './';
+            })
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Đã xảy ra lỗi',
+              text: result.data.message,
+              showConfirmButton: true,
+            })
+          }
     }
 
     const handleAddImage = async () => {
@@ -161,8 +176,9 @@ export const NewProduct = () => {
                             label="Giá khởi điểm"
                             variant="outlined"
                             type='number'
-                            value={product.starting_price}
-                            onChange={e => setProduct({ ...product, starting_price: e.target.value })}
+                            value={product.start_price}
+                            helperText='Nhỏ nhất 5000đ'
+                            onChange={e => setProduct({ ...product, start_price: e.target.value })}
                         />
                     </div>
                     <div className='new-product-item'>
@@ -188,7 +204,7 @@ export const NewProduct = () => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            onChange={e => setAuction({ ...auction, start_time: e.target.value })}
+                            onChange={e => setAuction({ ...auction, start_time: moment(e.target.value).format('YYYY-MM-DD HH:mm:ss') })}
 
                         />
                     </div>
@@ -245,7 +261,7 @@ export const NewProduct = () => {
 
                 <div>
                     <FormControlLabel
-                        control={<Switch defaultChecked />}
+                        control={<Switch defaultChecked={false} />}
                         label="Hoàn trả"
                         onChange={e => setAuction({ ...auction, is_returned: e.target.checked ? 1 : 0 })}
                     />

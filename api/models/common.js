@@ -37,3 +37,19 @@ exports.getProductCategory = async () => {
         throw new Error(`unable to get product type, ${err}`)
     }
 }
+
+exports.saveImage = async (images, productId) => {
+    const image = images.map(img => ({ url: img, product_id: productId }))
+    await knex('image').insert(image)
+}
+
+exports.getProductImages = async productId => {
+    const result = await knex
+        .select('url')
+        .from('image')
+        .where('product_id', productId)
+        .whereNull('deleted_at')
+        .orderBy('id', 'desc')
+
+    return result
+}

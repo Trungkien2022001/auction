@@ -8,16 +8,16 @@ const create = Joi.object().keys({
     auction: Joi.object()
         .keys({
             start_time: Joi.date()
-                .format('YYYY-MM-DD[T]HH:mm')
+                .format('YYYY-MM-DD HH:mm:ss')
                 .min(
                     moment()
                         .add(5, 'minutes')
-                        .format('YYYY-MM-DD[T]HH:mm')
+                        .format('YYYY-MM-DD HH:mm:ss')
                 )
                 .max(
                     moment()
                         .add(7, 'days')
-                        .format('YYYY-MM-DD[T]HH:mm')
+                        .format('YYYY-MM-DD HH:mm:ss')
                 ),
             auction_time: Joi.number().required(),
             is_returned: Joi.number().optional(),
@@ -33,9 +33,11 @@ const create = Joi.object().keys({
                 .max(300)
                 .required(),
             description: Joi.string().required(),
-            key_word: Joi.string().optional(),
+            key_word: Joi.string()
+                .optional()
+                .allow(null, ''),
             category_id: Joi.number().required(),
-            starting_price: Joi.number()
+            start_price: Joi.number()
                 .min(4999)
                 .required(),
             images: Joi.array().items(Joi.string().required())
@@ -43,8 +45,17 @@ const create = Joi.object().keys({
         .required()
 })
 
+const getDetail = Joi.object().keys({
+    id: Joi.number()
+        .min(1)
+        .required()
+})
+
 module.exports = {
     create: {
         body: create
+    },
+    getDetail: {
+        header: getDetail
     }
 }

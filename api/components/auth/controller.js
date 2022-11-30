@@ -27,7 +27,6 @@ exports.login = async params => {
 }
 
 exports.signup = async params => {
-    console.log(params)
     const u = await knex
         .select()
         .from('user')

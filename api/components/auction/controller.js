@@ -1,46 +1,66 @@
-// auth.js
-const moment = require('moment')
-const jwt = require('jwt-simple')
-const { compareHash, hashPassword } = require('../../utils/auth')
-const { knex } = require('../../connectors')
-const config = require('../../config')
-const { fetchUserByEmail } = require('../../models/user')
-const { addUser } = require('../../models/user')
+/* eslint-disable camelcase */
+const { saveImage, getProductImages } = require('../../models/common')
+const { addProduct } = require('../../models/product')
+const {
+    saveAuction,
+    getLatestAuction,
+    getProductAuction
+} = require('../../models/auction')
+const { getSellerInfo } = require('../../models/user')
 
-exports.login = async params => {
-    const user = await fetchUserByEmail(params.email)
-    const validHash = await compareHash(params.password, user.password_hash)
+exports.createAuction = async params => {
+    const { body, user } = params
+    const product = {
+        ...body.product,
+        seller_id: user.id,
+        image: body.product.images[0]
+    }
+    const auction = {
+        ...body.auction,
+        seller_id: user.id,
+        start_price: product.start_price,
+        sell_price: product.start_price
+    }
+    const { images } = product
+    delete product.images
 
-    if (!user || !validHash) {
-        throw new Error('invalid email/password')
-    } else {
-        const payload = {
-            id: user.id,
-            email: user.email,
-            expire: moment()
-                .add('7', 'days')
-                .unix()
-        }
+    const [productId] = await addProduct(product)
+    auction.product_id = productId
+    await saveImage(images, productId)
+    await saveAuction(auction)
 
-        return jwt.encode(payload, config.secret)
+    return {
+        err: false
     }
 }
 
-exports.signup = async params => {
-    const u = await knex
-        .select('email')
-        .from('user')
-        .where('email', params.email)
+exports.getAuctionOverview = async params => {
+    const latest = await getLatestAuction(params)
+    const featured = await getLatestAuction(params)
+    const cheap = await getLatestAuction(params)
+    const incoming = await getLatestAuction(params)
 
-    if (u.length) {
-        throw new Error(`user ${params.email} already exits`)
+    return {
+        latest,
+        featured,
+        cheap,
+        incoming
     }
-    const userInfo = {
-        email: params.email,
-        name: params.name,
-        password_hash: hashPassword(params.password)
+}
+
+exports.getAuctionDetail = async params => {
+    const [product] = await getProductAuction(params)
+    if (!product) return {}
+    const seller_info = await getSellerInfo(product.seller_id)
+    const product_images = await getProductImages(product.id)
+    delete seller_info.password_hash
+    delete seller_info.refresh_token
+    delete seller_info.custom_config
+    delete seller_info.role
+
+    return {
+        product,
+        product_images,
+        seller_info
     }
-    if (params.avatar) userInfo.avatar = params.avatar
-    if (params.birthday) userInfo.birthday = params.birthday
-    addUser(userInfo)
 }

@@ -1,112 +1,144 @@
-const debug = require('debug')('auction:model:user')
-const { knex, redis } = require('../connectors')
+/* eslint no-use-before-define: "error" */
+/* eslint no-return-await: "error" */
+const debug = require('debug')('auction:model:auction')
+const { knex } = require('../connectors')
 
-async function fetchUsers() {
-    try {
-        const users = await redis.cachedExecute(
-            {
-                key: `users`,
-                ttl: '15 days',
-                json: true
-            },
-            () => knex.select().from('user')
+exports.saveAuction = async auction => {
+    return knex('auction').insert(auction)
+}
+
+exports.getLatestAuction = async () => {
+    debug('GET /get lastest auction')
+
+    const result = await knex
+        .select(
+            'a.id',
+            'a.start_time',
+            'a.start_price',
+            'a.sell_price',
+            'a.auction_count',
+            'p.name',
+            'p.title',
+            'p.image',
+            'at.time'
         )
+        .from('auction as a')
+        .innerJoin('product as p', 'a.product_id', 'p.id')
+        .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+        .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+        .whereNull('a.deleted_at')
+        .orderBy('a.updated_at', 'desc')
+        .limit(4)
+        .offset(0)
 
-        return users
-    } catch (err) {
-        debug('fetchUsers', err)
-        throw new Error(`unable to fetch users`)
-    }
+    return result
 }
 
-async function fetchUserByEmail(email) {
-    const fetchUser = async () => {
-        const user = await knex
-            .first()
-            .from('user')
-            .where({ email, del_flag: 0 })
+exports.getProductAuction = async params => {
+    const result = await knex
+        .select(
+            'a.id',
+            'a.start_time',
+            'a.start_price',
+            'a.sell_price',
+            'a.seller_id',
+            'a.auction_count',
+            'a.status',
+            'a.is_finished_soon',
+            'a.is_returned',
+            'p.name',
+            'p.title',
+            'p.description',
+            'p.branch',
+            'p.key_word',
+            'p.status',
+            'pc.name as product_category',
+            'at.time'
+        )
+        .from('auction as a')
+        .innerJoin('product as p', 'a.product_id', 'p.id')
+        .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+        .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
+        .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+        .where('a.id', params.id)
+        .whereNull('a.deleted_at')
 
-        if (!user) {
-            throw new Error('user not found')
-        }
-
-        const role = await knex
-            .first()
-            .from('role')
-            .where('id', user.role_id)
-
-        user.role = role
-
-        return user
-    }
-
-    return redis.cachedExecute(
-        {
-            key: `user:${email}`,
-            ttl: '2 days',
-            json: true
-        },
-        fetchUser
-    )
+    return result
 }
 
-async function fetchUserByID(id) {
-    const fetchUser = async () => {
-        const user = await knex
-            .first()
-            .from('user')
-            .where({ id, del_flag: 0 })
+exports.auctionHistoryCount = async userId => {
+    const result = await knex
+        .countDistinct('auction_id as cnt')
+        .from('auction_history')
+        .where('auctioneer_id', userId)
 
-        if (!user) {
-            throw new Error('user not found')
-        }
-
-        const role = await knex
-            .first()
-            .from('role')
-            .where('id', user.role_id)
-
-        user.role = role
-
-        return user
-    }
-
-    return redis.cachedExecute(
-        {
-            key: `user:${id}`,
-            ttl: '2 days',
-            json: true
-        },
-        fetchUser
-    )
+    return result[0]
 }
 
-async function updateUser(userId, updateCondition) {
-    try {
-        await knex('user')
-            .where('id', userId)
-            .update(updateCondition)
+exports.allAuctionHistoryCount = async userId => {
+    const result = await knex
+        .count('auctioneer_id as cnt')
+        .from('auction_history')
+        .where('auctioneer_id', userId)
 
-        await redis.del('users')
-    } catch (error) {
-        throw new Error(`unable to update user`)
-    }
+    return result[0]
 }
 
-async function addUser(user) {
-    try {
-        await knex('user').insert(user)
+exports.auctionWonCount = async userId => {
+    const result = await knex
+        .countDistinct('ah.auction_id as cnt')
+        .from('auction_history as ah')
+        .innerJoin('auction as a', 'ah.auction_id', 'a.id')
+        .where('ah.auctioneer_id', userId)
+        .andWhere('ah.is_success', '1')
+        .andWhere('a.status', '3')
 
-        await redis.del('users')
-    } catch (error) {
-        throw new Error(`unable to add user`)
-    }
+    return result[0]
 }
 
-module.exports = {
-    fetchUsers,
-    fetchUserByEmail,
-    fetchUserByID,
-    updateUser,
-    addUser
+exports.auctionSpentSum = async userId => {
+    const result = await knex
+        .sum('sell_price as sum')
+        .from('auction as a')
+        .innerJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+        .where('auctioneer_id', userId)
+        .andWhere('is_success', '1')
+        .andWhere('is_success', '1')
+
+    return result[0]
+}
+exports.auctionSaleSuccessCount = async userId => {
+    const result = await knex
+        .count('id as cnt')
+        .from('auction')
+        .where('seller_id', userId)
+        .andWhere('status', '3')
+
+    return result[0]
+}
+exports.auctionSaleDeliveredCount = async userId => {
+    const result = await knex
+        .count('id as cnt')
+        .from('auction')
+        .where('seller_id', userId)
+        .andWhere('status', '4')
+
+    return result[0]
+}
+exports.auctionSaleAllCount = async userId => {
+    const result = await knex
+        .count('id as cnt')
+        .from('auction')
+        .where('seller_id', userId)
+
+    return result[0]
+}
+exports.auctionProfitSum = async userId => {
+    const result = await knex
+        .sum('sell_price as sum')
+        .from('auction')
+        .where('seller_id', userId)
+        .andWhere('status', '4')
+
+    return result[0]
 }

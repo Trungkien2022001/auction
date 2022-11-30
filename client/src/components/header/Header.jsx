@@ -18,6 +18,7 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import { Link } from 'react-router-dom';
 import { Avatar } from '@mui/material';
 import './Header.scss'
+import { useSelector } from 'react-redux';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -71,6 +72,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const Header = () => {
+  const currentUser = useSelector(state=>state.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -80,16 +82,23 @@ export const Header = () => {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+    if(!currentUser.id){
+      window.location.href = './login'
+    } else{
+      setAnchorEl(event.currentTarget);
+    }
   };
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
-  const handleMenuClose = () => {
+  const handleMenuClose = (target) => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    if(target === 'profile'){
+      window.location.href = `/user/${currentUser.id}`
+    }
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -119,20 +128,20 @@ export const Header = () => {
         horizontal: 'right',
       }}
       open={isMenuOpen}
-      onClose={handleMenuClose}
+      onClose={()=>handleMenuClose('')}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={()=>handleMenuClose('profile')}>Profile</MenuItem>
+      <MenuItem onClick={()=>handleMenuClose('')}>
         <Link style={{ textDecoration: "none", color: "black" }} to={"/management"}>
           Management
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={()=>handleMenuClose('')}>
         <Link style={{ textDecoration: "none", color: "black" }} to={"/english"}>
           English Test
         </Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Logout</MenuItem>
+      <MenuItem onClick={()=>handleMenuClose('')}>Logout</MenuItem>
     </Menu>
   );
 
@@ -229,7 +238,9 @@ export const Header = () => {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            TIKA
+            <Link to={'/'} style={{ textDecoration: 'none', color: '#fff' }}>
+              TIKA
+            </Link>
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -272,7 +283,7 @@ export const Header = () => {
             >
               <Avatar
                 alt="Avatar"
-                src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1667133652/upload/mfyfdkfy6e3279cpqyfu.png"
+                src={currentUser.avatar}
                 sx={{ width: 40, height: 40 }}
               />
             </IconButton>

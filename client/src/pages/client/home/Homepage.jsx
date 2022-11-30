@@ -1,62 +1,51 @@
+/* eslint-disable no-mixed-operators */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useState } from "react";
 import { Header } from "../../../components/header/Header";
 import "./Homepage.scss";
 // import axios from "axios";
 import { Link } from "react-router-dom";
-import { Divider, FormControl, InputLabel, List, ListItem, ListItemText, MenuItem, Select } from "@mui/material";
-import { Box } from "@mui/system";
-// import InfiniteScroll from "react-infinite-scroll-component";
+import { Divider, List, ListItem, ListItemText } from "@mui/material";
 import Countdown, { zeroPad } from 'react-countdown'
+import { useEffect } from "react";
+import { get } from "../../../utils/customRequest";
+import { useSelector } from "react-redux";
+import { Footer } from "../../../components/footer/Footer";
+import moment from "moment";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
-    {zeroPad(hours)}day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
+    {hours} day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
   </span>
 );;
 
 export const Homepage = () => {
-  const handleStop = () =>{
-    console.log('Hello')
+
+  const currentUser = useSelector(state => state.user)
+  const [data, setData] = useState({})
+  const [productCategory, setProductCategory] = useState([]);
+
+  useEffect(() => {
+    async function getData() {
+      let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-overview`, currentUser)
+      if (result.status === 200) {
+        setData(result.data.data)
+      }
+
+      result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+      if (result.status === 200) {
+        setProductCategory(result.data.product_category)
+      }
+    }
+    getData()
+  }, [])
+  const handleStop = () => {
   }
   const style = {
     width: '100%',
     bgcolor: 'background.paper',
   };
-  // const [mainData, setMainData] = useState([]);
-  const [filter, setFilter] = useState('0')
-  // const [page, setPage] = useState(1)
-  // const [hasMore, setHasMore] = useState(true)
-  // const [bOption, setBOption] = useState(false);
-
-  // const [age, setAge] = useState('');
-
-  // const handleChange = (event) => {
-  //   setAge(event.target.value);
-  // };
-  // const [height, setHeight] = useState(document.querySelector(".main")?.clientHight  || 840)
-  // const displayHeight = document.querySelector(".main")?.clientHeight;
-  // useEffect(() => {
-  //   setHeight(displayHeight);
-  // }, [displayHeight]);
-  // useEffect(() => {
-  //   const get = async () => {
-  //     const result = await axios.get(`/v1/post/get_all?page=${page}`);
-  //     if (result.data.data && result.data.data.length) {
-  //       setMainData(prev => [...prev, ...result.data.data]);
-  //     } else {
-  //       setHasMore(false)
-  //     }
-  //   };
-  //   get();
-  // }, [page]);
-
-
-  // async function handleFetching(){
-
-  //   setPage(page+1)
-  //   return
-  // }
   return (
     <div>
       <Header />
@@ -64,70 +53,18 @@ export const Homepage = () => {
         <div className='left-container'>
           <div className="head-m">Danh mục sản phẩm</div>
           <List sx={style} component="nav" aria-label="mailbox folders">
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
-            <ListItem>
-              <ListItemText primary="Máy tính & phụ kiện" />
-            </ListItem>
-            <Divider />
+            {
+              productCategory.length && productCategory.map(item => (
+
+                <>
+                  <ListItem style={{ padding: '4px 5px' }}>
+                    <ListItemText style={{ cursor: 'pointer' }} primary={item.name} />
+                  </ListItem>
+                  <Divider />
+                </>
+              ))
+              || <></>
+            }
           </List>
         </div>
         <div className='right-container'>
@@ -137,24 +74,16 @@ export const Homepage = () => {
               alt=""
             />
           </div>
-          <div className="homepage-filter">
-            {/* <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Lọc sản phẩm</InputLabel>
-              <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={age}
-              label="Age"
-              onChange={handleChange}
-              >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
-            </Box> */}
+          <div className="new-auction-btn">
+            <Link to={'/new-auction'}>  
+              <img
+                src="https://banner2.cleanpng.com/20180315/sdw/kisspng-plus-and-minus-signs-computer-icons-clip-art-plus-sign-5aaad8632b3888.9799936515211459551771.jpg"
+                alt=""
+              />
+            </Link>
           </div>
+
+          {/* Sản phẩm nổi bật */}
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
@@ -162,254 +91,42 @@ export const Homepage = () => {
               <b></b>
             </div>
             <div className="product-wrapper">
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực ngày xưa có một con chó làm hồ rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-            </div>
-          </div>
-          <div className="product-part-wrapper">
-            <div className="title-header">
-              <b></b>
-              <h2>Sản phẩm nổi bật</h2>
-              <b></b>
-            </div>
-            <div className="product-wrapper">
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-            </div>
-          </div>
-          <div className="product-part-wrapper">
-            <div className="head-l">
-              Siêu rẻ
-            </div>
-            <div className="product-wrapper">
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
-              <div className="product">
-                <div className="productImg">
-                  <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
-                </div>
-                <div className="product-action">
-                  <div className="product-time">
-                    <Countdown
-                      onComplete={() => handleStop()}
-                      // onStop={()=>handleStop()}
-                      date={Date.now() + 300000}
-                      renderer={renderer}
-                    />
-                  </div>
-                  <div className="product-vote">20 Lượt đấu giá</div>
-                </div>
-                <div className="product-name">Máy tính</div>
-                <div className="product-detail">Máy tính rất đẹp, cực kì đẹp</div>
-                <div className="product-price">Giá: 2000đ</div>
-              </div>
+              {
+                data && data.featured && data.featured.map(item => (
+                  <Link to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
+                    <div className="product" key={item.id}>
+                      <div className="productImg">
+                        <img src={item.image} alt="Product_Image" />
+                      </div>
+                      <div className="product-action">
+                        <div className="product-time">
+                          <Countdown
+                            onComplete={() => handleStop()}
+                            // onStop={()=>handleStop()}
+                            date={moment(item.start_time).add(item.time)}
+                            renderer={renderer}
+                          />
+                        </div>
+                        <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
+                      </div>
+                      <div className="product-name">{item.name}</div>
+                      <div className="product-detail">{item.title}</div>
+                        <div className="product-price">
+                        Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                      <div className="product-price">
+                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                    </div>
+                  </Link>
+                ))
+                || <></>
+              }
             </div>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

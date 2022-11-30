@@ -3,20 +3,19 @@ import axios from "axios";
 import "./register.scss";
 import { useRef, useState } from 'react'
 import { Header } from '../../../components/header/Header'
-import { Link, useNavigate } from 'react-router-dom'
-import { Navigate } from "react-router-dom";
+import { Link} from 'react-router-dom'
 import { useDispatch } from "react-redux";
 import { userSlice } from "../../../redux/userSlice";
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import ClearIcon from '@mui/icons-material/Clear';
-import { Button, FormControlLabel, InputAdornment, MenuItem, Select, Switch, TextField } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import { registerValidate } from "../../../utils/validateFormInput";
 import Swal from "sweetalert2";
+import { Footer } from "../../../components/footer/Footer";
 
 
 export const Register = () => {
   const dispatch = useDispatch()
-  const [check, setCheck] = useState(false)
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -28,10 +27,6 @@ export const Register = () => {
 
   const inputRef = useRef()
   const [imageList, setImageList] = useState([])
-
-  const handleSubmit = async () => {
-
-  }
 
   const handleAddImage = async () => {
     const files = inputRef.current.files
@@ -254,7 +249,15 @@ export const Register = () => {
         <div className="submit">
           <Button onClick={() => handleRegister()} variant="contained">Submit</Button>
         </div>
+        <div>
+          <Link to={'/login'} style={{ textDecoration: 'none', color: 'black' }}>
+            <div className="toLogin">
+              Bạn đã có tài khoản? <span style={{ color: '#0000FF' }}>Đăng nhập ngay</span>
+            </div>
+          </Link>
+        </div>
       </div>
+      <Footer/>
     </div>
   )
 };

@@ -15,6 +15,17 @@
                 height: auto;
             }
         }
+        .new-auction-btn{
+            position: fixed;
+            z-index: 10;
+            bottom: 20px;
+            left: 30px;
+            cursor: pointer;
+            img{
+                width: 60px;
+                height: auto;
+            }
+        }
         text-align: center;
         flex: 1;
         
@@ -48,7 +59,10 @@
                     .product-name{
                         font-size: 20px;
                         font-weight: bold;
-                        margin-top: 10px;
+                        margin: 10px 0px 5px;
+                        height: 25px;
+                        overflow: hidden;
+                        max-width: 260px;
                     }
                     .product-price{
                         font-size: 18px;

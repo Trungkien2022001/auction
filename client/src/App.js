@@ -18,8 +18,8 @@ function App() {
           <Route path='/test' element = {<Test/>}/>
           <Route path='/management' element = {<Management/>}/>
           <Route path='/user/:id' element = {<User/>}/>
-          <Route path='/product/:id' element = {<Product/>}/>
-          <Route path='/new-product' element = {<NewProduct/>}/>
+          <Route path='/auction/:id' element = {<Product/>}/>
+          <Route path='/new-auction' element = {<NewProduct/>}/>
           <Route path='/login' element = {<Login/>}/>
           <Route path='/register' element = {<Register/>}/>
           <Route path='/*' element = {<NotFound/>}/>

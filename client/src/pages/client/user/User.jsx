@@ -112,8 +112,8 @@ export const User = () => {
           <div className='user-info-sidebar-mobile'>
             <div onClick={() => handleDrawerToggle()} className='user-info-sidebar-close'>
               <div className='user-info-close-sidebar'>
-              <KeyboardDoubleArrowLeftIcon />
-                </div>
+                <KeyboardDoubleArrowLeftIcon />
+              </div>
             </div>
             <List className='user-drawer'
               sx={{ width: drawerWidth, bgcolor: `${selectedTheme.backgroundColor}`, color: `${selectedTheme.textColor}` }}
@@ -121,8 +121,8 @@ export const User = () => {
             >
               <div className='profile-dashboard'>
                 <Avatar className='avatar-dashboard'
-                  alt="Remy Sharp"
-                  src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1667133652/upload/mfyfdkfy6e3279cpqyfu.png"
+                  alt="avatar"
+                  src={currentUser.avatar}
                   sx={{ width: 150, height: 150 }}
                 />
                 <div className='username-dashboard'>Trung Kiên</div>
@@ -213,13 +213,11 @@ export const User = () => {
               <div className='profile-dashboard'>
                 <Avatar className='avatar-dashboard'
                   alt="Remy Sharp"
-                  src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1667133652/upload/mfyfdkfy6e3279cpqyfu.png"
-                  // src="https://thuthuatnhanh.com/wp-content/uploads/2020/09/avatar-trang-cuc-doc.jpg"
-                  // src="https://scontent.fhan14-3.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=OgKQ28zqDFoAX-4mJ3r&_nc_ht=scontent.fhan14-3.fna&oh=00_AfD75H44rW0TjQ2SY8lOYUKKY39bSF6lvL5kVdukLLzAJQ&oe=6369CD16"
+                  src={currentUser.avatar}
                   sx={{ width: 150, height: 150 }}
                 />
-                <div className='username-dashboard'>Trung Kiên</div>
-                <div className='username-dashboard-role'>Administrator</div>
+                <div className='username-dashboard'>{currentUser.username}</div>
+                <div className='username-dashboard-role'>{currentUser.role_id}</div>
               </div>
               <Divider />
               <ListItemButton
@@ -299,9 +297,9 @@ export const User = () => {
           </div>
         }
         <div className='user-info-item'>
-          {currentPage === 1 ? <Overview currentUser={currentUser}/> : <></>}
-          {currentPage === 2 ? <BuyHistory/> : <></>}
-          {currentPage === 3 ? <SaleHistory/> : <></>}
+          {currentPage === 1 ? <Overview currentUser={currentUser} /> : <></>}
+          {currentPage === 2 ? <BuyHistory /> : <></>}
+          {currentPage === 3 ? <SaleHistory /> : <></>}
         </div>
       </div>
       <SimpleDialog

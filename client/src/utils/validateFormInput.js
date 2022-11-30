@@ -92,7 +92,7 @@ export const newAuctionValidate = (data) => {
         }
     }
 
-    if(data.starting_price < 5000){
+    if(data.start_price < 5000){
         return {
             err: true,
             message: 'Giá sản phẩm phải lớn hơn hoặc bằng 5000VND'

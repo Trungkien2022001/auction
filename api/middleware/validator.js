@@ -3,7 +3,7 @@ const DateExt = require('@hapi/joi-date')
 const ArrayExt = require('joi-array-extensions')
 const _ = require('lodash')
 
-const logger = require('../utils/logger_1')
+const logger = require('../utils/logger')
 
 const Joi = BaseJoi.extend([DateExt, ArrayExt])
 

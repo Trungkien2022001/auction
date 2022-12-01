@@ -1,4 +1,3 @@
-/* eslint-disable import/no-dynamic-require */
 const Router = require('@koa/router')
 const glob = require('glob')
 
@@ -14,6 +13,7 @@ glob(
         }
 
         matches.forEach(file => {
+            // eslint-disable-next-line import/no-dynamic-require
             const controller = require(file) // eslint-disable-line global-require
             router.use(controller.routes()).use(controller.allowedMethods())
         })

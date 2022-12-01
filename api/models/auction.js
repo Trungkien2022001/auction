@@ -25,7 +25,7 @@ exports.getLatestAuction = async () => {
         .from('auction as a')
         .innerJoin('product as p', 'a.product_id', 'p.id')
         .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
-        .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+        // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
         .whereNull('a.deleted_at')
         .orderBy('a.updated_at', 'desc')
         .limit(4)
@@ -62,6 +62,24 @@ exports.getProductAuction = async params => {
         .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
         .where('a.id', params.id)
         .whereNull('a.deleted_at')
+
+    return result
+}
+
+exports.getAuctionHistory = async id => {
+    const result = await knex
+        .select(
+            'ah.id',
+            'ah.bet_time',
+            'ah.bet_amount',
+            'ah.is_success',
+            'ah.is_blocked',
+            'u.name as auctioneer_name'
+        )
+        .from('auction_history as ah')
+        .innerJoin('user as u', 'ah.auctioneer_id', 'u.id')
+        .where('ah.auction_id', id)
+        .orderBy('ah.id', 'desc')
 
     return result
 }
@@ -141,4 +159,13 @@ exports.auctionProfitSum = async userId => {
         .andWhere('status', '4')
 
     return result[0]
+}
+
+exports.updateAuction = async (toUpdate, auctionId) => {
+    await knex('auction')
+        .update(toUpdate)
+        .where('id', auctionId)
+}
+exports.createAuctionLogHistory = async toInsert => {
+    await knex('auction_history').insert(toInsert)
 }

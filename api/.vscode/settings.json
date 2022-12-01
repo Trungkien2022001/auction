@@ -16,6 +16,5 @@
     "eslint.packageManager": "yarn",
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "files.eol": "\n",
+    }
 }

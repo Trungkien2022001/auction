@@ -7,14 +7,21 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Trung Kien API",
+            "name": "Offer API",
             "program": "${workspaceRoot}/index.js",
             "outputCapture": "std"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Trung Kien",
+            "name": "Offer Worker",
+            "program": "${workspaceRoot}/worker.js",
+            "outputCapture": "std"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Offer Worker Country",
             "program": "${workspaceRoot}/workerCountry.js",
             "outputCapture": "std"
         },

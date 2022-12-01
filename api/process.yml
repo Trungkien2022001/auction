@@ -1,0 +1,13 @@
+apps:
+  - script: ./index.js
+    name: "offer-api"
+    instances: 1
+    max_memory_restart: "3G"
+    node_args: "--expose-gc --max-old-space-size=4096"
+    exec_mode: "cluster"
+  - script: ./worker.js
+    name: "offer-worker"
+    instances: 3
+    max_memory_restart: "3G"
+    node_args: "--expose-gc --max-old-space-size=4096"
+    exec_mode: "cluster"

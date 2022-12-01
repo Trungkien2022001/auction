@@ -3,28 +3,17 @@ const debug = require('debug')('auction:route:supplier-config')
 const Router = require('@koa/router')
 const { genericSecure, checkPermission } = require('../../middleware/security')
 const { validate } = require('../../middleware/validator')
-const { getAuctionTime, getProductCategory } = require('../../models/common')
-const {
-    createAuction,
-    getAuctionOverview,
-    getAuctionDetail
-} = require('./controller')
+const commonModel = require('../../models/common')
+const auctionController = require('./controller')
 const { create, getDetail } = require('./schema')
 
 const router = new Router()
 
-// async function refreshUserCache() {
-//     // refresh cache: prefix:supplier:*
-//     const pattern = `${config.redisPrefix}users`
-//     debug(`Flushing ${pattern}`)
-//     await redis.flushpattern(pattern)
-// }
-
 router.get('/auction-helper', async ctx => {
     debug('GET /auction-helper')
     try {
-        const auctionTime = await getAuctionTime()
-        const productCategory = await getProductCategory()
+        const auctionTime = await commonModel.getAuctionTime()
+        const productCategory = await commonModel.getProductCategory()
         ctx.status = 200
         ctx.body = {
             auction_time: auctionTime,
@@ -48,7 +37,10 @@ router.post(
     async ctx => {
         debug('POST / create auction')
         try {
-            await createAuction({ body: ctx.request.body, user: ctx.User })
+            await auctionController.createAuction({
+                body: ctx.request.body,
+                user: ctx.User
+            })
             ctx.body = {
                 success: true
             }
@@ -66,7 +58,7 @@ router.post(
 router.get('/auction-overview', async ctx => {
     debug('POST / get auction overview')
     try {
-        const data = await getAuctionOverview()
+        const data = await auctionController.getAuctionOverview()
         ctx.body = {
             success: true,
             data
@@ -84,7 +76,7 @@ router.get('/auction-overview', async ctx => {
 router.get('/auction', validate(getDetail), async ctx => {
     debug('POST / get auction overview')
     try {
-        const data = await getAuctionDetail(ctx.request.query)
+        const data = await auctionController.getAuctionDetail(ctx.request.query)
         ctx.body = {
             success: true,
             data
@@ -99,4 +91,48 @@ router.get('/auction', validate(getDetail), async ctx => {
     }
 })
 
+router.get('/auction-history', async ctx => {
+    debug('GET /auction-history')
+
+    try {
+        const data = await auctionController.getAuctionHistory(
+            ctx.request.query.auction_id
+        )
+
+        ctx.body = {
+            success: true,
+            data
+        }
+    } catch (err) {
+        ctx.status = 500
+        ctx.body = {
+            success: false,
+            message: err.message || JSON.stringify(err)
+        }
+
+        throw err
+    }
+})
+
+router.post('/auction/raise', genericSecure, async ctx => {
+    debug('POST /auction/raise')
+
+    try {
+        await auctionController.createAuctionRaise({
+            body: ctx.request.body,
+            user: ctx.User,
+            auctionId: ctx.request.query.auction_id
+        })
+
+        ctx.body = {
+            success: true
+        }
+    } catch (err) {
+        ctx.status = 500
+        ctx.body = {
+            success: false,
+            message: err.message || JSON.stringify(err)
+        }
+    }
+})
 module.exports = router

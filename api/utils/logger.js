@@ -1,235 +1,70 @@
-const StatsD = require('hot-shots')
-const _ = require('lodash')
-const logger = require('./log-tracer')
-const APIError = require('./error')
+const tracer = require('dd-trace')
 
-const forcePrintRequestSuppliers = ['Juniper', 'APItude', 'MARJ']
+function chunkSubstr(str, size) {
+    const numChunks = Math.ceil(str.length / size)
+    const chunks = new Array(numChunks)
 
-logger.info(`Logging to statsd at ${process.env.STATSD_HOST}`)
+    for (let i = 0, o = 0; i < numChunks; i += 1, o += size) {
+        chunks[i] = str.substr(o, size)
+    }
 
-const dogStatsd = new StatsD({
-    host: process.env.STATSD_HOST,
-    port: 8125
+    return chunks
+}
+
+const maxLogLength = process.env.MAX_LOG_LENGTH
+    ? parseInt(process.env.MAX_LOG_LENGTH, 10)
+    : 50000
+
+// each method could be no-op which would swallow the init logs or another temporary implementation like `console`.
+const logTracer = {
+    error: () => {},
+    warn: () => {},
+    info: () => {},
+    debug: () => {},
+    fatal: () => {}
+}
+
+// tracer.init({
+//     logInjection: true,
+//     logger: logTracer
+// })
+
+const pino = require('pino')
+
+const realLogger = pino({
+    prettyPrint: !!process.env.PINO_PRETTY_PRINT
 })
 
-function dogTags({ acc, req, mapping }) {
-    const tags = {
-        env: process.env.NODE_ENV || process.env.ENV || 'dev'
-    }
-
-    if (acc) tags.supplier = acc.code
-    if (req) {
-        if (req.destination_code) {
-            tags.destination = req.destination_code
-        } else if (req.region_id) {
-            tags.region = req.region_id
-        }
-    }
-
-    if (mapping) tags.region = mapping.region_id
-
-    return tags
-}
-
-function dogEvent({ title, text, options, tags, callback }) {
-    dogStatsd.event(title, text, options, tags, callback)
-}
-
-async function pingPong(
-    promise,
-    { metric, acc, req, mapping, ridx, params, forcePrintLog }
-) {
-    const tags = dogTags({ acc, req, mapping })
-
-    const {
-        body,
-        timings,
-        timingPhases,
-        statusCode,
-        statusMessage
-    } = await promise
-
-    let print = true
-    let printRequest = false
-    const rid = req.id || req.request_id
-    const lid = req.id || req.request_id
-    if (metric === 'offer_search') {
-        // NOTE: disable logger for search by default as it's too large
-
-        print = process.env.INCLUDE_SEARCH_LOG === 'true'
-    }
-
-    if (forcePrintLog) {
-        print = true
-        printRequest = true
-    }
+const { info } = realLogger
+realLogger.info = (...props) => {
     if (
-        _.some(
-            forcePrintRequestSuppliers,
-            supplierCode => supplierCode == acc.code
-        )
+        props.length !== 2 ||
+        !props[1] ||
+        typeof props[1] !== 'string' ||
+        typeof props[0] !== 'object' ||
+        Array.isArray(props[0]) ||
+        props[1].length <= maxLogLength
     ) {
-        printRequest = true
+        info.apply(realLogger, props)
+
+        return
     }
-
-    const ctx = {
-        lid,
-        rid,
-        ridx,
-        metric,
-        supplier: acc.code,
-        user_email: acc.user_email,
-        user_name: acc.user_name,
-        src: acc.code,
-        timings,
-        timingPhases,
-        statusCode,
-        statusMessage,
-        'x-correlation-id': req['x-correlation-id']
-    }
-    if (printRequest) {
-        logger.info(
-            { ...ctx, name: `${metric}_request`, metric: `${metric}_request` },
-            params
-        )
-    }
-    if (print) {
-        logger.info(
-            { ...ctx, name: `${metric}_response`, metric: `${metric}_request` },
-            body
-        )
-    }
-
-    dogStatsd.histogram(metric, timingPhases ? timingPhases.total : 0, tags)
-
-    const statusOk = statusCode >= 200 && statusCode < 300
-    if (!body || !statusOk) {
-        dogStatsd.increment(`${metric}.error`, tags)
-
-        logger.error({
-            rid,
-            ridx,
-            metric,
-            supplier: acc.code,
-            request: params,
-            response: body,
-            timings,
-            timingPhases,
-            statusCode,
-            statusMessage,
-            'x-correlation-id': req['x-correlation-id']
-        })
-
-        const msg = typeof body === 'string' ? body : JSON.stringify(body)
-
-        throw new APIError.ThirdPartyError({
-            code: statusCode,
-            message: `unexpected response statusCode = [${statusCode}] and body = [${msg}]`
-        })
-    }
-
-    return { statusCode, body }
+    const chunks = chunkSubstr(props[1], maxLogLength)
+    const chunkId = Math.floor(Math.random() * 1000000000)
+    chunks.forEach((str, idx) => {
+        info.apply(realLogger, [
+            { ...props[0], __CID: chunkId, __CIDX: idx },
+            str
+        ])
+    })
 }
+logTracer.error = realLogger.error.bind(realLogger)
+logTracer.warn = realLogger.warn.bind(realLogger)
+logTracer.info = realLogger.info.bind(realLogger)
+logTracer.debug = realLogger.debug.bind(realLogger)
+logTracer.fatal = realLogger.fatal.bind(realLogger)
 
-async function pingPongJSON(
-    promise,
-    { metric, acc, req, mapping, ridx, params, forcePrintLog }
-) {
-    const tags = dogTags({ acc, req, mapping })
-
-    const {
-        body,
-        timings,
-        timingPhases,
-        statusCode,
-        statusMessage
-    } = await promise
-
-    let print = true
-    let printRequest = false
-    const rid = req.id || req.request_id
-    const lid = req.id || req.request_id
-    if (metric === 'offer_search') {
-        // NOTE: disable logger for search by default as it's too large
-
-        print = process.env.INCLUDE_SEARCH_LOG === 'true'
-    }
-    if (forcePrintLog) {
-        print = true
-        printRequest = true
-    }
-    if (
-        _.some(
-            forcePrintRequestSuppliers,
-            supplierCode => supplierCode == acc.code
-        )
-    ) {
-        print = true
-    }
-    const ctx = {
-        lid,
-        rid,
-        ridx,
-        metric,
-        supplier: acc.code,
-        user_email: acc.user_email,
-        user_name: acc.user_name,
-        src: acc.code,
-        timings,
-        timingPhases,
-        statusCode,
-        statusMessage,
-        'x-correlation-id': req['x-correlation-id']
-    }
-    if (printRequest) {
-        logger.info(
-            { ...ctx, name: `${metric}_request`, metric: `${metric}_request` },
-            params
-        )
-    }
-    if (print) {
-        logger.info(
-            { ...ctx, name: `${metric}_response`, metric: `${metric}_request` },
-            body
-        )
-    }
-
-    dogStatsd.histogram(metric, timingPhases ? timingPhases.total : 0, tags)
-
-    const statusOk = statusCode >= 200 && statusCode < 300
-    if (!body || !statusOk) {
-        dogStatsd.increment(`${metric}.error`, tags)
-
-        logger.error({
-            rid,
-            ridx,
-            metric,
-            supplier: acc.code,
-            request: params,
-            response: body,
-            timings,
-            timingPhases,
-            statusCode,
-            statusMessage,
-            'x-correlation-id': req['x-correlation-id']
-        })
-
-        const msg = typeof body === 'string' ? body : JSON.stringify(body)
-
-        throw new APIError.ThirdPartyError({
-            code: statusCode,
-            message: `unexpected response statusCode = [${statusCode}] and body = [${msg}]`
-        })
-    }
-
-    return { statusCode, body }
-}
-
-module.exports = {
-    logger,
-    dogStatsd,
-    dogTags,
-    dogEvent,
-    pingPong,
-    pingPongJSON
-}
+tracer.trace('logger-trace', () => {
+    logTracer.info('log trace')
+})
+module.exports = logTracer

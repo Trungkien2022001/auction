@@ -34,7 +34,6 @@ exports.createAuction = async params => {
 exports.createAuctionRaise = async params => {
     const { body, user, auctionId } = params
     const auction = await exports.getAuctionDetail({ id: auctionId })
-    console.log(body.price < auction.product.sell_price)
     if (body.price <= auction.product.sell_price) {
         throw new Error(
             `Auction raise error : price must be > ${auction.product.sell_price}`
@@ -54,7 +53,6 @@ exports.createAuctionRaise = async params => {
     ) {
         throw new Error(`Auction raise error: invalid auction time`)
     }
-    // console.log(first)
     const toAuctionHistoryInsert = {
         auction_id: auctionId,
         auctioneer_id: user.id,

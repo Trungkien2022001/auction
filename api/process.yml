@@ -6,7 +6,7 @@ apps:
     node_args: "--expose-gc --max-old-space-size=4096"
     exec_mode: "cluster"
   - script: ./worker.js
-    name: "offer-worker"
+    name: "auction"
     instances: 3
     max_memory_restart: "3G"
     node_args: "--expose-gc --max-old-space-size=4096"

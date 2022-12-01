@@ -1,5 +1,5 @@
 {
-  "name": "@goquo/offer-worker",
+  "name": "auction",
   "jest": {
     "verbose": true,
     "setupFilesAfterEnv": [
@@ -13,13 +13,13 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --no-color 2>./__test__/output.log test",
-    "start": "DEBUG=offer-worker:* nodemon .",
-    "worker": "DEBUG=offer-worker:* nodemon ./worker.js",
+    "start": "DEBUG=auction:* nodemon .",
+    "worker": "DEBUG=auction:* nodemon ./worker.js",
     "lint": "eslint --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git@git.goquo.vn:gateway/offer-worker.git"
+    "url": ""
   },
   "lint-staged": {
     "*.js": [
@@ -27,11 +27,10 @@
       "git add"
     ]
   },
-  "author": "Tuan Anh Tran <me@tuananh.org> (https://tuananh.org)",
+  "author": "",
   "maintainers": [
-    "Anh Thang Bui <buianhthang89@gmail.com>",
-    "Do Viet Anh <anhdv@goquo.com>"
-  ],
+
+ ],
   "license": "MIT",
   "dependencies": {
     "@hapi/hoek": "9.0.3",

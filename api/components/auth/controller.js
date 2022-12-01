@@ -1,4 +1,3 @@
-// auth.js
 const moment = require('moment')
 const jwt = require('jwt-simple')
 const { compareHash, hashPassword } = require('../../utils/auth')

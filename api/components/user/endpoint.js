@@ -1,4 +1,4 @@
-const debug = require('debug')('auction:route:supplier-config')
+const debug = require('debug')('auction:route:user')
 // const _ = require('lodash')
 const Router = require('@koa/router')
 const User = require('../../models/user')

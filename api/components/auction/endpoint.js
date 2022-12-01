@@ -1,5 +1,4 @@
-const debug = require('debug')('auction:route:supplier-config')
-// const _ = require('lodash')
+const debug = require('debug')('auction:route:auction')
 const Router = require('@koa/router')
 const { genericSecure, checkPermission } = require('../../middleware/security')
 const { validate } = require('../../middleware/validator')

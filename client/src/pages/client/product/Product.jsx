@@ -119,7 +119,7 @@ export const Product = () => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={moment(data.product.start_time).add(data.product.time)}
+                            date={moment(data.product.start_time).add(data.product.time, 'minutes')}
                             renderer={renderer}
                           />
                         </div>
@@ -238,7 +238,7 @@ export const Product = () => {
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Thời gian kết thúc</div>
-                  <div className="product-info-detail">{moment(data.product.start_time).add(data.product.time).format('DD-MM-YYYY HH:mm:ss')}</div>
+                  <div className="product-info-detail">{moment(data.product.start_time).add(data.product.time, 'minutes').format('DD-MM-YYYY HH:mm:ss')}</div>
                 </div>
               </div>
             </div>

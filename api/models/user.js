@@ -1,18 +1,10 @@
 /* eslint-disable camelcase */
 const debug = require('debug')('auction:model:user')
 const { knex, redis } = require('../connectors')
-const {
-    auctionHistoryCount,
-    allAuctionHistoryCount,
-    auctionWonCount,
-    auctionSaleSuccessCount,
-    auctionSaleDeliveredCount,
-    auctionSaleAllCount,
-    auctionProfitSum,
-    auctionSpentSum
-} = require('./auction')
+const auctionModels = require('./auction')
 
 async function fetchUsers() {
+    debug('MODEL/user fetchUsers')
     try {
         const users = await redis.cachedExecute(
             {
@@ -31,6 +23,7 @@ async function fetchUsers() {
 }
 
 async function fetchUserByEmail(email) {
+    debug('MODEL/user fetchUserByEmail')
     const fetchUser = async () => {
         const user = await knex
             .first()
@@ -62,6 +55,7 @@ async function fetchUserByEmail(email) {
 }
 
 async function fetchUserByID(id) {
+    debug('MODEL/user fetchUserByID')
     const fetchUser = async () => {
         const user = await knex
             .first()
@@ -93,6 +87,7 @@ async function fetchUserByID(id) {
 }
 
 async function getUserTransactionHistory(userId) {
+    debug('MODEL/user getUserTransactionHistory')
     try {
         await knex('user').where('id', userId)
     } catch (error) {
@@ -101,6 +96,7 @@ async function getUserTransactionHistory(userId) {
 }
 
 async function updateUser(userId, updateCondition) {
+    debug('MODEL/user updateUser')
     try {
         await knex('user')
             .where('id', userId)
@@ -113,6 +109,7 @@ async function updateUser(userId, updateCondition) {
 }
 
 async function addUser(user) {
+    debug('MODEL/user addUser')
     try {
         await knex('user').insert(user)
 
@@ -123,40 +120,60 @@ async function addUser(user) {
 }
 
 async function getAllInfoSeller(id) {
-    const user_info = await fetchUserByID(id)
-    const auction_history_count = await auctionHistoryCount(id)
-    const all_auction_history_count = await allAuctionHistoryCount(id)
-    const auction_won_count = await auctionWonCount(id)
-    const auction_sale_success_count = await auctionSaleSuccessCount(id)
-    const auction_sale_delivered_count = await auctionSaleDeliveredCount(id)
-    const auction_sale_all_count = await auctionSaleAllCount(id)
-    const profit = await auctionProfitSum(id)
-    const spent = await auctionSpentSum(id)
+    debug('MODEL/user getAllInfoSeller')
+    try {
+        const user_info = await fetchUserByID(id)
+        const auction_history_count = await auctionModels.auctionHistoryCount(
+            id
+        )
+        const all_auction_history_count = await auctionModels.allAuctionHistoryCount(
+            id
+        )
+        const auction_won_count = await auctionModels.auctionWonCount(id)
+        const auction_sale_success_count = await auctionModels.auctionSaleSuccessCount(
+            id
+        )
+        const auction_sale_delivered_count = await auctionModels.auctionSaleDeliveredCount(
+            id
+        )
+        const auction_sale_all_count = await auctionModels.auctionSaleAllCount(
+            id
+        )
+        const profit = await auctionModels.auctionProfitSum(id)
+        const spent = await auctionModels.auctionSpentSum(id)
 
-    return {
-        ...user_info,
-        all_auction_history_count: all_auction_history_count.cnt,
-        auction_history_count: auction_history_count.cnt,
-        auction_won_count: auction_won_count.cnt,
-        auction_sale_success_count: auction_sale_success_count.cnt,
-        auction_sale_delivered_count: auction_sale_delivered_count.cnt,
-        auction_sale_all_count: auction_sale_all_count.cnt,
-        auction_sale_failed_count:
-            auction_sale_all_count.cnt - auction_sale_success_count.cnt,
-        profit: profit.sum || 0,
-        spent: spent.sum || 0
+        return {
+            ...user_info,
+            all_auction_history_count: all_auction_history_count.cnt,
+            auction_history_count: auction_history_count.cnt,
+            auction_won_count: auction_won_count.cnt,
+            auction_sale_success_count: auction_sale_success_count.cnt,
+            auction_sale_delivered_count: auction_sale_delivered_count.cnt,
+            auction_sale_all_count: auction_sale_all_count.cnt,
+            auction_sale_failed_count:
+                auction_sale_all_count.cnt - auction_sale_success_count.cnt,
+            profit: profit.sum || 0,
+            spent: spent.sum || 0
+        }
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
     }
 }
 
 async function getSellerInfo(seller_id) {
-    return redis.cachedExecute(
-        {
-            key: `seller:${seller_id}`,
-            ttl: '5 days',
-            json: true
-        },
-        () => getAllInfoSeller(seller_id)
-    )
+    debug('MODEL/user getSellerInfo')
+    try {
+        return redis.cachedExecute(
+            {
+                key: `seller:${seller_id}`,
+                ttl: '5 days',
+                json: true
+            },
+            () => getAllInfoSeller(seller_id)
+        )
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
 }
 
 module.exports = {

@@ -3,6 +3,7 @@ const Router = require('@koa/router')
 const { genericSecure, checkPermission } = require('../../middleware/security')
 const { validate } = require('../../middleware/validator')
 const commonModel = require('../../models/common')
+const auctionModel = require('../../models/auction')
 const auctionController = require('./controller')
 const { create, getDetail } = require('./schema')
 
@@ -90,7 +91,7 @@ router.get('/auction', validate(getDetail), async ctx => {
     }
 })
 
-router.get('/auction-history', async ctx => {
+router.get('/auction-history', genericSecure, async ctx => {
     debug('GET /auction-history')
 
     try {
@@ -101,6 +102,50 @@ router.get('/auction-history', async ctx => {
         ctx.body = {
             success: true,
             data
+        }
+    } catch (err) {
+        ctx.status = 500
+        ctx.body = {
+            success: false,
+            message: err.message || JSON.stringify(err)
+        }
+
+        throw err
+    }
+})
+
+router.get('/auction-purchase-history', genericSecure, async ctx => {
+    debug('POST /auction-purchase-history')
+
+    try {
+        const result = await auctionModel.getAuctionPurchaseHistory(
+            ctx.query.user_id
+        )
+        ctx.body = {
+            success: true,
+            result
+        }
+    } catch (err) {
+        ctx.status = 500
+        ctx.body = {
+            success: false,
+            message: err.message || JSON.stringify(err)
+        }
+
+        throw err
+    }
+})
+
+router.get('/auction-sell-history', genericSecure, async ctx => {
+    debug('POST /auction-sell-history')
+
+    try {
+        const result = await auctionModel.getAuctionSellHistory(
+            ctx.query.user_id
+        )
+        ctx.body = {
+            success: true,
+            result
         }
     } catch (err) {
         ctx.status = 500

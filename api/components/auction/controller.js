@@ -74,9 +74,9 @@ exports.createAuctionRaise = async params => {
 
 exports.getAuctionOverview = async params => {
     const latest = await auctionModel.getLatestAuction(params)
-    const featured = await auctionModel.getLatestAuction(params)
-    const cheap = await auctionModel.getLatestAuction(params)
-    const incoming = await auctionModel.getLatestAuction(params)
+    const featured = await auctionModel.getFeaturedAuction(params)
+    const cheap = await auctionModel.getCheapAuction(params)
+    const incoming = await auctionModel.getIncomingAuction(params)
 
     return {
         latest,

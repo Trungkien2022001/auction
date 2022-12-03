@@ -103,7 +103,49 @@ export const Homepage = () => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time)}
+                            date={moment(item.start_time).add(item.time, 'minutes')}
+                            renderer={renderer}
+                          />
+                        </div>
+                        <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
+                      </div>
+                      <div className="product-name">{item.start_time}</div>
+                      <div className="product-detail">{item.time}</div>
+                        <div className="product-price">
+                        Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                      <div className="product-price">
+                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                    </div>
+                  </Link>
+                ))
+                || <></>
+              }
+            </div>
+            
+          </div>
+          {/* Sản phẩm siêu rẻ */}
+          <div className="product-part-wrapper">
+            <div className="title-header">
+              <b></b>
+              <h2>Sản phẩm siêu rẻ</h2>
+              <b></b>
+            </div>
+            <div className="product-wrapper">
+              {
+                data && data.cheap && data.cheap.map(item => (
+                  <Link to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
+                    <div className="product" key={item.id}>
+                      <div className="productImg">
+                        <img src={item.image} alt="Product_Image" />
+                      </div>
+                      <div className="product-action">
+                        <div className="product-time">
+                          <Countdown
+                            onComplete={() => handleStop()}
+                            // onStop={()=>handleStop()}
+                            date={moment(item.start_time).add(item.time, 'minutes')}
                             renderer={renderer}
                           />
                         </div>
@@ -123,6 +165,91 @@ export const Homepage = () => {
                 || <></>
               }
             </div>
+            
+          </div>
+          {/* Sản phẩm mới nhất */}
+          <div className="product-part-wrapper">
+            <div className="title-header">
+              <b></b>
+              <h2>Sản phẩm mới nhất</h2>
+              <b></b>
+            </div>
+            <div className="product-wrapper">
+              {
+                data && data.latest && data.latest.map(item => (
+                  <Link to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
+                    <div className="product" key={item.id}>
+                      <div className="productImg">
+                        <img src={item.image} alt="Product_Image" />
+                      </div>
+                      <div className="product-action">
+                        <div className="product-time">
+                          <Countdown
+                            onComplete={() => handleStop()}
+                            // onStop={()=>handleStop()}
+                            date={moment(item.start_time).add(item.time, 'minutes')}
+                            renderer={renderer}
+                          />
+                        </div>
+                        <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
+                      </div>
+                      <div className="product-name">{item.name}</div>
+                      <div className="product-detail">{item.title}</div>
+                        <div className="product-price">
+                        Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                      <div className="product-price">
+                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                    </div>
+                  </Link>
+                ))
+                || <></>
+              }
+            </div>
+            
+          </div>
+          {/* Sản phẩm sắp đấu giá */}
+          <div className="product-part-wrapper">
+            <div className="title-header">
+              <b></b>
+              <h2>Sản phẩm sắp đấu giá</h2>
+              <b></b>
+            </div>
+            <div className="product-wrapper">
+              {
+                data && data.incoming && data.incoming.map(item => (
+                  <Link to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
+                    <div className="product" key={item.id}>
+                      <div className="productImg">
+                        <img src={item.image} alt="Product_Image" />
+                      </div>
+                      <div className="product-action">
+                        <div className="product-time">
+                          <Countdown
+                            onComplete={() => handleStop()}
+                            // onStop={()=>handleStop()}
+                            date={moment(item.start_time).add(item.time, 'minutes')}
+                            renderer={renderer}
+                          />
+                        </div>
+                        <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
+                      </div>
+                      <div className="product-name">{item.name}</div>
+                      <div className="product-detail">{item.title}</div>
+                        <div className="product-price">
+                        Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                      <div className="product-price">
+                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                    </div>
+                  </Link>
+                ))
+                || <></>
+              }
+            </div>
+            
           </div>
         </div>
       </div>

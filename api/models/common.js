@@ -2,6 +2,7 @@ const debug = require('debug')('auction:model:common')
 const { knex, redis } = require('../connectors')
 
 exports.getAuctionTime = async () => {
+    debug('MODEL/common getAuctionTime')
     try {
         const auctionTime = await redis.cachedExecute(
             {
@@ -20,6 +21,7 @@ exports.getAuctionTime = async () => {
 }
 
 exports.getProductCategory = async () => {
+    debug('MODEL/common getProductCategory')
     try {
         const productCategory = await redis.cachedExecute(
             {
@@ -39,17 +41,27 @@ exports.getProductCategory = async () => {
 }
 
 exports.saveImage = async (images, productId) => {
-    const image = images.map(img => ({ url: img, product_id: productId }))
-    await knex('image').insert(image)
+    debug('MODEL/common saveImage')
+    try {
+        const image = images.map(img => ({ url: img, product_id: productId }))
+        await knex('image').insert(image)
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
 }
 
 exports.getProductImages = async productId => {
-    const result = await knex
-        .select('url')
-        .from('image')
-        .where('product_id', productId)
-        .whereNull('deleted_at')
-        .orderBy('id', 'desc')
+    debug('MODEL/common getProductImages')
+    try {
+        const result = await knex
+            .select('url')
+            .from('image')
+            .where('product_id', productId)
+            .whereNull('deleted_at')
+            .orderBy('id', 'desc')
 
-    return result
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
 }

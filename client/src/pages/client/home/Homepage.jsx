@@ -20,8 +20,8 @@ const renderer = ({ days, hours, minutes, seconds }) => (
   </span>
 );;
 
-export const Homepage = () => {
-
+export const Homepage = ({socket}) => {
+  
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState({})
   const [productCategory, setProductCategory] = useState([]);
@@ -115,7 +115,7 @@ export const Homepage = () => {
                         Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                       </div>
                       <div className="product-price">
-                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                       </div>
                     </div>
                   </Link>
@@ -157,7 +157,7 @@ export const Homepage = () => {
                         Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                       </div>
                       <div className="product-price">
-                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                       </div>
                     </div>
                   </Link>
@@ -199,7 +199,7 @@ export const Homepage = () => {
                         Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                       </div>
                       <div className="product-price">
-                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                       </div>
                     </div>
                   </Link>
@@ -241,7 +241,7 @@ export const Homepage = () => {
                         Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                       </div>
                       <div className="product-price">
-                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                       </div>
                     </div>
                   </Link>

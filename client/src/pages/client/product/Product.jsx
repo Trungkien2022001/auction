@@ -14,19 +14,23 @@ import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText
 import Countdown, { zeroPad } from 'react-countdown'
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { get } from "../../../utils/customRequest";
+import { get, post } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import Swal from "sweetalert2";
 
 
-export const Product = () => {
+export const Product = ({socket}) => {
   const currentUser = useSelector(state => state.user)
   const location = useLocation();
   let id = location.pathname.split("/")[2];
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [openAuctionHistoryDialog, setOpenAuctionHistoryDialog] = useState(false);
   const [successAuction, setSuccessAuction] = useState(false);
+  const [reload, setReload] = useState(false);
+  const [auctionBet, setAuctionBet] = useState(0);
   const [data, setData] = useState(null);
+  const [auctionHistoryData, setAuctionHistoryData] = useState([]);
 
   useEffect(() => {
     async function getData() {
@@ -34,9 +38,22 @@ export const Product = () => {
       if (result.status === 200) {
         setData(result.data.data)
       }
+      result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
+      if (result.status === 200) {
+        setAuctionHistoryData(result.data.data)
+      }
     }
     getData()
   }, [id])
+  // useEffect(() => {
+  //   async function getData() {
+  //     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
+  //     if (result.status === 200) {
+  //       setAuctionHistoryData(result.data.data)
+  //     }
+  //   }
+  //   getData()
+  // }, [id, openAuctionDialog])
   const handleClickOpenAuctionHistoryDialog = () => {
     setOpenAuctionHistoryDialog(true);
   };
@@ -52,6 +69,47 @@ export const Product = () => {
   const handleCloseAuctionDialog = () => {
     setOpenAuctionDialog(false);
   };
+  const handleSubmitAuction = async () => {
+    setOpenAuctionDialog(false);
+    if (data.product.sell_price > auctionBet) {
+      Swal.fire(
+        'Vui lòng đặt mức cược lớn hơn?',
+        `Mức cược tối thiểu cho sản phẩm này là ${data.product.sell_price + 1} VND`,
+        'error'
+      )
+      return
+    }
+
+    let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction/raise?auction_id=${id}`, {
+      price: auctionBet,
+      time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+    }, currentUser)
+    if (result.data.success) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Raise thành công',
+        showConfirmButton: true,
+        timer: 4000
+      }).then(() => {
+        data.product.auction_count = auctionBet
+        data.product.auction_count = data.product.auction_count + 1
+       auctionHistoryData.unshift({
+           id: auctionHistoryData.length.id + 1,
+           bet_time: new Date(),
+           bet_amount: auctionBet,
+           auctioneer_name: currentUser.name
+         })
+        setReload(!reload)
+      })
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Đã xảy ra lỗi',
+        text: result.data.message,
+        showConfirmButton: true,
+      })
+    }
+  };
 
   const renderer = ({ days, hours, minutes, seconds }) => (
     <span>
@@ -60,6 +118,7 @@ export const Product = () => {
   );
 
   const handleStop = () => {
+    socket.current.emit('ping')
     setSuccessAuction(false)
   }
 
@@ -94,7 +153,7 @@ export const Product = () => {
                   </div>
                   <div className="product-sub-image">
                     {data && data.product_images && data.product_images.map((item, index) => (
-                      <div className="product-sub-image__wrapper" key = {index}>
+                      <div className="product-sub-image__wrapper" key={index}>
                         <img src={item.url} alt="" />
                       </div>
                     ))
@@ -119,7 +178,8 @@ export const Product = () => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={moment(data.product.start_time).add(data.product.time, 'minutes')}
+                            // date={moment(data.product.start_time).add(data.product.time, 'minutes')}
+                            date={Date.now() + 10000}
                             renderer={renderer}
                           />
                         </div>
@@ -254,97 +314,12 @@ export const Product = () => {
             </div>
           </>
           : <></>}
-        <div className="product-part-wrapper">
-          <div className="title-header">
-            <b></b>
-            <h2>Sản phẩm nổi bật</h2>
-            <b></b>
-          </div>
-          <div className="product-wrapper">
-            <div className="product">
-              <div className="productImg">
-                <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
-              </div>
-              <div className="product-action">
-                <div className="product-time">
-                  <Countdown
-                    onComplete={() => handleStop()}
-                    // onStop={()=>handleStop()}
-                    date={Date.now() + 3000}
-                    renderer={renderer}
-                  />
-                </div>
-                <div className="product-vote">20 Lượt đấu giá</div>
-              </div>
-              <div className="product-name">Đồng hồ</div>
-              <div className="product-detail">Đồng hồ rất đẹp, cực ngày xưa có một con chó làm hồ rất đẹp, cực kì đẹp</div>
-              <div className="product-price">Giá: 2000đ</div>
-            </div>
-            <div className="product">
-              <div className="productImg">
-                <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
-              </div>
-              <div className="product-action">
-                <div className="product-time">
-                  <Countdown
-                    onComplete={() => handleStop()}
-                    // onStop={()=>handleStop()}
-                    date={Date.now() + 3000}
-                    renderer={renderer}
-                  />
-                </div>
-                <div className="product-vote">20 Lượt đấu giá</div>
-              </div>
-              <div className="product-name">Đồng hồ</div>
-              <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-              <div className="product-price">Giá: 2000đ</div>
-            </div>
-            <div className="product">
-              <div className="productImg">
-                <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
-              </div>
-              <div className="product-action">
-                <div className="product-time">
-                  <Countdown
-                    onComplete={() => handleStop()}
-                    // onStop={()=>handleStop()}
-                    date={Date.now() + 3000}
-                    renderer={renderer}
-                  />
-                </div>
-                <div className="product-vote">20 Lượt đấu giá</div>
-              </div>
-              <div className="product-name">Đồng hồ</div>
-              <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-              <div className="product-price">Giá: 2000đ</div>
-            </div>
-            <div className="product">
-              <div className="productImg">
-                <img src="https://scontent-frt3-2.xx.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=f2orf72f5I8AX8uBIvh&_nc_ht=scontent-frt3-2.xx&oh=00_AfBUVuRGwcShvByGvaaw6H8Z9VRnFABOLyLFnw0GSUCTmw&oe=63857C96" alt="" />
-              </div>
-              <div className="product-action">
-                <div className="product-time">
-                  <Countdown
-                    onComplete={() => handleStop()}
-                    // onStop={()=>handleStop()}
-                    date={Date.now() + 3000}
-                    renderer={renderer}
-                  />
-                </div>
-                <div className="product-vote">20 Lượt đấu giá</div>
-              </div>
-              <div className="product-name">Đồng hồ</div>
-              <div className="product-detail">Đồng hồ rất đẹp, cực kì đẹp</div>
-              <div className="product-price">Giá: 2000đ</div>
-            </div>
-          </div>
-        </div>
       </div>
       <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}>
         <DialogTitle>Đấu giá</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Vui lòng suy nghĩ kĩ trước khi đấu giá. Một khi tham gia vào quá trình đấu giá. Nếu bạn đấu trúng, bạn sẽ phải có trách nhiệm thanh toán tiền cho bên bán. Số tiền tối thiểu là: 50001đ
+            Vui lòng suy nghĩ kĩ trước khi đấu giá. Một khi tham gia vào quá trình đấu giá. Nếu bạn đấu trúng, bạn sẽ phải có trách nhiệm thanh toán tiền cho bên bán
           </DialogContentText>
           <TextField
             autoFocus
@@ -354,11 +329,12 @@ export const Product = () => {
             type="number"
             fullWidth
             variant="standard"
+            onChange={e => setAuctionBet(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
-          <Button onClick={handleCloseAuctionDialog}>Xác nhận</Button>
+          <Button onClick={handleSubmitAuction}>Xác nhận</Button>
         </DialogActions>
       </Dialog>
       <Dialog open={openAuctionHistoryDialog} onClose={handleCloseAuctionHistoryDialog}>
@@ -371,30 +347,14 @@ export const Product = () => {
               <div className="history-dialog-amount">Số tiền(VND)</div>
               <div className="history-dialog-time" style={{ textAlign: 'center' }}>Thời gian</div>
             </div>
-            <div className="history-dialog-item">
-              <div className="history-dialog-stt">20</div>
-              <div className="history-dialog-user">TrungKien2022001</div>
-              <div className="history-dialog-amount">120000000</div>
-              <div className="history-dialog-time">11:01:26 26-02-2022</div>
-            </div>
-            <div className="history-dialog-item">
-              <div className="history-dialog-stt">20</div>
-              <div className="history-dialog-user">TrungKien2022001</div>
-              <div className="history-dialog-amount">120000000</div>
-              <div className="history-dialog-time">11:01:26 26-02-2022</div>
-            </div>
-            <div className="history-dialog-item">
-              <div className="history-dialog-stt">20</div>
-              <div className="history-dialog-user">TrungKien2022001</div>
-              <div className="history-dialog-amount">120000000</div>
-              <div className="history-dialog-time">11:01:26 26-02-2022</div>
-            </div>
-            <div className="history-dialog-item">
-              <div className="history-dialog-stt">20</div>
-              <div className="history-dialog-user">TrungKien2022001</div>
-              <div className="history-dialog-amount">120000000</div>
-              <div className="history-dialog-time">11:01:26 26-02-2022</div>
-            </div>
+            {auctionHistoryData && auctionHistoryData.length && auctionHistoryData.map((item, index) => (
+              <div className="history-dialog-item">
+                <div className="history-dialog-stt">{auctionHistoryData.length - index}</div>
+                <div className="history-dialog-user" style={{ textAlign: 'center' }}>{item.auctioneer_name}</div>
+                <div className="history-dialog-amount">{item.bet_amount}</div>
+                <div className="history-dialog-time" style={{ textAlign: 'center' }}>{moment(item.bet_time).format('DD-MM-YYYY HH:mm:ss')}</div>
+              </div>
+            ))}
           </div>
         </div>
         <DialogActions>

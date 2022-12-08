@@ -303,7 +303,7 @@ exports.auctionProfitSum = async userId => {
 }
 
 exports.updateAuction = async (toUpdate, auctionId) => {
-    debug('MODEL/auction updateAuction')
+    debug('MODEL/auction updateAuction', toUpdate, auctionId)
     try {
         await knex('auction')
             .update(toUpdate)
@@ -345,6 +345,110 @@ exports.getAuctionSellHistory = async userId => {
             .from('auction as a')
             .innerJoin('auction_status as aut', 'a.status', 'aut.id')
             .where('a.seller_id', userId)
+
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.getAllAuction = async () => {
+    debug('MODEL/auction getAllAuction')
+    try {
+        const result = await knex
+            .select(
+                'a.id',
+                'a.start_time',
+                'a.start_price',
+                'a.sell_price',
+                'a.auction_count',
+                'p.name',
+                'p.title',
+                'p.image',
+                'at.time'
+            )
+            .from('auction as a')
+            .innerJoin('product as p', 'a.product_id', 'p.id')
+            .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+            // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+            .whereNull('a.deleted_at')
+            .orderBy('a.updated_at', 'desc')
+
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.getAllAuctionTime = async () => {
+    debug('MODEL/auction getAllAuctionTime')
+    try {
+        const result = await knex
+            .select('a.id', 'a.start_time', 'a.status', 'at.time')
+            .from('auction as a')
+            .innerJoin('product as p', 'a.product_id', 'p.id')
+            .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+            // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+            .whereNotIn('a.status', ['5', '6'])
+            .whereNull('a.deleted_at')
+            .orderBy('a.updated_at', 'desc')
+
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.getUserAuction = async (userId, auctionId) => {
+    debug('MODEL/auction getUserAuction')
+    try {
+        const result = await knex
+            .select()
+            .from('auction')
+            .where('user_id', userId)
+            .where('auction_id', auctionId)
+
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.createUserAuction = async (userId, auctionId) => {
+    debug('MODEL/auction createUserAuction')
+    try {
+        const exist = await exports.getAllAuction(userId, auctionId)
+        if (!exist.length) {
+            await knex('user_auction').insert({
+                user_id: userId,
+                auction_id: auctionId
+            })
+        }
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.getAllAuctionOfUser = async userId => {
+    debug('MODEL/auction getAllUserAuction')
+    try {
+        const result = await knex('auction')
+            .select('auction_id')
+            .where('isSuccess', '0')
+            .andWhere('user_id', userId)
+
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.updateUserAuction = async auctionId => {
+    debug('MODEL/auction updateUserAuction')
+    try {
+        const result = await knex('auction')
+            .update('isSuccess', '1')
+            .where('auction_id', auctionId)
 
         return result
     } catch (err) {

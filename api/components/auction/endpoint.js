@@ -74,7 +74,7 @@ router.get('/auction-overview', async ctx => {
 })
 
 router.get('/auction', validate(getDetail), async ctx => {
-    debug('POST / get auction overview')
+    debug('POST / get auction detail')
     try {
         const data = await auctionController.getAuctionDetail(ctx.request.query)
         ctx.body = {

@@ -17,7 +17,7 @@ function App() {
   const socket = useRef();
   const currentUser = useSelector(state => state.user)
   useEffect(() => {
-    socket.current = socketIO(process.env.REACT_APP_API_ENDPOINT);
+    socket.current = socketIO(process.env.REACT_APP_SOCKET_ENDPOINT);
     socket.current.on("connect", () => {
       socket.current.emit('authenticate', currentUser)
     });

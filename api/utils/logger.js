@@ -24,10 +24,10 @@ const logTracer = {
     fatal: () => {}
 }
 
-// tracer.init({
-//     logInjection: true,
-//     logger: logTracer
-// })
+tracer.init({
+    logInjection: true,
+    logger: logTracer
+})
 
 const pino = require('pino')
 

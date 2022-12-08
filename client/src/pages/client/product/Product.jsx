@@ -37,6 +37,7 @@ export const Product = ({socket}) => {
       let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
       if (result.status === 200) {
         setData(result.data.data)
+        console.log(moment(result.data.data.product.start_time).add(result.data.data.product.time, 'minutes').diff(moment(new Date())))
       }
       result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
       if (result.status === 200) {
@@ -45,6 +46,13 @@ export const Product = ({socket}) => {
     }
     getData()
   }, [id])
+
+  useEffect(()=>{
+    socket.current.on('updateUI', ()=>{
+      console.log("updateUI")
+    })
+  }, [])
+  // console.log(data)
   // useEffect(() => {
   //   async function getData() {
   //     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
@@ -118,7 +126,7 @@ export const Product = ({socket}) => {
   );
 
   const handleStop = () => {
-    socket.current.emit('ping')
+    // socket.current.emit('ping')
     setSuccessAuction(false)
   }
 
@@ -179,7 +187,7 @@ export const Product = ({socket}) => {
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
                             // date={moment(data.product.start_time).add(data.product.time, 'minutes')}
-                            date={Date.now() + 10000}
+                            date={Date.now() + moment(data.product.start_time).add(data.product.time, 'minutes').diff(moment(new Date()))}
                             renderer={renderer}
                           />
                         </div>

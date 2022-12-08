@@ -28,9 +28,7 @@
     ]
   },
   "author": "",
-  "maintainers": [
-
- ],
+  "maintainers": [],
   "license": "MIT",
   "dependencies": {
     "@hapi/hoek": "9.0.3",
@@ -63,9 +61,11 @@
     "moment": "2.24.0",
     "ms": "2.1.2",
     "mysql2": "2.1.0",
+    "node-cron": "^3.0.2",
     "omit-empty": "1.0.0",
     "pino": "5.16.0",
     "request": "2.88.2",
+    "socket.io": "^4.5.4",
     "sqs-consumer": "5.4.0",
     "string-similarity": "^4.0.4",
     "uuid": "3.4.0",

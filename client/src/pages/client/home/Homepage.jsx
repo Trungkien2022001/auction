@@ -26,6 +26,12 @@ export const Homepage = ({socket}) => {
   const [data, setData] = useState({})
   const [productCategory, setProductCategory] = useState([]);
 
+  useEffect(()=>{
+    socket.current.on('updateUI', ()=>{
+      console.log("updateUI")
+    })
+  }, [])
+
   useEffect(() => {
     async function getData() {
       let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-overview`, currentUser)
@@ -103,7 +109,7 @@ export const Homepage = ({socket}) => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time, 'minutes')}
+                            date={Date.now() + moment(item.start_time).add(item.time, 'minutes').diff(moment(new Date()))}
                             renderer={renderer}
                           />
                         </div>

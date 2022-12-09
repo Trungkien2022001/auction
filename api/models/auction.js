@@ -455,3 +455,49 @@ exports.updateUserAuction = async auctionId => {
         throw new Error(err.message || JSON.stringify(err))
     }
 }
+
+exports.getHighestBet = async auctionId => {
+    debug('MODEL/auction getHighestBet')
+    try {
+        const result = await knex('auction')
+            .select('sell_price')
+            .where('id', auctionId)
+
+        return result[0].sell_price
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.getAllAuctioneerOfAuction = async auctionId => {
+    debug('MODEL/auction getAllAuctioneerOfAuction')
+    try {
+        const result = await knex('auction_history')
+            .distinct('auctioneer_id')
+            .where('auction_id', auctionId)
+
+        return result.map(i=>{
+            return i.auctioneer_id
+        })
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.insertUserAuction = async (userId, auctionId) => {
+    debug('MODEL/auction insertUserAuction', userId, auctionId)
+    try {
+        let exist = await knex('user_auction').select().where({
+            user_id: userId,
+            auction_id: auctionId,
+        })
+        if(!exist.length){
+            await knex('user_auction').insert({
+                user_id: userId,
+                auction_id: auctionId,
+            })
+        }
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}

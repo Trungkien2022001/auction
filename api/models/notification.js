@@ -1,112 +1,42 @@
-const debug = require('debug')('auction:model:user')
+const debug = require('debug')('auction:model:notification')
 const { knex, redis } = require('../connectors')
 
-async function fetchUsers() {
+exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
+    debug('MODEL/notification createNotification', type, actionUser, userIDs, auctionId || '')
     try {
-        const users = await redis.cachedExecute(
-            {
-                key: `users`,
-                ttl: '15 days',
-                json: true
-            },
-            () => knex.select().from('user')
-        )
+        switch (type) {
+            case 4:
+                Promise.all(
+                    userIDs.map(async userId=>{
+                        let exist = await knex('notification').select().where({
+                            user_id: userId,
+                            auction_id: auctionId,
+                            type: 4
+                        })
+                        if(exist.length){
+                            await knex('notification').update({
+                                action_user_id: actionUser
+                            }).where({
+                                user_id: userId,
+                                auction_id: auctionId
+                            })
+                        } else {
+                            await knex('notification').insert({
+                                user_id: userId,
+                                auction_id: auctionId,
+                                action_user_id: actionUser,
+                                type: 4
+                            })
+                        }
+                    })
+                )
+                break;
 
-        return users
+            default:
+                break;
+        }
+
     } catch (err) {
-        debug('fetchUsers', err)
-        throw new Error(`unable to fetch users`)
+        throw new Error(err.message || JSON.stringify(err))
     }
-}
-
-async function fetchUserByEmail(email) {
-    const fetchUser = async () => {
-        const user = await knex
-            .first()
-            .from('user')
-            .where({ email, del_flag: 0 })
-
-        if (!user) {
-            throw new Error('user not found')
-        }
-
-        const role = await knex
-            .first()
-            .from('role')
-            .where('id', user.role_id)
-
-        user.role = role
-
-        return user
-    }
-
-    return redis.cachedExecute(
-        {
-            key: `user:${email}`,
-            ttl: '2 days',
-            json: true
-        },
-        fetchUser
-    )
-}
-
-async function fetchUserByID(id) {
-    const fetchUser = async () => {
-        const user = await knex
-            .first()
-            .from('user')
-            .where({ id, del_flag: 0 })
-
-        if (!user) {
-            throw new Error('user not found')
-        }
-
-        const role = await knex
-            .first()
-            .from('role')
-            .where('id', user.role_id)
-
-        user.role = role
-
-        return user
-    }
-
-    return redis.cachedExecute(
-        {
-            key: `user:${id}`,
-            ttl: '2 days',
-            json: true
-        },
-        fetchUser
-    )
-}
-
-async function updateUser(userId, updateCondition) {
-    try {
-        await knex('user')
-            .where('id', userId)
-            .update(updateCondition)
-
-        await redis.del('users')
-    } catch (error) {
-        throw new Error(`unable to update user`)
-    }
-}
-
-async function addUser(user) {
-    try {
-        await knex('user').insert(user)
-
-        await redis.del('users')
-    } catch (error) {
-        throw new Error(`unable to add user`)
-    }
-}
-
-module.exports = {
-    fetchUsers,
-    fetchUserByEmail,
-    fetchUserByID,
-    updateUser,
-    addUser
 }

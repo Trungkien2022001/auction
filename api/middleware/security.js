@@ -23,7 +23,6 @@ async function genericSecure(ctx, next) {
     let decoded = null
     try {
         decoded = jwt.decode(headers['x-access-token'], config.secret)
-        debug('decoded.expire, now', decoded.expire, moment().unix())
         const notExpired = decoded.expire > moment().unix()
         ctx.assert(notExpired, 401, 'token expired')
         ctx.assert(decoded.email === headers['x-key'], 401, 'invalid x-key')

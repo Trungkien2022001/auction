@@ -20,7 +20,7 @@ const config = require('./config')
 const auctionModel = require('./models/auction')
 
 let auction = []
-
+let listOnlineUser = []
 app.use(async (ctx, next) => {
     try {
         await next()
@@ -106,15 +106,26 @@ cron.schedule('* * * * *', () => {
 
 socketIO.on('connection', socket => {
     socket.on('authenticate', user => {
-        console.log(
-            `⚡⚡⚡: User ${user.username} with socketID ${socket.id} just connected!`
-        )
+        // console.log(`⚡⚡⚡: User ${user.username} with socketID ${socket.id} just connected!`)
+        addToRoom(user.id, socket.id).then(id=>{
+            socket.join(listOnlineUser[id].auctionRooms)
+        })
     })
     socket.on('ping', () => {
         console.log('PING PONG PING PONG')
     })
+
+    socket.on('add-to-new-room',(auctionId, userId)=>{
+        addToNewRoom(userId, socket.id, auctionId)
+    })
+
     socket.on('disconnect', () => {
-        //   console.log('🔥🔥🔥: A user disconnected');
+        let index = listOnlineUser.findIndex(item=>item.socket.includes(socket.id))
+        if(index !== -1){
+            socket.leave(listOnlineUser[index].auctionRooms);
+            leaveRoom(socket.id, index)
+        }
+
     })
 })
 
@@ -129,9 +140,65 @@ if (!module.parent) {
     })
 }
 
+async function addToRoom(userId, socketId){
+    let index = listOnlineUser.findIndex(item=>item.user_id == userId)
+    if(userId === null) return
+    if (index !== -1){
+        listOnlineUser[index].socket.push(socketId)
+    } else {
+        let auctionIds =  await auctionModel.getAllAuctionOfUser(userId)
+        let auctionRooms = createRoomsName(auctionIds)
+        listOnlineUser.push({
+            user_id: userId,
+            socket: [socketId],
+            auctionRooms
+        })
+        return index === -1 ? 0 : index
+    }
+}
+
+async function addToNewRoom(userId, socketId, auctionId){
+    let index = listOnlineUser.findIndex(item=>item.user_id == userId)
+    if(userId === null) return
+    let newRoomName = createRoomsName(auctionId)
+    if (index !== -1){
+        listOnlineUser[index].auctionRooms.push(newRoomName)
+    }
+}
+
+function leaveRoom(socketId, index){
+    if(listOnlineUser[index].socket.length != 1){
+        let socketIndex = listOnlineUser[index].socket.findIndex(i=>i == socketId)
+        listOnlineUser[index].socket.splice(socketIndex, 1);
+    } else {
+        listOnlineUser.splice(index,1)
+    }
+}
+
+// async function removeAuctionRoom(auctionId){
+//     await auctionModel.updateUserAuction(auctionId)
+
+//     let auctionRoomName = createRoomsName(auctionId)
+//     for (const i in listOnlineUser) {
+//         let item = listOnlineUser[i]
+//         let index = item.auctionRooms.findIndex(i=>i === auctionRoomName)
+//         if (index !== -1){
+//             listOnlineUser[i].auctionRooms.splice(index, 1)
+//         }
+//     }
+// }
+
 async function startAuction(id) {
     socketIO.emit('updateUI')
     await auctionModel.updateAuction({ status: 2 }, id)
+}
+
+function createRoomsName(auctions){
+    if(auctions.leaveRoom === 0) return []
+
+    return auctions.map(i=>{
+        return `auction:${i.auction_id}`
+    })
 }
 // async function finishAuction(id) {
 //     await auctionModel.updateAuction({ status: 3 }, id)

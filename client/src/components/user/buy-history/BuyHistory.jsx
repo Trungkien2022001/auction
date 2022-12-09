@@ -41,10 +41,10 @@ function createData(name, calories, fat, carbs, protein, a, b, c) {
 
 const rows = [
   createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'success'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'pending'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'cancel'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'cancel'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'cancel'),
+  createData(2, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'pending'),
+  createData(3, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'cancel'),
+  createData(4, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'cancel'),
+  createData(5, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 50000, 120000, 'trungkien2022001', '20-2-2001', 'cancel'),
 
 ];
 
@@ -98,7 +98,7 @@ const headCells = [
     label: 'Tên sản phẩm',
   },
   {
-    id: 'product_init_price',
+    id: 'product_init_price1',
     numeric: true,
     disablePadding: false,
     label: 'Giá ban đầu',
@@ -130,7 +130,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -168,7 +168,6 @@ function EnhancedTableHead(props) {
 EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  onSelectAllClick: PropTypes.func.isRequired,
   order: PropTypes.oneOf(['asc', 'desc']).isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
@@ -305,7 +304,7 @@ export const BuyHistory = () => {
                           role="checkbox"
                           aria-checked={isItemSelected}
                           tabIndex={-1}
-                          key={row.name}
+                          key={row.id}
                           selected={isItemSelected}
                         // height='200px'
                         >

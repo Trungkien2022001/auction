@@ -21,15 +21,16 @@ const renderer = ({ days, hours, minutes, seconds }) => (
 );;
 
 export const Homepage = ({socket}) => {
-  
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState({})
   const [productCategory, setProductCategory] = useState([]);
 
   useEffect(()=>{
-    socket.current.on('updateUI', ()=>{
-      console.log("updateUI")
-    })
+    if(socket.current){
+      socket.current.on('updateUI', ()=>{
+        console.log("updateUI")
+      })
+    }
   }, [])
 
   useEffect(() => {
@@ -60,14 +61,14 @@ export const Homepage = ({socket}) => {
           <div className="head-m">Danh mục sản phẩm</div>
           <List sx={style} component="nav" aria-label="mailbox folders">
             {
-              productCategory.length && productCategory.map(item => (
+              productCategory.length && productCategory.map((item, index) => (
 
-                <>
+                <div key={index}>
                   <ListItem style={{ padding: '4px 5px' }}>
                     <ListItemText style={{ cursor: 'pointer' }} primary={item.name} />
                   </ListItem>
                   <Divider />
-                </>
+                </div>
               ))
               || <></>
             }
@@ -99,8 +100,8 @@ export const Homepage = ({socket}) => {
             <div className="product-wrapper">
               {
                 data && data.featured && data.featured.map(item => (
-                  <Link to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
-                    <div className="product" key={item.id}>
+                  <Link key={item.id} to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
+                    <div className="product">
                       <div className="productImg">
                         <img src={item.image} alt="Product_Image" />
                       </div>
@@ -141,7 +142,7 @@ export const Homepage = ({socket}) => {
             <div className="product-wrapper">
               {
                 data && data.cheap && data.cheap.map(item => (
-                  <Link to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
+                  <Link key={item.id} to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
                     <div className="product" key={item.id}>
                       <div className="productImg">
                         <img src={item.image} alt="Product_Image" />
@@ -151,7 +152,7 @@ export const Homepage = ({socket}) => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time, 'minutes')}
+                            date={Date.now() + moment(item.start_time).add(item.time, 'minutes').diff(moment(new Date()))}
                             renderer={renderer}
                           />
                         </div>
@@ -183,7 +184,7 @@ export const Homepage = ({socket}) => {
             <div className="product-wrapper">
               {
                 data && data.latest && data.latest.map(item => (
-                  <Link to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
+                  <Link key={item.id} to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
                     <div className="product" key={item.id}>
                       <div className="productImg">
                         <img src={item.image} alt="Product_Image" />
@@ -193,7 +194,7 @@ export const Homepage = ({socket}) => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time, 'minutes')}
+                            date={Date.now() + moment(item.start_time).add(item.time, 'minutes').diff(moment(new Date()))}
                             renderer={renderer}
                           />
                         </div>
@@ -225,7 +226,7 @@ export const Homepage = ({socket}) => {
             <div className="product-wrapper">
               {
                 data && data.incoming && data.incoming.map(item => (
-                  <Link to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
+                  <Link key={item.id} to={`/auction/${item.id}`} style={{textDecoration: 'none', color: 'black'}}>    
                     <div className="product" key={item.id}>
                       <div className="productImg">
                         <img src={item.image} alt="Product_Image" />

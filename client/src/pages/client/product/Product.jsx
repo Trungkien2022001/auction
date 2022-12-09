@@ -37,7 +37,6 @@ export const Product = ({socket}) => {
       let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
       if (result.status === 200) {
         setData(result.data.data)
-        console.log(moment(result.data.data.product.start_time).add(result.data.data.product.time, 'minutes').diff(moment(new Date())))
       }
       result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
       if (result.status === 200) {
@@ -48,9 +47,11 @@ export const Product = ({socket}) => {
   }, [id])
 
   useEffect(()=>{
-    socket.current.on('updateUI', ()=>{
-      console.log("updateUI")
-    })
+    if(socket.current){
+      socket.current.on('updateUI', ()=>{
+        console.log("updateUI")
+      })
+    }
   }, [])
   // console.log(data)
   // useEffect(() => {
@@ -356,7 +357,7 @@ export const Product = ({socket}) => {
               <div className="history-dialog-time" style={{ textAlign: 'center' }}>Thời gian</div>
             </div>
             {auctionHistoryData && auctionHistoryData.length && auctionHistoryData.map((item, index) => (
-              <div className="history-dialog-item">
+              <div key={item.id} className="history-dialog-item">
                 <div className="history-dialog-stt">{auctionHistoryData.length - index}</div>
                 <div className="history-dialog-user" style={{ textAlign: 'center' }}>{item.auctioneer_name}</div>
                 <div className="history-dialog-amount">{item.bet_amount}</div>

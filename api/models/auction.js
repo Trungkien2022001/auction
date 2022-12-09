@@ -432,9 +432,9 @@ exports.createUserAuction = async (userId, auctionId) => {
 exports.getAllAuctionOfUser = async userId => {
     debug('MODEL/auction getAllUserAuction')
     try {
-        const result = await knex('auction')
+        const result = await knex('user_auction')
             .select('auction_id')
-            .where('isSuccess', '0')
+            .where('is_success', '0')
             .andWhere('user_id', userId)
 
         return result

@@ -338,6 +338,7 @@
     .history-dialog-wrapper{
         .history-dialog-item{
             margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
             display: flex;
             justify-content: space-between;
             .history-dialog-stt{
@@ -348,9 +349,11 @@
                 flex: 3
             }
             .history-dialog-amount{
-                flex: 2
+                flex: 2;
+                text-align: center;
             }
             .history-dialog-time{
+                text-align: center;
                 flex: 3;
                 font-size: 14px;
             }

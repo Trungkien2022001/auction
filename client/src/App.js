@@ -12,6 +12,8 @@ import { Register } from './pages/client/register/Register';
 import { Test } from './pages/client/test/Test';
 import { User } from './pages/client/user/User';
 import socketIO from 'socket.io-client';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const socket = useRef();
@@ -28,6 +30,7 @@ function App() {
   
   return (
     <div className="App">
+      <ToastContainer/>
       <BrowserRouter>
         <Routes>
           <Route path='/' element = {<Homepage socket = {socket}/>}/>
@@ -46,3 +49,4 @@ function App() {
 }
 
 export default App;
+export let socket

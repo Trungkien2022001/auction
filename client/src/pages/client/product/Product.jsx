@@ -10,7 +10,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import TimerIcon from '@mui/icons-material/Timer';
 import PaidIcon from '@mui/icons-material/Paid';
 import SellIcon from '@mui/icons-material/Sell';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, TextField } from "@mui/material";
 import Countdown, { zeroPad } from 'react-countdown'
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -18,6 +18,7 @@ import { get, post } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { toast } from 'react-toastify';
 
 
 export const Product = ({socket}) => {
@@ -30,6 +31,7 @@ export const Product = ({socket}) => {
   const [reload, setReload] = useState(false);
   const [auctionBet, setAuctionBet] = useState(0);
   const [data, setData] = useState(null);
+  const [loadData, setloadData] = useState(false);
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
 
   useEffect(() => {
@@ -44,15 +46,23 @@ export const Product = ({socket}) => {
       }
     }
     getData()
-  }, [id])
+  }, [id, loadData])
 
   useEffect(()=>{
     if(socket.current){
       socket.current.on('updateUI', ()=>{
         console.log("updateUI")
+      })  
+      socket.current.on('raise-reply', (metaData)=>{
+        if(metaData.bet.auctioneer_id !== currentUser.id){
+          toast.info(`${metaData.bet.auctioneer_name} đã bình luận về một phiên đấu giá mà bạn theo dõi`)
+        }
       })
     }
-  }, [])
+  }, [socket.current])
+  // socket.current.on('raise-reply', (data)=>{
+  //   toast('Một người bạn đã tham gia vào đấu giá')
+  // })
   // console.log(data)
   // useEffect(() => {
   //   async function getData() {
@@ -94,13 +104,24 @@ export const Product = ({socket}) => {
       time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
     }, currentUser)
     if (result.data.success) {
+      if(socket.current){
+        socket.current.emit('raise', {
+          user: currentUser, 
+          auctionId: id, 
+          bet: {
+            auctioneer_id: currentUser.id,
+            auctioneer_name: currentUser.name,
+            bet_price: auctionBet
+          }
+        })
+      }
       Swal.fire({
         icon: 'success',
         title: 'Raise thành công',
         showConfirmButton: true,
         timer: 4000
       }).then(() => {
-        data.product.auction_count = auctionBet
+        data.product.sell_price = auctionBet
         data.product.auction_count = data.product.auction_count + 1
        auctionHistoryData.unshift({
            id: auctionHistoryData.length.id + 1,
@@ -359,9 +380,9 @@ export const Product = ({socket}) => {
             {auctionHistoryData && auctionHistoryData.length && auctionHistoryData.map((item, index) => (
               <div key={item.id} className="history-dialog-item">
                 <div className="history-dialog-stt">{auctionHistoryData.length - index}</div>
-                <div className="history-dialog-user" style={{ textAlign: 'center' }}>{item.auctioneer_name}</div>
+                <div className="history-dialog-user">{item.auctioneer_name}</div>
                 <div className="history-dialog-amount">{item.bet_amount}</div>
-                <div className="history-dialog-time" style={{ textAlign: 'center' }}>{moment(item.bet_time).format('DD-MM-YYYY HH:mm:ss')}</div>
+                <div className="history-dialog-time">{moment(item.bet_time).format('DD-MM-YYYY HH:mm:ss')}</div>
               </div>
             ))}
           </div>

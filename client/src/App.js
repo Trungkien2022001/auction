@@ -25,7 +25,9 @@ function App() {
     });
     socket.current.on('raise-reply', (metaData)=>{
       if(metaData.bet.auctioneer_id !== currentUser.id){
-        toast.info(`${metaData.bet.auctioneer_name} đã bình luận về một phiên đấu giá mà bạn theo dõi`)
+        toast.info(`${metaData.bet.auctioneer_name} đã bình luận về một phiên đấu giá mà bạn theo dõi`, {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
       }
     })
     return () => {

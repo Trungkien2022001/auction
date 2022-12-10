@@ -14,7 +14,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
 import { Link } from 'react-router-dom';
 import { Avatar } from '@mui/material';
 import './Header.scss'
@@ -71,21 +70,36 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const SmallAvatar = styled(Avatar)(({ theme }) => ({
+  width: 22,
+  height: 22,
+  border: `2px solid ${theme.palette.background.paper}`,
+}));
+
 export const Header = () => {
-  const currentUser = useSelector(state=>state.user)
+  const currentUser = useSelector(state => state.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const [anchorE2, setAnchorE2] = React.useState(null);
+  const [anchorE3, setAnchorE3] = React.useState(null);
   const openMenu = Boolean(anchorE2);
   const isMenuOpen = Boolean(anchorEl);
+  const isNotificationOpen = Boolean(anchorE3);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
-    if(!currentUser.id){
+    if (!currentUser.id) {
       window.location.href = './login'
-    } else{
+    } else {
       setAnchorEl(event.currentTarget);
+    }
+  };
+  const handleNotificationMenuOpen = (event) => {
+    if (!currentUser.id) {
+      // window.location.href = './login'
+    } else {
+      setAnchorE3(event.currentTarget);
     }
   };
 
@@ -96,9 +110,13 @@ export const Header = () => {
   const handleMenuClose = (target) => {
     setAnchorEl(null);
     handleMobileMenuClose();
-    if(target === 'profile'){
+    if (target === 'profile') {
       window.location.href = `/user/${currentUser.id}`
     }
+  };
+  const handleNotificationClose = () => {
+    setAnchorE3(null);
+    handleMobileMenuClose();
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -128,20 +146,181 @@ export const Header = () => {
         horizontal: 'right',
       }}
       open={isMenuOpen}
-      onClose={()=>handleMenuClose('')}
+      onClose={() => handleMenuClose('')}
     >
-      <MenuItem onClick={()=>handleMenuClose('profile')}>Profile</MenuItem>
-      <MenuItem onClick={()=>handleMenuClose('')}>
+      <MenuItem onClick={() => handleMenuClose('profile')}>Profile</MenuItem>
+      <MenuItem onClick={() => handleMenuClose('')}>
         <Link style={{ textDecoration: "none", color: "black" }} to={"/management"}>
           Management
         </Link>
       </MenuItem>
-      <MenuItem onClick={()=>handleMenuClose('')}>
+      <MenuItem onClick={() => handleMenuClose('')}>
         <Link style={{ textDecoration: "none", color: "black" }} to={"/english"}>
           English Test
         </Link>
       </MenuItem>
-      <MenuItem onClick={()=>handleMenuClose('')}>Logout</MenuItem>
+      <MenuItem onClick={() => handleMenuClose('')}>Logout</MenuItem>
+    </Menu>
+  );
+  const renderNotification = (
+    <Menu
+      style={{ marginTop: '35px', marginLeft: '100px', maxHeight: '450px' }}
+      anchorEl={anchorE3}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isNotificationOpen}
+      onClose={() => handleNotificationClose('')}
+    >
+      <div className='notification-container'>
+        <div className='notification-item'>
+          <div className='notification-item-avatar'>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
+              }
+            >
+              <Avatar 
+                sx={{ width: 55, height: 55 }} 
+                alt="Action" 
+                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
+              />
+            </Badge>
+          </div>
+          <div className='notification-item-content'>
+            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
+          </div>
+        </div>
+        <div className='notification-item'>
+          <div className='notification-item-avatar'>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
+              }
+            >
+              <Avatar 
+                sx={{ width: 55, height: 55 }} 
+                alt="Action" 
+                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
+              />
+            </Badge>
+          </div>
+          <div className='notification-item-content'>
+            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
+          </div>
+        </div>
+        <div className='notification-item'>
+          <div className='notification-item-avatar'>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
+              }
+            >
+              <Avatar 
+                sx={{ width: 55, height: 55 }} 
+                alt="Action" 
+                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
+              />
+            </Badge>
+          </div>
+          <div className='notification-item-content'>
+            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
+          </div>
+        </div>
+        <div className='notification-item'>
+          <div className='notification-item-avatar'>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
+              }
+            >
+              <Avatar 
+                sx={{ width: 55, height: 55 }} 
+                alt="Action" 
+                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
+              />
+            </Badge>
+          </div>
+          <div className='notification-item-content'>
+            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
+          </div>
+        </div>
+        <div className='notification-item'>
+          <div className='notification-item-avatar'>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
+              }
+            >
+              <Avatar 
+                sx={{ width: 55, height: 55 }} 
+                alt="Action" 
+                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
+              />
+            </Badge>
+          </div>
+          <div className='notification-item-content'>
+            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
+          </div>
+        </div>
+        <div className='notification-item'>
+          <div className='notification-item-avatar'>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
+              }
+            >
+              <Avatar 
+                sx={{ width: 55, height: 55 }} 
+                alt="Action" 
+                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
+              />
+            </Badge>
+          </div>
+          <div className='notification-item-content'>
+            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
+          </div>
+        </div>
+        <div className='notification-item'>
+          <div className='notification-item-avatar'>
+            <Badge
+              overlap="circular"
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              badgeContent={
+                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
+              }
+            >
+              <Avatar 
+                sx={{ width: 55, height: 55 }} 
+                alt="Action" 
+                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
+              />
+            </Badge>
+          </div>
+          <div className='notification-item-content'>
+            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
+          </div>
+        </div>
+      </div>
     </Menu>
   );
 
@@ -257,20 +436,21 @@ export const Header = () => {
               Trang web đấu giá hàng đầu Việt Nam, bạn cần mua, chúng tôi có, hahaha
             </TargetTextWrapper>
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
+          <Box sx={{ display: "flex" }}>
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
               color="inherit"
+              onClick={handleNotificationMenuOpen}
             >
               <Badge badgeContent={17} color="error" >
                 <NotificationsIcon />
               </Badge >
+            </IconButton>
+            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+              <Badge badgeContent={4} color="error">
+                <MailIcon />
+              </Badge>
             </IconButton>
             <IconButton
               size="large"
@@ -288,7 +468,7 @@ export const Header = () => {
               />
             </IconButton>
           </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+          {/* <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="show more"
@@ -299,11 +479,12 @@ export const Header = () => {
             >
               <MoreIcon />
             </IconButton>
-          </Box>
+          </Box> */}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
+      {renderNotification}
     </Box>
   );
 }

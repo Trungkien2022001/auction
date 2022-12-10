@@ -40,3 +40,27 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
         throw new Error(err.message || JSON.stringify(err))
     }
 }
+
+exports.getNotifications = async (userId) => {
+    debug('MODEL/notification getNotifications', userId)
+    try {
+       let result = await knex
+        .select(
+            'n.id',
+            'n.auction_id',
+            'n.type',
+            'n.action_user_id',
+            'u.name as action_username',
+            'u.avatar as action_user_avatar',
+            'n.updated_at'
+        )
+        .from('notification as n')
+        .innerJoin('user as u', 'n.action_user_id', 'u.id')
+        .where('n.user_id', userId)
+        .orderBy('n.updated_at', 'desc')
+
+    return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}

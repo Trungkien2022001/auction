@@ -303,7 +303,7 @@ exports.auctionProfitSum = async userId => {
 }
 
 exports.updateAuction = async (toUpdate, auctionId) => {
-    debug('MODEL/auction updateAuction', toUpdate, auctionId)
+    debug('MODEL/auction updateAuction', auctionId)
     try {
         await knex('auction')
             .update(toUpdate)

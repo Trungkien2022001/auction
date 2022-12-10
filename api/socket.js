@@ -29,7 +29,7 @@ app.use(async (ctx, next) => {
         ctx.app.emit('error', err, ctx)
     }
 })
-// console.log(moment(new Date()).diff(moment(new Date()).subtract(1, 'minutes')))
+
 app.use(config.corsOrigin ? cors({ origin: config.corsOrigin }) : cors())
 
 app.use(bodyParser())
@@ -97,9 +97,11 @@ socketIO.on('connection', socket => {
 
     socket.on('raise', (data) => {
         // console.log(socketIO.sockets.adapter.rooms)
-        handleRaise(data)
-        // console.log(createRoomName(data.auctionId))
+        checkHasExistRoom(data.user.id, data.auctionId, socket)
         socketIO.to(createRoomName(data.auctionId)).emit('raise-reply', data)
+        socketIO.to(createRoomName(data.auctionId)).emit('updateUI', {})
+        handleRaise(data)
+        console.log(listOnlineUser)
     })
 
     socket.on('add-to-new-room', (auctionId, userId) => {
@@ -143,9 +145,10 @@ async function handleRaise(data){
 // handleRaise({auctionId: 1})
 
 async function addToRoom(userId, socketId) {
-    const index = listOnlineUser.findIndex(item => item.user_id == userId)
+    const index = listOnlineUser.findIndex(item => item.user_id === userId)
     if (index !== -1) {
         listOnlineUser[index].socket.push(socketId)
+        return index
     } else {
         const auctionIds = await auctionModel.getAllAuctionOfUser(userId)
         const auctionRooms = createRoomsName(auctionIds)
@@ -159,10 +162,23 @@ async function addToRoom(userId, socketId) {
     }
 }
 
-async function addToNewRoom(userId, socketId, auctionId) {
-    const index = listOnlineUser.findIndex(item => item.user_id == userId)
+function checkHasExistRoom(userId, auctionId, socket){
     if (userId === null) return
-    const newRoomName = createRoomsName(auctionId)
+    const index = listOnlineUser.findIndex(item => item.user_id == userId)
+    if (index !== -1) {
+        const newRoomName = createRoomName(auctionId)
+        let roomIndex = listOnlineUser[index].auctionRooms.findIndex(i=>i===newRoomName)
+        if(roomIndex === -1){
+            listOnlineUser[index].auctionRooms.push(newRoomName)
+            socket.join(listOnlineUser[index].auctionRooms)
+        }
+    }
+}
+
+async function addToNewRoom(userId, auctionId) {
+    if (userId === null) return
+    const index = listOnlineUser.findIndex(item => item.user_id == userId)
+    const newRoomName = createRoomName(auctionId)
     if (index !== -1) {
         listOnlineUser[index].auctionRooms.push(newRoomName)
     }

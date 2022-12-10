@@ -13,16 +13,21 @@ import { Test } from './pages/client/test/Test';
 import { User } from './pages/client/user/User';
 import socketIO from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 function App() {
   const socket = useRef();
   const currentUser = useSelector(state => state.user)
+  socket.current = socketIO(process.env.REACT_APP_SOCKET_ENDPOINT);
   useEffect(() => {
-    socket.current = socketIO(process.env.REACT_APP_SOCKET_ENDPOINT);
     socket.current.on("connect", () => {
       socket.current.emit('authenticate', currentUser)
     });
+    socket.current.on('raise-reply', (metaData)=>{
+      if(metaData.bet.auctioneer_id !== currentUser.id){
+        toast.info(`${metaData.bet.auctioneer_name} đã bình luận về một phiên đấu giá mà bạn theo dõi`)
+      }
+    })
     return () => {
       socket.current.disconnect();
     }

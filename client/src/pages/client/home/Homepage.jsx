@@ -13,6 +13,7 @@ import { get } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
@@ -28,23 +29,23 @@ export const Homepage = ({socket}) => {
   useEffect(()=>{
     if(socket.current){
       socket.current.on('updateUI', ()=>{
-        console.log("updateUI")
+        getData()
       })
     }
-  }, [])
+  }, [socket.current])
 
-  useEffect(() => {
-    async function getData() {
-      let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-overview`, currentUser)
-      if (result.status === 200) {
-        setData(result.data.data)
-      }
-
-      result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
-      if (result.status === 200) {
-        setProductCategory(result.data.product_category)
-      }
+  async function getData() {
+    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-overview`, currentUser)
+    if (result.status === 200) {
+      setData(result.data.data)
     }
+
+    result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+    if (result.status === 200) {
+      setProductCategory(result.data.product_category)
+    }
+  }
+  useEffect(() => {
     getData()
   }, [])
   const handleStop = () => {

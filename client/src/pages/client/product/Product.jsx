@@ -31,48 +31,29 @@ export const Product = ({socket}) => {
   const [reload, setReload] = useState(false);
   const [auctionBet, setAuctionBet] = useState(0);
   const [data, setData] = useState(null);
-  const [loadData, setloadData] = useState(false);
+  const [reloadData, setReloadData] = useState(false);
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
-
-  useEffect(() => {
-    async function getData() {
-      let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
-      if (result.status === 200) {
-        setData(result.data.data)
-      }
-      result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
-      if (result.status === 200) {
-        setAuctionHistoryData(result.data.data)
-      }
+  async function getData() {
+    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
+    if (result.status === 200) {
+      setData(result.data.data)
     }
+    result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
+    if (result.status === 200) {
+      setAuctionHistoryData(result.data.data)
+    }
+  }
+  useEffect(() => {
     getData()
-  }, [id, loadData])
-
+  }, [id, reloadData])
   useEffect(()=>{
+    console.log(socket.current)
     if(socket.current){
       socket.current.on('updateUI', ()=>{
-        console.log("updateUI")
+        getData()
       })  
-      socket.current.on('raise-reply', (metaData)=>{
-        if(metaData.bet.auctioneer_id !== currentUser.id){
-          toast.info(`${metaData.bet.auctioneer_name} đã bình luận về một phiên đấu giá mà bạn theo dõi`)
-        }
-      })
     }
   }, [socket.current])
-  // socket.current.on('raise-reply', (data)=>{
-  //   toast('Một người bạn đã tham gia vào đấu giá')
-  // })
-  // console.log(data)
-  // useEffect(() => {
-  //   async function getData() {
-  //     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
-  //     if (result.status === 200) {
-  //       setAuctionHistoryData(result.data.data)
-  //     }
-  //   }
-  //   getData()
-  // }, [id, openAuctionDialog])
   const handleClickOpenAuctionHistoryDialog = () => {
     setOpenAuctionHistoryDialog(true);
   };

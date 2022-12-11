@@ -1,3 +1,5 @@
+/* eslint-disable no-unreachable */
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -18,6 +20,9 @@ import { Link } from 'react-router-dom';
 import { Avatar } from '@mui/material';
 import './Header.scss'
 import { useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { get } from '../../utils/customRequest';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -80,7 +85,7 @@ export const Header = () => {
   const currentUser = useSelector(state => state.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  const [data, setData] = useState([])
   const [anchorE2, setAnchorE2] = React.useState(null);
   const [anchorE3, setAnchorE3] = React.useState(null);
   const openMenu = Boolean(anchorE2);
@@ -95,6 +100,21 @@ export const Header = () => {
       setAnchorEl(event.currentTarget);
     }
   };
+
+  useEffect(() => {
+    if (currentUser.id) {
+      getData(currentUser.id)
+    }
+  }, [currentUser.id])
+
+  async function getData(id) {
+    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/notification/${id}`, currentUser)
+    if (result.status === 200) {
+      setData(result.data.notification)
+    }
+
+  }
+
   const handleNotificationMenuOpen = (event) => {
     if (!currentUser.id) {
       // window.location.href = './login'
@@ -119,9 +139,9 @@ export const Header = () => {
     handleMobileMenuClose();
   };
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+  // const handleMobileMenuOpen = (event) => {
+  //   setMobileMoreAnchorEl(event.currentTarget);
+  // };
 
   const handleMenuClick = (event) => {
     setAnchorE2(event.currentTarget);
@@ -129,7 +149,9 @@ export const Header = () => {
   const handleCloseMenu = () => {
     setAnchorE2(null);
   };
-
+  const handleGotoAuction = (id) => {
+    window.location.href = `/auction/${id}`
+  }
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -180,146 +202,290 @@ export const Header = () => {
       onClose={() => handleNotificationClose('')}
     >
       <div className='notification-container'>
-        <div className='notification-item'>
-          <div className='notification-item-avatar'>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
-              }
-            >
-              <Avatar 
-                sx={{ width: 55, height: 55 }} 
-                alt="Action" 
-                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
-              />
-            </Badge>
-          </div>
-          <div className='notification-item-content'>
-            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
-          </div>
-        </div>
-        <div className='notification-item'>
-          <div className='notification-item-avatar'>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
-              }
-            >
-              <Avatar 
-                sx={{ width: 55, height: 55 }} 
-                alt="Action" 
-                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
-              />
-            </Badge>
-          </div>
-          <div className='notification-item-content'>
-            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
-          </div>
-        </div>
-        <div className='notification-item'>
-          <div className='notification-item-avatar'>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
-              }
-            >
-              <Avatar 
-                sx={{ width: 55, height: 55 }} 
-                alt="Action" 
-                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
-              />
-            </Badge>
-          </div>
-          <div className='notification-item-content'>
-            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
-          </div>
-        </div>
-        <div className='notification-item'>
-          <div className='notification-item-avatar'>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
-              }
-            >
-              <Avatar 
-                sx={{ width: 55, height: 55 }} 
-                alt="Action" 
-                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
-              />
-            </Badge>
-          </div>
-          <div className='notification-item-content'>
-            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
-          </div>
-        </div>
-        <div className='notification-item'>
-          <div className='notification-item-avatar'>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
-              }
-            >
-              <Avatar 
-                sx={{ width: 55, height: 55 }} 
-                alt="Action" 
-                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
-              />
-            </Badge>
-          </div>
-          <div className='notification-item-content'>
-            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
-          </div>
-        </div>
-        <div className='notification-item'>
-          <div className='notification-item-avatar'>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
-              }
-            >
-              <Avatar 
-                sx={{ width: 55, height: 55 }} 
-                alt="Action" 
-                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
-              />
-            </Badge>
-          </div>
-          <div className='notification-item-content'>
-            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
-          </div>
-        </div>
-        <div className='notification-item'>
-          <div className='notification-item-avatar'>
-            <Badge
-              overlap="circular"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent={
-                <SmallAvatar alt="Avatar" src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" />
-              }
-            >
-              <Avatar 
-                sx={{ width: 55, height: 55 }} 
-                alt="Action" 
-                src="https://scontent.fsgn2-4.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=lOfNRKI0F2kAX8YeB2Z&_nc_ht=scontent.fsgn2-4.fna&oh=00_AfBkPO6KaTfKkyTr-XqVC5Co2NQwM7T370SRHedCvHIkrA&oe=63994316" 
-              />
-            </Badge>
-          </div>
-          <div className='notification-item-content'>
-            Nguyễn Trung Kiên đã bình luận về một bài viết của bạn
-          </div>
-        </div>
+        {
+          data && data.length ?
+            <>{data.map(item => (
+              () => {
+                switch (item.type) {
+                  case 1:
+                    return (
+                      <div className='notification-item'>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>From Admin</span> Chúc mừng, bạn đã thêm một phiên đấu giá mới
+                        </div>
+                      </div>
+                    )
+                    break;
+                  case 2:
+                    return (
+                      <div className='notification-item'>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>From Admin</span> Một sản phẩm của bạn đã hoàn thành đấu giá. Vui lòng xác nhận!
+                        </div>
+                      </div>
+                    )
+                    break;
+                  case 3:
+                    return (
+                      <div className='notification-item'>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://cdn-icons-png.flaticon.com/512/3983/3983618.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src={item.action_user_avatar}
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>{item.action_username}</span> đã đấu giá về một sản phẩm của bạn
+                        </div>
+                      </div>
+                    )
+                    break;
+                  case 4:
+                    return (
+                      <div key={item.id} className='notification-item' onClick={() => handleGotoAuction(item.auction_id)}>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src='https://cdn-icons-png.flaticon.com/512/7616/7616550.png' />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src={item.action_user_avatar} />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>{item.action_username}</span> đã có một đấu giá mới trong một phiên đấu giá mà bạn từng raise
+                        </div>
+                      </div>
+                    )
+                    break;
+                  case 5:
+                    return (
+                      <div className='notification-item'>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>From Admin</span> Bạn đã thắng cược một phiên đấu giá. Sản phẩm sẽ được người bán xác nhận !
+                        </div>
+                      </div>
+                    )
+                    break;
+                  case 6:
+                    return (
+                      <div className='notification-item'>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>From Admin</span> Người bán đã xác nhận bán sản phẩm. Vui lòng xác nhận lấy hàng!
+                        </div>
+                      </div>
+                    )
+                    break;
+                  case 7:
+                    return (
+                      <div className='notification-item'>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://www.citypng.com/public/uploads/preview/png-info-information-round-red-icon-symbol-11640517577hdkfkc5pnj.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>From Admin</span> Tài khoản của bạn bị cảnh cáo vì có hành phi vi phạm chính sách của chúng tôi. Bạn sẽ không thể thêm hay đấu giá sản phẩm nữa!
+                        </div>
+                      </div>
+                    )
+                    break;
+
+                  default:
+                    break;
+                }
+              })()
+            )}
+              {/* <div className='notification-item'>
+                <div className='notification-item-avatar'>
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    badgeContent={
+                      <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
+                    }
+                  >
+                    <Avatar
+                      sx={{ width: 55, height: 55 }}
+                      alt="Action"
+                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                    />
+                  </Badge>
+                </div>
+                <div className='notification-item-content'>
+                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Chúc mừng, bạn đã thêm một phiên đấu giá mới
+                </div>
+              </div> */}
+              {/* <div className='notification-item'>
+                <div className='notification-item-avatar'>
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    badgeContent={
+                      <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
+                    }
+                  >
+                    <Avatar
+                      sx={{ width: 55, height: 55 }}
+                      alt="Action"
+                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                    />
+                  </Badge>
+                </div>
+                <div className='notification-item-content'>
+                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Một sản phẩm của bạn đã hoàn thành đấu giá. Vui lòng xác nhận!
+                </div>
+              </div> */}
+              {/* <div className='notification-item'>
+                <div className='notification-item-avatar'>
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    badgeContent={
+                      <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
+                    }
+                  >
+                    <Avatar
+                      sx={{ width: 55, height: 55 }}
+                      alt="Action"
+                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                    />
+                  </Badge>
+                </div>
+                <div className='notification-item-content'>
+                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Bạn đã thắng cược một phiên đấu giá. Sản phẩm sẽ được người bán xác nhận !
+                </div>
+              </div> */}
+              {/* <div className='notification-item'>
+                <div className='notification-item-avatar'>
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    badgeContent={
+                      <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
+                    }
+                  >
+                    <Avatar
+                      sx={{ width: 55, height: 55 }}
+                      alt="Action"
+                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                    />
+                  </Badge>
+                </div>
+                <div className='notification-item-content'>
+                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Người bán đã xác nhận bán sản phẩm. Vui lòng xác nhận lấy hàng!
+                </div>
+              </div> */}
+              {/* <div className='notification-item'>
+                <div className='notification-item-avatar'>
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    badgeContent={
+                      <SmallAvatar alt="Avatar" src="https://www.citypng.com/public/uploads/preview/png-info-information-round-red-icon-symbol-11640517577hdkfkc5pnj.png" />
+                    }
+                  >
+                    <Avatar
+                      sx={{ width: 55, height: 55 }}
+                      alt="Action"
+                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                    />
+                  </Badge>
+                </div>
+                <div className='notification-item-content'>
+                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Tài khoản của bạn bị cảnh cáo vì có hành phi vi phạm chính sách của chúng tôi. Bạn sẽ không thể thêm hay đấu giá sản phẩm nữa!
+                </div>
+              </div> */}
+            </>
+            :
+            <div className='notification-item'>
+              Bạn không có thông báo nào cả
+            </div>
+        }
       </div>
     </Menu>
   );

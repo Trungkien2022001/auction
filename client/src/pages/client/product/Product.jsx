@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
 import { Header } from "../../../components/header/Header";
@@ -10,7 +11,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import TimerIcon from '@mui/icons-material/Timer';
 import PaidIcon from '@mui/icons-material/Paid';
 import SellIcon from '@mui/icons-material/Sell';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, TextField } from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 import Countdown, { zeroPad } from 'react-countdown'
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -18,10 +19,9 @@ import { get, post } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import Swal from "sweetalert2";
-import { toast } from 'react-toastify';
 
 
-export const Product = ({socket}) => {
+export const Product = ({ socket }) => {
   const currentUser = useSelector(state => state.user)
   const location = useLocation();
   let id = location.pathname.split("/")[2];
@@ -31,8 +31,8 @@ export const Product = ({socket}) => {
   const [reload, setReload] = useState(false);
   const [auctionBet, setAuctionBet] = useState(0);
   const [data, setData] = useState(null);
-  const [reloadData, setReloadData] = useState(false);
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
+  const [bigImageIndex, setBigImageIndex] = useState(0)
   async function getData() {
     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
     if (result.status === 200) {
@@ -45,13 +45,12 @@ export const Product = ({socket}) => {
   }
   useEffect(() => {
     getData()
-  }, [id, reloadData])
-  useEffect(()=>{
-    console.log(socket.current)
-    if(socket.current){
-      socket.current.on('updateUI', ()=>{
+  }, [id])
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on('updateUI', () => {
         getData()
-      })  
+      })
     }
   }, [socket.current])
   const handleClickOpenAuctionHistoryDialog = () => {
@@ -85,10 +84,10 @@ export const Product = ({socket}) => {
       time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
     }, currentUser)
     if (result.data.success) {
-      if(socket.current){
+      if (socket.current) {
         socket.current.emit('raise', {
-          user: currentUser, 
-          auctionId: id, 
+          user: currentUser,
+          auctionId: id,
           bet: {
             auctioneer_id: currentUser.id,
             auctioneer_name: currentUser.name,
@@ -104,12 +103,12 @@ export const Product = ({socket}) => {
       }).then(() => {
         data.product.sell_price = auctionBet
         data.product.auction_count = data.product.auction_count + 1
-       auctionHistoryData.unshift({
-           id: auctionHistoryData.length.id + 1,
-           bet_time: new Date(),
-           bet_amount: auctionBet,
-           auctioneer_name: currentUser.name
-         })
+        auctionHistoryData.unshift({
+          id: auctionHistoryData.length.id + 1,
+          bet_time: new Date(),
+          bet_amount: auctionBet,
+          auctioneer_name: currentUser.name
+        })
         setReload(!reload)
       })
     } else {
@@ -122,9 +121,17 @@ export const Product = ({socket}) => {
     }
   };
 
+  useEffect(() => {
+    let length = data?.product_images.length
+    let timeId = setInterval(() => {
+      setBigImageIndex(bigImageIndex + 1 < length ? bigImageIndex + 1 : 0)
+    }, 4000)
+    return () => clearInterval(timeId)
+  })
+
   const renderer = ({ days, hours, minutes, seconds }) => (
     <span>
-      {hours}d {zeroPad(hours)}h{zeroPad(minutes)}p{zeroPad(seconds)}s
+      {days}d {zeroPad(hours)}h{zeroPad(minutes)}p{zeroPad(seconds)}s
     </span>
   );
 
@@ -159,12 +166,12 @@ export const Product = ({socket}) => {
                 <div className='product__left'>
                   <div className="product-image">
                     <div className="product-image__wrapper">
-                      <img src="https://cdn.tgdd.vn/Files/2016/04/23/819804/anhpanorama3.jpg" alt="" />
+                      <img src={data.product_images[bigImageIndex].url} alt="" />
                     </div>
                   </div>
                   <div className="product-sub-image">
                     {data && data.product_images && data.product_images.map((item, index) => (
-                      <div className="product-sub-image__wrapper" key={index}>
+                      <div className="product-sub-image__wrapper" key={index} onClick={() => setBigImageIndex(index)}>
                         <img src={item.url} alt="" />
                       </div>
                     ))
@@ -270,14 +277,51 @@ export const Product = ({socket}) => {
                     <div className="history-title">Thất bại</div>
                   </div>
                 </div>
-                <div className="seller-rate seller-rate__low">
-                  <div className="seller-rate__detail">
-                    Mức độ uy tín thấp, nếu tham gia đấu giá bạn phải chấp nhận hoàn toàn mọi rủi ro.
-                  </div>
-                  <div>
-                    <Button className="seller-rate__content" variant="contained">Độ uy tín thấp</Button>
-                  </div>
-                </div>
+                {data.seller_info.prestige === 1
+                  ?
+                  <>
+                    <div className="seller-rate seller-rate__medium">
+                      <div className="seller-rate__detail">
+                        Mức độ uy tín trung bình. Bạn lên liên lạc với người bán nếu trúng thầu.
+                      </div>
+                      <div>
+                        <Button className="seller-rate__content" variant="contained">Độ uy tín trung bình</Button>
+                      </div>
+                    </div>
+                  </>
+                  :
+                  <></>
+                }
+                {data.seller_info.prestige === 2
+                  ?
+                  <>
+                    <div className="seller-rate seller-rate__hight">
+                      <div className="seller-rate__detail">
+                        Mức độ uy tín cao. Bạn hoàn toàn yên tâm vào người bán này
+                      </div>
+                      <div>
+                        <Button className="seller-rate__content" variant="contained">Độ uy tín cao</Button>
+                      </div>
+                    </div>
+                  </>
+                  :
+                  <></>
+                }
+                {data.seller_info.prestige === 0
+                  ?
+                  <>
+                    <div className="seller-rate seller-rate__low">
+                      <div className="seller-rate__detail">
+                        Mức độ uy tín thấp, nếu tham gia đấu giá bạn phải chấp nhận hoàn toàn mọi rủi ro.
+                      </div>
+                      <div>
+                        <Button className="seller-rate__content" variant="contained">Độ uy tín thấp</Button>
+                      </div>
+                    </div>
+                  </>
+                  :
+                  <></>
+                }
               </div>
             </div>
             <div className="product-info">

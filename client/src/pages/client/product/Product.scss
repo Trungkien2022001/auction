@@ -16,7 +16,14 @@
                     display: flex;
                     justify-content: center;
                     .product-image__wrapper{
+                        display: flex;
+                        flex-direction: row;
+                        margin-bottom: 20px;
+                        // box-shadow: 5px 5px 10px #999;
+                        // transition: all 1s ease;
+                        cursor: pointer;
                         img{
+                            transition:opacity 2s linear;
                             border-radius: 15px;
                             height: 350px;
                             max-width: 100%;
@@ -27,18 +34,23 @@
                 .product-sub-image{
                     margin-top: 15px;
                     display: flex;
-                    justify-content: space-around;
+                    justify-content: center;
                     flex-wrap: wrap;
                     .product-sub-image__wrapper{
-                        padding: 0px 2px;
+                        padding: 0px 5px;
                         width: 15%;
                         overflow: hidden;
                         img{
+                            border-radius: 5px;
                             height: 60px;
                             width: 100%;
                             max-width: 100px;
                             object-fit: cover;
+                            transition:opacity 2s linear;
                         }
+                    }
+                    .product-sub-image__wrapper:hover{
+                        transform: scale(1.2);
                     }
                 }
             }

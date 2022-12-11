@@ -39,6 +39,7 @@
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: space-around;
+                transition:opacity 2s linear;
                 .product{
                     background-color: antiquewhite;
                     box-shadow: 10px 5px 10px #999;
@@ -82,6 +83,9 @@
                         font-size: 15px;
 
                     }
+                }
+                .product:hover{
+                    transform: scale(1.1);
                 }
             }
         }

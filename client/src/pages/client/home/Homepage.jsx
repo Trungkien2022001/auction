@@ -13,11 +13,10 @@ import { get } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
 import moment from "moment";
-import { toast } from "react-toastify";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
-    {hours} day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
+    {days} day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
   </span>
 );;
 
@@ -111,14 +110,14 @@ export const Homepage = ({socket}) => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={Date.now() + moment(item.start_time).add(item.time, 'minutes').diff(moment(new Date()))}
+                            date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
                             renderer={renderer}
                           />
                         </div>
                         <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
                       </div>
-                      <div className="product-name">{item.start_time}</div>
-                      <div className="product-detail">{item.time}</div>
+                      <div className="product-name">{item.name}</div>
+                      <div className="product-detail">{item.title}</div>
                         <div className="product-price">
                         Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                       </div>
@@ -153,7 +152,7 @@ export const Homepage = ({socket}) => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={Date.now() + moment(item.start_time).add(item.time, 'minutes').diff(moment(new Date()))}
+                            date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
                             renderer={renderer}
                           />
                         </div>
@@ -195,7 +194,7 @@ export const Homepage = ({socket}) => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={Date.now() + moment(item.start_time).add(item.time, 'minutes').diff(moment(new Date()))}
+                            date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
                             renderer={renderer}
                           />
                         </div>

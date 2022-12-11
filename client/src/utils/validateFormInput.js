@@ -99,10 +99,10 @@ export const newAuctionValidate = (data) => {
         }
     }
 
-    if(!moment(data.start_time).isAfter(moment(new Date()).add('minute', 5))){
+    if(!moment(data.start_time).isAfter(moment(new Date()).add('minute', 1))){
         return {
             err: true,
-            message: 'Thời gian bắt đầu phải sau hiện tại ít nhất 5 phút'
+            message: 'Thời gian bắt đầu phải sau hiện tại ít nhất 1 phút'
         }
     }
 

@@ -1,4 +1,4 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import {BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import { useEffect, useRef } from 'react';
 import './app.scss'
@@ -11,21 +11,26 @@ import { Product } from './pages/client/product/Product';
 import { Register } from './pages/client/register/Register';
 import { Test } from './pages/client/test/Test';
 import { User } from './pages/client/user/User';
-import socketIO from 'socket.io-client';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
+import { socketServer} from './context/socket';
 
 function App() {
+  const CustomToastWithLink = (metaData) => (
+    <div onClick={()=>{window.location.href=`/auction/${metaData.auctionId}`}}>
+      {`${metaData.bet.auctioneer_name} đã bình luận về một phiên đấu giá mà bạn theo dõi`}
+    </div>
+  );
   const socket = useRef();
   const currentUser = useSelector(state => state.user)
-  socket.current = socketIO(process.env.REACT_APP_SOCKET_ENDPOINT);
+  socket.current = socketServer
   useEffect(() => {
     socket.current.on("connect", () => {
       socket.current.emit('authenticate', currentUser)
     });
     socket.current.on('raise-reply', (metaData)=>{
       if(metaData.bet.auctioneer_id !== currentUser.id){
-        toast.info(`${metaData.bet.auctioneer_name} đã bình luận về một phiên đấu giá mà bạn theo dõi`, {
+        toast.info(CustomToastWithLink(metaData), {
           position: toast.POSITION.BOTTOM_RIGHT
         })
       }

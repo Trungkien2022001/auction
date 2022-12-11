@@ -476,7 +476,7 @@ exports.getAllAuctioneerOfAuction = async auctionId => {
             .distinct('auctioneer_id')
             .where('auction_id', auctionId)
 
-        return result.map(i=>{
+        return result.map(i => {
             return i.auctioneer_id
         })
     } catch (err) {
@@ -487,14 +487,16 @@ exports.getAllAuctioneerOfAuction = async auctionId => {
 exports.insertUserAuction = async (userId, auctionId) => {
     debug('MODEL/auction insertUserAuction', userId, auctionId)
     try {
-        let exist = await knex('user_auction').select().where({
-            user_id: userId,
-            auction_id: auctionId,
-        })
-        if(!exist.length){
+        const exist = await knex('user_auction')
+            .select()
+            .where({
+                user_id: userId,
+                auction_id: auctionId
+            })
+        if (!exist.length) {
             await knex('user_auction').insert({
                 user_id: userId,
-                auction_id: auctionId,
+                auction_id: auctionId
             })
         }
     } catch (err) {

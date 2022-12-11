@@ -26,6 +26,7 @@ exports.getLatestAuction = async () => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+            .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.updated_at', 'desc')
             .limit(4)
@@ -56,6 +57,7 @@ exports.getFeaturedAuction = async () => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+            .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.auction_count', 'desc')
             .limit(4)
@@ -85,6 +87,7 @@ exports.getCheapAuction = async () => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+            .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.start_price', 'asc')
             .limit(4)
@@ -114,7 +117,7 @@ exports.getIncomingAuction = async () => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
-            .where('a.start_time', '>', new Date())
+            .where('a.status', 1)
             .whereNull('a.deleted_at')
             .orderBy('a.updated_at', 'desc')
             .limit(4)
@@ -502,4 +505,11 @@ exports.insertUserAuction = async (userId, auctionId) => {
     } catch (err) {
         throw new Error(err.message || JSON.stringify(err))
     }
+}
+
+exports.checkingAllAuction = async () => {
+    await knex('auction')
+        .update('status', 2)
+        .where('start_time', '>=', new Date())
+    // await knex('auction').update('status', 3).where('start_time', '', new Date())
 }

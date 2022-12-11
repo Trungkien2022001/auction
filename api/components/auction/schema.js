@@ -11,7 +11,7 @@ const create = Joi.object().keys({
                 .format('YYYY-MM-DD HH:mm:ss')
                 .min(
                     moment()
-                        .add(5, 'minutes')
+                        .add(1, 'minutes')
                         .format('YYYY-MM-DD HH:mm:ss')
                 )
                 .max(

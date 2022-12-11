@@ -3,6 +3,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-use-before-define */
 require('dotenv').config({ path: '.localenv' })
+const debug = require('debug')('auction:socket')
 const Koa = require('koa')
 const cors = require('@koa/cors')
 const bodyParser = require('koa-bodyparser')
@@ -105,26 +106,39 @@ cron.schedule('* * * * *', () => {
     initAuctionTime()
 })
 
+cron.schedule('* * * * *', () => {
+    console.log('')
+    console.log(
+        `---------------------------Checking all auction after 5 minute ----------------`
+    )
+    auctionModel.checkingAllAuction()
+})
+
 socketIO.on('connection', socket => {
     socket.on('authenticate', user => {
         // console.log(`⚡⚡⚡: User ${user.username} with socketID ${socket.id} just connected!`)
         if (user.id) {
-            addToRoom(user.id, socket.id).then(id => {
+            addToRoom(user.id, socket.id).then(async id => {
+                debug(
+                    'authenticate',
+                    user.id,
+                    socket.id,
+                    listOnlineUser[id].auctionRooms
+                )
                 socket.join(listOnlineUser[id].auctionRooms)
             })
         }
+        // console.log(socketIO.sockets.adapter.rooms)
     })
     socket.on('ping', () => {
         console.log('PING PONG PING PONG')
     })
 
     socket.on('raise', data => {
-        // console.log(socketIO.sockets.adapter.rooms)
         checkHasExistRoom(data.user.id, data.auctionId, socket)
         socketIO.to(createRoomName(data.auctionId)).emit('raise-reply', data)
         socketIO.to(createRoomName(data.auctionId)).emit('updateUI', {})
         handleRaise(data)
-        console.log(listOnlineUser)
     })
 
     socket.on('add-to-new-room', (auctionId, userId) => {
@@ -186,7 +200,7 @@ async function addToRoom(userId, socketId) {
         auctionRooms
     })
 
-    return index === -1 ? 0 : index
+    return index === -1 ? listOnlineUser.length - 1 : index
 }
 
 function checkHasExistRoom(userId, auctionId, socket) {

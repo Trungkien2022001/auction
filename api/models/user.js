@@ -166,7 +166,7 @@ async function getSellerInfo(seller_id) {
         return redis.cachedExecute(
             {
                 key: `seller:${seller_id}`,
-                ttl: '5 days',
+                ttl: '1 days',
                 json: true
             },
             () => getAllInfoSeller(seller_id)

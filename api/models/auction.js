@@ -1,6 +1,7 @@
 /* eslint no-use-before-define: "error" */
 /* eslint no-return-await: "error" */
 const debug = require('debug')('auction:model:auction')
+const moment = require('moment')
 const { knex } = require('../connectors')
 
 exports.saveAuction = async auction => {
@@ -189,7 +190,7 @@ exports.getAuctionHistory = async id => {
 }
 
 exports.auctionHistoryCount = async userId => {
-    debug('MODEL/auction auctionHistoryCount')
+    // debug('MODEL/auction auctionHistoryCount')
     try {
         const result = await knex
             .countDistinct('auction_id as cnt')
@@ -203,7 +204,7 @@ exports.auctionHistoryCount = async userId => {
 }
 
 exports.allAuctionHistoryCount = async userId => {
-    debug('MODEL/auction allAuctionHistoryCount')
+    // debug('MODEL/auction allAuctionHistoryCount')
     try {
         const result = await knex
             .count('auctioneer_id as cnt')
@@ -217,7 +218,7 @@ exports.allAuctionHistoryCount = async userId => {
 }
 
 exports.auctionWonCount = async userId => {
-    debug('MODEL/auction auctionWonCount')
+    // debug('MODEL/auction auctionWonCount')
     try {
         const result = await knex
             .countDistinct('a.id as cnt')
@@ -247,7 +248,7 @@ exports.auctionSpentSum = async userId => {
 }
 
 exports.auctionSaleSuccessCount = async userId => {
-    debug('MODEL/auction auctionSaleSuccessCount')
+    // debug('MODEL/auction auctionSaleSuccessCount')
     try {
         const result = await knex
             .count('id as cnt')
@@ -262,7 +263,7 @@ exports.auctionSaleSuccessCount = async userId => {
 }
 
 exports.auctionSaleDeliveredCount = async userId => {
-    debug('MODEL/auction auctionSaleDeliveredCount')
+    // debug('MODEL/auction auctionSaleDeliveredCount')
     try {
         const result = await knex
             .count('id as cnt')
@@ -277,7 +278,7 @@ exports.auctionSaleDeliveredCount = async userId => {
 }
 
 exports.auctionSaleAllCount = async userId => {
-    debug('MODEL/auction auctionSaleAllCount')
+    // debug('MODEL/auction auctionSaleAllCount')
     try {
         const result = await knex
             .count('id as cnt')
@@ -511,5 +512,79 @@ exports.checkingAllAuction = async () => {
     await knex('auction')
         .update('status', 2)
         .where('start_time', '>=', new Date())
-    // await knex('auction').update('status', 3).where('start_time', '', new Date())
+    const activeAuction = await knex('auction').whereIn('status', [2, 3, 4])
+    Promise.all(
+        activeAuction.map(async item => {
+            if (
+                item.status === 2 &&
+                moment(item.start_time).isAfter(
+                    moment(new Date()).subtract(item.time, 'minutes')
+                )
+            ) {
+                await knex('auction')
+                    .update('status', 3)
+                    .where('id', item.id)
+            } else if (
+                (item.status === 3 &&
+                    moment(item.seller_confirm_time).isAfter(
+                        moment(new Date()).add(1, 'days')
+                    )) ||
+                (item.status === 4 &&
+                    moment(item.auctioneer_confirm_time).isAfter(
+                        moment(new Date()).add(1, 'days')
+                    ))
+            ) {
+                await knex('auction')
+                    .update('status', 5)
+                    .where('id', item.id)
+            }
+        })
+    )
+    const userAuction = await knex('user')
+        .where('del_flag', '0')
+        .andWhere(
+            'updated_at',
+            '>=',
+            moment(new Date())
+                .subtract(30, 'days')
+                .format('YYYY-MM-DD HH:mm:ss')
+        )
+        .andWhere('is_blocked', 0)
+    Promise.all(
+        userAuction.map(async item => {
+            const { id } = item
+
+            const auction_sale_delivered_count = await exports.auctionSaleDeliveredCount(
+                id
+            )
+            const auction_sale_all_count = await exports.auctionSaleAllCount(id)
+            const auction_sale_failed_count =
+                auction_sale_all_count - auction_sale_delivered_count
+
+            if (
+                auction_sale_all_count < 5 ||
+                auction_sale_all_count / 2 < auction_sale_failed_count ||
+                (auction_sale_failed_count > 5 && item.prestige != 0)
+            ) {
+                await knex('user')
+                    .update('prestige', 0)
+                    .where('id', id)
+            } else if (
+                auction_sale_all_count < 5 ||
+                (auction_sale_failed_count > 1 && item.prestige != 1)
+            ) {
+                await knex('user')
+                    .update('prestige', 1)
+                    .where('id', id)
+            } else if (
+                auction_sale_delivered_count >= auction_sale_all_count * 0.6 &&
+                item.prestige != 2 &&
+                auction_sale_all_count >= 5
+            ) {
+                await knex('user')
+                    .update('prestige', 0)
+                    .where('id', id)
+            }
+        })
+    )
 }

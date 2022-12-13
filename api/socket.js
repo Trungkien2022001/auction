@@ -37,65 +37,7 @@ app.use(config.corsOrigin ? cors({ origin: config.corsOrigin }) : cors())
 
 app.use(bodyParser())
 
-async function initAuctionTime() {
-    const times = await auctionModel.getAllAuctionTime()
-    auction = times.map(item => {
-        return {
-            auctionId: item.id,
-            timeToStart:
-                moment(item.start_time).diff(moment(new Date())) > 0
-                    ? moment(item.start_time).diff(moment(new Date()))
-                    : 0,
-            timeAuction:
-                moment(item.start_time)
-                    .add(item.time, 'minutes')
-                    .diff(moment(new Date())) > 0
-                    ? moment(item.start_time)
-                          .add(item.time, 'minutes')
-                          .diff(moment(new Date()))
-                    : 0,
-            auctionStatus: item.status
-        }
-    })
-
-    for (const item of auction) {
-        if (item.timeToStart > 0) {
-            const timeout = setTimeout(() => {
-                console.log(`Starting for auction id: ${item.auctionId}`)
-                startAuction(item.auctionId)
-                clearTimeout(timeout)
-            }, item.timeToStart)
-        } else if (item.auctionTime > 0) {
-            const timeout = setTimeout(() => {
-                finishAuction(item)
-                console.log(
-                    `Finished auction id: ${item.auctionId}. Waiting for seller response`
-                )
-                clearTimeout(timeout)
-            }, item.auctionTime)
-        }
-    }
-
-    console.log(
-        `Auction Pending: ${auction.filter(i => i.auctionStatus === 1).length}`
-    )
-    console.log(
-        `Auction Processing: ${
-            auction.filter(i => i.auctionStatus === 2).length
-        }`
-    )
-    console.log(
-        `Auction Waiting for seller response: ${
-            auction.filter(i => i.auctionStatus === 3).length
-        }`
-    )
-    console.log(
-        `Auction Waiting for auctioneer response: ${
-            auction.filter(i => i.auctionStatus === 4).length
-        }`
-    )
-}
-
+checkingAllUpdate()
 initAuctionTime()
 
 cron.schedule('* * * * *', () => {
@@ -165,6 +107,69 @@ if (!module.parent) {
             `⚡⚡⚡⚡⚡⚡ Socket is running on port ${config.socket_port}`
         )
     })
+}
+
+async function checkingAllUpdate() {
+    await auctionModel.checkingAllAuction()
+}
+
+async function initAuctionTime() {
+    const times = await auctionModel.getAllAuctionTime()
+    auction = times.map(item => {
+        return {
+            auctionId: item.id,
+            timeToStart:
+                moment(item.start_time).diff(moment(new Date())) > 0
+                    ? moment(item.start_time).diff(moment(new Date()))
+                    : 0,
+            timeAuction:
+                moment(item.start_time)
+                    .add(item.time, 'minutes')
+                    .diff(moment(new Date())) > 0
+                    ? moment(item.start_time)
+                          .add(item.time, 'minutes')
+                          .diff(moment(new Date()))
+                    : 0,
+            auctionStatus: item.status
+        }
+    })
+
+    for (const item of auction) {
+        if (item.timeToStart > 0) {
+            const timeout = setTimeout(() => {
+                console.log(`Starting for auction id: ${item.auctionId}`)
+                startAuction(item.auctionId)
+                clearTimeout(timeout)
+            }, item.timeToStart)
+        } else if (item.auctionTime > 0) {
+            const timeout = setTimeout(() => {
+                finishAuction(item)
+                console.log(
+                    `Finished auction id: ${item.auctionId}. Waiting for seller response`
+                )
+                clearTimeout(timeout)
+            }, item.auctionTime)
+        }
+    }
+
+    console.log(
+        `Auction Pending: ${auction.filter(i => i.auctionStatus === 1).length}`
+    )
+    console.log(
+        `Auction Processing: ${
+            auction.filter(i => i.auctionStatus === 2).length
+        }`
+    )
+    console.log(
+        `Auction Waiting for seller response: ${
+            auction.filter(i => i.auctionStatus === 3).length
+        }`
+    )
+    console.log(
+        `Auction Waiting for auctioneer response: ${
+            auction.filter(i => i.auctionStatus === 4).length
+        }`
+    )
 }
 
 async function handleRaise(data) {
@@ -274,29 +279,9 @@ async function finishAuction(item) {
     await auctionModel.updateAuction({ status: 3 }, item.auctionId)
     const timeout = setTimeout(() => {
         removeAuctionRoom(item.auctionId)
-        // waitingForSeller(item.auctionId)
         console.log(
             `Finished auction id: ${item.auctionId}. Waiting for seller response`
         )
         clearTimeout(timeout)
     }, item.auctionTime)
 }
-
-// async function waitingForSeller(id) {
-//     await auctionModel.updateAuction({ status: 4 }, id)
-//     const timeout = setTimeout(() => {
-//         waitingForAuctioneer(item.auctionId)
-//         console.log(
-//             `Finished auction id: ${item.auctionId}. Waiting for seller response`
-//         )
-//         clearTimeout(timeout)
-//     }, item.auctionTime)
-// }
-
-// async function waitingForAuctioneer(id) {
-//     await auctionModel.updateAuction({ status: 6 }, id)
-// }
-
-// async function successAuction(id, timeout) {
-//     clearTimeout(timeout)
-// }

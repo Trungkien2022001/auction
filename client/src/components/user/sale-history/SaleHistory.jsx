@@ -15,7 +15,6 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -25,6 +24,8 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Radio, RadioGroup } from '@mui/material';
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { get } from '../../../utils/customRequest';
 
 function createData(name,  calories, fat, d, e, f, g, h, i, carbs, protein, a, b, c) {
   return {
@@ -156,7 +157,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { order, orderBy, onRequestSort } =
     props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -254,16 +255,26 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-
-export const SaleHistory = () => {
+const api_endpoint = process.env.REACT_APP_API_ENDPOINT
+export const SaleHistory = ({currentUser}) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
-  const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
+  const [data, setData] = useState({})
 
+  useEffect(() => {
+    async function getData() {
+      let result = await get(`${api_endpoint}/auction-sell-history?user_id=${currentUser.id}`, currentUser)
+      if (result.status === 200) {
+        setData(result.data.data)
+      }
+    }
+    getData()
+  }, [currentUser])
+  console.log(data)
 
   const handleClickOpenAuctionDialog = () => {
     setOpenAuctionDialog(true);
@@ -292,7 +303,6 @@ export const SaleHistory = () => {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -303,7 +313,6 @@ export const SaleHistory = () => {
     <div>
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
             stickyHeader 
@@ -313,7 +322,6 @@ export const SaleHistory = () => {
             size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
@@ -323,17 +331,14 @@ export const SaleHistory = () => {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow className='sell-table-row'
                       hover
                       role="checkbox"
-                      aria-checked={isItemSelected}
                       tabIndex={-1}
                       key={row.name}
-                      selected={isItemSelected}
                       // height='200px'
                     >
                       <TableCell
@@ -346,7 +351,7 @@ export const SaleHistory = () => {
                         {row.name}
                       </TableCell>
                       <TableCell align="center">
-                        <img className='product-sell-image' src={row.calories} alt='product image'/></TableCell>
+                        <img className='product-sell-image' src={row.calories} alt='product_image'/></TableCell>
                       <TableCell align="left" className='product-history-name'>{row.fat}</TableCell>
                       <TableCell align="left">{row.d}</TableCell>
                       <TableCell align="center">{row.e}</TableCell>

@@ -2,6 +2,9 @@
     margin-top: 75px;
     display: flex;
     .left-container{
+        .list-item-category:hover{
+            background-color: #ccc;
+        }
     }
     .right-container{
         .chat{

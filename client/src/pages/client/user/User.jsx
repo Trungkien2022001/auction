@@ -298,8 +298,8 @@ export const User = () => {
         }
         <div className='user-info-item'>
           {currentPage === 1 ? <Overview currentUser={currentUser} /> : <></>}
-          {currentPage === 2 ? <BuyHistory /> : <></>}
-          {currentPage === 3 ? <SaleHistory /> : <></>}
+          {currentPage === 2 ? <BuyHistory currentUser={currentUser}/> : <></>}
+          {currentPage === 3 ? <SaleHistory currentUser={currentUser}/> : <></>}
         </div>
       </div>
       <SimpleDialog

@@ -51,11 +51,26 @@ const getDetail = Joi.object().keys({
         .required()
 })
 
+const gets = Joi.object().keys({
+    // page: Joi.number()
+    //     .min(0)
+    //     .required(),
+    type: Joi.number()
+        .min(0)
+        .optional(),
+    category: Joi.number()
+        .min(0)
+        .optional()
+})
+
 module.exports = {
     create: {
         body: create
     },
     getDetail: {
         header: getDetail
+    },
+    gets: {
+        header: gets
     }
 }

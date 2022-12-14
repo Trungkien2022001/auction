@@ -86,6 +86,12 @@ exports.getAuctionOverview = async params => {
     }
 }
 
+exports.getAuctions = async params => {
+    const auctions = await auctionModel.getAuctions(params)
+
+    return auctions
+}
+
 exports.getAuctionHistory = async id => {
     const result = await auctionModel.getAuctionHistory(id)
 

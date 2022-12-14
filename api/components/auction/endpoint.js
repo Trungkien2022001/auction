@@ -5,7 +5,7 @@ const { validate } = require('../../middleware/validator')
 const commonModel = require('../../models/common')
 const auctionModel = require('../../models/auction')
 const auctionController = require('./controller')
-const { create, getDetail } = require('./schema')
+const { create, getDetail, gets } = require('./schema')
 
 const router = new Router()
 
@@ -59,6 +59,24 @@ router.get('/auction-overview', async ctx => {
     debug('POST / get auction overview')
     try {
         const data = await auctionController.getAuctionOverview()
+        ctx.body = {
+            success: true,
+            data
+        }
+    } catch (error) {
+        ctx.status = 500
+        ctx.body = {
+            success: false,
+            message: error.message || JSON.stringify(error)
+        }
+        throw error
+    }
+})
+router.get('/auctions', validate(gets), async ctx => {
+    debug('POST / get auctions')
+    const { query } = ctx.request
+    try {
+        const data = await auctionController.getAuctions(query)
         ctx.body = {
             success: true,
             data

@@ -64,7 +64,7 @@ export const Homepage = ({socket}) => {
               productCategory.length && productCategory.map((item, index) => (
 
                 <div key={index}>
-                  <ListItem style={{ padding: '4px 5px' }}>
+                  <ListItem style={{ padding: '4px 5px' }} className="list-item-category">
                     <ListItemText style={{ cursor: 'pointer' }} primary={item.name} />
                   </ListItem>
                   <Divider />

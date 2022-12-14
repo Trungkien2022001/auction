@@ -1,5 +1,6 @@
 /* eslint no-use-before-define: "error" */
 /* eslint no-return-await: "error" */
+/* eslint-disable camelcase */
 const debug = require('debug')('auction:model:auction')
 const moment = require('moment')
 const { knex } = require('../connectors')
@@ -8,6 +9,36 @@ exports.saveAuction = async auction => {
     return knex('auction').insert(auction)
 }
 
+exports.getAuctions = async () => {
+    debug('MODEL/auction getAuctions')
+    try {
+        const result = await knex
+            .select(
+                'a.id',
+                'a.status',
+                'a.start_time',
+                'a.start_price',
+                'a.sell_price',
+                'a.auction_count',
+                'p.category_id',
+                'p.name',
+                'p.title',
+                'p.image',
+                'at.time'
+            )
+            .from('auction as a')
+            .innerJoin('product as p', 'a.product_id', 'p.id')
+            .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+            .where('a.status', 2)
+            .orWhere('a.status', 1)
+            .whereNull('a.deleted_at')
+            .orderBy('a.updated_at', 'desc')
+
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
 exports.getLatestAuction = async () => {
     debug('MODEL/auction getLatestAuction')
     try {
@@ -564,21 +595,21 @@ exports.checkingAllAuction = async () => {
             if (
                 auction_sale_all_count < 5 ||
                 auction_sale_all_count / 2 < auction_sale_failed_count ||
-                (auction_sale_failed_count > 5 && item.prestige != 0)
+                (auction_sale_failed_count > 5 && item.prestige !== 0)
             ) {
                 await knex('user')
                     .update('prestige', 0)
                     .where('id', id)
             } else if (
                 auction_sale_all_count < 5 ||
-                (auction_sale_failed_count > 1 && item.prestige != 1)
+                (auction_sale_failed_count > 1 && item.prestige !== 1)
             ) {
                 await knex('user')
                     .update('prestige', 1)
                     .where('id', id)
             } else if (
                 auction_sale_delivered_count >= auction_sale_all_count * 0.6 &&
-                item.prestige != 2 &&
+                item.prestige !== 2 &&
                 auction_sale_all_count >= 5
             ) {
                 await knex('user')
@@ -587,4 +618,67 @@ exports.checkingAllAuction = async () => {
             }
         })
     )
+}
+exports.finishedAuction = async id => {
+    await exports.updateAuction({ status: 3 }, id)
+    await knex('auction_history')
+        .update('is_success', 1)
+        .where('auction_id', id)
+    const win_auctioneer = await knex('auction_history')
+        .select()
+        .where('auction_id', id)
+    const seller = await knex('auction')
+        .select()
+        .where('id', id)
+    await knex('notification').insert([
+        {
+            user_id: seller.seller_id,
+            action_user_id: win_auctioneer.auctioneer_id,
+            auction_id: id,
+            type: 2
+        },
+        {
+            action_user_id: seller.seller_id,
+            user_id: win_auctioneer.auctioneer_id,
+            auction_id: id,
+            type: 4
+        }
+    ])
+
+    return {
+        auctioneer: win_auctioneer.auctioneer_id,
+        seller: seller.seller_id
+    }
+}
+
+exports.sellerConfirm = async (sellerId, auctionId, confirm) => {
+    const status = confirm ? 4 : 6
+    await exports.updateAuction({ status }, auctionId)
+    const win_auctioneer = await knex('auction_history')
+        .select()
+        .where('auction_id', auctionId)
+    await knex('notification').insert({
+        action_user_id: sellerId,
+        user_id: win_auctioneer.auctioneer_id,
+        auction_id: auctionId,
+        type: status ? 7 : 4
+    })
+
+    return win_auctioneer.auctioneer_id
+}
+
+exports.auctioneerConfirm = async (userId, auctionId, confirm) => {
+    const status = confirm ? 5 : 6
+    await exports.updateAuction({ status }, auctionId)
+    const seller = await knex('auction')
+        .select()
+        .where('id', auctionId)
+    await knex('notification').insert({
+        user_id: seller.seller_id,
+        action_user_id: userId,
+        auction_id: auctionId,
+        type: status ? 8 : 5
+    })
+
+    return seller.id
 }

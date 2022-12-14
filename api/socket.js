@@ -48,7 +48,7 @@ cron.schedule('* * * * *', () => {
     initAuctionTime()
 })
 
-cron.schedule('* * * * *', () => {
+cron.schedule('*/5 * * * *', () => {
     console.log('')
     console.log(
         `---------------------------Checking all auction after 5 minute ----------------`
@@ -85,6 +85,27 @@ socketIO.on('connection', socket => {
 
     socket.on('add-to-new-room', (auctionId, userId) => {
         addToNewRoom(userId, socket.id, auctionId)
+    })
+
+    socket.on('auctioneer_confirm', ({ userId, auctionId, status }) => {
+        auctionModel.auctioneerConfirm(userId, auctionId, status).then(id => {
+            const seller = listOnlineUser.find(i => i.user_id === id)
+            if (seller) {
+                socket
+                    .to(seller.socket)
+                    .emit('auctioneer_confirm', { status, auctionId })
+            }
+        })
+    })
+    socket.on('seller_confirm', ({ sellerId, auctionId, status }) => {
+        auctionModel.sellerConfirm(sellerId, auctionId, status).then(id => {
+            const auctioneer = listOnlineUser.find(i => i.user_id === id)
+            if (auctioneer) {
+                socket
+                    .to(auctioneer.socket)
+                    .emit('seller_confirm', { status, auctionId })
+            }
+        })
     })
 
     socket.on('disconnect', () => {
@@ -143,7 +164,23 @@ async function initAuctionTime() {
             }, item.timeToStart)
         } else if (item.auctionTime > 0) {
             const timeout = setTimeout(() => {
-                finishAuction(item)
+                const result = finishAuction(item)
+                const auctioneer = listOnlineUser.find(
+                    i => i === result.auctioneer
+                )
+                const seller = listOnlineUser.find(i => i === result.seller)
+                if (auctioneer) {
+                    socketIO
+                        .to(auctioneer.socket)
+                        .emit('finishedAuctionAuctioneer', {
+                            auction_id: item.id
+                        })
+                }
+                if (seller) {
+                    socketIO
+                        .to(seller.socket)
+                        .emit('finishedAuctionSeller', { auction_id: item.id })
+                }
                 console.log(
                     `Finished auction id: ${item.auctionId}. Waiting for seller response`
                 )
@@ -188,7 +225,6 @@ async function handleRaise(data) {
     await notificationModel.createNotification(4, user.id, auctionId, userIds)
     // }
 }
-// handleRaise({auctionId: 1})
 
 async function addToRoom(userId, socketId) {
     const index = listOnlineUser.findIndex(item => item.user_id === userId)
@@ -210,7 +246,7 @@ async function addToRoom(userId, socketId) {
 
 function checkHasExistRoom(userId, auctionId, socket) {
     if (userId === null) return
-    const index = listOnlineUser.findIndex(item => item.user_id == userId)
+    const index = listOnlineUser.findIndex(item => item.user_id === userId)
     if (index !== -1) {
         const newRoomName = createRoomName(auctionId)
         const roomIndex = listOnlineUser[index].auctionRooms.findIndex(
@@ -225,7 +261,7 @@ function checkHasExistRoom(userId, auctionId, socket) {
 
 async function addToNewRoom(userId, auctionId) {
     if (userId === null) return
-    const index = listOnlineUser.findIndex(item => item.user_id == userId)
+    const index = listOnlineUser.findIndex(item => item.user_id === userId)
     const newRoomName = createRoomName(auctionId)
     if (index !== -1) {
         listOnlineUser[index].auctionRooms.push(newRoomName)
@@ -233,9 +269,9 @@ async function addToNewRoom(userId, auctionId) {
 }
 
 function leaveRoom(socketId, index) {
-    if (listOnlineUser[index].socket.length != 1) {
+    if (listOnlineUser[index].socket.length !== 1) {
         const socketIndex = listOnlineUser[index].socket.findIndex(
-            i => i == socketId
+            i => i === socketId
         )
         listOnlineUser[index].socket.splice(socketIndex, 1)
     } else {
@@ -243,20 +279,20 @@ function leaveRoom(socketId, index) {
     }
 }
 
-async function removeAuctionRoom(auctionId) {
-    await auctionModel.updateUserAuction(auctionId)
+// async function removeAuctionRoom(auctionId) {
+//     await auctionModel.updateUserAuction(auctionId)
 
-    const auctionRoomName = createRoomsName(auctionId)
-    for (const i in listOnlineUser) {
-        const item = listOnlineUser[i]
-        const index = item.auctionRooms.findIndex(
-            name => name === auctionRoomName
-        )
-        if (index !== -1) {
-            listOnlineUser[i].auctionRooms.splice(index, 1)
-        }
-    }
-}
+//     const auctionRoomName = createRoomsName(auctionId)
+//     for (const i in listOnlineUser) {
+//         const item = listOnlineUser[i]
+//         const index = item.auctionRooms.findIndex(
+//             name => name === auctionRoomName
+//         )
+//         if (index !== -1) {
+//             listOnlineUser[i].auctionRooms.splice(index, 1)
+//         }
+//     }
+// }
 
 async function startAuction(id) {
     socketIO.emit('updateUI')
@@ -276,12 +312,7 @@ function createRoomName(id) {
 }
 
 async function finishAuction(item) {
-    await auctionModel.updateAuction({ status: 3 }, item.auctionId)
-    const timeout = setTimeout(() => {
-        removeAuctionRoom(item.auctionId)
-        console.log(
-            `Finished auction id: ${item.auctionId}. Waiting for seller response`
-        )
-        clearTimeout(timeout)
-    }, item.auctionTime)
+    const result = await auctionModel.finishedAuction(item.auctionId)
+
+    return result
 }

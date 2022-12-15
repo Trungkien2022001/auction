@@ -78,13 +78,6 @@ export const newAuctionValidate = (data) => {
         }
     }
 
-    if(!data.branch){
-        return {
-            err: true,
-            message: 'Vui lòng nhập thương hiệu sản phẩm'
-        }
-    }
-
     if(!data.status){
         return {
             err: true,

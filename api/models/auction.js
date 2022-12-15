@@ -173,7 +173,7 @@ exports.getProductAuction = async params => {
                 'a.sell_price',
                 'a.seller_id',
                 'a.auction_count',
-                'a.status',
+                'a.status as auction_status',
                 'a.is_finished_soon',
                 'a.is_returned',
                 'p.name',

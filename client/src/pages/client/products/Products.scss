@@ -42,7 +42,7 @@
         .product-wrapper{
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-around;
+            justify-content: space-between;
             transition:opacity 2s linear;
             .product{
                 background-color: antiquewhite;

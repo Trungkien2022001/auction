@@ -26,6 +26,12 @@ export const Login = () => {
   const [username, setUsername] = useState("");
   const dispatch = useDispatch()
 
+  const onEnterWork = (e) => {
+    if (e.keyCode === 13 && e.shiftKey === false) {
+      handleLogin()
+    }
+  }
+  
   const handleLogin = () => {
     axios
       .post(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
@@ -90,6 +96,7 @@ export const Login = () => {
                     </InputAdornment>
                   }
                   label="Password"
+                  onKeyDown={onEnterWork}
                 />
               </FormControl>
           </div>

@@ -27,7 +27,9 @@ const create = Joi.object().keys({
     product: Joi.object()
         .keys({
             name: Joi.string().required(),
-            branch: Joi.string().required(),
+            branch: Joi.string()
+                .allow(['', null])
+                .optional(),
             status: Joi.string().required(),
             title: Joi.string()
                 .max(300)

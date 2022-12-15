@@ -49,6 +49,11 @@ export const Homepage = ({socket}) => {
   }, [])
   const handleStop = () => {
   }
+
+  const handleChangePage = id => {
+    window.location.href=(`/product/${id}`)
+  }
+
   const style = {
     width: '100%',
     bgcolor: 'background.paper',
@@ -65,7 +70,7 @@ export const Homepage = ({socket}) => {
 
                 <div key={index}>
                   <ListItem style={{ padding: '4px 5px' }} className="list-item-category">
-                    <ListItemText style={{ cursor: 'pointer' }} primary={item.name} />
+                    <ListItemText style={{ cursor: 'pointer' }} primary={item.name} onClick={()=>handleChangePage(item.id)} />
                   </ListItem>
                   <Divider />
                 </div>
@@ -94,7 +99,7 @@ export const Homepage = ({socket}) => {
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
-              <h2>Sản phẩm nổi bật</h2>
+              <Link to={'/product/2000'} style={{color: 'black', textDecoration: 'none'}}> <h2>Sản phẩm nổi bật</h2></Link>
               <b></b>
             </div>
             <div className="product-wrapper">
@@ -136,7 +141,7 @@ export const Homepage = ({socket}) => {
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
-              <h2>Sản phẩm siêu rẻ</h2>
+              <Link to={'/product/3000'} style={{color: 'black', textDecoration: 'none'}}> <h2>Sản phẩm siêu rẻ</h2></Link>
               <b></b>
             </div>
             <div className="product-wrapper">
@@ -178,7 +183,7 @@ export const Homepage = ({socket}) => {
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
-              <h2>Sản phẩm mới nhất</h2>
+              <Link to={'/product/1000'} style={{color: 'black', textDecoration: 'none'}}> <h2>Sản phẩm mới nhất</h2></Link>
               <b></b>
             </div>
             <div className="product-wrapper">
@@ -220,7 +225,7 @@ export const Homepage = ({socket}) => {
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
-              <h2>Sản phẩm sắp đấu giá</h2>
+              <Link to={'/product/4000'} style={{color: 'black', textDecoration: 'none'}}> <h2>Sản phẩm sắp đấu giá</h2></Link>
               <b></b>
             </div>
             <div className="product-wrapper">
@@ -236,7 +241,7 @@ export const Homepage = ({socket}) => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time, 'minutes')}
+                            date={moment(item.start_time)}
                             renderer={renderer}
                           />
                         </div>

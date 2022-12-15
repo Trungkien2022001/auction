@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Header } from "../../../components/header/Header";
 import "./Products.scss";
 // import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FormControl, InputLabel, MenuItem, Pagination, Select, TextField } from "@mui/material";
 import Countdown, { zeroPad } from 'react-countdown'
 import { useEffect } from "react";
@@ -21,16 +21,17 @@ const renderer = ({ days, hours, minutes, seconds }) => (
 );;
 
 export const Products = ({ socket }) => {
+  const location = useLocation();
+  let id = location.pathname.split('/')[2]
   const limit = 16
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState([])
   const [initialData, setInitialData] = useState({})
-  const [type, setType] = useState(1)
-  const [category, setCategory] = useState(0)
+  const [type, setType] = useState(id >= 1000 ? parseInt(id/1000) : 1)
+  const [category, setCategory] = useState(id && id < 1000? parseInt(id) : 0)
   const [search, setSearch] = useState('')
-  const [productCategory, setProductCategory] = useState([]);
-  const [page, setPage] = useState(1);
-
+  const [productCategory, setProductCategory] = useState([])
+  const [page, setPage] = useState(1)
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', () => {
@@ -42,8 +43,12 @@ export const Products = ({ socket }) => {
   async function getData() {
     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auctions`, currentUser)
     if (result.status === 200) {
-      setData(result.data.data)
       setInitialData(result.data.data)
+      if(id){
+        handleSearchAll(result.data.data, id && id < 1000? id : 0, '', id >= 1000 ? id/1000 : 1)
+      } else {
+        setData(result.data.data)
+      }
     }
 
     result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
@@ -57,19 +62,17 @@ export const Products = ({ socket }) => {
   const handleStop = () => {
   }
 
-  const handleSearchAll = (category, search, type) => {
+  const handleSearchAll = (metaData, category, search, type) => {
     let firstData, secondData, finalData
     if(category){
-      firstData = initialData.filter(i=>i.category_id === category)
+      firstData = metaData.filter(i=>i.category_id === parseInt(category))
     } else {
-      firstData = initialData
+      firstData = metaData
     }
-    console.log(search)
     if(search === ''){
       secondData = firstData
     } else {
       secondData = firstData.filter(i=>i.name.toLowerCase().includes(search.toLowerCase()))
-      // firstData.map(i=>console.log(i.name.includes(search)))
     }
     switch (type) {
       case 1: 
@@ -94,16 +97,16 @@ export const Products = ({ socket }) => {
   const handleSearch = (value, t)=>{
     if(t === 'type') {
       setType(value)
-      handleSearchAll(category, search, value)
+      handleSearchAll(initialData, category, search, value)
 
     }
     if(t === 'category') {
       setCategory(value)
-      handleSearchAll(value, search, type)
+      handleSearchAll(initialData, value, search, type)
     }
     if(t === 'search') {
       setSearch(value)
-      handleSearchAll(category, value, type)
+      handleSearchAll(initialData, category, value, type)
     }
   }
 
@@ -149,7 +152,7 @@ export const Products = ({ socket }) => {
                   onChange={(e)=>handleSearch(e.target.value, 'type')}
                 >
                   <MenuItem value={1}>Mới nhất</MenuItem>
-                  <MenuItem value={2}>Bán chạy</MenuItem>
+                  <MenuItem value={2}>Nổi bật</MenuItem>
                   <MenuItem value={3}>Siêu rẻ</MenuItem>
                   <MenuItem value={4}>Sắp đấu giá</MenuItem>
                 </Select>
@@ -166,7 +169,7 @@ export const Products = ({ socket }) => {
                   style={{ width: '30vw' , maxWidth: '150px'}}
                   onChange={(e)=>handleSearch(e.target.value, 'category')}
                 > 
-                  <MenuItem key={0} value={0}>Tất cả</MenuItem>
+                  <MenuItem value={0}>Tất cả</MenuItem>
                   {
                     productCategory.length && productCategory.map((item) => (
                         <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
@@ -205,7 +208,7 @@ export const Products = ({ socket }) => {
                       <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
                     </div>
                     <div className="product-name">{item.name}</div>
-                    <div className="product-detail">{item.title}</div>
+                    <div className="product-detail"><div style={{margin:"auto"}}>{item.title}</div></div>
                     <div className="product-price">
                       Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                     </div>

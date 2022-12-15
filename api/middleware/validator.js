@@ -87,7 +87,7 @@ function validate(schema, handleLogging) {
                 ctx.body = {
                     success: false,
                     request_id: ctx.request.id,
-                    message: `(╯°□°）╯︵ ┻━┻ missing or invalid params at${position}`,
+                    message: `(╯°□°）╯︵ ┻━┻ missing or invalid params at ${position}, ${error.details[0].message}`,
                     verbosity
                 }
 

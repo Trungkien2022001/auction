@@ -69,6 +69,13 @@ export const Product = ({ socket }) => {
   const handleCloseAuctionDialog = () => {
     setOpenAuctionDialog(false);
   };
+
+  const onEnterWork = (e) => {
+    if (e.keyCode === 13 && e.shiftKey === false) {
+      handleSubmitAuction()
+    }
+  }
+
   const handleSubmitAuction = async () => {
     setOpenAuctionDialog(false);
     if (data.product.sell_price > auctionBet) {
@@ -240,10 +247,10 @@ export const Product = ({ socket }) => {
                         <Button onClick={() => handleClickOpenAuctionHistoryDialog()} style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Lịch sử</Button>
                       </div>
                       <div className="action-button-log">
-                        <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Theo dõi</Button>
+                        <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined" disabled={data.product.auction_status !== 2}>Theo dõi</Button>
                       </div>
                       <div className="action-button">
-                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} variant="contained">Đấu giá</Button>
+                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} disabled={data.product.auction_status !== 2} variant="contained">Đấu giá</Button>
                       </div>
                     </div>
                   </div>
@@ -394,11 +401,12 @@ export const Product = ({ socket }) => {
             fullWidth
             variant="standard"
             onChange={e => setAuctionBet(e.target.value)}
+            onKeyDown={onEnterWork}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
-          <Button onClick={handleSubmitAuction}>Xác nhận</Button>
+          <Button onClick={handleSubmitAuction} >Xác nhận</Button>
         </DialogActions>
       </Dialog>
       <Dialog open={openAuctionHistoryDialog} onClose={handleCloseAuctionHistoryDialog}>

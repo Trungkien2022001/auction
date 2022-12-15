@@ -63,6 +63,7 @@ function App() {
         <Routes>
           <Route path='/' element = {<Homepage socket = {socket}/>}/>
           <Route path='/test' element = {<Test/>}/>
+          <Route path='/product/:sort' element = {<Products socket = {socket}/>}/>
           <Route path='/product' element = {<Products socket = {socket}/>}/>
           <Route path='/management' element = {<Management/>}/>
           <Route path='/user/:id' element = {<User/>}/>

@@ -180,15 +180,12 @@ router.post('/auction/raise', genericSecure, async ctx => {
     debug('POST /auction/raise')
 
     try {
-        await auctionController.createAuctionRaise({
+        const check = await auctionController.createAuctionRaise({
             body: ctx.request.body,
             user: ctx.User,
             auctionId: ctx.request.query.auction_id
         })
-
-        ctx.body = {
-            success: true
-        }
+        ctx.body = check
     } catch (err) {
         ctx.status = 500
         ctx.body = {

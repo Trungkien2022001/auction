@@ -1,4 +1,5 @@
 const Hoek = require('@hapi/hoek')
+const auctionTime = require('./auctionTime')
 
 const defaults = {
     production: false,
@@ -12,6 +13,7 @@ const defaults = {
     redisPassword: null,
     redisDb: 0,
     redisPrefix: 'test:',
+    auctionTime,
     mysqlConnectionUrl: 'mysql://root@localhost/auction'
 }
 const custom = {

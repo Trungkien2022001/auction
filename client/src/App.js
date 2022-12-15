@@ -18,7 +18,7 @@ import { Products } from './pages/client/products/Products';
 
 function App() {
   const CustomToastWithLink = (metaData) => (
-    <div onClick={()=>{window.location.href=`/auction/${metaData.auctionId}`}}>
+    <div onClick={()=>{window.location.href=`/auction/${metaData.auction.product.id}`}}>
       {`${metaData.bet.auctioneer_name} đã bình luận về một phiên đấu giá mà bạn theo dõi`}
     </div>
   );
@@ -35,6 +35,21 @@ function App() {
           position: toast.POSITION.BOTTOM_RIGHT
         })
       }
+    })
+    socket.current.on('finishedAuctionAuctioneer', ({auctionId})=>{
+        toast.info('chúc mừng bạn đã đấu giá thành công một sản phẩm', {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+    })
+    socket.current.on('finishedAuctionSeller', ({auctionId})=>{
+        toast.info('Sản phẩm của bạn đã đấu giá thành công, vui lòng vào trang cá nhân xác nhận', {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+    })
+    socket.current.on('notif-to-seller', ({auctionId})=>{
+        toast.info('sản phẩm của bạn có một đấu giá mới', {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
     })
     return () => {
       socket.current.disconnect();

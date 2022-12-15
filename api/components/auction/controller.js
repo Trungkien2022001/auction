@@ -35,9 +35,10 @@ exports.createAuctionRaise = async params => {
     const { body, user, auctionId } = params
     const auction = await exports.getAuctionDetail({ id: auctionId })
     if (body.price <= auction.product.sell_price) {
-        throw new Error(
-            `Auction raise error : price must be > ${auction.product.sell_price}`
-        )
+        return {
+            success: false,
+            message: `Auction raise error : price must be > ${auction.product.sell_price}`
+        }
     }
 
     if (
@@ -69,7 +70,9 @@ exports.createAuctionRaise = async params => {
         auctionId
     )
 
-    return auction
+    return {
+        success: true
+    }
 }
 
 exports.getAuctionOverview = async params => {

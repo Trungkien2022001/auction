@@ -4,6 +4,7 @@
 const debug = require('debug')('auction:model:auction')
 const moment = require('moment')
 const { knex } = require('../connectors')
+const { auctionTime } = require('../config')
 
 exports.saveAuction = async auction => {
     return knex('auction').insert(auction)
@@ -540,17 +541,14 @@ exports.insertUserAuction = async (userId, auctionId) => {
 }
 
 exports.checkingAllAuction = async () => {
-    await knex('auction')
-        .update('status', 2)
-        .where('start_time', '>=', new Date())
-    const activeAuction = await knex('auction').whereIn('status', [2, 3, 4])
+    const activeAuction = await knex('auction').whereIn('status', [1, 2, 3, 4])
     Promise.all(
         activeAuction.map(async item => {
             if (
                 item.status === 2 &&
-                moment(item.start_time).isAfter(
-                    moment(new Date()).subtract(item.time, 'minutes')
-                )
+                moment(item.start_time)
+                    .add(auctionTime.AUCTION_TIME[item.auction_time], 'minutes')
+                    .isBefore(moment(new Date()))
             ) {
                 await knex('auction')
                     .update('status', 3)
@@ -567,6 +565,13 @@ exports.checkingAllAuction = async () => {
             ) {
                 await knex('auction')
                     .update('status', 5)
+                    .where('id', item.id)
+            } else if (
+                item.status === 1 &&
+                moment(item.start_time).isBefore(moment(new Date()))
+            ) {
+                await knex('auction')
+                    .update('status', 2)
                     .where('id', item.id)
             }
         })
@@ -627,27 +632,30 @@ exports.finishedAuction = async id => {
     const win_auctioneer = await knex('auction_history')
         .select()
         .where('auction_id', id)
+        .limit(1)
+        .offset(0)
+        .orderBy('id', 'desc')
     const seller = await knex('auction')
         .select()
         .where('id', id)
     await knex('notification').insert([
         {
-            user_id: seller.seller_id,
-            action_user_id: win_auctioneer.auctioneer_id,
+            user_id: seller[0].seller_id,
+            action_user_id: win_auctioneer[0].auctioneer_id,
             auction_id: id,
             type: 2
         },
         {
-            action_user_id: seller.seller_id,
-            user_id: win_auctioneer.auctioneer_id,
+            action_user_id: seller[0].seller_id,
+            user_id: win_auctioneer[0].auctioneer_id,
             auction_id: id,
             type: 4
         }
     ])
 
     return {
-        auctioneer: win_auctioneer.auctioneer_id,
-        seller: seller.seller_id
+        auctioneer: win_auctioneer[0].auctioneer_id,
+        seller: seller[0].seller_id
     }
 }
 
@@ -674,11 +682,11 @@ exports.auctioneerConfirm = async (userId, auctionId, confirm) => {
         .select()
         .where('id', auctionId)
     await knex('notification').insert({
-        user_id: seller.seller_id,
+        user_id: seller[0].seller_id,
         action_user_id: userId,
         auction_id: auctionId,
         type: status ? 8 : 5
     })
 
-    return seller.id
+    return seller[0].id
 }

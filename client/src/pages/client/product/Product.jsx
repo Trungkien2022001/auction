@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
 import { Header } from "../../../components/header/Header";
+import { Footer } from "../../../components/footer/Footer";
 import "./Product.scss";
 
 import Typography from '@mui/material/Typography';
@@ -78,6 +79,14 @@ export const Product = ({ socket }) => {
       )
       return
     }
+    if(currentUser.id === data.seller_info.id){
+      Swal.fire(
+        'Bạn không thể đấu giá sản phẩm của chính bạn?',
+        '',
+        'error'
+      )
+      return 
+    }
 
     let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction/raise?auction_id=${id}`, {
       price: auctionBet,
@@ -87,7 +96,7 @@ export const Product = ({ socket }) => {
       if (socket.current) {
         socket.current.emit('raise', {
           user: currentUser,
-          auctionId: id,
+          auction: data,
           bet: {
             auctioneer_id: currentUser.id,
             auctioneer_name: currentUser.name,
@@ -416,6 +425,7 @@ export const Product = ({ socket }) => {
           <Button onClick={handleCloseAuctionHistoryDialog}>Đóng</Button>
         </DialogActions>
       </Dialog>
+      <Footer />
     </div>
   );
 };

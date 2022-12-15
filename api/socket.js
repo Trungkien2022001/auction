@@ -22,7 +22,7 @@ const config = require('./config')
 const auctionModel = require('./models/auction')
 const notificationModel = require('./models/notification')
 
-let auction = []
+let auctions = []
 const listOnlineUser = []
 
 app.use(async (ctx, next) => {
@@ -37,8 +37,9 @@ app.use(config.corsOrigin ? cors({ origin: config.corsOrigin }) : cors())
 
 app.use(bodyParser())
 
-checkingAllUpdate()
-initAuctionTime()
+checkingAllUpdate().then(() => {
+    initAuctionTime()
+})
 
 cron.schedule('* * * * *', () => {
     console.log('')
@@ -76,11 +77,24 @@ socketIO.on('connection', socket => {
         console.log('PING PONG PING PONG')
     })
 
-    socket.on('raise', data => {
-        checkHasExistRoom(data.user.id, data.auctionId, socket)
-        socketIO.to(createRoomName(data.auctionId)).emit('raise-reply', data)
-        socketIO.to(createRoomName(data.auctionId)).emit('updateUI', {})
-        handleRaise(data)
+    socket.on('raise', async data => {
+        // console.log(data)
+        await handleRaise(data)
+        checkHasExistRoom(data.user.id, data.auction.product.id, socket)
+        await socketIO
+            .to(createRoomName(data.auction.product.id))
+            .emit('raise-reply', data)
+        await socketIO
+            .to(createRoomName(data.auction.product.id))
+            .emit('updateUI', {})
+        const seller = listOnlineUser.find(
+            i => i.user_id === data.auction.seller_info.id
+        )
+        if (seller) {
+            socketIO.to(seller.socket).emit('notif-to-seller', {
+                auction_id: data.auction.product.id
+            })
+        }
     })
 
     socket.on('add-to-new-room', (auctionId, userId) => {
@@ -136,7 +150,7 @@ async function checkingAllUpdate() {
 
 async function initAuctionTime() {
     const times = await auctionModel.getAllAuctionTime()
-    auction = times.map(item => {
+    auctions = times.map(item => {
         return {
             auctionId: item.id,
             timeToStart:
@@ -155,74 +169,88 @@ async function initAuctionTime() {
         }
     })
 
-    for (const item of auction) {
+    for (const item of auctions) {
         if (item.timeToStart > 0) {
             const timeout = setTimeout(() => {
-                console.log(`Starting for auction id: ${item.auctionId}`)
-                startAuction(item.auctionId)
-                clearTimeout(timeout)
-            }, item.timeToStart)
-        } else if (item.auctionTime > 0) {
-            const timeout = setTimeout(() => {
-                const result = finishAuction(item)
-                const auctioneer = listOnlineUser.find(
-                    i => i === result.auctioneer
-                )
-                const seller = listOnlineUser.find(i => i === result.seller)
-                if (auctioneer) {
-                    socketIO
-                        .to(auctioneer.socket)
-                        .emit('finishedAuctionAuctioneer', {
-                            auction_id: item.id
-                        })
-                }
-                if (seller) {
-                    socketIO
-                        .to(seller.socket)
-                        .emit('finishedAuctionSeller', { auction_id: item.id })
-                }
                 console.log(
-                    `Finished auction id: ${item.auctionId}. Waiting for seller response`
+                    `-----------Starting for auction id: ${item.auctionId}`
                 )
-                clearTimeout(timeout)
-            }, item.auctionTime)
+                startAuction(item.auctionId).then(() => {
+                    clearTimeout(timeout)
+                })
+            }, item.timeToStart)
+        } else if (item.timeAuction > 0 && item.timeAuction < 120000) {
+            const timeout = setTimeout(() => {
+                finishAuction(item).then(result => {
+                    console.log('result', result)
+                    const auctioneer = listOnlineUser.find(
+                        i => i === result.auctioneer
+                    )
+                    const seller = listOnlineUser.find(i => i === result.seller)
+                    if (auctioneer) {
+                        socketIO
+                            .to(auctioneer.socket)
+                            .emit('finishedAuctionAuctioneer', {
+                                auction_id: item.id
+                            })
+                    }
+                    if (seller) {
+                        socketIO
+                            .to(seller.socket)
+                            .emit('finishedAuctionSeller', {
+                                auction_id: item.id
+                            })
+                    }
+                    console.log(
+                        `---------Finished auction id: ${item.auctionId}. Waiting for seller response`
+                    )
+                    clearTimeout(timeout)
+                })
+            }, item.timeAuction)
         }
     }
 
     console.log(
-        `Auction Pending: ${auction.filter(i => i.auctionStatus === 1).length}`
+        `Auction Pending: ${auctions.filter(i => i.auctionStatus === 1).length}`
     )
     console.log(
         `Auction Processing: ${
-            auction.filter(i => i.auctionStatus === 2).length
+            auctions.filter(i => i.auctionStatus === 2).length
         }`
     )
     console.log(
         `Auction Waiting for seller response: ${
-            auction.filter(i => i.auctionStatus === 3).length
+            auctions.filter(i => i.auctionStatus === 3).length
         }`
     )
     console.log(
         `Auction Waiting for auctioneer response: ${
-            auction.filter(i => i.auctionStatus === 4).length
+            auctions.filter(i => i.auctionStatus === 4).length
         }`
     )
 }
 
 async function handleRaise(data) {
-    const { user, auctionId } = data
-    // const maxRaise = await auctionModel.getHighestBet(auctionId)
+    const { user, auction } = data
+    // const maxRaise = await auctionModel.getHighestBet(auction.id)
     // if(bet <= maxRaise) {
     //     return {
     //         success: false,
     //         highestBet: maxRaise
     //     }
     // } else {
-    await auctionModel.insertUserAuction(user.id, auctionId)
-    const userIds = await auctionModel.getAllAuctioneerOfAuction(auctionId)
+    await auctionModel.insertUserAuction(user.id, auction.product.id)
+    const userIds = await auctionModel.getAllAuctioneerOfAuction(
+        auction.product.id
+    )
     const index = userIds.findIndex(i => i === user.id)
     userIds.splice(index, 1)
-    await notificationModel.createNotification(4, user.id, auctionId, userIds)
+    await notificationModel.createNotification(
+        4,
+        user.id,
+        auction.product.id,
+        userIds
+    )
     // }
 }
 
@@ -299,10 +327,10 @@ async function startAuction(id) {
     await auctionModel.updateAuction({ status: 2 }, id)
 }
 
-function createRoomsName(auctions) {
-    if (auctions.length === 0) return []
+function createRoomsName(auctionArr) {
+    if (auctionArr.length === 0) return []
 
-    return auctions.map(i => {
+    return auctionArr.map(i => {
         return `auction:${i.auction_id}`
     })
 }

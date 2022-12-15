@@ -12,34 +12,34 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
     try {
         switch (type) {
             case 4:
-                Promise.all(
-                    userIDs.map(async userId => {
-                        const exist = await knex('notification')
-                            .select()
+                // Promise.all(
+                userIDs.map(async userId => {
+                    const exist = await knex('notification')
+                        .select()
+                        .where({
+                            user_id: userId,
+                            auction_id: auctionId,
+                            type: 4
+                        })
+                    if (exist.length) {
+                        await knex('notification')
+                            .update({
+                                action_user_id: actionUser
+                            })
                             .where({
                                 user_id: userId,
-                                auction_id: auctionId,
-                                type: 4
+                                auction_id: auctionId
                             })
-                        if (exist.length) {
-                            await knex('notification')
-                                .update({
-                                    action_user_id: actionUser
-                                })
-                                .where({
-                                    user_id: userId,
-                                    auction_id: auctionId
-                                })
-                        } else {
-                            await knex('notification').insert({
-                                user_id: userId,
-                                auction_id: auctionId,
-                                action_user_id: actionUser,
-                                type: 4
-                            })
-                        }
-                    })
-                )
+                    } else {
+                        await knex('notification').insert({
+                            user_id: userId,
+                            auction_id: auctionId,
+                            action_user_id: actionUser,
+                            type: 4
+                        })
+                    }
+                })
+                // )
                 break
 
             default:

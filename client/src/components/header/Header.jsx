@@ -19,10 +19,12 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link } from 'react-router-dom';
 import { Avatar } from '@mui/material';
 import './Header.scss'
-import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../utils/customRequest';
+import { useDispatch, useSelector } from "react-redux";
+import { userSlice } from "../../redux/userSlice";
+import Swal from 'sweetalert2';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -82,6 +84,7 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
 }));
 
 export const Header = () => {
+  const dispatch = useDispatch()
   const currentUser = useSelector(state => state.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -95,7 +98,7 @@ export const Header = () => {
 
   const handleProfileMenuOpen = (event) => {
     if (!currentUser.id) {
-      window.location.href = './login'
+      window.location.href = '/login'
     } else {
       setAnchorEl(event.currentTarget);
     }
@@ -132,6 +135,15 @@ export const Header = () => {
     handleMobileMenuClose();
     if (target === 'profile') {
       window.location.href = `/user/${currentUser.id}`
+    }
+    if (target === 'logout'){
+      dispatch(userSlice.actions.logout())  
+      Swal.fire({
+        icon: 'success',
+        title: 'Login Successfully',
+        showConfirmButton: false,
+        timer: 1500
+      })
     }
   };
   const handleNotificationClose = () => {
@@ -181,7 +193,7 @@ export const Header = () => {
           English Test
         </Link>
       </MenuItem>
-      <MenuItem onClick={() => handleMenuClose('')}>Logout</MenuItem>
+      <MenuItem onClick={() => handleMenuClose('logout')}>Logout</MenuItem>
     </Menu>
   );
   const renderNotification = (

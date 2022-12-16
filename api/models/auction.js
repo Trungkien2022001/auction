@@ -555,16 +555,19 @@ exports.checkingAllAuction = async () => {
                     .where('id', item.id)
             } else if (
                 (item.status === 3 &&
-                    moment(item.seller_confirm_time).isAfter(
-                        moment(new Date()).add(1, 'days')
-                    )) ||
+                    moment(item.start_time)
+                        .add(auctionTime.AUCTION_TIME[item.auction_time])
+                        .isBefore(
+                            moment(new Date()).subtract(1, 'days') &&
+                                item.seller_confirm_time === null
+                        )) ||
                 (item.status === 4 &&
-                    moment(item.auctioneer_confirm_time).isAfter(
-                        moment(new Date()).add(1, 'days')
+                    moment(item.seller_confirm_time).isBefore(
+                        moment(new Date()).subtract(1, 'days')
                     ))
             ) {
                 await knex('auction')
-                    .update('status', 5)
+                    .update('status', 6)
                     .where('id', item.id)
             } else if (
                 item.status === 1 &&

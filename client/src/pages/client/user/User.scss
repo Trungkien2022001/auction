@@ -39,6 +39,7 @@
         position: fixed;
         top: 64px;
         height: 100vh;
+        z-index: 10;
         overflow-y: auto;
         .user-drawer{
             height: 98vh;

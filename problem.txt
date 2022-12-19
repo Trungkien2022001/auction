@@ -1,0 +1,13 @@
+2. Làm thế nào để tránh trường hợp người bán spam sản phẩm của chính mình để sản phẩm được nên xu hướng
+3. Làm thế nào để người dùng có thể theo dõi quá trình đấu giá của một sản phẩm
+4. Làm thế nào để tránh server quá tải khi có quá nhiều sản phẩm đặt lịch đấu giá, sản phẩm đang đấu giá khi mỗi sản phẩm có một bộ bấm giờ riêng
+5. Nếu server backend bị lỗi, tắt. Sản phẩm sẽ được cập nhật lại status.
+13. Xử lý thế nào khi có kẻ cố ý gây rối trong phiên đấu giá của mình
+6. vòng đời của một phiên đấu giá
+1. Làm thế nào để xác thực người dùng
+7. Làm thế nào để kiểm soát khi người dùng thêm sản phẩm mới
+8. Socket sẽ xử lý thể nào khi user đăng nhập trên nhiều thiết bị
+9. Tối ưu cơ sở dữ liệu
+10. Tối ưu truy vấn
+11. Authenticate, authorization api
+12. Quá trình tìm kiếm

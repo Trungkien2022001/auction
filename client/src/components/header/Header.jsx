@@ -593,13 +593,14 @@ export const Header = () => {
             variant="h6"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
           >
             <Link to={'/'} style={{ textDecoration: 'none', color: '#fff' }}>
               TIKA
             </Link>
           </Typography>
-          <Search>
+          <Search
+          sx={{ display: { xs: 'none', sm: 'block' } }}
+          >
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>

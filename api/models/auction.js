@@ -344,6 +344,14 @@ exports.updateAuction = async (toUpdate, auctionId) => {
         await knex('auction')
             .update(toUpdate)
             .where('id', auctionId)
+        const user = await knex('auction')
+            .select('seller_id')
+            .where('id', auctionId)
+        if (user) {
+            return user[0].seller_id
+        }
+
+        return null
     } catch (err) {
         throw new Error(err.message || JSON.stringify(err))
     }
@@ -542,43 +550,41 @@ exports.insertUserAuction = async (userId, auctionId) => {
 
 exports.checkingAllAuction = async () => {
     const activeAuction = await knex('auction').whereIn('status', [1, 2, 3, 4])
-    Promise.all(
-        activeAuction.map(async item => {
-            if (
-                item.status === 2 &&
+    // Promise.all(
+    activeAuction.map(async item => {
+        if (
+            item.status === 2 &&
+            moment(item.start_time)
+                .add(auctionTime.AUCTION_TIME[item.auction_time], 'minutes')
+                .isBefore(moment(new Date()))
+        ) {
+            await knex('auction')
+                .update('status', 3)
+                .where('id', item.id)
+        } else if (
+            (item.status === 3 &&
                 moment(item.start_time)
-                    .add(auctionTime.AUCTION_TIME[item.auction_time], 'minutes')
-                    .isBefore(moment(new Date()))
-            ) {
-                await knex('auction')
-                    .update('status', 3)
-                    .where('id', item.id)
-            } else if (
-                (item.status === 3 &&
-                    moment(item.start_time)
-                        .add(auctionTime.AUCTION_TIME[item.auction_time])
-                        .isBefore(
-                            moment(new Date()).subtract(1, 'days') &&
-                                item.seller_confirm_time === null
-                        )) ||
-                (item.status === 4 &&
-                    moment(item.seller_confirm_time).isBefore(
-                        moment(new Date()).subtract(1, 'days')
-                    ))
-            ) {
-                await knex('auction')
-                    .update('status', 6)
-                    .where('id', item.id)
-            } else if (
-                item.status === 1 &&
-                moment(item.start_time).isBefore(moment(new Date()))
-            ) {
-                await knex('auction')
-                    .update('status', 2)
-                    .where('id', item.id)
-            }
-        })
-    )
+                    .add(auctionTime.AUCTION_TIME[item.auction_time])
+                    .isBefore(moment(new Date()).subtract(1, 'days')) &&
+                item.seller_confirm_time === null) ||
+            (item.status === 4 &&
+                moment(item.seller_confirm_time).isBefore(
+                    moment(new Date()).subtract(1, 'days')
+                ))
+        ) {
+            await knex('auction')
+                .update('status', 6)
+                .where('id', item.id)
+        } else if (
+            item.status === 1 &&
+            moment(item.start_time).isBefore(moment(new Date()))
+        ) {
+            await knex('auction')
+                .update('status', 2)
+                .where('id', item.id)
+        }
+    })
+    // )
     const userAuction = await knex('user')
         .where('del_flag', '0')
         .andWhere(

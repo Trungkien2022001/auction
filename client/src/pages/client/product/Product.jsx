@@ -76,24 +76,24 @@ export const Product = ({ socket }) => {
     }
   }
 
-  const handleSubmitAuction = async () => {
+  const   handleSubmitAuction = async () => {
     setOpenAuctionDialog(false);
     if (data.product.sell_price > auctionBet) {
       Swal.fire(
-        'Vui lòng đặt mức cược lớn hơn?',
-        `Mức cược tối thiểu cho sản phẩm này là ${data.product.sell_price + 1} VND`,
+        'Vui lòng đặt mức đấu giá lớn hơn?',
+        `Mức đấu giá tối thiểu cho sản phẩm này là ${data.product.sell_price + 1} VND`,
         'error'
       )
       return
     }
-    if(currentUser.id === data.seller_info.id){
-      Swal.fire(
-        'Bạn không thể đấu giá sản phẩm của chính bạn?',
-        '',
-        'error'
-      )
-      return 
-    }
+    // if(currentUser.id === data.seller_info.id){
+    //   Swal.fire(
+    //     'Bạn không thể đấu giá sản phẩm của chính bạn?',
+    //     '',
+    //     'error'
+    //   )
+    //   return 
+    // }
 
     let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction/raise?auction_id=${id}`, {
       price: auctionBet,
@@ -154,6 +154,7 @@ export const Product = ({ socket }) => {
   const handleStop = () => {
     // socket.current.emit('ping')
     setSuccessAuction(false)
+    // window.location.reload()
   }
 
   return (
@@ -247,10 +248,10 @@ export const Product = ({ socket }) => {
                         <Button onClick={() => handleClickOpenAuctionHistoryDialog()} style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Lịch sử</Button>
                       </div>
                       <div className="action-button-log">
-                        <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined" disabled={data.product.auction_status !== 2}>Theo dõi</Button>
+                        <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined" disabled={data.product.auction_status !== 2 || currentUser.id === data.seller_info.id}>Theo dõi</Button>
                       </div>
                       <div className="action-button">
-                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} disabled={data.product.auction_status !== 2} variant="contained">Đấu giá</Button>
+                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} disabled={data.product.auction_status !== 2 || currentUser.id === data.seller_info.id} variant="contained">Đấu giá</Button>
                       </div>
                     </div>
                   </div>

@@ -43,16 +43,14 @@ checkingAllUpdate().then(() => {
 
 cron.schedule('* * * * *', () => {
     console.log('')
-    console.log(
-        `---------------------------Refreshing after 1 minute ----------------`
-    )
+    console.log(`----------Refreshing after 1 minute ----------------`)
     initAuctionTime()
 })
 
 cron.schedule('*/5 * * * *', () => {
     console.log('')
     console.log(
-        `---------------------------Checking all auction after 5 minute ----------------`
+        `----------Checking all auction after 5 minute ----------------`
     )
     auctionModel.checkingAllAuction()
 })
@@ -65,8 +63,8 @@ socketIO.on('connection', socket => {
                 debug(
                     'authenticate',
                     user.id,
-                    socket.id,
-                    listOnlineUser[id].auctionRooms
+                    socket.id
+                    // listOnlineUser[id].auctionRooms
                 )
                 socket.join(listOnlineUser[id].auctionRooms)
             })
@@ -175,18 +173,29 @@ async function initAuctionTime() {
                 console.log(
                     `-----------Starting for auction id: ${item.auctionId}`
                 )
-                startAuction(item.auctionId).then(() => {
+                startAuction(item.auctionId).then(sellerId => {
+                    const seller = listOnlineUser.find(
+                        i => i.user_id === sellerId
+                    )
+                    if (seller) {
+                        socketIO
+                            .to(seller.socket)
+                            .emit('startingAuctionSeller', {
+                                auction_id: item.id
+                            })
+                    }
                     clearTimeout(timeout)
                 })
             }, item.timeToStart)
         } else if (item.timeAuction > 0 && item.timeAuction < 120000) {
             const timeout = setTimeout(() => {
                 finishAuction(item).then(result => {
-                    console.log('result', result)
                     const auctioneer = listOnlineUser.find(
-                        i => i === result.auctioneer
+                        i => i.user_id === result.auctioneer
                     )
-                    const seller = listOnlineUser.find(i => i === result.seller)
+                    const seller = listOnlineUser.find(
+                        i => i.user_id === result.seller
+                    )
                     if (auctioneer) {
                         socketIO
                             .to(auctioneer.socket)
@@ -324,7 +333,9 @@ function leaveRoom(socketId, index) {
 
 async function startAuction(id) {
     socketIO.emit('updateUI')
-    await auctionModel.updateAuction({ status: 2 }, id)
+    const userId = await auctionModel.updateAuction({ status: 2 }, id)
+
+    return userId
 }
 
 function createRoomsName(auctionArr) {
@@ -340,6 +351,7 @@ function createRoomName(id) {
 }
 
 async function finishAuction(item) {
+    socketIO.emit('updateUI')
     const result = await auctionModel.finishedAuction(item.auctionId)
 
     return result

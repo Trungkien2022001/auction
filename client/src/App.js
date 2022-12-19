@@ -51,6 +51,11 @@ function App() {
           position: toast.POSITION.BOTTOM_RIGHT
         })
     })
+    socket.current.on('startingAuctionSeller', ({auctionId})=>{
+        toast.info('Sản phẩm của bạn bắt đầu được đấu giá', {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+    })
     return () => {
       socket.current.disconnect();
     }

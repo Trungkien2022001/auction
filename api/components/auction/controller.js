@@ -54,6 +54,18 @@ exports.createAuctionRaise = async params => {
     ) {
         throw new Error(`Auction raise error: invalid auction time`)
     }
+
+    const auctionCountByUser = await await auctionModel.countAuctionRaiseByUser(
+        user.id,
+        auctionId
+    )
+    if (auctionCountByUser > 10) {
+        return {
+            success: false,
+            message: `Bạn đã đấu giá 10 lần cho sản phẩm này, bạn không thể đấu giá thêm`
+        }
+    }
+    console.log(auctionCountByUser)
     const toAuctionHistoryInsert = {
         auction_id: auctionId,
         auctioneer_id: user.id,

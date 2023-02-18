@@ -26,6 +26,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
+import moment from 'moment';
 
 function createData(name, calories, fat, carbs, protein, a, b, c) {
   return {
@@ -110,12 +111,12 @@ const headCells = [
     disablePadding: false,
     label: 'Giá mua',
   },
-  {
-    id: 'a',
-    numeric: true,
-    disablePadding: false,
-    label: 'Người bán',
-  },
+  // {
+  //   id: 'a',
+  //   numeric: true,
+  //   disablePadding: false,
+  //   label: 'Người bán',
+  // },
   {
     id: 'b',
     numeric: true,
@@ -231,7 +232,7 @@ EnhancedTableToolbar.propTypes = {
 
 const api_endpoint = process.env.REACT_APP_API_ENDPOINT
 
-export const BuyHistory = ({ currentUser}) => {
+export const BuyHistory = ({ currentUser }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
@@ -244,7 +245,39 @@ export const BuyHistory = ({ currentUser}) => {
     async function getData() {
       let result = await get(`${api_endpoint}/auction-purchase-history?user_id=${currentUser.id}`, currentUser)
       if (result.status === 200) {
-        setData(result.data.data)
+        // setData(result.data.data)
+        setData(JSON.parse(`
+        [
+          {
+              "id": 1,
+              "start_time": "2023-01-05T17:00:00.000Z",
+              "auction_time": 19,
+              "product_id": 1,
+              "start_price": 12000000,
+              "sell_price": 22000000,
+              "seller_id": 319,
+              "auction_count": 14,
+              "auctioneer_win": 1,
+              "status": "Chưa qua sử dụng",
+              "is_returned": 0,
+              "is_finished_soon": 0,
+              "seller_confirm_time": null,
+              "auctioneer_confirm_time": null,
+              "created_at": "2022-11-30T03:46:51.000Z",
+              "updated_at": "2022-11-30T03:46:51.000Z",
+              "deleted_at": "2022-11-30T03:46:51.000Z",
+              "name": "Đồng hồ siêu đẹp",
+              "description": "Đồng hồ chính hãng xuất xứ bên Nhật Đồng hồ chính hãng xuất xứ bên Nhật Đồng hồ chính hãng xuất xứ bên Nhật ",
+              "branch": "Casio",
+              "image": "http://res.cloudinary.com/nguyenkien2022001/image/upload/v1669779826/upload/hefa1thql0hgc14sw8tf.jpg",
+              "category_id": 1,
+              "title": "Đồng hồ chính hãng xuất xứ bên Nhật",
+              "key_word": "dongho, banchay, casio",
+              "category": "Đồng hồ & Phụ kiện",
+              "sell_status": "Hủy"
+          }
+      ]
+        `))
       }
     }
     getData()
@@ -299,10 +332,10 @@ export const BuyHistory = ({ currentUser}) => {
                   order={order}
                   orderBy={orderBy}
                   onRequestSort={handleRequestSort}
-                  rowCount={rows.length}
+                  rowCount={data ? data.length : 0}
                 />
                 <TableBody>
-                  {stableSort(rows, getComparator(order, orderBy))
+                  {data && data.length && stableSort(data, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       const labelId = `enhanced-table-checkbox-${index}`;
@@ -322,19 +355,24 @@ export const BuyHistory = ({ currentUser}) => {
                             scope="row"
                             padding="none"
                           >
-                            {row.name}
+                            {row.id}
                           </TableCell>
                           <TableCell align="center">
-                            <img className='product-sell-image' src={row.calories} alt='product_image' /></TableCell>
-                          <TableCell align="left" className='product-history-name'>{row.fat}</TableCell>
-                          <TableCell align="center">{row.carbs}</TableCell>
-                          <TableCell align="center">{row.protein}</TableCell>
-                          <TableCell align="center">{row.a}</TableCell>
-                          <TableCell align="center">{row.b}</TableCell>
+                            <img className='product-sell-image' src={row.image} alt='product_image' /></TableCell>
+                          <TableCell align="center" className='product-history-name'>{row.name}</TableCell>
+                          <TableCell align="center">{row.start_price.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'VND',
+                          })}</TableCell>
+                          <TableCell align="center">{row.sell_price.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'VND',
+                          })}</TableCell>
+                          <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY')}</TableCell>
                           <TableCell align="center">
-                            {row.c === 'success' ? <Button className={row.c} color='success' variant="contained">{row.c}</Button> : <></>}
-                            {row.c === 'cancel' ? <Button className={row.c} color='error' variant="contained">{row.c}</Button> : <></>}
-                            {row.c === 'pending' ? <Button className={row.c} onClick={() => handleClickOpenAuctionDialog()} color='warning' variant="contained">{row.c}</Button> : <></>}
+                            {row.sell_status === 'success' ? <Button className={row.c} color='success' variant="contained">{row.sell_status}</Button> : <></>}
+                            {row.sell_status === 'Hủy' ? <Button className="cancel" color='error' variant="contained">{row.sell_status}</Button> : <></>}
+                            {row.sell_status === 'pending' ? <Button className={row.c} onClick={() => handleClickOpenAuctionDialog()} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
                           </TableCell>
                         </TableRow>
                       );
@@ -354,7 +392,7 @@ export const BuyHistory = ({ currentUser}) => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={rows.length}
+              count={data ? data.length : 0}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}

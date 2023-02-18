@@ -221,6 +221,21 @@ exports.getAuctionHistory = async id => {
     }
 }
 
+exports.countAuctionRaiseByUser = async (userId, auctionId) => {
+    debug('MODEL/auction getAuctionHistory')
+    try {
+        const result = await knex
+            .select('ah.id')
+            .from('auction_history as ah')
+            .where('ah.auction_id', auctionId)
+            .andWhere('ah.auctioneer_id', userId)
+
+        return result.length
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
 exports.auctionHistoryCount = async userId => {
     // debug('MODEL/auction auctionHistoryCount')
     try {
@@ -370,9 +385,16 @@ exports.getAuctionPurchaseHistory = async userId => {
     debug('MODEL/auction getAuctionPurchaseHistory')
     try {
         const result = await knex
-            .select('a.*', 'aut.name as sell_status')
+            .select(
+                'a.*',
+                'p.*',
+                'pc.name as category',
+                'aut.name as sell_status'
+            )
             .from('auction as a')
             .innerJoin('auction_status as aut', 'a.status', 'aut.id')
+            .innerJoin('product as p', 'a.product_id', 'p.id')
+            .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
             .where('a.auctioneer_win', userId)
 
         return result
@@ -385,9 +407,19 @@ exports.getAuctionSellHistory = async userId => {
     debug('MODEL/auction getAuctionSellHistory')
     try {
         const result = await knex
-            .select('a.*', 'aut.name as sell_status')
+            .select(
+                'a.*',
+                'a.status as auction_status',
+                'at.title as auction_time',
+                'p.*',
+                'pc.name as category',
+                'aut.name as sell_status'
+            )
             .from('auction as a')
             .innerJoin('auction_status as aut', 'a.status', 'aut.id')
+            .innerJoin('product as p', 'a.product_id', 'p.id')
+            .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
+            .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             .where('a.seller_id', userId)
 
         return result

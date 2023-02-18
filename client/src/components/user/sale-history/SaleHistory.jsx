@@ -26,8 +26,9 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
+import moment from 'moment'
 
-function createData(name,  calories, fat, d, e, f, g, h, i, carbs, protein, a, b, c) {
+function createData(name, calories, fat, d, e, f, g, h, i, carbs, protein, a, b, c) {
   return {
     name,
     calories,
@@ -42,12 +43,12 @@ function createData(name,  calories, fat, d, e, f, g, h, i, carbs, protein, a, b
 }
 
 const rows = [
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh','Chà nèo', 'Đồng hồ', 'Còn mới', 1,  50000, 120000, '16:00:00 20-2-2001', '1h', 'success'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh','Chà nèo', 'Đồng hồ', 'Còn mới', 1,  50000, 120000, '16:00:00 20-2-2001', '1h', 'pending'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh','Chà nèo', 'Đồng hồ', 'Còn mới', 1,  50000, 120000, '16:00:00 20-2-2001', '1h', 'processing'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh','Chà nèo', 'Đồng hồ', 'Còn mới', 1,  50000, 120000, '16:00:00 20-2-2001', '1h', 'waiting'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh','Chà nèo', 'Đồng hồ', 'Còn mới', 1,  50000, 120000, '16:00:00 20-2-2001', '1h', 'failed'),
-  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh','Chà nèo', 'Đồng hồ', 'Còn mới', 1,  50000, 120000, '16:00:00 20-2-2001', '1h', 'cancel'),
+  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 'Chà nèo', 'Đồng hồ', 'Còn mới', 1, 50000, 120000, '16:00:00 20-2-2001', '1h', 'success'),
+  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 'Chà nèo', 'Đồng hồ', 'Còn mới', 1, 50000, 120000, '16:00:00 20-2-2001', '1h', 'pending'),
+  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 'Chà nèo', 'Đồng hồ', 'Còn mới', 1, 50000, 120000, '16:00:00 20-2-2001', '1h', 'processing'),
+  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 'Chà nèo', 'Đồng hồ', 'Còn mới', 1, 50000, 120000, '16:00:00 20-2-2001', '1h', 'waiting'),
+  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 'Chà nèo', 'Đồng hồ', 'Còn mới', 1, 50000, 120000, '16:00:00 20-2-2001', '1h', 'failed'),
+  createData(1, 'https://i1-dulich.vnecdn.net/2021/07/16/1-1626437591.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BWzFqMmUWVFC1OfpPSUqMA', 'Tuổi trẻ đáng giá bao nhiêu - Nguyễn Nhật Ánh', 'Chà nèo', 'Đồng hồ', 'Còn mới', 1, 50000, 120000, '16:00:00 20-2-2001', '1h', 'cancel'),
 
 ];
 
@@ -117,12 +118,6 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'Danh mục',
-  },
-  {
-    id: 'product_init_price',
-    numeric: true,
-    disablePadding: false,
-    label: 'Số lượng',
   },
   {
     id: 'product_init_price',
@@ -256,7 +251,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 const api_endpoint = process.env.REACT_APP_API_ENDPOINT
-export const SaleHistory = ({currentUser}) => {
+export const SaleHistory = ({ currentUser }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
@@ -269,12 +264,12 @@ export const SaleHistory = ({currentUser}) => {
     async function getData() {
       let result = await get(`${api_endpoint}/auction-sell-history?user_id=${currentUser.id}`, currentUser)
       if (result.status === 200) {
-        setData(result.data.data)
+        setData(result.data.result)
       }
     }
     getData()
   }, [currentUser])
-  console.log(data)
+  console.log("data", data)
 
   const handleClickOpenAuctionDialog = () => {
     setOpenAuctionDialog(true);
@@ -310,116 +305,121 @@ export const SaleHistory = ({currentUser}) => {
 
   return (
     <div className='dashboard-container'>
-    <div>
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableContainer>
-          <Table
-            stickyHeader 
-            sx={{ minWidth: 750, maxHeight: 600 }}
-            aria-labelledby="tableTitle"
-            aria-label="sticky table"
-            size={dense ? 'small' : 'medium'}
-          >
-            <EnhancedTableHead
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+      <div>
+        <Box sx={{ width: '100%' }}>
+          <Paper sx={{ width: '100%', mb: 2 }}>
+            <TableContainer>
+              <Table
+                stickyHeader
+                sx={{ minWidth: 750, maxHeight: 600 }}
+                aria-labelledby="tableTitle"
+                aria-label="sticky table"
+                size={dense ? 'small' : 'medium'}
+              >
+                <EnhancedTableHead
+                  order={order}
+                  orderBy={orderBy}
+                  onRequestSort={handleRequestSort}
+                  rowCount={data ? data.length : 0}
+                />
+                <TableBody>
+                  {data && data.length && stableSort(data, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow className='sell-table-row'
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.name}
-                      // height='200px'
+                      return (
+                        <TableRow className='sell-table-row'
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={row.id}
+                        // height='200px'
+                        >
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            align='center'
+                            scope="row"
+                            padding="none"
+                          >
+                            {row.id}
+                          </TableCell>
+                          <TableCell align="center">
+                            <img className='product-sell-image' src={row.image} alt='product_image' /></TableCell>
+                          <TableCell align="left" className='product-history-name'>{row.name}</TableCell>
+                          <TableCell align="left">{row.branch || 'Không có'}</TableCell>
+                          <TableCell align="center">{row.status}</TableCell>
+                          <TableCell align="center">{row.category}</TableCell>
+                          <TableCell align="center">{row.start_price.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'VND',
+                          })}</TableCell>
+                          <TableCell align="center">{row.sell_price.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'VND',
+                          })}</TableCell>
+                          <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY')}</TableCell>
+                          <TableCell align="center">{row.auction_time}</TableCell>
+                          <TableCell align="center">
+                            {row.auction_status === 5 ? <Button onClick={() => handleClickOpenAuctionDialog()} color='success' variant="contained">Thành công</Button> : <></>}
+                            {row.auction_status === 6 ? <Button color='error' variant="contained">Chả ai mua</Button> : <></>}
+                            {[3, 4].includes(row.auction_status)? <Button color='warning' variant="contained">Chờ xác nhận</Button> : <></>}
+                            {row.auction_status === 2 ? <Button variant="contained">Đang đấu giá</Button> : <></>}
+                            {row.auction_status === 1 ? <Button color='secondary' variant="contained">Sắp đấu giá</Button> : <></>}
+                            {[7,8].includes(row.auction_status) ? <Button color='secondary' variant="contained">Đã hủy</Button> : <></>}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  {emptyRows > 0 && (
+                    <TableRow
+                      style={{
+                        height: (dense ? 33 : 53) * emptyRows,
+                      }}
                     >
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        align='center'
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="center">
-                        <img className='product-sell-image' src={row.calories} alt='product_image'/></TableCell>
-                      <TableCell align="left" className='product-history-name'>{row.fat}</TableCell>
-                      <TableCell align="left">{row.d}</TableCell>
-                      <TableCell align="center">{row.e}</TableCell>
-                      <TableCell align="center">{row.f}</TableCell>
-                      <TableCell align="center">{row.g}</TableCell>
-                      <TableCell align="center">{row.h}</TableCell>
-                      <TableCell align="center">{row.i}</TableCell>
-                      <TableCell align="center">{row.carbs}</TableCell>
-                      <TableCell align="center">{row.protein}</TableCell>
-                      <TableCell align="center">
-                        {row.a === 'success' ? <Button onClick={()=>handleClickOpenAuctionDialog()} color='success' variant="contained">Thành công</Button> : <></>}
-                        {row.a === 'failed' ? <Button color='error' variant="contained">Chả ai mua</Button> : <></>}
-                        {row.a === 'pending' ? <Button  color='warning' variant="contained">Chờ xác nhận</Button> : <></>}
-                        {row.a === 'processing' ? <Button variant="contained">Đang đấu giá</Button> : <></>}
-                        {row.a === 'waiting' ? <Button color='secondary' variant="contained">Sắp đấu giá</Button> : <></>}
-                        {row.a === 'cancel' ? <Button color='secondary' variant="contained">Đã hủy</Button> : <></>}
-                      </TableCell>
+                      <TableCell colSpan={6} />
                     </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
-    </Box>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={data ? data.length : 0}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+          <FormControlLabel
+            control={<Switch checked={dense} onChange={handleChangeDense} />}
+            label="Dense padding"
+          />
+        </Box>
+      </div>
+      <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}>
+        <DialogTitle>Xác nhận phiên đấu giá</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Phiên đấu giá đã thành công, vui lòng xác nhận hoặc hủy đơn hàng này
+          </DialogContentText>
+          <RadioGroup
+            row
+            aria-labelledby="demo-row-radio-buttons-group-label"
+            name="row-radio-buttons-group"
+          >
+            <FormControlLabel value="female" control={<Radio />} label="Xác nhận" />
+            <FormControlLabel value="male" control={<Radio />} label="Hủy" />
+          </RadioGroup>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
+          <Button onClick={handleCloseAuctionDialog}>Submit</Button>
+        </DialogActions>
+      </Dialog>
     </div>
-    <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}>
-          <DialogTitle>Xác nhận phiên đấu giá</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Phiên đấu giá đã thành công, vui lòng xác nhận hoặc hủy đơn hàng này
-            </DialogContentText>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-            >
-              <FormControlLabel value="female" control={<Radio />} label="Xác nhận" />
-              <FormControlLabel value="male" control={<Radio />} label="Hủy" />
-            </RadioGroup>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
-            <Button onClick={handleCloseAuctionDialog}>Submit</Button>
-          </DialogActions>
-        </Dialog>
-  </div>
   );
 }

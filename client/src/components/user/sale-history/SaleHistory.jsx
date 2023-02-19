@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import './SaleHistory.scss'
 import * as React from 'react';
@@ -251,7 +252,7 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 const api_endpoint = process.env.REACT_APP_API_ENDPOINT
-export const SaleHistory = ({ currentUser }) => {
+export const SaleHistory = ({ currentUser, socket }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
@@ -259,24 +260,38 @@ export const SaleHistory = ({ currentUser }) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [data, setData] = useState({})
+  const [currentAuctionId, setCurrentAuctionId] = useState()
 
-  useEffect(() => {
-    async function getData() {
-      let result = await get(`${api_endpoint}/auction-sell-history?user_id=${currentUser.id}`, currentUser)
-      if (result.status === 200) {
-        setData(result.data.result)
-      }
+  async function getData() {
+    let result = await get(`${api_endpoint}/auction-sell-history?user_id=${currentUser.id}`, currentUser)
+    if (result.status === 200) {
+      setData(result.data.result)
     }
+  }
+  useEffect(() => {
     getData()
-  }, [currentUser])
-  console.log("data", data)
+  }, [])
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on('updateUI', () => {
+        getData()
+      })
+    }
+  }, [socket.current])
 
   const handleClickOpenAuctionDialog = () => {
     setOpenAuctionDialog(true);
   };
 
-  const handleCloseAuctionDialog = () => {
+  const handleCloseAuctionDialog = (option) => {
     setOpenAuctionDialog(false);
+    if(option){
+      socket.emit('seller_comnfirm', {
+        userId: currentUser.id,
+        auctionId: currentAuctionId,
+        status: option === 'cancel' ? 0 : 1
+      })
+    }
   };
 
   const handleRequestSort = (event, property) => {
@@ -362,9 +377,10 @@ export const SaleHistory = ({ currentUser }) => {
                           <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY')}</TableCell>
                           <TableCell align="center">{row.auction_time}</TableCell>
                           <TableCell align="center">
-                            {row.auction_status === 5 ? <Button onClick={() => handleClickOpenAuctionDialog()} color='success' variant="contained">Thành công</Button> : <></>}
+                            {row.auction_status === 5 ? <Button color='success' variant="contained">Thành công</Button> : <></>}
                             {row.auction_status === 6 ? <Button color='error' variant="contained">Chả ai mua</Button> : <></>}
-                            {[3, 4].includes(row.auction_status)? <Button color='warning' variant="contained">Chờ xác nhận</Button> : <></>}
+                            {row.auction_status === 3? <Button onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">Chờ xác nhận</Button> : <></>}
+                            {row.auction_status === 4? <Button  color='warning' variant="contained">Chờ người mua xác nhận</Button> : <></>}
                             {row.auction_status === 2 ? <Button variant="contained">Đang đấu giá</Button> : <></>}
                             {row.auction_status === 1 ? <Button color='secondary' variant="contained">Sắp đấu giá</Button> : <></>}
                             {[7,8].includes(row.auction_status) ? <Button color='secondary' variant="contained">Đã hủy</Button> : <></>}
@@ -416,8 +432,8 @@ export const SaleHistory = ({ currentUser }) => {
           </RadioGroup>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
-          <Button onClick={handleCloseAuctionDialog}>Submit</Button>
+          <Button onClick={()=>handleCloseAuctionDialog('cancel')}>Hủy</Button>
+          <Button onClick={()=>handleCloseAuctionDialog('confirm')}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>

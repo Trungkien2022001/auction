@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import './BuyHistory.scss'
 import * as React from 'react';
@@ -232,7 +233,7 @@ EnhancedTableToolbar.propTypes = {
 
 const api_endpoint = process.env.REACT_APP_API_ENDPOINT
 
-export const BuyHistory = ({ currentUser }) => {
+export const BuyHistory = ({ currentUser, socket }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
@@ -240,56 +241,39 @@ export const BuyHistory = ({ currentUser }) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [data, setData] = useState({})
+  const [currentAuctionId, setCurrentAuctionId] = useState()
 
-  useEffect(() => {
-    async function getData() {
-      let result = await get(`${api_endpoint}/auction-purchase-history?user_id=${currentUser.id}`, currentUser)
-      if (result.status === 200) {
-        // setData(result.data.data)
-        setData(JSON.parse(`
-        [
-          {
-              "id": 1,
-              "start_time": "2023-01-05T17:00:00.000Z",
-              "auction_time": 19,
-              "product_id": 1,
-              "start_price": 12000000,
-              "sell_price": 22000000,
-              "seller_id": 319,
-              "auction_count": 14,
-              "auctioneer_win": 1,
-              "status": "Chưa qua sử dụng",
-              "is_returned": 0,
-              "is_finished_soon": 0,
-              "seller_confirm_time": null,
-              "auctioneer_confirm_time": null,
-              "created_at": "2022-11-30T03:46:51.000Z",
-              "updated_at": "2022-11-30T03:46:51.000Z",
-              "deleted_at": "2022-11-30T03:46:51.000Z",
-              "name": "Đồng hồ siêu đẹp",
-              "description": "Đồng hồ chính hãng xuất xứ bên Nhật Đồng hồ chính hãng xuất xứ bên Nhật Đồng hồ chính hãng xuất xứ bên Nhật ",
-              "branch": "Casio",
-              "image": "http://res.cloudinary.com/nguyenkien2022001/image/upload/v1669779826/upload/hefa1thql0hgc14sw8tf.jpg",
-              "category_id": 1,
-              "title": "Đồng hồ chính hãng xuất xứ bên Nhật",
-              "key_word": "dongho, banchay, casio",
-              "category": "Đồng hồ & Phụ kiện",
-              "sell_status": "Hủy"
-          }
-      ]
-        `))
-      }
+  async function getData() {
+    let result = await get(`${api_endpoint}/auction-purchase-history?user_id=${currentUser.id}`, currentUser)
+    if (result.status === 200) {
+      setData(result.data.data)
     }
+  }
+  useEffect(() => {
+   
     getData()
-  }, [currentUser])
-  console.log(data)
+  }, [])
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on('updateUI', () => {
+        getData()
+      })
+    }
+  }, [socket.current])
 
   const handleClickOpenAuctionDialog = () => {
     setOpenAuctionDialog(true);
   };
 
-  const handleCloseAuctionDialog = () => {
+  const handleCloseAuctionDialog = (option) => {
     setOpenAuctionDialog(false);
+    if(option){
+      socket.emit('seller_comnfirm', {
+        userId: currentUser.id,
+        auctionId: currentAuctionId,
+        status: option === 'cancel' ? 0 : 1
+      })
+    }
   };
 
   const handleRequestSort = (event, property) => {
@@ -372,7 +356,7 @@ export const BuyHistory = ({ currentUser }) => {
                           <TableCell align="center">
                             {row.sell_status === 'success' ? <Button className={row.c} color='success' variant="contained">{row.sell_status}</Button> : <></>}
                             {row.sell_status === 'Hủy' ? <Button className="cancel" color='error' variant="contained">{row.sell_status}</Button> : <></>}
-                            {row.sell_status === 'pending' ? <Button className={row.c} onClick={() => handleClickOpenAuctionDialog()} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
+                            {row.sell_status === 'pending' ? <Button className={row.c} onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
                           </TableCell>
                         </TableRow>
                       );
@@ -420,8 +404,8 @@ export const BuyHistory = ({ currentUser }) => {
             </RadioGroup>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
-            <Button onClick={handleCloseAuctionDialog}>Submit</Button>
+          <Button onClick={()=>handleCloseAuctionDialog('cancel')}>Hủy</Button>
+          <Button onClick={()=>handleCloseAuctionDialog('confirm')}>Submit</Button>
           </DialogActions>
         </Dialog>
       </div>

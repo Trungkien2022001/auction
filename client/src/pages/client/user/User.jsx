@@ -37,7 +37,7 @@ import { useSelector } from 'react-redux';
 
 const drawerWidth = 250;
 
-export const User = () => {
+export const User = ({socket}) => {
 
   const themes = THEME
   const currentUser = useSelector((state) => state.user);
@@ -297,9 +297,9 @@ export const User = () => {
           </div>
         }
         <div className='user-info-item'>
-          {currentPage === 1 ? <Overview currentUser={currentUser} /> : <></>}
-          {currentPage === 2 ? <BuyHistory currentUser={currentUser}/> : <></>}
-          {currentPage === 3 ? <SaleHistory currentUser={currentUser}/> : <></>}
+          {currentPage === 1 ? <Overview currentUser={currentUser} socket = {socket}/> : <></>}
+          {currentPage === 2 ? <BuyHistory currentUser={currentUser} socket = {socket}/> : <></>}
+          {currentPage === 3 ? <SaleHistory currentUser={currentUser} socket = {socket}/> : <></>}
         </div>
       </div>
       <SimpleDialog

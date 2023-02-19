@@ -588,24 +588,40 @@ exports.checkingAllAuction = async () => {
             item.status === 2 &&
             moment(item.start_time)
                 .add(auctionTime.AUCTION_TIME[item.auction_time], 'minutes')
-                .isBefore(moment(new Date()))
+                .isBefore(moment(new Date())) &&
+            item.auction_count == 0
+        ) {
+            await knex('auction')
+                .update('status', 6)
+                .where('id', item.id)
+        } else if (
+            item.status === 2 &&
+            moment(item.start_time)
+                .add(auctionTime.AUCTION_TIME[item.auction_time], 'minutes')
+                .isBefore(moment(new Date())) &&
+            item.auction_count > 0
         ) {
             await knex('auction')
                 .update('status', 3)
                 .where('id', item.id)
         } else if (
-            (item.status === 3 &&
-                moment(item.start_time)
-                    .add(auctionTime.AUCTION_TIME[item.auction_time])
-                    .isBefore(moment(new Date()).subtract(1, 'days')) &&
-                item.seller_confirm_time === null) ||
-            (item.status === 4 &&
-                moment(item.seller_confirm_time).isBefore(
-                    moment(new Date()).subtract(1, 'days')
-                ))
+            item.status === 3 &&
+            moment(item.start_time)
+                .add(auctionTime.AUCTION_TIME[item.auction_time])
+                .isBefore(moment(new Date()).subtract(1, 'days')) &&
+            item.seller_confirm_time === null
         ) {
             await knex('auction')
-                .update('status', 6)
+                .update('status', 7)
+                .where('id', item.id)
+        } else if (
+            item.status === 4 &&
+            moment(item.seller_confirm_time).isBefore(
+                moment(new Date()).subtract(1, 'days')
+            )
+        ) {
+            await knex('auction')
+                .update('status', 8)
                 .where('id', item.id)
         } else if (
             item.status === 1 &&
@@ -651,7 +667,7 @@ exports.checkingAllAuction = async () => {
                 (auction_sale_failed_count > 1 && item.prestige !== 1)
             ) {
                 await knex('user')
-                    .update('prestige', 1)
+                    .update('prestige', 0)
                     .where('id', id)
             } else if (
                 auction_sale_delivered_count >= auction_sale_all_count * 0.6 &&
@@ -659,7 +675,7 @@ exports.checkingAllAuction = async () => {
                 auction_sale_all_count >= 5
             ) {
                 await knex('user')
-                    .update('prestige', 0)
+                    .update('prestige', 2)
                     .where('id', id)
             }
         })
@@ -678,6 +694,9 @@ exports.finishedAuction = async id => {
         .orderBy('id', 'desc')
     const seller = await knex('auction')
         .select()
+        .where('id', id)
+    await knex('auction')
+        .update('auctioneer_win', win_auctioneer[0].auctioneer_id)
         .where('id', id)
     await knex('notification').insert([
         {

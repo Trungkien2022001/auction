@@ -421,6 +421,7 @@ exports.getAuctionSellHistory = async userId => {
             .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             .where('a.seller_id', userId)
+            .orderBy('a.created_at', 'desc')
 
         return result
     } catch (err) {
@@ -721,7 +722,10 @@ exports.finishedAuction = async id => {
 
 exports.sellerConfirm = async (sellerId, auctionId, confirm) => {
     const status = confirm ? 4 : 6
-    await exports.updateAuction({ status }, auctionId)
+    await exports.updateAuction(
+        { status, seller_confirm_time: new Date() },
+        auctionId
+    )
     const win_auctioneer = await knex('auction_history')
         .select()
         .where('auction_id', auctionId)
@@ -737,7 +741,10 @@ exports.sellerConfirm = async (sellerId, auctionId, confirm) => {
 
 exports.auctioneerConfirm = async (userId, auctionId, confirm) => {
     const status = confirm ? 5 : 6
-    await exports.updateAuction({ status }, auctionId)
+    await exports.updateAuction(
+        { status, auctioneer_confirm_time: new Date() },
+        auctionId
+    )
     const seller = await knex('auction')
         .select()
         .where('id', auctionId)

@@ -28,7 +28,7 @@ router.get('/users', genericSecure, checkPermission('admin'), async ctx => {
 })
 
 router.get('/user/:user_id', genericSecure, validate(schema.get), async ctx => {
-    debug('GET /user/:user_id')
+    debug('GET /user', ctx.params.user_id)
     const userId = ctx.params.user_id
     const actionUser = ctx.User
 

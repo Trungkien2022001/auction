@@ -58,7 +58,7 @@ cron.schedule('*/5 * * * *', () => {
 socketIO.on('connection', socket => {
     socket.on('authenticate', user => {
         // console.log(`⚡⚡⚡: User ${user.username} with socketID ${socket.id} just connected!`)
-        if (user.id) {
+        if (user.id !== null) {
             addToRoom(user.id, socket.id).then(async id => {
                 debug(
                     'authenticate',
@@ -67,6 +67,7 @@ socketIO.on('connection', socket => {
                     // listOnlineUser[id].auctionRooms
                 )
                 socket.join(listOnlineUser[id].auctionRooms)
+                // console.log(listOnlineUser)
             })
         }
         // console.log(socketIO.sockets.adapter.rooms)
@@ -100,22 +101,24 @@ socketIO.on('connection', socket => {
     })
 
     socket.on('auctioneer_confirm', ({ userId, auctionId, status }) => {
+        // console.log({ userId, auctionId, status })
         auctionModel.auctioneerConfirm(userId, auctionId, status).then(id => {
             const seller = listOnlineUser.find(i => i.user_id === id)
             if (seller) {
                 socket
                     .to(seller.socket)
-                    .emit('auctioneer_confirm', { status, auctionId })
+                    .emit('auctioneer_confirm_server', { status, auctionId })
             }
         })
     })
-    socket.on('seller_confirm', ({ sellerId, auctionId, status }) => {
-        auctionModel.sellerConfirm(sellerId, auctionId, status).then(id => {
+    socket.on('seller_confirm', ({ userId, auctionId, status }) => {
+        // console.log(userId, auctionId, status)
+        auctionModel.sellerConfirm(userId, auctionId, status).then(id => {
             const auctioneer = listOnlineUser.find(i => i.user_id === id)
             if (auctioneer) {
                 socket
                     .to(auctioneer.socket)
-                    .emit('seller_confirm', { status, auctionId })
+                    .emit('seller_confirm_server', { status, auctionId })
             }
         })
     })
@@ -125,6 +128,7 @@ socketIO.on('connection', socket => {
             item.socket.includes(socket.id)
         )
         if (index !== -1) {
+            // console.log(`⚡⚡⚡:socketID ${socket.id} just connected!`)
             socket.leave(listOnlineUser[index].auctionRooms)
             leaveRoom(socket.id, index)
         }

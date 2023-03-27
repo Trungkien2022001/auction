@@ -246,7 +246,7 @@ export const BuyHistory = ({ currentUser, socket }) => {
   async function getData() {
     let result = await get(`${api_endpoint}/auction-purchase-history?user_id=${currentUser.id}`, currentUser)
     if (result.status === 200) {
-      setData(result.data.data)
+      setData(result.data.result)
     }
   }
   useEffect(() => {
@@ -268,7 +268,7 @@ export const BuyHistory = ({ currentUser, socket }) => {
   const handleCloseAuctionDialog = (option) => {
     setOpenAuctionDialog(false);
     if(option){
-      socket.emit('seller_comnfirm', {
+      socket.current.emit('auctioneer_confirm', {
         userId: currentUser.id,
         auctionId: currentAuctionId,
         status: option === 'cancel' ? 0 : 1
@@ -354,9 +354,10 @@ export const BuyHistory = ({ currentUser, socket }) => {
                           })}</TableCell>
                           <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY')}</TableCell>
                           <TableCell align="center">
-                            {row.sell_status === 'success' ? <Button className={row.c} color='success' variant="contained">{row.sell_status}</Button> : <></>}
-                            {row.sell_status === 'Hủy' ? <Button className="cancel" color='error' variant="contained">{row.sell_status}</Button> : <></>}
-                            {row.sell_status === 'pending' ? <Button className={row.c} onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
+                            {row.sell_status === 'Thành công' ? <Button className={row.c} color='success' variant="contained">{row.sell_status}</Button> : <></>}
+                            {row.sell_status === 'Người mua hủy đơn hàng' || row.sell_status === 'Người mua hủy đơn hàng'? <Button className="cancel" color='error' variant="contained">{row.sell_status}</Button> : <></>}
+                            {row.sell_status === 'Chờ người bán xác nhận' ? <Button className={row.c} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
+                            {row.sell_status === 'Chờ người đấu xác nhận' ? <Button className={row.c} onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
                           </TableCell>
                         </TableRow>
                       );

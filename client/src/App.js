@@ -41,6 +41,20 @@ function App() {
           position: toast.POSITION.BOTTOM_RIGHT
         })
     })
+    socket.current.on('seller_confirm_server', ({auctionId, status})=>{
+      toast.info(status? 'Người bán đã chấp nhận bán sản phẩm cho bạn, bạn hãy xác nhận để hoàn tất phiên đấu giá' 
+      : 'Người bán đã không chấp nhận bán sản phẩm cho bạn hehe', 
+      {
+        position: toast.POSITION.BOTTOM_RIGHT
+      })
+  })
+    socket.current.on('auctioneer_confirm_server', ({auctionId, status})=>{
+        toast.info(status? 'Người mua đã chấp nhận lấy sản phẩm của bạn, sản phẩm của bạn đã đấu giá thành công' 
+        : 'Người mua đã hủy không chọn lấy sản phẩm của bạn. hãy liên lạc với người đó để biết thêm thông tin', 
+        {
+          position: toast.POSITION.BOTTOM_RIGHT
+        })
+    })
     socket.current.on('finishedAuctionSeller', ({auctionId})=>{
         toast.info('Sản phẩm của bạn đã đấu giá thành công, vui lòng vào trang cá nhân xác nhận', {
           position: toast.POSITION.BOTTOM_RIGHT

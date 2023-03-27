@@ -4,10 +4,6 @@ import React, { useState } from "react";
 import { Header } from "../../../components/header/Header";
 import { Footer } from "../../../components/footer/Footer";
 import "./Product.scss";
-
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import HomeIcon from '@mui/icons-material/Home';
 import TimerIcon from '@mui/icons-material/Timer';
 import PaidIcon from '@mui/icons-material/Paid';
@@ -20,6 +16,7 @@ import { get, post } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 
 export const Product = ({ socket }) => {
@@ -76,7 +73,7 @@ export const Product = ({ socket }) => {
     }
   }
 
-  const   handleSubmitAuction = async () => {
+  const handleSubmitAuction = async () => {
     setOpenAuctionDialog(false);
     if (data.product.sell_price > auctionBet) {
       Swal.fire(
@@ -162,19 +159,6 @@ export const Product = ({ socket }) => {
       <Header />
       <div className="padding__product product-container">
         <div className="product-header">
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link underline="hover" color="inherit" href="/">
-              P1
-            </Link>
-            <Link
-              underline="hover"
-              color="inherit"
-              href="/material-ui/getting-started/installation/"
-            >
-              P2
-            </Link>
-            <Typography color="text.primary">P3</Typography>
-          </Breadcrumbs>
         </div>
         {data ?
           <>
@@ -272,7 +256,9 @@ export const Product = ({ socket }) => {
                     <Avatar style={{ height: '60px', width: '60px' }} alt="Seller Avatar" src={data.seller_info.avatar} />
                   </div>
                   <div className="seller-info">
-                    <div className="seller-info__name">{data.seller_info.username || data.seller_info.name}</div>
+                    <Link style={{ textDecoration: 'none', color: "black" }} to={`/user/${data.seller_info.id}`}>
+                      <div className="seller-info__name">{data.seller_info.username || data.seller_info.name}</div>
+                    </Link>
                     <div className="seller-info__vote">0 Đánh giá</div>
                   </div>
                 </div>

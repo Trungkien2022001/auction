@@ -11,3 +11,7 @@
 10. Tối ưu truy vấn
 //// 11. Authenticate, authorization api
 //// 12. Quá trình tìm kiếm
+
+
+admin role authorization
+

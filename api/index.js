@@ -6,6 +6,7 @@ const bodyParser = require('koa-bodyparser')
 const uuid = require('uuid/v4')
 const config = require('./config')
 const router = require('./routes')
+const { log } = require('./middleware/log')
 
 const app = new Koa()
 
@@ -16,6 +17,7 @@ app.use(async (ctx, next) => {
         ctx.app.emit('error', err, ctx)
     }
 })
+app.use(log)
 app.use(config.corsOrigin ? cors({ origin: config.corsOrigin }) : cors())
 
 app.use(bodyParser())

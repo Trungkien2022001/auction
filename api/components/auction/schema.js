@@ -57,8 +57,8 @@ const gets = Joi.object().keys({
     // page: Joi.number()
     //     .min(0)
     //     .required(),
-    type: Joi.number()
-        .min(0)
+    type: Joi.string()
+        .valid(['homepage, dashboard'])
         .optional(),
     category: Joi.number()
         .min(0)

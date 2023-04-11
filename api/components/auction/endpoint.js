@@ -76,7 +76,7 @@ router.get('/auctions', validate(gets), async ctx => {
     debug('POST / get auctions')
     const { query } = ctx.request
     try {
-        const data = await auctionController.getAuctions(query)
+        const data = await auctionController.getAuctions(query.type)
         ctx.body = {
             success: true,
             data

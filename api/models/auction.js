@@ -5,35 +5,94 @@ const debug = require('debug')('auction:model:auction')
 const moment = require('moment')
 const { knex } = require('../connectors')
 const { auctionTime } = require('../config')
+const commonModel = require('../models/common')
 
+const baseFields = {
+    getAuctions: [
+        'a.id',
+        'a.status',
+        'a.start_time',
+        'a.start_price',
+        'a.sell_price',
+        'a.auction_count',
+        'p.category_id',
+        'p.name',
+        'p.title',
+        'p.image',
+        'at.time'
+    ],
+    getAuctionsDashboard: [
+        'a.id',
+        'a.start_time',
+        'a.end_time',
+        'a.start_price',
+        'a.sell_price',
+        'a.seller_id',
+        'a.auction_count',
+        'a.auctioneer_win',
+        'as.name as status',
+        'p.name as product_name',
+        'at.title as auction_time'
+    ],
+    getDemoAuctions: [
+        'a.id',
+        'a.start_time',
+        'a.start_price',
+        'a.sell_price',
+        'a.auction_count',
+        'p.name',
+        'p.title',
+        'p.image',
+        'at.time'
+    ]
+}
 exports.saveAuction = async auction => {
     return knex('auction').insert(auction)
 }
 
-exports.getAuctions = async () => {
+exports.getAuctions = async (type = 'homepage') => {
     debug('MODEL/auction getAuctions')
     try {
-        const result = await knex
-            .select(
-                'a.id',
-                'a.status',
-                'a.start_time',
-                'a.start_price',
-                'a.sell_price',
-                'a.auction_count',
-                'p.category_id',
-                'p.name',
-                'p.title',
-                'p.image',
-                'at.time'
-            )
-            .from('auction as a')
-            .innerJoin('product as p', 'a.product_id', 'p.id')
-            .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
-            .where('a.status', 2)
-            .orWhere('a.status', 1)
-            .whereNull('a.deleted_at')
-            .orderBy('a.updated_at', 'desc')
+        let fn
+        switch (type) {
+            case 'homepage':
+                fn = async () => {
+                    return knex
+                        .select(...baseFields.getAuctions)
+                        .from('auction as a')
+                        .innerJoin('product as p', 'a.product_id', 'p.id')
+                        .innerJoin(
+                            'auction_time as at',
+                            'a.auction_time',
+                            'at.id'
+                        )
+                        .where('a.status', 2)
+                        .orWhere('a.status', 1)
+                        .whereNull('a.deleted_at')
+                        .orderBy('a.updated_at', 'desc')
+                }
+                break
+
+            case 'dashboard':
+                fn = async () => {
+                    return knex
+                        .select(...baseFields.getAuctionsDashboard)
+                        .from('auction as a')
+                        .innerJoin('product as p', 'a.product_id', 'p.id')
+                        .innerJoin(
+                            'auction_time as at',
+                            'a.auction_time',
+                            'at.id'
+                        )
+                        .innerJoin('auction_status as as', 'a.status', 'as.id')
+                        .orderBy('a.updated_at', 'desc')
+                }
+                break
+
+            default:
+                break
+        }
+        const result = await fn()
 
         return result
     } catch (err) {
@@ -44,17 +103,7 @@ exports.getLatestAuction = async () => {
     debug('MODEL/auction getLatestAuction')
     try {
         const result = await knex
-            .select(
-                'a.id',
-                'a.start_time',
-                'a.start_price',
-                'a.sell_price',
-                'a.auction_count',
-                'p.name',
-                'p.title',
-                'p.image',
-                'at.time'
-            )
+            .select(...baseFields.getDemoAuctions)
             .from('auction as a')
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
@@ -75,17 +124,7 @@ exports.getFeaturedAuction = async () => {
     debug('MODEL/auction getFeaturedAuction')
     try {
         const result = await knex
-            .select(
-                'a.id',
-                'a.start_time',
-                'a.start_price',
-                'a.sell_price',
-                'a.auction_count',
-                'p.name',
-                'p.title',
-                'p.image',
-                'at.time'
-            )
+            .select(...baseFields.getDemoAuctions)
             .from('auction as a')
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
@@ -105,17 +144,7 @@ exports.getCheapAuction = async () => {
     debug('MODEL/auction getCheapAuction')
     try {
         const result = await knex
-            .select(
-                'a.id',
-                'a.start_time',
-                'a.start_price',
-                'a.sell_price',
-                'a.auction_count',
-                'p.name',
-                'p.title',
-                'p.image',
-                'at.time'
-            )
+            .select(...baseFields.getDemoAuctions)
             .from('auction as a')
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
@@ -135,17 +164,7 @@ exports.getIncomingAuction = async () => {
     debug('MODEL/auction getIncomingAuction')
     try {
         const result = await knex
-            .select(
-                'a.id',
-                'a.start_time',
-                'a.start_price',
-                'a.sell_price',
-                'a.auction_count',
-                'p.name',
-                'p.title',
-                'p.image',
-                'at.time'
-            )
+            .select(...baseFields.getDemoAuctions)
             .from('auction as a')
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
@@ -162,7 +181,7 @@ exports.getIncomingAuction = async () => {
     }
 }
 
-exports.getProductAuction = async params => {
+exports.getProductAuction = async auctionId => {
     debug('MODEL/auction getProductAuction')
     try {
         const result = await knex
@@ -189,11 +208,18 @@ exports.getProductAuction = async params => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
-            .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
-            .where('a.id', params.id)
-            .whereNull('a.deleted_at')
+            // .innerJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+            .where('a.id', auctionId)
+        // .whereNull('a.deleted_at')
+        if (!result.length) {
+            throw new Error('Auction not found')
+        }
+        const images = (await commonModel.getProductImages(result[0].id)) || []
 
-        return result
+        return {
+            ...result[0],
+            images
+        }
     } catch (err) {
         throw new Error(err.message || JSON.stringify(err))
     }

@@ -84,7 +84,7 @@ function App() {
           <Route path='/test' element = {<Test/>}/>
           <Route path='/product/:sort' element = {<Products socket = {socket}/>}/>
           <Route path='/product' element = {<Products socket = {socket}/>}/>
-          <Route path='/management' element = {<Management/>}/>
+          <Route path='/management' element = {<Management socket = {socket}/>}/>
           <Route path='/user/:id' element = {<User socket = {socket}/>}/>
           <Route path='/auction/:id' element = {<Product socket = {socket}/>}/>
           <Route path='/new-auction' element = {<NewProduct/>}/>

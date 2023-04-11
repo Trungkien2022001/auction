@@ -3,7 +3,6 @@ const moment = require('moment')
 const commonModel = require('../../models/common')
 const productModel = require('../../models/product')
 const auctionModel = require('../../models/auction')
-const userModel = require('../../models/user')
 
 exports.createAuction = async params => {
     const { body, user } = params
@@ -49,8 +48,6 @@ exports.createAuctionRaise = async params => {
                 'minutes'
             )
         )
-        // moment(new Date()).isBefore(moment(auction.product.start_time)) ||
-        // moment(new Date()).isAfter(moment(auction.product.start_time).add(auction.product.time, 'minutes'))
     ) {
         throw new Error(`Auction raise error: invalid auction time`)
     }
@@ -65,7 +62,6 @@ exports.createAuctionRaise = async params => {
             message: `Bạn đã đấu giá 10 lần cho sản phẩm này, bạn không thể đấu giá thêm`
         }
     }
-    console.log(auctionCountByUser)
     const toAuctionHistoryInsert = {
         auction_id: auctionId,
         auctioneer_id: user.id,
@@ -114,18 +110,14 @@ exports.getAuctionHistory = async id => {
 }
 
 exports.getAuctionDetail = async params => {
-    const [product] = await auctionModel.getProductAuction(params)
+    // console.log(params)
+    const product = await auctionModel.getProductAuction(params.id)
+    // console.log(product)
     if (!product) return {}
-    const seller_info = await userModel.getSellerInfo(product.seller_id)
-    const product_images = await commonModel.getProductImages(product.id)
-    delete seller_info.password_hash
-    delete seller_info.refresh_token
-    delete seller_info.custom_config
-    delete seller_info.role
+    // const seller_info = await userModel.fetchUserByID(product.seller_id,'seller_info')
 
     return {
-        product,
-        product_images,
-        seller_info
+        product
+        // seller_info
     }
 }

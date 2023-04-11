@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 /* eslint-disable camelcase */
 const debug = require('debug')('auction:model:user')
 const { knex, redis } = require('../connectors')
@@ -54,24 +55,44 @@ async function fetchUserByEmail(email) {
     )
 }
 
-async function fetchUserByID(id) {
+async function fetchUserByID(id, type = 'user') {
     debug('MODEL/user fetchUserByID')
     const fetchUser = async () => {
         const user = await knex
             .first()
             .from('user')
-            .where({ id, del_flag: 0 })
+            .where({ id })
 
         if (!user) {
             throw new Error('user not found')
         }
 
-        const role = await knex
-            .first()
-            .from('role')
-            .where('id', user.role_id)
+        delete user.role_id
+        switch (type) {
+            case 'user':
+                {
+                    if (user.del_flag) {
+                        throw new Error('user is deleted')
+                    }
+                    const role = await knex
+                        .first()
+                        .from('role')
+                        .where('id', user.role_id)
 
-        user.role = role
+                    user.role = role
+                }
+                break
+            case 'seller_info': {
+                delete user.role
+                delete user.password_hash
+                delete user.amount
+                delete user.custom_config
+                delete user.refresh_token
+                // delete user
+            }
+            default:
+                break
+        }
 
         return user
     }
@@ -122,7 +143,7 @@ async function addUser(user) {
 async function getAllInfoSeller(id) {
     debug('MODEL/user getAllInfoSeller')
     try {
-        const user_info = await fetchUserByID(id)
+        const user_info = await fetchUserByID(id, 'seller_info')
         const auction_history_count = await auctionModels.auctionHistoryCount(
             id
         )
@@ -160,28 +181,12 @@ async function getAllInfoSeller(id) {
     }
 }
 
-async function getSellerInfo(seller_id) {
-    debug('MODEL/user getSellerInfo')
-    try {
-        return redis.cachedExecute(
-            {
-                key: `seller:${seller_id}`,
-                ttl: '1 days',
-                json: true
-            },
-            () => getAllInfoSeller(seller_id)
-        )
-    } catch (err) {
-        throw new Error(err.message || JSON.stringify(err))
-    }
-}
-
 module.exports = {
     fetchUsers,
     fetchUserByEmail,
     fetchUserByID,
     updateUser,
     addUser,
-    getUserTransactionHistory,
-    getSellerInfo
+    getAllInfoSeller,
+    getUserTransactionHistory
 }

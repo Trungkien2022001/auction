@@ -23,11 +23,14 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Radio, RadioGroup } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
+import PersonIcon from '@mui/icons-material/Person';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Radio, RadioGroup } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment';
+import { USER_STATUS } from '../../../utils/constants';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -67,52 +70,46 @@ const headCells = [
     label: 'ID',
   },
   {
-    id: 'product_name',
+    id: 'name',
     numeric: true,
     disablePadding: false,
-    label: 'Tên sản phẩm',
+    label: 'Username',
   },
   {
-    id: 'product_init_price',
+    id: 'email',
     numeric: true,
     disablePadding: false,
-    label: 'Giá ban đầu',
+    label: 'Email',
   },
   {
-    id: 'product_sell_price',
+    id: 'phone',
     numeric: true,
     disablePadding: false,
-    label: 'Giá mua',
+    label: 'Phone',
   },
   {
-    id: 'start_time',
+    id: 'rating',
     numeric: true,
     disablePadding: false,
-    label: 'Ngày bắt đầu',
+    label: 'Rating',
   },
   {
-    id: 'User_time',
+    id: 'role',
     numeric: true,
     disablePadding: false,
-    label: 'Thời gian đấu',
+    label: 'Role',
   },
   {
-    id: 'User_count',
+    id: 'created_at',
     numeric: true,
     disablePadding: false,
-    label: 'Số lượt đấu',
+    label: 'Ngày tạo',
   },
   {
-    id: 'seller',
+    id: 'is_verify',
     numeric: true,
     disablePadding: false,
-    label: 'Người bán',
-  },
-  {
-    id: 'winner',
-    numeric: true,
-    disablePadding: false,
-    label: 'Người thắng',
+    label: 'Xác thực',
   },
   {
     id: 'status',
@@ -234,8 +231,8 @@ export const User = ({ currentUser, socket }) => {
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [openUserDialog, setOpenUserDialog] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(8);
+  const [openUserDialog, setOpenUserDialog] = useState(true);
   const [data, setData] = useState({})
   const [currentUserId, setCurrentUserId] = useState()
 
@@ -247,7 +244,7 @@ export const User = ({ currentUser, socket }) => {
     console.log(result.data.users)
   }
   useEffect(() => {
-   
+
     getData()
   }, [])
   useEffect(() => {
@@ -258,13 +255,13 @@ export const User = ({ currentUser, socket }) => {
     }
   }, [socket.current])
 
-  const handleClickOpenUserDialog = () => {
+  const handleClickOpenUserDialog = (user_id) => {
     setOpenUserDialog(true);
   };
 
   const handleCloseUserDialog = (option) => {
     setOpenUserDialog(false);
-    if(option){
+    if (option) {
       socket.current.emit('Usereer_confirm', {
         userId: currentUser.id,
         UserId: currentUserId,
@@ -298,7 +295,7 @@ export const User = ({ currentUser, socket }) => {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   return (
-    <div style={{margin: '15px 0 0 10px'}}>
+    <div style={{ margin: '15px 0 0 10px' }}>
       <div>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
@@ -339,21 +336,16 @@ export const User = ({ currentUser, socket }) => {
                             {row.id}
                           </TableCell>
                           <TableCell align="center" className='product-history-name'>{row.name}</TableCell>
-                          {/* <TableCell align="center">{row.start_price.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: 'VND',
-                          })}</TableCell>
-                          <TableCell align="center">{row.sell_price.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: 'VND',
-                          })}</TableCell>
-                          <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY HH:mm:ss')}</TableCell> */}
                           <TableCell align="center">{row.email}</TableCell>
                           <TableCell align="center">{row.phone}</TableCell>
                           <TableCell align="center">{row.rating}</TableCell>
-                          <TableCell align="center">{row.prestige}</TableCell>
                           <TableCell align="center">{row.role_id}</TableCell>
                           <TableCell align="center">{moment(row.created_at).format('DD-MM-YYYY')}</TableCell>
+                          <TableCell align="center">{row.is_verified ? "Verified" : "Not Verified"}</TableCell>
+                          <TableCell align="center">{USER_STATUS[row.is_blocked]}</TableCell>
+                          <TableCell align="center">
+                            <InfoIcon style={{ color: "blue" }} onClick={() => handleClickOpenUserDialog(row.id)}></InfoIcon>
+                          </TableCell>
                         </TableRow>
                       );
                     })}
@@ -370,7 +362,7 @@ export const User = ({ currentUser, socket }) => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[8, 15, 25, 500]}
               component="div"
               count={data ? data.length : 0}
               rowsPerPage={rowsPerPage}
@@ -384,24 +376,37 @@ export const User = ({ currentUser, socket }) => {
             label="Dense padding"
           />
         </Box>
-        <Dialog open={openUserDialog} onClose={handleCloseUserDialog}>
-          <DialogTitle>Xác nhận phiên đấu giá</DialogTitle>
+        <Dialog
+          open={openUserDialog}
+          onClose={handleCloseUserDialog}
+          fullWidth={true}
+          maxWidth={'lg'}>
+          <DialogTitle> Thông tin chi tiết của người dùng</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Phiên đấu giá đã thành công, vui lòng xác nhận hoặc hủy đơn hàng này
-            </DialogContentText>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-            >
-              <FormControlLabel value="female" control={<Radio />} label="Xác nhận" />
-              <FormControlLabel value="male" control={<Radio />} label="Hủy" />
-            </RadioGroup>
+            <div className='user-popup'>
+              <div className="user-view">
+                <div className="avatar">
+                  <img
+                    src="https://kynguyenlamdep.com/wp-content/uploads/2022/06/anh-gai-xinh-cuc-dep.jpg"
+                    alt="" />
+                </div>
+                <div className="u-info">
+                 <div className="u-p1">
+                  <div className="u-p1-id">
+                      <div className="title">ID</div>
+                      <div className="content">15</div>
+                  </div>
+                  <div className="u-p1-name">
+                      <div className="title">Name</div>
+                      <div className="content">Kien</div>
+                  </div>
+                 </div>
+                </div>
+              </div>
+            </div>
           </DialogContent>
           <DialogActions>
-          <Button onClick={()=>handleCloseUserDialog('cancel')}>Hủy</Button>
-          <Button onClick={()=>handleCloseUserDialog('confirm')}>Submit</Button>
+            <Button onClick={() => handleCloseUserDialog()}>Close</Button>
           </DialogActions>
         </Dialog>
       </div>

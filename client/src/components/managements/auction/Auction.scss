@@ -12,3 +12,25 @@
     max-height: 200px;
     overflow-y: hidden;
 }
+.user-popup{
+    .user-view{
+      display: flex;
+      .avatar{
+       text-align: center;
+        flex: 1;
+          img{
+              width: 200px;
+              height: auto
+          }
+      }
+      .u-info{
+        flex: 2;
+        .u-p1{
+          display: flex;
+          justify-content: space-between;
+          .u-p1-item{
+          }
+        }
+      }
+    }
+  }

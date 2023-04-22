@@ -42,7 +42,7 @@ import { User } from '../../../components/managements/user/User';
 const drawerWidth = 250;
 
 
-export const Management = ({ page = 3, socket }) => {
+export const Management = ({ page = 2, socket }) => {
   const themes = THEME
   const currentUser = useSelector((state) => state.user);
 

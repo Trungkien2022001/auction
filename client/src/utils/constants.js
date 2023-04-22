@@ -1,4 +1,4 @@
-export const THEME = [
+exports.THEME = [
     {
       id: 0,
       name: 'Magenta',
@@ -215,4 +215,8 @@ export const THEME = [
       subItemColor: '#551c3b',
       selectedItemColor: '#a02669'
     },
-  ];
+  ]
+exports.USER_STATUS ={
+  1: 'Blocked',
+  0: 'Active',
+}

@@ -5,7 +5,6 @@ const User = require('../../models/user')
 const { genericSecure, checkPermission } = require('../../middleware/security')
 const { validate } = require('../../middleware/validator')
 const { hashPassword } = require('../../utils/auth')
-const userModel = require('../../models/user')
 const schema = require('./schema')
 
 const router = new Router()
@@ -33,20 +32,20 @@ router.get('/user/:user_id', genericSecure, validate(schema.get), async ctx => {
     const actionUser = ctx.User
 
     try {
-        const user_info = await User.fetchUserByID(userId)
-        const transaction_history = await userModel.getSellerInfo(userId)
+        const userInfo = await User.fetchUserByID(userId)
+        // const transaction_history = await userModel.getSellerInfo(userId)
 
         if (actionUser.id !== userId && actionUser.role_id !== 'admin') {
-            delete user_info.refresh_token
-            delete user_info.password_hash
-            delete user_info.role
-            delete user_info.role_id
-            delete user_info.custom_config
+            delete userInfo.refresh_token
+            delete userInfo.password_hash
+            delete userInfo.role
+            delete userInfo.role_id
+            delete userInfo.custom_config
         }
 
         ctx.body = {
             success: true,
-            data: { ...transaction_history, ...user_info }
+            data: { ...userInfo }
         }
     } catch (error) {
         ctx.status = 500

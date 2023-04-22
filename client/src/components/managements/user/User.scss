@@ -1,14 +1,36 @@
+.user-popup{
+  .user-view{
+    display: flex;
+    .avatar{
+     text-align: center;
+      flex: 1;
+        img{
+            width: 200px;
+            height: auto
+        }
+    }
+    .u-info{
+      flex: 2;
+      .u-p1{
+        display: flex;
+        .u-p1-item{
+        }
+      }
+    }
+  }
+}
+.sell-table-row {
+  height: 100px;
+}
 
-.sell-table-row{
-    height: 100px;
+.product-sell-image {
+  height: 100px;
+  width: 100%;
+  object-fit: cover;
 }
-.product-sell-image{
-    height: 100px;
-    width: 100%;
-    object-fit: cover;
+.product-history-name {
+  min-width: 80px;
+  max-height: 200px;
+  overflow-y: hidden;
 }
-.product-history-name{
-    min-width: 80px;
-    max-height: 200px;
-    overflow-y: hidden;
-}
+

@@ -22,8 +22,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import InfoIcon from '@mui/icons-material/Info';
+import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+
 import { visuallyHidden } from '@mui/utils';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Radio, RadioGroup } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemButton, Radio, RadioGroup } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
@@ -234,8 +237,8 @@ export const Auction = ({ currentUser, socket }) => {
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(8);
+  const [openAuctionDialog, setOpenAuctionDialog] = useState(true);
   const [data, setData] = useState({})
   const [currentAuctionId, setCurrentAuctionId] = useState()
 
@@ -354,11 +357,16 @@ export const Auction = ({ currentUser, socket }) => {
                           <TableCell align="center">{row.auctioneer_win}</TableCell>
                           <TableCell align="center">{row.status}</TableCell>
                           <TableCell align="center">
+                            <InfoIcon style={{ color: "blue", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></InfoIcon>
+                            <ChangeCircleIcon style={{ color: "red", fontSize: "35px"  }} onClick={() => handleClickOpenAuctionDialog(row.id)}></ChangeCircleIcon>
+                          </TableCell>
+                          <TableCell align="center">
                             {row.sell_status === 'Thành công' ? <Button className={row.c} color='success' variant="contained">{row.sell_status}</Button> : <></>}
                             {row.sell_status === 'Người mua hủy đơn hàng' || row.sell_status === 'Người mua hủy đơn hàng'? <Button className="cancel" color='error' variant="contained">{row.sell_status}</Button> : <></>}
                             {row.sell_status === 'Chờ người bán xác nhận' ? <Button className={row.c} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
                             {row.sell_status === 'Chờ người đấu xác nhận' ? <Button className={row.c} onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
                           </TableCell>
+
                         </TableRow>
                       );
                     })}
@@ -375,7 +383,7 @@ export const Auction = ({ currentUser, socket }) => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[8, 15, 25,500]}
               component="div"
               count={data ? data.length : 0}
               rowsPerPage={rowsPerPage}
@@ -389,25 +397,36 @@ export const Auction = ({ currentUser, socket }) => {
             label="Dense padding"
           />
         </Box>
-        <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}>
-          <DialogTitle>Xác nhận phiên đấu giá</DialogTitle>
+        <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}fullWidth={true}
+          maxWidth={'lg'}>
+          <DialogTitle> Thông tin chi tiết của người dùng</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Phiên đấu giá đã thành công, vui lòng xác nhận hoặc hủy đơn hàng này
-            </DialogContentText>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="row-radio-buttons-group"
-            >
-              <FormControlLabel value="female" control={<Radio />} label="Xác nhận" />
-              <FormControlLabel value="male" control={<Radio />} label="Hủy" />
-            </RadioGroup>
+            <div className='user-popup'>
+              <div className="user-view">
+                <div className="avatar">
+                  <img
+                    src="https://kynguyenlamdep.com/wp-content/uploads/2022/06/anh-gai-xinh-cuc-dep.jpg"
+                    alt="" />
+                </div>
+                <div className="u-info">
+                 <div className="u-p1">
+                  <div className="u-p1-id">
+                      <div className="title">ID</div>
+                      <div className="content">15</div>
+                  </div>
+                  <div className="u-p1-name">
+                      <div className="title">Name</div>
+                      <div className="content">Kien</div>
+                  </div>
+                 </div>
+                </div>
+              </div>
+            </div>
           </DialogContent>
-          <DialogActions>
+          <DialogActions> 
           <Button onClick={()=>handleCloseAuctionDialog('cancel')}>Hủy</Button>
           <Button onClick={()=>handleCloseAuctionDialog('confirm')}>Submit</Button>
-          </DialogActions>
+          </DialogActions> 
         </Dialog>
       </div>
     </div>

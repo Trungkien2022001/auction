@@ -393,8 +393,7 @@ export const User = ({ currentUser, socket }) => {
                 <div className="u-info">
                  <div className="u-p1">
                   <div className="u-p1-id">
-                      <div className="title">ID</div>
-                      <div className="content">15</div>
+                      <b>ID: </b>15
                   </div>
                   <div className="u-p1-name">
                       <div className="title">Name</div>

@@ -48,8 +48,6 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -238,19 +236,31 @@ export const Auction = ({ currentUser, socket }) => {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(8);
-  const [openAuctionDialog, setOpenAuctionDialog] = useState(true);
-  const [data, setData] = useState({})
+  const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
+  const [data, setData] = useState([])
   const [currentAuctionId, setCurrentAuctionId] = useState()
+  const [currentAuction, setCurrentAuction] = useState({})
 
   async function getData() {
     let result = await get(`${api_endpoint}/auctions?type=dashboard`, currentUser)
     if (result.status === 200) {
       setData(result.data.data)
-      console.log(result.data.data)
     }
   }
+  async function getAuctionDetail() {
+    let result = await get(`${api_endpoint}/auction?id=${currentAuctionId}`, currentUser)
+    if (result.status === 200) {
+      setCurrentAuction(result.data.data.product)
+      console.log(result.data.data)
+    }
+
+  }
   useEffect(() => {
-   
+
+    getAuctionDetail()
+  }, [currentAuctionId])
+  useEffect(() => {
+
     getData()
   }, [])
   useEffect(() => {
@@ -261,13 +271,14 @@ export const Auction = ({ currentUser, socket }) => {
     }
   }, [socket.current])
 
-  const handleClickOpenAuctionDialog = () => {
+  const handleClickOpenAuctionDialog = (id) => {
+    setCurrentAuctionId(id)
     setOpenAuctionDialog(true);
   };
 
   const handleCloseAuctionDialog = (option) => {
     setOpenAuctionDialog(false);
-    if(option){
+    if (option) {
       socket.current.emit('auctioneer_confirm', {
         userId: currentUser.id,
         auctionId: currentAuctionId,
@@ -301,7 +312,7 @@ export const Auction = ({ currentUser, socket }) => {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   return (
-    <div style={{margin: '15px 0 0 10px'}}>
+    <div style={{ margin: '15px 0 0 10px' }}>
       <div>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
@@ -358,15 +369,8 @@ export const Auction = ({ currentUser, socket }) => {
                           <TableCell align="center">{row.status}</TableCell>
                           <TableCell align="center">
                             <InfoIcon style={{ color: "blue", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></InfoIcon>
-                            <ChangeCircleIcon style={{ color: "red", fontSize: "35px"  }} onClick={() => handleClickOpenAuctionDialog(row.id)}></ChangeCircleIcon>
+                            <ChangeCircleIcon style={{ color: "red", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></ChangeCircleIcon>
                           </TableCell>
-                          <TableCell align="center">
-                            {row.sell_status === 'Thành công' ? <Button className={row.c} color='success' variant="contained">{row.sell_status}</Button> : <></>}
-                            {row.sell_status === 'Người mua hủy đơn hàng' || row.sell_status === 'Người mua hủy đơn hàng'? <Button className="cancel" color='error' variant="contained">{row.sell_status}</Button> : <></>}
-                            {row.sell_status === 'Chờ người bán xác nhận' ? <Button className={row.c} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
-                            {row.sell_status === 'Chờ người đấu xác nhận' ? <Button className={row.c} onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
-                          </TableCell>
-
                         </TableRow>
                       );
                     })}
@@ -383,7 +387,7 @@ export const Auction = ({ currentUser, socket }) => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[8, 15, 25,500]}
+              rowsPerPageOptions={[8, 15, 25, 500]}
               component="div"
               count={data ? data.length : 0}
               rowsPerPage={rowsPerPage}
@@ -397,36 +401,95 @@ export const Auction = ({ currentUser, socket }) => {
             label="Dense padding"
           />
         </Box>
-        <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}fullWidth={true}
+        <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog} fullWidth={true}
           maxWidth={'lg'}>
-          <DialogTitle> Thông tin chi tiết của người dùng</DialogTitle>
+          <DialogTitle> Thông tin chi tiết của buổi đấu giá</DialogTitle>
           <DialogContent>
-            <div className='user-popup'>
-              <div className="user-view">
-                <div className="avatar">
-                  <img
-                    src="https://kynguyenlamdep.com/wp-content/uploads/2022/06/anh-gai-xinh-cuc-dep.jpg"
-                    alt="" />
-                </div>
-                <div className="u-info">
-                 <div className="u-p1">
-                  <div className="u-p1-id">
-                      <div className="title">ID</div>
-                      <div className="content">15</div>
+            <div className='auction-popup'>
+              {currentAuction.id ?
+                <>
+                  <div className="auction-view">
+                    <div className="img-view">
+                      {currentAuction.images.map((image, index) =>
+                        <div className="img-item" key={index}>
+                          <img
+                            src={image.url}
+                            alt="" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="p1">
+                      <div className="p1-item">
+                        <div className="title">ID:</div>
+                        <div className="content">{currentAuction.id}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Tên sản phẩm:</div>
+                        <div className="content">{currentAuction.name}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Loại sản phẩm:</div>
+                        <div className="content">{currentAuction.product_category}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Title</div>
+                        <div className="content">{currentAuction.title}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Description</div>
+                        <div className="content">{currentAuction.description}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Branch</div>
+                        <div className="content">{currentAuction.description || 'Không có'}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Keyword</div>
+                        <div className="content">{currentAuction.key_word || 'Không có'}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Chất lượng</div>
+                        <div className="content">{currentAuction.status || 'Không có'}</div>
+                      </div>
+
+                      <div className="p1-item">
+                        <div className="title">Thời gian bắt đầu</div>
+                        <div className="content">{moment(currentAuction.start_time).format('DD/MM/YYYY HH:mm:ss')}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Thời gian đấu</div>
+                        <div className="content">{currentAuction.time}</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Giá khởi điểm</div>
+                        <div className="content">{currentAuction.start_price} VND</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Giá bán</div>
+                        <div className="content">{currentAuction.sell_price} VND</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Trạng thái</div>
+                        <div className="content">ID</div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">ID Người bán</div>
+                        <div className="content">{currentAuction.seller_id} <span style={{color: 'red'}}>Thông tin người bán</span></div>
+                      </div>
+                      <div className="p1-item">
+                        <div className="title">Số lượt đấu giá</div>
+                        <div className="content">{currentAuction.auction_count} <span style={{ color: 'red' }}>Chi tiết lịch sử đấu</span></div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="u-p1-name">
-                      <div className="title">Name</div>
-                      <div className="content">Kien</div>
-                  </div>
-                 </div>
-                </div>
-              </div>
+                </>
+                : <></>}
             </div>
           </DialogContent>
-          <DialogActions> 
-          <Button onClick={()=>handleCloseAuctionDialog('cancel')}>Hủy</Button>
-          <Button onClick={()=>handleCloseAuctionDialog('confirm')}>Submit</Button>
-          </DialogActions> 
+          <DialogActions>
+            <Button onClick={() => handleCloseAuctionDialog('cancel')}>Hủy</Button>
+            <Button onClick={() => handleCloseAuctionDialog('confirm')}>Submit</Button>
+          </DialogActions>
         </Dialog>
       </div>
     </div>

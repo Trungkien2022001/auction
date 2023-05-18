@@ -1,36 +1,46 @@
+.sell-table-row {
+  height: 100px;
+}
 
-.sell-table-row{
-    height: 100px;
+.product-sell-image {
+  height: 100px;
+  width: 100%;
+  object-fit: cover;
 }
-.product-sell-image{
-    height: 100px;
-    width: 100%;
-    object-fit: cover;
+.product-history-name {
+  min-width: 80px;
+  max-height: 200px;
+  overflow-y: hidden;
 }
-.product-history-name{
-    min-width: 80px;
-    max-height: 200px;
-    overflow-y: hidden;
-}
-.user-popup{
-    .user-view{
+.auction-popup {
+  .auction-view {
+    display: flex;
+    .img-view {
+      flex: 1;
       display: flex;
-      .avatar{
-       text-align: center;
-        flex: 1;
-          img{
-              width: 200px;
-              height: auto
-          }
-      }
-      .u-info{
-        flex: 2;
-        .u-p1{
-          display: flex;
-          justify-content: space-between;
-          .u-p1-item{
-          }
+      flex-wrap: wrap;
+      .img-item{
+        img {
+          padding: 5px 5px;
+          border-radius: 5px;
+          height: 120px;
+          width: 100%;
+          max-width: 300px;
+          object-fit: cover;
         }
       }
     }
+    .p1 {
+      flex: 2;
+      .p1-item{
+        display: flex;
+        line-height: 2;
+        .title{
+          font-weight: bold;
+          width: 150px;
+        }
+
+      }
+    }
   }
+}

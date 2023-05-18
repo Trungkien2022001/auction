@@ -52,7 +52,7 @@ exports.createAuctionRaise = async params => {
         throw new Error(`Auction raise error: invalid auction time`)
     }
 
-    const auctionCountByUser = await await auctionModel.countAuctionRaiseByUser(
+    const auctionCountByUser = await auctionModel.countAuctionRaiseByUser(
         user.id,
         auctionId
     )

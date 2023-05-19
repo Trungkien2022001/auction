@@ -26,11 +26,13 @@ import InfoIcon from '@mui/icons-material/Info';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 
 import { visuallyHidden } from '@mui/utils';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemButton, Radio, RadioGroup } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
+import { AUCTION_TIMES } from '../../../utils/constants';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -240,6 +242,8 @@ export const Auction = ({ currentUser, socket }) => {
   const [data, setData] = useState([])
   const [currentAuctionId, setCurrentAuctionId] = useState()
   const [currentAuction, setCurrentAuction] = useState({})
+  const [openAuctionHistoryDialog, setOpenAuctionHistoryDialog] = useState(false);
+  const [auctionHistoryData, setAuctionHistoryData] = useState([]);
 
   async function getData() {
     let result = await get(`${api_endpoint}/auctions?type=dashboard`, currentUser)
@@ -253,10 +257,14 @@ export const Auction = ({ currentUser, socket }) => {
       setCurrentAuction(result.data.data.product)
       console.log(result.data.data)
     }
+    result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${currentAuctionId}`, currentUser)
+    if (result.status === 200) {
+      setAuctionHistoryData(result.data.data)
+    }
 
   }
-  useEffect(() => {
 
+  useEffect(() => {
     getAuctionDetail()
   }, [currentAuctionId])
   useEffect(() => {
@@ -274,6 +282,13 @@ export const Auction = ({ currentUser, socket }) => {
   const handleClickOpenAuctionDialog = (id) => {
     setCurrentAuctionId(id)
     setOpenAuctionDialog(true);
+  }
+  const handleClickOpenAuctionHistoryDialog = () => {
+    setOpenAuctionHistoryDialog(true);
+  };
+
+  const handleCloseAuctionHistoryDialog = () => {
+    setOpenAuctionHistoryDialog(false);
   };
 
   const handleCloseAuctionDialog = (option) => {
@@ -441,7 +456,7 @@ export const Auction = ({ currentUser, socket }) => {
                       </div>
                       <div className="p1-item">
                         <div className="title">Branch</div>
-                        <div className="content">{currentAuction.description || 'Không có'}</div>
+                        <div className="content">{currentAuction.branch || 'Không có'}</div>
                       </div>
                       <div className="p1-item">
                         <div className="title">Keyword</div>
@@ -458,7 +473,7 @@ export const Auction = ({ currentUser, socket }) => {
                       </div>
                       <div className="p1-item">
                         <div className="title">Thời gian đấu</div>
-                        <div className="content">{currentAuction.time}</div>
+                        <div className="content">{AUCTION_TIMES[currentAuction.time]}</div>
                       </div>
                       <div className="p1-item">
                         <div className="title">Giá khởi điểm</div>
@@ -474,11 +489,15 @@ export const Auction = ({ currentUser, socket }) => {
                       </div>
                       <div className="p1-item">
                         <div className="title">ID Người bán</div>
-                        <div className="content">{currentAuction.seller_id} <span style={{color: 'red'}}>Thông tin người bán</span></div>
+                        <div className="content">{currentAuction.seller_id}
+                          <Link style={{ textDecoration: 'none', color: "black" }} to={`/user/${currentAuction.seller_id}`}>
+                            <span style={{ color: 'red' }}>Thông tin người bán</span>
+                          </Link>
+                        </div>
                       </div>
                       <div className="p1-item">
                         <div className="title">Số lượt đấu giá</div>
-                        <div className="content">{currentAuction.auction_count} <span style={{ color: 'red' }}>Chi tiết lịch sử đấu</span></div>
+                        <div className="content">{currentAuction.auction_count} <span onClick={() => handleClickOpenAuctionHistoryDialog()} style={{ color: 'red' }}>Chi tiết lịch sử đấu</span></div>
                       </div>
                     </div>
                   </div>
@@ -489,6 +508,30 @@ export const Auction = ({ currentUser, socket }) => {
           <DialogActions>
             <Button onClick={() => handleCloseAuctionDialog('cancel')}>Hủy</Button>
             <Button onClick={() => handleCloseAuctionDialog('confirm')}>Submit</Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={openAuctionHistoryDialog} onClose={handleCloseAuctionHistoryDialog}>
+          <div className="auction-history-dialog">
+            <div className="history-dialog-header">Lịch sử đấu giá</div>
+            <div className="history-dialog-wrapper">
+              <div className="history-dialog-item">
+                <div className="history-dialog-stt">STT</div>
+                <div className="history-dialog-user" style={{ textAlign: 'center' }}>Người đấu giá</div>
+                <div className="history-dialog-amount">Số tiền(VND)</div>
+                <div className="history-dialog-time" style={{ textAlign: 'center' }}>Thời gian</div>
+              </div>
+              {auctionHistoryData && auctionHistoryData.length && auctionHistoryData.map((item, index) => (
+                <div key={item.id} className="history-dialog-item">
+                  <div className="history-dialog-stt">{auctionHistoryData.length - index}</div>
+                  <div className="history-dialog-user">{item.auctioneer_name}</div>
+                  <div className="history-dialog-amount">{item.bet_amount}</div>
+                  <div className="history-dialog-time">{moment(item.bet_time).format('DD-MM-YYYY HH:mm:ss')}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <DialogActions>
+            <Button onClick={handleCloseAuctionHistoryDialog}>Đóng</Button>
           </DialogActions>
         </Dialog>
       </div>

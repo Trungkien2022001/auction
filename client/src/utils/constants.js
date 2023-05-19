@@ -220,3 +220,30 @@ exports.USER_STATUS ={
   1: 'Blocked',
   0: 'Active',
 }
+exports.AUCTION_TIMES = {
+  1: '1 Phút',
+  3: '3 Phút',
+  5: '5 Phút',
+  10: '10 Phút',
+  15: '15 Phút',
+  20: '20 Phút',
+  30: '30 Phút',
+  60: '1 Giờ',
+  120: '2 Giờ',
+  180: '3 Giờ',
+  360: '6 Giờ',
+  720: '12 Giờ',
+  1440: '1 Ngày',
+  2880: '2 Ngày',
+  4320: '3 Ngày',
+  7200: '7 Ngày',
+  10080: '1 Phút',
+  14400: '10 Ngày',
+  21600: '15 Ngày',
+  43200: '30 Ngày',
+}
+exports.AUCTION_PRESTIGE = [
+  'Thấp',
+  'Trung Bình',
+  'Cao'
+]

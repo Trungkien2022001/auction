@@ -9,12 +9,16 @@
             height: auto
         }
     }
-    .u-info{
+    .p1 {
       flex: 2;
-      .u-p1{
+      .p1-item{
         display: flex;
-        .u-p1-item{
+        line-height: 2;
+        .title{
+          font-weight: bold;
+          width: 150px;
         }
+
       }
     }
   }

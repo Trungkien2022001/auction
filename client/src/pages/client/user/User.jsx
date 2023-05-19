@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { useState } from 'react'
 import { Header } from '../../../components/header/Header'
 import './User.scss'
@@ -34,11 +35,13 @@ import { Overview } from '../../../components/user/overview/Overview'
 import { SaleHistory } from '../../../components/user/sale-history/SaleHistory';
 import { BuyHistory } from '../../../components/user/buy-history/BuyHistory';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 const drawerWidth = 250;
 
-export const User = ({socket}) => {
-
+export const User = ({ socket }) => {
+  const location = useLocation();
+  let id = location.pathname.split("/")[2];
   const themes = THEME
   const currentUser = useSelector((state) => state.user);
   const [selectedTheme, setSelectedTheme] = useState(themes[14]);
@@ -49,7 +52,7 @@ export const User = ({socket}) => {
   };
   const [themeOpen, setThemeOpen] = useState(false);
   const [transactionNavOpen, setTransactionNavOpen] = useState(false);
-
+console.log(currentUser.id, id)
   const handleClickOpenTheme = () => {
     setThemeOpen(true);
   };
@@ -108,198 +111,204 @@ export const User = ({socket}) => {
         <div onClick={() => handleDrawerToggle()} className='user-info-sidebar-open'>
           <KeyboardDoubleArrowRightIcon />
         </div>
-        {mobileOpen ?
-          <div className='user-info-sidebar-mobile'>
-            <div onClick={() => handleDrawerToggle()} className='user-info-sidebar-close'>
-              <div className='user-info-close-sidebar'>
-                <KeyboardDoubleArrowLeftIcon />
-              </div>
-            </div>
-            <List className='user-drawer'
-              sx={{ width: drawerWidth, bgcolor: `${selectedTheme.backgroundColor}`, color: `${selectedTheme.textColor}` }}
-              component="nav"
-            >
-              <div className='profile-dashboard'>
-                <Avatar className='avatar-dashboard'
-                  alt="avatar"
-                  src={currentUser.avatar}
-                  sx={{ width: 150, height: 150 }}
-                />
-                <div className='username-dashboard'>Trung Kiên</div>
-                <div className='username-dashboard-role'>Administrator</div>
-              </div>
-              <Divider />
-              <ListItemButton
-                onClick={() => setCurrentPage(1)}
-                sx={currentPage === 1 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-              >
-                <ListItemIcon>
-                  <DashboardIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Tổng quan" />
-              </ListItemButton>
-              <ListItemButton onClick={() => setTransactionNavOpen(!transactionNavOpen)}>
-                <ListItemIcon>
-                  <LocalLibraryIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Giao dịch" />
-                {transactionNavOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={transactionNavOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding sx={currentPage === 2 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-                  <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(2)}>
+        {currentUser.id == id ?
+          <>
+            {mobileOpen ?
+              <div className='user-info-sidebar-mobile'>
+                <div onClick={() => handleDrawerToggle()} className='user-info-sidebar-close'>
+                  <div className='user-info-close-sidebar'>
+                    <KeyboardDoubleArrowLeftIcon />
+                  </div>
+                </div>
+                <List className='user-drawer'
+                  sx={{ width: drawerWidth, bgcolor: `${selectedTheme.backgroundColor}`, color: `${selectedTheme.textColor}` }}
+                  component="nav"
+                >
+                  <div className='profile-dashboard'>
+                    <Avatar className='avatar-dashboard'
+                      alt="avatar"
+                      src={currentUser.avatar}
+                      sx={{ width: 150, height: 150 }}
+                    />
+                    <div className='username-dashboard'>Trung Kiên</div>
+                    <div className='username-dashboard-role'>Administrator</div>
+                  </div>
+                  <Divider />
+                  <ListItemButton
+                    onClick={() => setCurrentPage(1)}
+                    sx={currentPage === 1 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+                  >
                     <ListItemIcon>
-                      <BookIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                      <DashboardIcon sx={{ color: `${selectedTheme.textColor}` }} />
                     </ListItemIcon>
-                    <ListItemText primary="Mua" />
+                    <ListItemText primary="Tổng quan" />
                   </ListItemButton>
-                </List>
-                <List component="div" disablePadding sx={currentPage === 3 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-                  <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(3)}>
+                  <ListItemButton onClick={() => setTransactionNavOpen(!transactionNavOpen)}>
                     <ListItemIcon>
-                      <BookmarkIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                      <LocalLibraryIcon sx={{ color: `${selectedTheme.textColor}` }} />
                     </ListItemIcon>
-                    <ListItemText primary="Bán" />
+                    <ListItemText primary="Giao dịch" />
+                    {transactionNavOpen ? <ExpandLess /> : <ExpandMore />}
                   </ListItemButton>
+                  <Collapse in={transactionNavOpen} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding sx={currentPage === 2 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
+                      <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(2)}>
+                        <ListItemIcon>
+                          <BookIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Mua" />
+                      </ListItemButton>
+                    </List>
+                    <List component="div" disablePadding sx={currentPage === 3 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
+                      <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(3)}>
+                        <ListItemIcon>
+                          <BookmarkIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Bán" />
+                      </ListItemButton>
+                    </List>
+                  </Collapse>
+                  <ListItemButton
+                    onClick={() => setCurrentPage(4)}
+                    sx={currentPage === 4 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+                  >
+                    <ListItemIcon>
+                      <MessageIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Tin nhắn" />
+                  </ListItemButton>
+                  <ListItemButton
+                    onClick={() => setCurrentPage(20)}
+                    sx={currentPage === 20 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+                  >
+                    <ListItemIcon>
+                      <SettingsApplicationsIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Setting" />
+                  </ListItemButton>
+                  <ListItemButton onClick={() => window.location.href = './'}>
+                    <ListItemIcon>
+                      <HomeIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Back to homepage" />
+                  </ListItemButton>
+                  <Divider />
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <InputIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                  </ListItemButton>
+                  <Divider />
+                  <List className='theme-select'>
+                    <ButtonGroup style={{ marginLeft: "52px", marginTop: "5px" }} variant="text" aria-label="text button group">
+                      <Button onClick={() => handleChangeTheme(-1)}><ArrowBackIosIcon /></Button>
+                      <Button onClick={handleClickOpenTheme}>Theme</Button>
+                      <Button onClick={() => handleChangeTheme(1)}><ArrowForwardIosIcon /></Button>
+                    </ButtonGroup>
+                  </List>
                 </List>
-              </Collapse>
-              <ListItemButton
-                onClick={() => setCurrentPage(4)}
-                sx={currentPage === 4 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-              >
-                <ListItemIcon>
-                  <MessageIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Tin nhắn" />
-              </ListItemButton>
-              <ListItemButton
-                onClick={() => setCurrentPage(20)}
-                sx={currentPage === 20 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-              >
-                <ListItemIcon>
-                  <SettingsApplicationsIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Setting" />
-              </ListItemButton>
-              <ListItemButton onClick={() => window.location.href = './'}>
-                <ListItemIcon>
-                  <HomeIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Back to homepage" />
-              </ListItemButton>
-              <Divider />
-              <ListItemButton>
-                <ListItemIcon>
-                  <InputIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItemButton>
-              <Divider />
-              <List className='theme-select'>
-                <ButtonGroup style={{ marginLeft: "52px", marginTop: "5px" }} variant="text" aria-label="text button group">
-                  <Button onClick={() => handleChangeTheme(-1)}><ArrowBackIosIcon /></Button>
-                  <Button onClick={handleClickOpenTheme}>Theme</Button>
-                  <Button onClick={() => handleChangeTheme(1)}><ArrowForwardIosIcon /></Button>
-                </ButtonGroup>
-              </List>
-            </List>
-          </div>
+              </div>
+              :
+              <div className='user-info-sidebar'>
+                <List className='user-drawer'
+                  sx={{ width: drawerWidth, bgcolor: `${selectedTheme.backgroundColor}`, color: `${selectedTheme.textColor}` }}
+                  component="nav"
+                >
+                  <div className='profile-dashboard'>
+                    <Avatar className='avatar-dashboard'
+                      alt="Remy Sharp"
+                      src={currentUser.avatar}
+                      sx={{ width: 150, height: 150 }}
+                    />
+                    <div className='username-dashboard'>{currentUser.username}</div>
+                    <div className='username-dashboard-role'>{currentUser.role_id}</div>
+                  </div>
+                  <Divider />
+                  <ListItemButton
+                    onClick={() => setCurrentPage(1)}
+                    sx={currentPage === 1 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+                  >
+                    <ListItemIcon>
+                      <DashboardIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Tổng quan" />
+                  </ListItemButton>
+                  <ListItemButton onClick={() => setTransactionNavOpen(!transactionNavOpen)}>
+                    <ListItemIcon>
+                      <LocalLibraryIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Giao dịch" />
+                    {transactionNavOpen ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                  <Collapse in={transactionNavOpen} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding sx={currentPage === 2 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
+                      <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(2)}>
+                        <ListItemIcon>
+                          <BookIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Mua" />
+                      </ListItemButton>
+                    </List>
+                    <List component="div" disablePadding sx={currentPage === 3 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
+                      <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(3)}>
+                        <ListItemIcon>
+                          <BookmarkIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                        </ListItemIcon>
+                        <ListItemText primary="Bán" />
+                      </ListItemButton>
+                    </List>
+                  </Collapse>
+                  <ListItemButton
+                    onClick={() => setCurrentPage(4)}
+                    sx={currentPage === 4 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+                  >
+                    <ListItemIcon>
+                      <MessageIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Tin nhắn" />
+                  </ListItemButton>
+                  <ListItemButton
+                    onClick={() => setCurrentPage(20)}
+                    sx={currentPage === 20 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+                  >
+                    <ListItemIcon>
+                      <SettingsApplicationsIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Setting" />
+                  </ListItemButton>
+                  <ListItemButton onClick={() => window.location.href = './'}>
+                    <ListItemIcon>
+                      <HomeIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Back to homepage" />
+                  </ListItemButton>
+                  <Divider />
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <InputIcon sx={{ color: `${selectedTheme.textColor}` }} />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                  </ListItemButton>
+                  <Divider />
+                  <List className='theme-select'>
+                    <ButtonGroup style={{ marginLeft: "52px", marginTop: "5px" }} variant="text" aria-label="text button group">
+                      <Button onClick={() => handleChangeTheme(-1)}><ArrowBackIosIcon /></Button>
+                      <Button onClick={handleClickOpenTheme}>Theme</Button>
+                      <Button onClick={() => handleChangeTheme(1)}><ArrowForwardIosIcon /></Button>
+                    </ButtonGroup>
+                  </List>
+                </List>
+              </div>
+            }
+          </>
           :
-          <div className='user-info-sidebar'>
-            <List className='user-drawer'
-              sx={{ width: drawerWidth, bgcolor: `${selectedTheme.backgroundColor}`, color: `${selectedTheme.textColor}` }}
-              component="nav"
-            >
-              <div className='profile-dashboard'>
-                <Avatar className='avatar-dashboard'
-                  alt="Remy Sharp"
-                  src={currentUser.avatar}
-                  sx={{ width: 150, height: 150 }}
-                />
-                <div className='username-dashboard'>{currentUser.username}</div>
-                <div className='username-dashboard-role'>{currentUser.role_id}</div>
-              </div>
-              <Divider />
-              <ListItemButton
-                onClick={() => setCurrentPage(1)}
-                sx={currentPage === 1 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-              >
-                <ListItemIcon>
-                  <DashboardIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Tổng quan" />
-              </ListItemButton>
-              <ListItemButton onClick={() => setTransactionNavOpen(!transactionNavOpen)}>
-                <ListItemIcon>
-                  <LocalLibraryIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Giao dịch" />
-                {transactionNavOpen ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={transactionNavOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding sx={currentPage === 2 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-                  <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(2)}>
-                    <ListItemIcon>
-                      <BookIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Mua" />
-                  </ListItemButton>
-                </List>
-                <List component="div" disablePadding sx={currentPage === 3 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-                  <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(3)}>
-                    <ListItemIcon>
-                      <BookmarkIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                    </ListItemIcon>
-                    <ListItemText primary="Bán" />
-                  </ListItemButton>
-                </List>
-              </Collapse>
-              <ListItemButton
-                onClick={() => setCurrentPage(4)}
-                sx={currentPage === 4 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-              >
-                <ListItemIcon>
-                  <MessageIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Tin nhắn" />
-              </ListItemButton>
-              <ListItemButton
-                onClick={() => setCurrentPage(20)}
-                sx={currentPage === 20 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-              >
-                <ListItemIcon>
-                  <SettingsApplicationsIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Setting" />
-              </ListItemButton>
-              <ListItemButton onClick={() => window.location.href = './'}>
-                <ListItemIcon>
-                  <HomeIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Back to homepage" />
-              </ListItemButton>
-              <Divider />
-              <ListItemButton>
-                <ListItemIcon>
-                  <InputIcon sx={{ color: `${selectedTheme.textColor}` }} />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItemButton>
-              <Divider />
-              <List className='theme-select'>
-                <ButtonGroup style={{ marginLeft: "52px", marginTop: "5px" }} variant="text" aria-label="text button group">
-                  <Button onClick={() => handleChangeTheme(-1)}><ArrowBackIosIcon /></Button>
-                  <Button onClick={handleClickOpenTheme}>Theme</Button>
-                  <Button onClick={() => handleChangeTheme(1)}><ArrowForwardIosIcon /></Button>
-                </ButtonGroup>
-              </List>
-            </List>
-          </div>
+          <></>
         }
         <div className='user-info-item'>
-          {currentPage === 1 ? <Overview currentUser={currentUser} socket = {socket}/> : <></>}
-          {currentPage === 2 ? <BuyHistory currentUser={currentUser} socket = {socket}/> : <></>}
-          {currentPage === 3 ? <SaleHistory currentUser={currentUser} socket = {socket}/> : <></>}
+          {currentPage === 1 ? <Overview currentUser={currentUser} id = {id} socket={socket} /> : <></>}
+          {currentPage === 2 ? <BuyHistory currentUser={currentUser} socket={socket} /> : <></>}
+          {currentPage === 3 ? <SaleHistory currentUser={currentUser} socket={socket} /> : <></>}
         </div>
       </div>
       <SimpleDialog

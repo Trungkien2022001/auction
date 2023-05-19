@@ -5,18 +5,18 @@ import './Overview.scss'
 import { get } from '../../../utils/customRequest'
 import moment from 'moment'
 const api_endpoint = process.env.REACT_APP_API_ENDPOINT
-export const Overview = ({ currentUser }) => {
+export const Overview = ({ currentUser, id }) => {
   const [data, setData] = useState({})
 
   useEffect(() => {
     async function getData() {
-      let result = await get(`${api_endpoint}/user/${currentUser.id}`, currentUser)
+      let result = await get(`${api_endpoint}/user/${id}`, currentUser)
       if (result.status === 200) {
         setData(result.data.data)
       }
     }
     getData()
-  }, [currentUser])
+  }, [currentUser, id])
   return (
     <div className='dashboard-container'>
       {/* <div className='overview-header'>Tổng quan</div> */}

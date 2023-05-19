@@ -67,7 +67,6 @@ async function fetchUserByID(id, type = 'user') {
             throw new Error('user not found')
         }
 
-        delete user.role_id
         switch (type) {
             case 'user':
                 {

@@ -24,13 +24,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import InfoIcon from '@mui/icons-material/Info';
-import PersonIcon from '@mui/icons-material/Person';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Radio, RadioGroup } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment';
-import { USER_STATUS } from '../../../utils/constants';
+import { AUCTION_PRESTIGE, USER_STATUS } from '../../../utils/constants';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -233,16 +232,29 @@ export const User = ({ currentUser, socket }) => {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(8);
   const [openUserDialog, setOpenUserDialog] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState(319)
+  const [currentUserInfo, setCurrentUserInfo] = useState({})
   const [data, setData] = useState({})
-  const [currentUserId, setCurrentUserId] = useState()
+  // const [currentUserId, setCurrentUserId] = useState()
 
   async function getData() {
     let result = await get(`${api_endpoint}/users`, currentUser)
     if (result.status === 200) {
       setData(result.data.users)
     }
-    console.log(result.data.users)
   }
+  async function getAuctionDetail() {
+    let result = await get(`${api_endpoint}/user/${currentUserId}`, currentUser)
+    if (result.status === 200) {
+      setCurrentUserInfo(result.data.data)
+      console.log(result.data.data)
+    }
+
+  }
+
+  useEffect(() => {
+    getAuctionDetail()
+  }, [currentUserId])
   useEffect(() => {
 
     getData()
@@ -256,6 +268,7 @@ export const User = ({ currentUser, socket }) => {
   }, [socket.current])
 
   const handleClickOpenUserDialog = (user_id) => {
+    setCurrentUserId(user_id)
     setOpenUserDialog(true);
   };
 
@@ -264,7 +277,7 @@ export const User = ({ currentUser, socket }) => {
     if (option) {
       socket.current.emit('Usereer_confirm', {
         userId: currentUser.id,
-        UserId: currentUserId,
+        // UserId: currentUserId,
         status: option === 'cancel' ? 0 : 1
       })
     }
@@ -387,19 +400,63 @@ export const User = ({ currentUser, socket }) => {
               <div className="user-view">
                 <div className="avatar">
                   <img
-                    src="https://kynguyenlamdep.com/wp-content/uploads/2022/06/anh-gai-xinh-cuc-dep.jpg"
+                    src={currentUserInfo.avatar}
                     alt="" />
                 </div>
-                <div className="u-info">
-                 <div className="u-p1">
-                  <div className="u-p1-id">
-                      <b>ID: </b>15
+                <div className="p1">
+                  <div className="p1-item">
+                    <div className="title">ID:</div>
+                    <div className="content">{currentUserInfo.id}</div>
                   </div>
-                  <div className="u-p1-name">
-                      <div className="title">Name</div>
-                      <div className="content">Kien</div>
+                  <div className="p1-item">
+                    <div className="title">Tên</div>
+                    <div className="content">{currentUserInfo.name}</div>
                   </div>
-                 </div>
+                  <div className="p1-item">
+                    <div className="title">username</div>
+                    <div className="content">{currentUserInfo.username}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">SĐT</div>
+                    <div className="content">{currentUserInfo.phone}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Địa chỉ</div>
+                    <div className="content">{currentUserInfo.address}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Quyền</div>
+                    <div className="content">{currentUserInfo.role_id}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Birthday</div>
+                    <div className="content">{moment(currentUserInfo.birthday).format('DD/MM/YYYY')}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Số dư tk</div>
+                    <div className="content">{currentUserInfo.amount} VND</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Độ uy tín</div>
+                    <div className="content">{AUCTION_PRESTIGE[currentUserInfo.prestige]}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Đã xác thực</div>
+                    <div className="content">{currentUserInfo.is_verified}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Trạng thái</div>
+                    <div className="content">{USER_STATUS[currentUserInfo.is_blocked]}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Rating</div>
+                    <div className="content">{currentUserInfo.rating}</div>
+                  </div>
+                  <div className="p1-item">
+                    <div className="title">Ngày tạo</div>
+                    <div className="content">{moment(currentUserInfo.created_at).format('DD/MM/YYYY')}</div>
+                  </div>
+                 
                 </div>
               </div>
             </div>

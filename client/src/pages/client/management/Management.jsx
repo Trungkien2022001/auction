@@ -36,13 +36,14 @@ import { THEME } from '../../../utils/constants'
 import './Management.scss'
 import { useState } from 'react';
 import { Auction } from '../../../components/managements/auction/Auction';
+import { ActionLog } from '../../../components/managements/actionLog/ActionLog';
 import { useSelector } from 'react-redux';
 import { User } from '../../../components/managements/user/User';
 
 const drawerWidth = 250;
 
 
-export const Management = ({ page = 2, socket }) => {
+export const Management = ({ page = 5, socket }) => {
   const themes = THEME
   const currentUser = useSelector((state) => state.user);
 
@@ -347,6 +348,7 @@ export const Management = ({ page = 2, socket }) => {
         <div className='user-info-item'>
           {currentPage === 2 ? <Auction currentUser={currentUser} socket={socket} /> : <></>}
           {currentPage === 3 ? <User currentUser={currentUser} socket={socket} /> : <></>}
+          {currentPage === 5 ? <ActionLog currentUser={currentUser} socket={socket} /> : <></>}
         </div>
       </Box>
       <SimpleDialog

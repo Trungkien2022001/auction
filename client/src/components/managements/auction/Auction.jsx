@@ -26,13 +26,14 @@ import InfoIcon from '@mui/icons-material/Info';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 
 import { visuallyHidden } from '@mui/utils';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { AUCTION_TIMES } from '../../../utils/constants';
+import { AUCTION_STATUS, AUCTION_TIMES } from '../../../utils/constants';
+import { filterTable } from '../../../utils/filterTable';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -176,10 +177,11 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+  const { numSelected, fn, fn1 } = props;
 
   return (
     <Toolbar
+      style={{ paddingTop: "20px" }}
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
@@ -189,39 +191,34 @@ function EnhancedTableToolbar(props) {
         }),
       }}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Lịch sử giao dịch
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      <Typography
+        sx={{ flex: '1 1 100%' }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+      >
+        Lịch sử giao dịch
+      </Typography>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        defaultValue={-1}  
+        label="Age"
+        placeholder='Lọc theo trạng thái'
+        style={{ width: "400px" }}
+        onChange={fn1}
+      >
+        <MenuItem value={-1}>Tất cả</MenuItem>
+        {AUCTION_STATUS.map((item, index)=>
+         <MenuItem key={index} value={item.value}>{item.title}</MenuItem>
+        )}
+      </Select>
+      <TextField style={{ width: "400px" }} id="outlined-basic" label="Tìm kiếm" variant="outlined" onChange={fn} />
+      <Tooltip title="Filter list">
+        <IconButton>
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
     </Toolbar>
   );
 }
@@ -237,9 +234,11 @@ export const Auction = ({ currentUser, socket }) => {
   const [orderBy, setOrderBy] = useState('calories');
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(8);
+  const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
+  const [selected, setSelected] = useState([]);
   const [data, setData] = useState([])
+  const [initialData, setInitialData] = useState([])
   const [currentAuctionId, setCurrentAuctionId] = useState()
   const [currentAuction, setCurrentAuction] = useState({})
   const [openAuctionHistoryDialog, setOpenAuctionHistoryDialog] = useState(false);
@@ -249,7 +248,25 @@ export const Auction = ({ currentUser, socket }) => {
     let result = await get(`${api_endpoint}/auctions?type=dashboard`, currentUser)
     if (result.status === 200) {
       setData(result.data.data)
+      setInitialData(result.data.data)
     }
+  }
+  const handleSearch = (event) => {
+    const dataList = filterTable(event.target.value, initialData, headCells)
+    setData(dataList)
+  }
+  const handleFilterByStatus = (event) => {
+    const option = event.target.value
+    console.log(option)
+    if(option === -1){
+      setData(initialData)
+    } else {
+      console.log(initialData.filter(i=>i.status === AUCTION_STATUS.find(s=>s.value === option).title))
+      console.log(AUCTION_STATUS.find(s=>s.value === option).title)
+      setData(initialData.filter(i=>i.status === AUCTION_STATUS.find(s=>s.value === option).title))
+    }
+    // const dataList = filterTable(event.target.value, initialData, headCells)
+    // setData(dataList)
   }
   async function getAuctionDetail() {
     let result = await get(`${api_endpoint}/auction?id=${currentAuctionId}`, currentUser)
@@ -320,7 +337,7 @@ export const Auction = ({ currentUser, socket }) => {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
-
+  const isSelected = (english) => selected.indexOf(english) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -331,6 +348,7 @@ export const Auction = ({ currentUser, socket }) => {
       <div>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
+            <EnhancedTableToolbar numSelected={selected.length} data={selected} fn={handleSearch} fn1={handleFilterByStatus} />
             <TableContainer>
               <Table
                 stickyHeader
@@ -348,14 +366,17 @@ export const Auction = ({ currentUser, socket }) => {
                   {data && data.length && stableSort(data, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
+                      const isItemSelected = isSelected(row.english);
                       const labelId = `enhanced-table-checkbox-${index}`;
 
                       return (
                         <TableRow className='sell-table-row'
                           hover
                           role="checkbox"
+                          aria-checked={isItemSelected}
                           tabIndex={-1}
                           key={row.id}
+                          selected={isItemSelected}
                         // height='200px'
                         >
                           <TableCell
@@ -402,7 +423,7 @@ export const Auction = ({ currentUser, socket }) => {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[8, 15, 25, 500]}
+              rowsPerPageOptions={[7, 15, 25, 500]}
               component="div"
               count={data ? data.length : 0}
               rowsPerPage={rowsPerPage}

@@ -247,3 +247,41 @@ exports.AUCTION_PRESTIGE = [
   'Trung Bình',
   'Cao'
 ]
+exports.AUCTION_STATUS = [
+  {
+    title: 'Chờ xét duyệt',
+    value: 0,
+  },
+  {
+    title: 'Sắp đấu giá',
+    value: 1,
+  },
+  {
+    title: 'Đang đấu giá',
+    value: 2,
+  },
+  {
+    title: 'Chờ người bán xác nhận',
+    value: 3,
+  },
+  {
+    title: 'Chờ người mua xác nhận',
+    value: 4,
+  },
+  {
+    title: 'Thành công',
+    value: 5,
+  },
+  {
+    title: 'Không ai mua',
+    value: 6,
+  },
+  {
+    title: 'Người mua hủy đơn hàng',
+    value: 7,
+  },
+  {
+    title: 'Người bán hủy đơn hàng',
+    value: 8,
+  },
+]

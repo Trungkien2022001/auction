@@ -1,3 +1,5 @@
+/* eslint-disable no-return-await */
+/* eslint-disable camelcase */
 const { knex } = require('../connectors')
 
 module.exports = class Log {
@@ -9,7 +11,8 @@ module.exports = class Log {
         status,
         request,
         response,
-        client_ip
+        client_ip,
+        error
     }) {
         this.path = path
         this.matched_route = matchedRoute
@@ -21,6 +24,7 @@ module.exports = class Log {
             typeof request === 'object' ? JSON.stringify(request) : request
         this.response =
             typeof response === 'object' ? JSON.stringify(response) : response
+        this.error = typeof error === 'object' ? JSON.stringify(error) : error
     }
 
     toJson() {
@@ -29,6 +33,12 @@ module.exports = class Log {
 
     async createLog() {
         return knex('action_logs').insert(this.toJson())
+    }
+
+    static async getLogs() {
+        return await knex('action_logs')
+            .select()
+            .orderBy('created_at', 'desc')
     }
 
     static async fetchLogByPath({ operator, path }) {

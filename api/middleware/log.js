@@ -4,37 +4,37 @@ const uuid = require('uuid/v4')
 
 const Log = require('../models/log')
 
-// const loggingMethod = ['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+const loggingMethod = ['POST', 'PUT', 'PATCH', 'DELETE', 'GET']
 // const loggingPathIgnore = ['/login']
 async function log(ctx, next) {
     let error = null
     ctx.request.id = uuid().replace(/-/g, '') // because hyphen sucks
     try {
         await next()
-        const { _matchedRoute: matchedRoute } = ctx
+        const { originalUrl: matchedRoute } = ctx
 
-        // if (
-        //     loggingMethod.includes(ctx.method)
-        // ) {
-        const requestLog = new Log({
-            path: ctx.path,
-            matched_route: matchedRoute,
-            method: ctx.method,
-            user: ctx.request.headers['x-key'],
-            client_ip:
-                ctx.req.headers['x-forwarded-for'] ||
-                ctx.req.socket.remoteAddress ||
-                null,
-            status: ctx.status,
-            request: {
-                query: ctx.query,
-                // params: ctx.params,
-                body: ctx.request.body
-            },
-            response: error || ctx.body
-        })
+        if (loggingMethod.includes(ctx.method)) {
+            const requestLog = new Log({
+                path: ctx.path,
+                matched_route: matchedRoute,
+                method: ctx.method,
+                user: ctx.request.headers['x-key'],
+                client_ip:
+                    ctx.req.headers['x-forwarded-for'] ||
+                    ctx.req.socket.remoteAddress ||
+                    null,
+                status: ctx.status,
+                request: {
+                    query: ctx.query,
+                    // params: ctx.params,
+                    body: ctx.request.body
+                },
+                response: error || ctx.body,
+                error: ctx.body.success === false ? ctx.body.message : null
+            })
+            requestLog.createLog()
+        }
 
-        requestLog.createLog()
         // }
     } catch (err) {
         error = err

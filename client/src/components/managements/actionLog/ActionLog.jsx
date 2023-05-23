@@ -333,9 +333,9 @@ export const ActionLog = ({ currentUser, socket }) => {
                           <TableCell align="center" >{row.path}</TableCell>
                           <TableCell align="center">{row.user}</TableCell>
                           <TableCell align="center">{row.client_ip}</TableCell>
-                          <TableCell align="center" className='big-cell'>{row.request}</TableCell>
+                          <TableCell align="center" className='big-cell1'>{row.request}</TableCell>
                           <TableCell align="center" className='big-cell'>{row.response}</TableCell>
-                          <TableCell align="center" className='big-cell'>{row.error}</TableCell>
+                          <TableCell align="center" className='big-cell1'>{row.error}</TableCell>
                           <TableCell align="center">{moment(row.created_at).format('DD-MM-YYYY HH:mm:ss')}</TableCell>
                         </TableRow>
                       );

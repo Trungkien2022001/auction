@@ -6,6 +6,11 @@
   overflow: auto;
   display: block !important;
 }
+.small-cell{
+  word-wrap: break-word;
+  text-overflow:ellipsis;
+  max-width: 130px;
+}
 .big-cell1{
   word-wrap: break-word;
   text-overflow:ellipsis;

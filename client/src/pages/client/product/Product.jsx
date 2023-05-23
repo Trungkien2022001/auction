@@ -35,6 +35,7 @@ export const Product = ({ socket }) => {
     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
     if (result.status === 200) {
       setData(result.data.data)
+      console.log(result.data.data)
     }
     result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
     if (result.status === 200) {
@@ -135,7 +136,7 @@ export const Product = ({ socket }) => {
   };
 
   useEffect(() => {
-    let length = data?.product_images.length
+    let length = data?.product.images.length
     let timeId = setInterval(() => {
       setBigImageIndex(bigImageIndex + 1 < length ? bigImageIndex + 1 : 0)
     }, 4000)
@@ -167,11 +168,11 @@ export const Product = ({ socket }) => {
                 <div className='product__left'>
                   <div className="product-image">
                     <div className="product-image__wrapper">
-                      <img src={data.product_images[bigImageIndex].url} alt="" />
+                      <img src={data.product.images[bigImageIndex].url} alt="" />
                     </div>
                   </div>
                   <div className="product-sub-image">
-                    {data && data.product_images && data.product_images.map((item, index) => (
+                    {data && data.product.images && data.product.images.map((item, index) => (
                       <div className="product-sub-image__wrapper" key={index} onClick={() => setBigImageIndex(index)}>
                         <img src={item.url} alt="" />
                       </div>

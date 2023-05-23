@@ -21,17 +21,17 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import InfoIcon from '@mui/icons-material/Info';
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+// import InfoIcon from '@mui/icons-material/Info';
+// import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 
 import { visuallyHidden } from '@mui/utils';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField } from '@mui/material';
+import {  MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
-import { AUCTION_STATUS, AUCTION_TIMES } from '../../../utils/constants';
+// import { Link } from 'react-router-dom';
+import { AUCTION_STATUS } from '../../../utils/constants';
 import { filterTable } from '../../../utils/filterTable';
 
 function descendingComparator(a, b, orderBy) {
@@ -330,13 +330,13 @@ export const ActionLog = ({ currentUser, socket }) => {
                           </TableCell>
                           <TableCell align="center">{row.method}</TableCell>
                           <TableCell align="center">{row.status}</TableCell>
-                          <TableCell align="center" >{row.path}</TableCell>
-                          <TableCell align="center">{row.user}</TableCell>
+                          <TableCell align="center" className='small-cell'>{row.path}</TableCell>
+                          <TableCell align="center" className='small-cell'>{row.user}</TableCell>
                           <TableCell align="center">{row.client_ip}</TableCell>
                           <TableCell align="center" className='big-cell1'>{row.request}</TableCell>
                           <TableCell align="center" className='big-cell'>{row.response}</TableCell>
                           <TableCell align="center" className='big-cell1'>{row.error}</TableCell>
-                          <TableCell align="center">{moment(row.created_at).format('DD-MM-YYYY HH:mm:ss')}</TableCell>
+                          <TableCell align="center" className='small-cell'>{moment(row.created_at).format('DD-MM-YYYY HH:mm:ss')}</TableCell>
                         </TableRow>
                       );
                     })}

@@ -3,6 +3,7 @@ const moment = require('moment')
 const commonModel = require('../../models/common')
 const productModel = require('../../models/product')
 const auctionModel = require('../../models/auction')
+const userModel = require('../../models/user')
 
 exports.createAuction = async params => {
     const { body, user } = params
@@ -114,10 +115,14 @@ exports.getAuctionDetail = async params => {
     const product = await auctionModel.getProductAuction(params.id)
     // console.log(product)
     if (!product) return {}
-    // const seller_info = await userModel.fetchUserByID(product.seller_id,'seller_info')
+    const seller_info = await userModel.fetchUserByID(
+        product.seller_id,
+        'seller_info'
+    )
+    console.log(seller_info)
 
     return {
-        product
-        // seller_info
+        product,
+        seller_info
     }
 }

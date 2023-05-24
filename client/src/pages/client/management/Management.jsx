@@ -120,8 +120,8 @@ export const Management = ({ page = 4, socket }) => {
             alt="Remy Sharp"
             // src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1667133652/upload/mfyfdkfy6e3279cpqyfu.png"
             // src="https://thuthuatnhanh.com/wp-content/uploads/2020/09/avatar-trang-cuc-doc.jpg"
-            // src="https://scontent.fhan14-3.fna.fbcdn.net/v/t39.30808-6/280227226_1576724812722345_6309128935566769866_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=OgKQ28zqDFoAX-4mJ3r&_nc_ht=scontent.fhan14-3.fna&oh=00_AfD75H44rW0TjQ2SY8lOYUKKY39bSF6lvL5kVdukLLzAJQ&oe=6369CD16"
-            src="https://kynguyenlamdep.com/wp-content/uploads/2022/06/anh-gai-xinh-cuc-dep.jpg"
+            src="https://kenh14cdn.com/thumb_w/620/2020/7/17/brvn-15950048783381206275371.jpg"
+            // src="https://kynguyenlamdep.com/wp-content/uploads/2022/06/anh-gai-xinh-cuc-dep.jpg"
             sx={{ width: 150, height: 150 }}
           />
           <div className='username-dashboard'>Trung Kiên</div>

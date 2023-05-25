@@ -1,18 +1,20 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import { Header } from "../../../components/header/Header";
 import "./Homepage.scss";
 // import axios from "axios";
 import { Link } from "react-router-dom";
-import { Divider, List, ListItem, ListItemText } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
+import { Button, Divider, List, ListItem, ListItemText, TextField } from "@mui/material";
 import Countdown, { zeroPad } from 'react-countdown'
 import { useEffect } from "react";
 import { get } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
 import moment from "moment";
+import axios from "axios";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
@@ -21,9 +23,17 @@ const renderer = ({ days, hours, minutes, seconds }) => (
 );;
 
 export const Homepage = ({ socket }) => {
+  const messageRef = useRef(null);
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState({})
   const [productCategory, setProductCategory] = useState([]);
+  const [check, setCheck] = useState(false)
+  const [message, setMessage] = useState("");
+  const [mess, setMess] = useState([{
+    content: "Nếu có thắc mắc gì thì hãy nhắn cho chúng tôi",
+    isAdmin: 1,
+    user_id: 1
+  }]);
 
   useEffect(() => {
     if (socket.current) {
@@ -49,6 +59,31 @@ export const Homepage = ({ socket }) => {
   }, [])
   const handleStop = () => {
   }
+
+  async function sendMessage() {
+    if (message !== "" && currentUser.id && currentUser.id !== 1) {
+      const msg = {
+        idAdmin: 0,
+        content: message,
+        user: currentUser.name || "Guest",
+        userID: currentUser.id || 0,
+      };
+      await axios.post(`/message/createMess`, {
+        user_id: currentUser.id,
+        isAdmin: 0,
+        content: message,
+        username: currentUser.name,
+      });
+      // socketRef.current.emit("clientSend", msg);
+      setMessage("");
+    }
+  };
+
+  const onEnterPress = (e) => {
+    if (e.keyCode === 13 && e.shiftKey === false) {
+      sendMessage();
+    }
+  };
 
   const handleChangePage = id => {
     window.location.href = (`/product/${id}`)
@@ -81,10 +116,55 @@ export const Homepage = ({ socket }) => {
         </div>
         <div className='right-container'>
           <div className="chat">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/512px-Facebook_Messenger_logo_2020.svg.png?20220118041828"
-              alt=""
-            />
+            {check ?
+              <img
+                onClick={() => setCheck(!check)}
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/512px-Facebook_Messenger_logo_2020.svg.png?20220118041828"
+                alt=""
+              />
+              :
+              <div className="chatbox">
+                <div className="chatbox-header">
+                  <div className="content">
+                    Bạn cần giúp gì ?
+                  </div>
+                  <div className="close">
+                    <CloseIcon />
+                  </div>
+                </div>
+                <div className="chat-container">
+                  <div className="left item">
+                    <div className="message">
+                      Ăn cứt không
+                      <div className='time'>
+                        24/05/2023 10:25
+                      </div>
+                    </div>
+                  </div>
+                  <div className="right item">
+                    <div className="message">
+                      eiorgeroiger
+                      <div className='time'>
+                        24/05/2023 10:25
+                      </div>
+                    </div>
+                  </div>
+
+                  <div ref={messageRef} />
+                </div>
+                <div className='chat-input'>
+                  <input
+                    style={{ width: "245px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
+                    onKeyDown={onEnterPress}
+                    value={message}
+                    onChange={handleStop}
+                    type="text"
+                    placeholder="Nhập tin nhắn"
+                  />
+                  <Button style={{ width: "70px", height: "50px" }} onClick={handleStop} variant="contained">Send</Button>
+                </div>
+              </div>
+            }
           </div>
           <div className="new-auction-btn">
             <Link to={'/new-auction'}>

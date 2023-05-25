@@ -99,6 +99,10 @@ socketIO.on('connection', socket => {
     socket.on('add-to-new-room', (auctionId, userId) => {
         addToNewRoom(userId, socket.id, auctionId)
     })
+    socket.on('client-send-msg', data => {
+        return data
+        //    console.log(data)
+    })
 
     socket.on('auctioneer_confirm', ({ userId, auctionId, status }) => {
         // console.log({ userId, auctionId, status })

@@ -248,9 +248,7 @@ export const Chat = () => {
                         </div>
                         <div className="right item">
                             <div className="content">
-                                Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
-                                Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
-                                Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
+                               i chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
                             </div>
                             <div className="avatar">
                                 <Avatar sx={{ width: 26, height: 26 }} alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />

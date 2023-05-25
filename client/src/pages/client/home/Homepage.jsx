@@ -61,6 +61,7 @@ export const Homepage = ({ socket }) => {
   }
 
   async function sendMessage() {
+    console.log(message, currentUser)
     if (message !== "" && currentUser.id && currentUser.id !== 1) {
       const msg = {
         idAdmin: 0,
@@ -68,15 +69,9 @@ export const Homepage = ({ socket }) => {
         user: currentUser.name || "Guest",
         userID: currentUser.id || 0,
       };
-      await axios.post(`/message/createMess`, {
-        user_id: currentUser.id,
-        isAdmin: 0,
-        content: message,
-        username: currentUser.name,
-      });
-      // socketRef.current.emit("clientSend", msg);
-      setMessage("");
+      socket.current.emit('client-send-msg',msg)
     }
+    setMessage("");
   };
 
   const onEnterPress = (e) => {
@@ -133,35 +128,34 @@ export const Homepage = ({ socket }) => {
                   </div>
                 </div>
                 <div className="chat-container">
-                  <div className="left item">
-                    <div className="message">
-                      Ăn cứt không
+                  <div className="right item">
+                    <div className="content">
+                      u Hi chào cậu  u Hi chào cậu u Hi chào cậu  u Hi chào cậu u Hi chào cậu
                       <div className='time'>
                         24/05/2023 10:25
                       </div>
                     </div>
                   </div>
-                  <div className="right item">
-                    <div className="message">
-                      eiorgeroiger
+                  <div className="item left">
+                    <div className="content">
+                    u Hi chào cậu u Hi chào cậu  u Hi chào cậu u Hi chào cậu  u Hi chào cậu u Hi chào cậu
                       <div className='time'>
                         24/05/2023 10:25
-                      </div>
-                    </div>
+                      </div>                          </div>
                   </div>
 
                   <div ref={messageRef} />
                 </div>
                 <div className='chat-input'>
                   <input
-                    style={{ width: "245px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
+                    style={{ width: "224px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
                     onKeyDown={onEnterPress}
                     value={message}
-                    onChange={handleStop}
+                    onChange={e=>setMessage(e.target.value)}
                     type="text"
                     placeholder="Nhập tin nhắn"
                   />
-                  <Button style={{ width: "70px", height: "50px" }} onClick={handleStop} variant="contained">Send</Button>
+                  <Button style={{ width: "70px", height: "44px" }} onClick={sendMessage} variant="contained">Send</Button>
                 </div>
               </div>
             }

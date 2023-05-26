@@ -2,13 +2,30 @@ import React, { useEffect, useRef, useState } from 'react'
 import './Chat.scss'
 import { Avatar, Button, Divider, MenuItem, Select, TextField } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import { get } from '../../../utils/customRequest';
+import { useSelector } from 'react-redux';
 const moment = require('moment')
 
-export const Chat = () => {
+export const Chat = ({socket}) => {
+    const currentUser = useSelector(state => state.user)
     const messageRef = useRef(null)
     const [data, setData] = useState([])
     const [message, setMessage] = useState('')
+    const [clientId, setClientId] = useState(319)
 
+    async function getData() {
+        if(clientId){
+    
+          const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
+          if (result.status === 200) {
+            setData(result.data.body)
+          }
+        }
+      }
+      useEffect(() => {
+        getData()
+      }, [clientId])
+console.log(data)
     const onEnter = (e) => {
         if (e.keyCode === 13 && e.shiftKey === false) {
             handleSend()
@@ -18,16 +35,38 @@ export const Chat = () => {
     useEffect(() => {
         messageRef.current?.scrollIntoView()
     }, [data.length])
-    const handleSend = async () => {
-        if(message !== ''){
-            setData(prev => [...prev, {
-                content: message,
-                isAdmin: 1,
-                updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm')
+
+    async function handleSend() {
+        if (message !== "" && currentUser.id && currentUser.id !== 1) {
+          let msg
+          if (!data.length) {
+            msg = {
+              is_admin: 1,
+              content: message,
+              user: "Admin",
+              user_id: 0,
+              isUpdatedLastMsg: true
+            }
+          } else {
+            msg = {
+              is_admin: 1,
+              content: message,
+              user: "Admin",
+              user_id: clientId,
+              chat_id: data[0].chat_id
+            }
+          }
+          socket.current.emit('admin-send-msg', msg)
+          setData(prev =>
+            [...prev, {
+              chat_id: data[0].chat_id,
+              user_id: clientId,
+              is_admin: 1,
+              content: message
             }])
-            setMessage('')
         }
-    }
+        setMessage("");
+      };
 
     return (
         <div className='chat-container'>
@@ -234,39 +273,9 @@ export const Chat = () => {
                 <Divider />
                 <div className='main'>
                     <div className="main-wrapper">
-
-                        <div className="left item">
-                            <div className="avatar">
-                                <Avatar sx={{ width: 26, height: 26 }} alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                            </div>
-                            <div className="content">
-                                Hi chào cậu
-                                <div className='time'>
-                                    24/05/2023 10:25
-                                </div>
-                            </div>
-                        </div>
-                        <div className="right item">
-                            <div className="content">
-                               i chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
-                            </div>
-                            <div className="avatar">
-                                <Avatar sx={{ width: 26, height: 26 }} alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                            </div>
-                        </div>
-                        <div className="item left">
-                            <div className="avatar">
-                                <Avatar sx={{ width: 26, height: 26 }} alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                            </div>
-                            <div className="content">
-                                Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
-                                Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
-                                Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
-                            </div>
-                        </div>
                         {data.map((msg, index) =>
                             <>
-                                {msg.isAdmin ?
+                                {msg.is_admin ?
                                     <div className="right item">
                                         <div className="content">
                                             {msg.content}
@@ -284,9 +293,7 @@ export const Chat = () => {
                                             <Avatar sx={{ width: 26, height: 26 }} alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
                                         </div>
                                         <div className="content">
-                                            Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
-                                            Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
-                                            Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu Hi chào cậu
+                                            {msg.content}
                                         </div>
                                     </div>
                                 }

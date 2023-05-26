@@ -14,7 +14,6 @@ import { get } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
 import moment from "moment";
-import axios from "axios";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
@@ -29,11 +28,7 @@ export const Homepage = ({ socket }) => {
   const [productCategory, setProductCategory] = useState([]);
   const [check, setCheck] = useState(false)
   const [message, setMessage] = useState("");
-  const [mess, setMess] = useState([{
-    content: "Nếu có thắc mắc gì thì hãy nhắn cho chúng tôi",
-    isAdmin: 1,
-    user_id: 1
-  }]);
+  const [mess, setMess] = useState([]);
 
   useEffect(() => {
     if (socket.current) {
@@ -53,23 +48,52 @@ export const Homepage = ({ socket }) => {
     if (result.status === 200) {
       setProductCategory(result.data.product_category)
     }
+    if(currentUser.id){
+
+      result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${currentUser.id}`, currentUser)
+      if (result.status === 200) {
+        setMess(result.data.body)
+      }
+    }
   }
   useEffect(() => {
     getData()
   }, [])
   const handleStop = () => {
   }
+  useEffect(() => {
+    messageRef.current?.scrollIntoView()
+  }, [mess.length])
 
   async function sendMessage() {
     console.log(message, currentUser)
     if (message !== "" && currentUser.id && currentUser.id !== 1) {
-      const msg = {
-        idAdmin: 0,
-        content: message,
-        user: currentUser.name || "Guest",
-        userID: currentUser.id || 0,
-      };
-      socket.current.emit('client-send-msg',msg)
+      let msg
+      if (!mess.length) {
+        msg = {
+          is_admin: 0,
+          content: message,
+          user: currentUser.name,
+          user_id: currentUser.id,
+          isUpdatedLastMsg: true
+        }
+      } else {
+        msg = {
+          is_admin: 0,
+          content: message,
+          user: currentUser.name,
+          user_id: currentUser.id,
+          chat_id: mess[0].chat_id
+        }
+      }
+      socket.current.emit('client-send-msg', msg)
+      setMess(prev =>
+        [...prev, {
+          chat_id: mess[0].chat_id,
+          user_id: currentUser.id,
+          is_admin: 0,
+          content: message
+        }])
     }
     setMessage("");
   };
@@ -128,22 +152,30 @@ export const Homepage = ({ socket }) => {
                   </div>
                 </div>
                 <div className="chat-container">
-                  <div className="right item">
-                    <div className="content">
-                      u Hi chào cậu  u Hi chào cậu u Hi chào cậu  u Hi chào cậu u Hi chào cậu
-                      <div className='time'>
-                        24/05/2023 10:25
+                  {
+                    mess.map((item, index) =>
+                      <div key={index} className={!item.is_admin ? "right item" : "left item"}>
+                        <div className="content">
+                          {item.content}
+                          <div className='time'>
+                            {moment(item.updated_at).format("DD/MM/YYYY HH:mm")}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  }
+                  {!mess.length ?
+                    <div className="left item">
+                      <div className="content">
+                        Nếu bạn có bất cứ câu hỏi gì hoặc cần giúp đỡ thì hãy nhắn vào đây nhé.
+                        Chúng tôi sẽ giúp đỡ bạn ngay lập tức!
+                        Tổng đài hỗ trợ 24/24
+                        Vui lòng đăng nhập để sử dụng tính năng này
                       </div>
                     </div>
-                  </div>
-                  <div className="item left">
-                    <div className="content">
-                    u Hi chào cậu u Hi chào cậu  u Hi chào cậu u Hi chào cậu  u Hi chào cậu u Hi chào cậu
-                      <div className='time'>
-                        24/05/2023 10:25
-                      </div>                          </div>
-                  </div>
-
+                    :
+                    <></>
+                  }
                   <div ref={messageRef} />
                 </div>
                 <div className='chat-input'>
@@ -151,11 +183,18 @@ export const Homepage = ({ socket }) => {
                     style={{ width: "224px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
                     onKeyDown={onEnterPress}
                     value={message}
-                    onChange={e=>setMessage(e.target.value)}
+                    disabled={currentUser.id ? false : true}
+                    onChange={e => setMessage(e.target.value)}
                     type="text"
                     placeholder="Nhập tin nhắn"
                   />
-                  <Button style={{ width: "70px", height: "44px" }} onClick={sendMessage} variant="contained">Send</Button>
+                  <Button 
+                    style={{ width: "70px", height: "44px" }} 
+                    onClick={sendMessage} variant="contained"
+                    disabled={currentUser.id ? false : true}
+                    >
+                      Send
+                  </Button>
                 </div>
               </div>
             }

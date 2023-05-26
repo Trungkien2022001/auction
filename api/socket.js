@@ -21,6 +21,7 @@ const socketIO = require('socket.io')(server, {
 const config = require('./config')
 const auctionModel = require('./models/auction')
 const notificationModel = require('./models/notification')
+const { insertMessage } = require('./models/message')
 
 let auctions = []
 const listOnlineUser = []
@@ -100,7 +101,12 @@ socketIO.on('connection', socket => {
         addToNewRoom(userId, socket.id, auctionId)
     })
     socket.on('client-send-msg', data => {
-        return data
+        insertMessage(data)
+        // console.log(data)
+        //    console.log(data)
+    })
+    socket.on('admin-send-msg', data => {
+        insertMessage(data)
         //    console.log(data)
     })
 

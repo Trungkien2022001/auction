@@ -20,6 +20,7 @@ const socketIO = require('socket.io')(server, {
 })
 const config = require('./config')
 const auctionModel = require('./models/auction')
+const messageModel = require('./models/message')
 const notificationModel = require('./models/notification')
 const { insertMessage } = require('./models/message')
 
@@ -60,25 +61,24 @@ socketIO.on('connection', socket => {
     socket.on('authenticate', user => {
         // console.log(`⚡⚡⚡: User ${user.username} with socketID ${socket.id} just connected!`)
         if (user.id !== null) {
-            addToRoom(user.id, socket.id).then(async id => {
-                debug(
-                    'authenticate',
-                    user.id,
-                    socket.id
-                    // listOnlineUser[id].auctionRooms
-                )
-                socket.join(listOnlineUser[id].auctionRooms)
-                // console.log(listOnlineUser)
-            })
+            addToRoom(user.id, socket.id, user.role_id === 'admin').then(
+                async id => {
+                    // console.log(id)
+                    debug('authenticate', user.id, socket.id)
+                    socket.join(listOnlineUser[id].auctionRooms)
+                    if (listOnlineUser[id].chatRoom) {
+                        console.log(listOnlineUser[id])
+                        socket.join(listOnlineUser[id].chatRoom)
+                    }
+                }
+            )
         }
-        // console.log(socketIO.sockets.adapter.rooms)
     })
     socket.on('ping', () => {
         console.log('PING PONG PING PONG')
     })
 
     socket.on('raise', async data => {
-        // console.log(data)
         await handleRaise(data)
         checkHasExistRoom(data.user.id, data.auction.product.id, socket)
         await socketIO
@@ -100,13 +100,40 @@ socketIO.on('connection', socket => {
     socket.on('add-to-new-room', (auctionId, userId) => {
         addToNewRoom(userId, socket.id, auctionId)
     })
-    socket.on('client-send-msg', data => {
-        insertMessage(data)
-        // console.log(data)
-        //    console.log(data)
+    socket.on('client-send-msg', async data => {
+        let chatId = await insertMessage(data)
+        if (!data.chat_id) {
+            const index = listOnlineUser.findIndex(
+                i => i.user_id === data.user_id
+            )
+            if (index !== -1) {
+                listOnlineUser[index].chatRoom = `chat:${chatId}`
+                socket.join([`chat:${chatId}`])
+                const lstAdmin = listOnlineUser.filter(i => i.is_admin)
+                for (const ad of lstAdmin) {
+                    socket.to(ad.chatRoom).emit('new-user-join-chat', chatId)
+                }
+                socket.emit('updateUI')
+            }
+        } else {
+            chatId = data.chat_id
+        }
+        socket
+            .to(`chat:${chatId}`)
+            .emit('receive-client-msg', { ...data, chat_id: chatId })
+        // socket.to(`chat:${chatId}`).emit('update-chat-id', {...data, chat_id: chatId})
+        console.log(listOnlineUser)
     })
     socket.on('admin-send-msg', data => {
         insertMessage(data)
+        socket.to(`chat:${data.chat_id}`).emit('receive-admin-msg', data)
+        //    console.log(data)
+    })
+    socket.on('admin-update-lst-user', params => {
+        const ad = listOnlineUser.find(i => i.user === params.admin_id)
+        if (ad) {
+            ad.chatRoom.push(`chat:${params.chat_id}`)
+        }
         //    console.log(data)
     })
 
@@ -277,7 +304,7 @@ async function handleRaise(data) {
     // }
 }
 
-async function addToRoom(userId, socketId) {
+async function addToRoom(userId, socketId, isAdmin) {
     const index = listOnlineUser.findIndex(item => item.user_id === userId)
     if (index !== -1) {
         listOnlineUser[index].socket.push(socketId)
@@ -285,11 +312,24 @@ async function addToRoom(userId, socketId) {
         return index
     }
     const auctionIds = await auctionModel.getAllAuctionOfUser(userId)
+    let chatRoom
+    let chatIds
+    if (isAdmin) {
+        chatIds = await await messageModel.getChatIdOfAdmin(userId)
+        chatRoom = chatIds.map(id => `chat:${id}`)
+    } else {
+        chatIds = await await messageModel.getChatIdOfUser(userId)
+        if (chatIds) {
+            chatRoom = [`chat:${chatIds}`]
+        }
+    }
     const auctionRooms = createRoomsName(auctionIds)
     listOnlineUser.push({
         user_id: userId,
+        is_admin: isAdmin,
         socket: [socketId],
-        auctionRooms
+        auctionRooms,
+        chatRoom: chatRoom || null
     })
 
     return index === -1 ? listOnlineUser.length - 1 : index

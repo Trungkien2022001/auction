@@ -32,8 +32,12 @@ export const Homepage = ({ socket }) => {
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on('updateUI', () => {
-        getData()
+      socket.current.on('updateUI',async () => {
+        await getData()
+      })
+      socket.current.on('receive-admin-msg', params => {
+        // setMess(prev=>[...prev, {...params, updated_at: moment(new Date()).format()}])
+        setMess(prev => [...prev, { ...params }])
       })
     }
   }, [socket.current])
@@ -48,10 +52,11 @@ export const Homepage = ({ socket }) => {
     if (result.status === 200) {
       setProductCategory(result.data.product_category)
     }
-    if(currentUser.id){
+    if (currentUser.id) {
 
       result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${currentUser.id}`, currentUser)
       if (result.status === 200) {
+        console.log(result.data.body)
         setMess(result.data.body)
       }
     }
@@ -66,7 +71,6 @@ export const Homepage = ({ socket }) => {
   }, [mess.length])
 
   async function sendMessage() {
-    console.log(message, currentUser)
     if (message !== "" && currentUser.id && currentUser.id !== 1) {
       let msg
       if (!mess.length) {
@@ -85,15 +89,16 @@ export const Homepage = ({ socket }) => {
           user_id: currentUser.id,
           chat_id: mess[0].chat_id
         }
+        setMess(prev =>
+          [...prev, {
+            chat_id: mess[0].chat_id,
+            user_id: currentUser.id,
+            is_admin: 0,
+            content: message,
+            updated_at: new Date()
+          }])
       }
       socket.current.emit('client-send-msg', msg)
-      setMess(prev =>
-        [...prev, {
-          chat_id: mess[0].chat_id,
-          user_id: currentUser.id,
-          is_admin: 0,
-          content: message
-        }])
     }
     setMessage("");
   };
@@ -188,12 +193,12 @@ export const Homepage = ({ socket }) => {
                     type="text"
                     placeholder="Nhập tin nhắn"
                   />
-                  <Button 
-                    style={{ width: "70px", height: "44px" }} 
+                  <Button
+                    style={{ width: "70px", height: "44px" }}
                     onClick={sendMessage} variant="contained"
                     disabled={currentUser.id ? false : true}
-                    >
-                      Send
+                  >
+                    Send
                   </Button>
                 </div>
               </div>

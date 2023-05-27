@@ -6,26 +6,39 @@ import { get } from '../../../utils/customRequest';
 import { useSelector } from 'react-redux';
 const moment = require('moment')
 
-export const Chat = ({socket}) => {
+export const Chat = ({ socket }) => {
     const currentUser = useSelector(state => state.user)
     const messageRef = useRef(null)
     const [data, setData] = useState([])
     const [message, setMessage] = useState('')
-    const [clientId, setClientId] = useState(319)
+    const [clientId, setClientId] = useState(328)
 
     async function getData() {
-        if(clientId){
-    
-          const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
-          if (result.status === 200) {
-            setData(result.data.body)
-          }
+        if (clientId) {
+
+            const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
+            if (result.status === 200) {
+                setData(result.data.body)
+            }
         }
-      }
-      useEffect(() => {
+    }
+    useEffect(() => {
         getData()
-      }, [clientId])
-console.log(data)
+    }, [clientId])
+
+    useEffect(() => {
+        if (socket.current) {
+            socket.current.on('receive-client-msg', params => {
+                setData(prev => [...prev, { ...params, updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
+                // setData(prev => [...prev, {...params}])
+            })
+            socket.current.on('new-user-join-chat',async  chatId => {
+               await getData()
+               socket.current.emit('admin-update-lst-user', {chat_id: chatId, admin_id: currentUser.id} )
+            })
+        }
+    }, [socket])
+
     const onEnter = (e) => {
         if (e.keyCode === 13 && e.shiftKey === false) {
             handleSend()
@@ -38,35 +51,36 @@ console.log(data)
 
     async function handleSend() {
         if (message !== "" && currentUser.id && currentUser.id !== 1) {
-          let msg
-          if (!data.length) {
-            msg = {
-              is_admin: 1,
-              content: message,
-              user: "Admin",
-              user_id: 0,
-              isUpdatedLastMsg: true
+            let msg
+            if (!data.length) {
+                msg = {
+                    is_admin: 1,
+                    content: message,
+                    user: "Admin",
+                    user_id: 0,
+                    isUpdatedLastMsg: true
+                }
+            } else {
+                msg = {
+                    is_admin: 1,
+                    content: message,
+                    user: "Admin",
+                    user_id: clientId,
+                    chat_id: data[0].chat_id
+                }
             }
-          } else {
-            msg = {
-              is_admin: 1,
-              content: message,
-              user: "Admin",
-              user_id: clientId,
-              chat_id: data[0].chat_id
-            }
-          }
-          socket.current.emit('admin-send-msg', msg)
-          setData(prev =>
-            [...prev, {
-              chat_id: data[0].chat_id,
-              user_id: clientId,
-              is_admin: 1,
-              content: message
-            }])
+            socket.current.emit('admin-send-msg', msg)
+            setData(prev =>
+                [...prev, {
+                    chat_id: data[0].chat_id,
+                    user_id: clientId,
+                    is_admin: 1,
+                    content: message,
+                    updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm')
+                }])
         }
         setMessage("");
-      };
+    };
 
     return (
         <div className='chat-container'>
@@ -294,6 +308,9 @@ console.log(data)
                                         </div>
                                         <div className="content">
                                             {msg.content}
+                                            <div className='time'>
+                                                {msg.updated_at}
+                                            </div>
                                         </div>
                                     </div>
                                 }

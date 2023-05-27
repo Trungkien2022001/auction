@@ -21,6 +21,8 @@ exports.insertMessage = async params => {
         content: params.content,
         is_admin: params.is_admin ? 1 : 0
     })
+
+    return params.chat_id || chatId
 }
 exports.updateLasMessage = async params => {
     await knex('chat')
@@ -30,6 +32,20 @@ exports.updateLasMessage = async params => {
             is_read: 0
         })
         .where('id', params.chat_id)
+}
+
+exports.getChatIdOfUser = async userId => {
+    const chat = await knex('chat')
+        .first()
+        .where('user1', userId)
+
+    return chat ? chat.id : null
+}
+
+exports.getChatIdOfAdmin = async () => {
+    const userIds = await knex('chat').select('id')
+
+    return userIds.map(i => i.id)
 }
 
 exports.getAllUserMessage = async () => {

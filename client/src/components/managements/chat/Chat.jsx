@@ -11,14 +11,19 @@ export const Chat = ({ socket }) => {
     const messageRef = useRef(null)
     const [data, setData] = useState([])
     const [message, setMessage] = useState('')
+    const [lstMsg, setLstMsg] = useState([])
     const [clientId, setClientId] = useState(328)
 
     async function getData() {
         if (clientId) {
 
-            const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
+            let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
             if (result.status === 200) {
                 setData(result.data.body)
+            }
+            result = await get(`${process.env.REACT_APP_API_ENDPOINT}/messages`, currentUser)
+            if (result.status === 200) {
+                setLstMsg(result.data.body)
             }
         }
     }
@@ -28,13 +33,17 @@ export const Chat = ({ socket }) => {
 
     useEffect(() => {
         if (socket.current) {
+            socket.current.on('updateUI', () => {
+                getData()
+              })
             socket.current.on('receive-client-msg', params => {
                 setData(prev => [...prev, { ...params, updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
+                getData()
                 // setData(prev => [...prev, {...params}])
             })
-            socket.current.on('new-user-join-chat',async  chatId => {
-               await getData()
-               socket.current.emit('admin-update-lst-user', {chat_id: chatId, admin_id: currentUser.id} )
+            socket.current.on('new-user-join-chat', async chatId => {
+                await getData()
+                socket.current.emit('admin-update-lst-user', { chat_id: chatId, admin_id: currentUser.id })
             })
         }
     }, [socket])
@@ -48,6 +57,16 @@ export const Chat = ({ socket }) => {
     useEffect(() => {
         messageRef.current?.scrollIntoView()
     }, [data.length])
+
+    async function handleRead(item) {
+        const currentMsg = lstMsg.find(i => i.user1 === item.user1)
+        if (socket.current && currentMsg && !currentMsg.is_read) {
+            console.log("hshs")
+            socket.current.emit('udpate-admin-read-msg', {user_id: item.user1, chat_id: item.id})
+            getData()
+        }
+        setClientId(item.user1)
+    }
 
     async function handleSend() {
         if (message !== "" && currentUser.id && currentUser.id !== 1) {
@@ -87,188 +106,25 @@ export const Chat = ({ socket }) => {
             <div className="chat-sidebar">
                 <TextField style={{ width: "100%" }} id="outlined-basic" label="Search Message" variant="outlined" />
                 <div className="chat-sidebar-wrapper">
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item unread-message">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon style={{ marginTop: "13px" }} />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item unread-message">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
-                    <div className="chat-sidebar-item">
-                        <div className="item-avatar">
-                            <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
-                        </div>
-                        <div className="item-username">
-                            <div><b>Nhung</b></div>
-                            <div>Đang làm gì đó</div>
-                        </div>
-                        <div className="item-action">
-                            <MoreHorizIcon />
-                        </div>
-                    </div>
-                    <Divider />
+                    {
+                        lstMsg.map((item, index) =>
+                            <div key={index} onClick={() => handleRead(item)}>
+                                <div className={item.is_read ? "chat-sidebar-item" : "chat-sidebar-item unread-message"}>
+                                    <div className="item-avatar">
+                                        <Avatar alt="Remy Sharp" src={item.user_avatar} />
+                                    </div>
+                                    <div className="item-username">
+                                        <div><b>{item.username}</b></div>
+                                        <div>{item.last_msg}</div>
+                                    </div>
+                                    <div className="item-action">
+                                        <MoreHorizIcon />
+                                    </div>
+                                </div>
+                                <Divider />
+                            </div>
+                        )
+                    }
                     {/* <hr style={{color: "rgb(129, 118, 118)", width: "2px"}}></hr> */}
                 </div>
             </div>
@@ -288,7 +144,7 @@ export const Chat = ({ socket }) => {
                 <div className='main'>
                     <div className="main-wrapper">
                         {data.map((msg, index) =>
-                            <>
+                            <div key={index}>
                                 {msg.is_admin ?
                                     <div className="right item">
                                         <div className="content">
@@ -314,7 +170,7 @@ export const Chat = ({ socket }) => {
                                         </div>
                                     </div>
                                 }
-                            </>
+                            </div>
                         )}
                         <div ref={messageRef} />
                     </div >

@@ -61,6 +61,24 @@ exports.getAllUserMessage = async () => {
     return result
 }
 
+exports.getAllLastMessage = async params => {
+    const result = await knex()
+        .select('c.*', 'u.avatar as user_avatar', 'u.name as username')
+        .from('chat as c')
+        .innerJoin('user as u', 'c.user1', 'u.id')
+        .orderBy('updated_at', 'desc')
+        .limit(params.limit || 200)
+        .offset(params.offset || 0)
+
+    return result
+}
+
+exports.updateIsRead = async userId => {
+    await knex('chat')
+        .update('is_read', 1)
+        .where('user1', userId)
+}
+
 exports.getUserMessage = async params => {
     const result = await knex('chat_history')
         .select()

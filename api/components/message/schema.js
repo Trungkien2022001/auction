@@ -7,5 +7,11 @@ module.exports = {
             offset: Joi.string().optional(),
             limit: Joi.string().optional()
         })
+    },
+    getAll: {
+        query: Joi.object().keys({
+            offset: Joi.string().optional(),
+            limit: Joi.string().optional()
+        })
     }
 }

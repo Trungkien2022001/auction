@@ -113,8 +113,8 @@ socketIO.on('connection', socket => {
                 for (const ad of lstAdmin) {
                     socket.to(ad.chatRoom).emit('new-user-join-chat', chatId)
                 }
-                socket.emit('updateUI')
             }
+            socket.emit('updateUI')
         } else {
             chatId = data.chat_id
         }
@@ -134,6 +134,12 @@ socketIO.on('connection', socket => {
         if (ad) {
             ad.chatRoom.push(`chat:${params.chat_id}`)
         }
+        //    console.log(data)
+    })
+    socket.on('udpate-admin-read-msg', item => {
+        messageModel.updateIsRead(item.user_id).then(() => {
+            socket.to(`chat:${item.chat_id}`).emit('updateUI')
+        })
         //    console.log(data)
     })
 

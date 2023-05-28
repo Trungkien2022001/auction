@@ -25,5 +25,23 @@ router.get('/message', genericSecure, validate(schema.get), async ctx => {
         }
     }
 })
+router.get('/messages', genericSecure, validate(schema.getAll), async ctx => {
+    debug('GET /messages')
+    const params = ctx.request.query
+    // console.log(body)
+    try {
+        const data = await messageModel.getAllLastMessage(params)
+        ctx.body = {
+            success: true,
+            body: data
+        }
+    } catch (error) {
+        ctx.status = 500
+        ctx.body = {
+            success: false,
+            message: error.message || JSON.stringify(error)
+        }
+    }
+})
 
 module.exports = router

@@ -101,6 +101,7 @@ socketIO.on('connection', socket => {
         addToNewRoom(userId, socket.id, auctionId)
     })
     socket.on('client-send-msg', async data => {
+        console.log(data)
         let chatId = await insertMessage(data)
         if (!data.chat_id) {
             const index = listOnlineUser.findIndex(
@@ -121,8 +122,9 @@ socketIO.on('connection', socket => {
         socket
             .to(`chat:${chatId}`)
             .emit('receive-client-msg', { ...data, chat_id: chatId })
+        socket.to(`chat:${chatId}`).emit('updateUI')
         // socket.to(`chat:${chatId}`).emit('update-chat-id', {...data, chat_id: chatId})
-        console.log(listOnlineUser)
+        // console.log(listOnlineUser)
     })
     socket.on('admin-send-msg', data => {
         insertMessage(data)
@@ -140,11 +142,9 @@ socketIO.on('connection', socket => {
         messageModel.updateIsRead(item.user_id).then(() => {
             socket.to(`chat:${item.chat_id}`).emit('updateUI')
         })
-        //    console.log(data)
     })
 
     socket.on('auctioneer_confirm', ({ userId, auctionId, status }) => {
-        // console.log({ userId, auctionId, status })
         auctionModel.auctioneerConfirm(userId, auctionId, status).then(id => {
             const seller = listOnlineUser.find(i => i.user_id === id)
             if (seller) {
@@ -155,7 +155,6 @@ socketIO.on('connection', socket => {
         })
     })
     socket.on('seller_confirm', ({ userId, auctionId, status }) => {
-        // console.log(userId, auctionId, status)
         auctionModel.sellerConfirm(userId, auctionId, status).then(id => {
             const auctioneer = listOnlineUser.find(i => i.user_id === id)
             if (auctioneer) {
@@ -171,7 +170,6 @@ socketIO.on('connection', socket => {
             item.socket.includes(socket.id)
         )
         if (index !== -1) {
-            // console.log(`⚡⚡⚡:socketID ${socket.id} just connected!`)
             socket.leave(listOnlineUser[index].auctionRooms)
             leaveRoom(socket.id, index)
         }

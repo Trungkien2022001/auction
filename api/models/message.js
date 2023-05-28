@@ -80,9 +80,10 @@ exports.updateIsRead = async userId => {
 }
 
 exports.getUserMessage = async params => {
-    const result = await knex('chat_history')
-        .select()
-        .where('user_id', params.user_id)
+    const result = await knex('chat_history as ch')
+        .select('ch.*', 'u.avatar as user_avatar', 'u.name as username')
+        .where('ch.user_id', params.user_id)
+        .innerJoin('user as u', 'ch.user_id', 'u.id')
         // .orderBy('updated_at', 'desc')
         .limit(params.limit || 200)
         .offset(params.offset || 0)

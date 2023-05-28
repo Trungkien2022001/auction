@@ -69,7 +69,6 @@ function validate(schema, handleLogging) {
             const { error } = Joi.validate(data[position], structure)
             const verbosity = !error || error.details
             if (error) {
-                // console.log(error)
                 if (handleLogging) {
                     handleLogging(error, ctx)
                 }

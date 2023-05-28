@@ -10,7 +10,6 @@ const router = new Router()
 router.get('/message', genericSecure, validate(schema.get), async ctx => {
     debug('GET /message')
     const params = ctx.request.query
-    // console.log(body)
     try {
         const data = await messageModel.getUserMessage(params)
         ctx.body = {
@@ -28,7 +27,6 @@ router.get('/message', genericSecure, validate(schema.get), async ctx => {
 router.get('/messages', genericSecure, validate(schema.getAll), async ctx => {
     debug('GET /messages')
     const params = ctx.request.query
-    // console.log(body)
     try {
         const data = await messageModel.getAllLastMessage(params)
         ctx.body = {

@@ -111,15 +111,12 @@ exports.getAuctionHistory = async id => {
 }
 
 exports.getAuctionDetail = async params => {
-    // console.log(params)
     const product = await auctionModel.getProductAuction(params.id)
-    // console.log(product)
     if (!product) return {}
     const seller_info = await userModel.fetchUserByID(
         product.seller_id,
         'seller_info'
     )
-    console.log(seller_info)
 
     return {
         product,

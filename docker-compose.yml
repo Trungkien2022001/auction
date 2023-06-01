@@ -1,0 +1,26 @@
+version: '3'
+services:
+  nodejs:
+    build:
+      context: ./nodejs-app
+      dockerfile: Dockerfile-nodejs
+    volumes:
+      - ./nodejs-app:/app
+    ports:
+      - 3000:3000
+    depends_on:
+      - redis
+
+  reactjs:
+    build:
+      context: ./reactjs-app
+      dockerfile: Dockerfile-reactjs
+    volumes:
+      - ./reactjs-app:/app
+    ports:
+      - 80:80
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379

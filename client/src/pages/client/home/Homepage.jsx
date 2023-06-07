@@ -37,7 +37,9 @@ export const Homepage = ({ socket }) => {
       })
       socket.current.on('receive-admin-msg', params => {
         // setMess(prev=>[...prev, {...params, updated_at: moment(new Date()).format()}])
-        setMess(prev => [...prev, { ...params }])
+        if(params.chat_id === currentUser.id){
+          setMess(prev => [...prev, { ...params }])
+        }
       })
     }
   }, [socket.current])
@@ -56,7 +58,6 @@ export const Homepage = ({ socket }) => {
 
       result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${currentUser.id}`, currentUser)
       if (result.status === 200) {
-        console.log(result.data.body)
         setMess(result.data.body)
       }
     }

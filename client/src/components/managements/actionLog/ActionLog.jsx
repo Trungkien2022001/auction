@@ -234,7 +234,6 @@ export const ActionLog = ({ currentUser, socket }) => {
     let result = await get(`${api_endpoint}/logs`, currentUser)
     if (result.status === 200) {
       setData(result.data.body)
-      console.log(result.data.body)
       setInitialData(result.data.body)
     }
   }

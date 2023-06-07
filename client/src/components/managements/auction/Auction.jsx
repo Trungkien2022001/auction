@@ -257,12 +257,9 @@ export const Auction = ({ currentUser, socket }) => {
   }
   const handleFilterByStatus = (event) => {
     const option = event.target.value
-    console.log(option)
     if(option === -1){
       setData(initialData)
     } else {
-      console.log(initialData.filter(i=>i.status === AUCTION_STATUS.find(s=>s.value === option).title))
-      console.log(AUCTION_STATUS.find(s=>s.value === option).title)
       setData(initialData.filter(i=>i.status === AUCTION_STATUS.find(s=>s.value === option).title))
     }
     // const dataList = filterTable(event.target.value, initialData, headCells)
@@ -272,7 +269,6 @@ export const Auction = ({ currentUser, socket }) => {
     let result = await get(`${api_endpoint}/auction?id=${currentAuctionId}`, currentUser)
     if (result.status === 200) {
       setCurrentAuction(result.data.data.product)
-      console.log(result.data.data)
     }
     result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${currentAuctionId}`, currentUser)
     if (result.status === 200) {

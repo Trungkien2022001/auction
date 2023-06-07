@@ -52,7 +52,6 @@ export const User = ({ socket }) => {
   };
   const [themeOpen, setThemeOpen] = useState(false);
   const [transactionNavOpen, setTransactionNavOpen] = useState(false);
-console.log(currentUser.id, id)
   const handleClickOpenTheme = () => {
     setThemeOpen(true);
   };

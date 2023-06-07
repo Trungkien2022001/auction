@@ -12,40 +12,50 @@ export const Chat = ({ socket }) => {
     const [data, setData] = useState([])
     const [message, setMessage] = useState('')
     const [lstMsg, setLstMsg] = useState([])
-    const [clientId, setClientId] = useState(328)
+    const [clientId, setClientId] = useState()
 
     async function getData() {
         if (clientId) {
 
-            let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
+            const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
             if (result.status === 200) {
                 setData(result.data.body)
             }
-            result = await get(`${process.env.REACT_APP_API_ENDPOINT}/messages`, currentUser)
-            if (result.status === 200) {
-                setLstMsg(result.data.body)
-            }
+        }
+    }
+    async function getAllLastMsg() {
+        let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/messages`, currentUser)
+        if (result.status === 200) {
+            setLstMsg(result.data.body)
         }
     }
     useEffect(() => {
+        getAllLastMsg()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    useEffect(() => {
         getData()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientId])
 
     useEffect(() => {
         if (socket.current) {
             socket.current.on('updateUI', () => {
-                getData()
-              })
+                // getData()
+            })
             socket.current.on('receive-client-msg', params => {
-                setData(prev => [...prev, { ...params, updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
-                getData()
+                if (params.user_id === clientId) {
+                    setData(prev => [...prev, { ...params, updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
+                }
+                getAllLastMsg()
                 // setData(prev => [...prev, {...params}])
             })
             socket.current.on('new-user-join-chat', async chatId => {
-                await getData()
+                await getAllLastMsg()
                 socket.current.emit('admin-update-lst-user', { chat_id: chatId, admin_id: currentUser.id })
             })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket])
 
     const onEnter = (e) => {
@@ -60,12 +70,11 @@ export const Chat = ({ socket }) => {
 
     async function handleRead(item) {
         const currentMsg = lstMsg.find(i => i.user1 === item.user1)
-        if (socket.current && currentMsg && !currentMsg.is_read) {
-            console.log("hshs")
-            socket.current.emit('udpate-admin-read-msg', {user_id: item.user1, chat_id: item.id})
-            getData()
-        }
         setClientId(item.user1)
+        if (socket.current && currentMsg && !currentMsg.is_read) {
+            socket.current.emit('udpate-admin-read-msg', { user_id: item.user1, chat_id: item.id })
+            getAllLastMsg()
+        }
     }
 
     async function handleSend() {
@@ -98,6 +107,7 @@ export const Chat = ({ socket }) => {
                     updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm')
                 }])
         }
+        getAllLastMsg()
         setMessage("");
     };
 
@@ -131,10 +141,10 @@ export const Chat = ({ socket }) => {
             <div className="chat-wrapper">
                 <div className="header">
                     <div className="item-avatar">
-                        <Avatar alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
+                        {data.length ? <Avatar alt="Remy Sharp" src={data[0].user_avatar} /> : <></>}
                     </div>
                     <div className="item-username">
-                        <b>Nhung</b>
+                        <b>{data.length ?  data[0].username  : ''}</b>
                     </div>
                     <div className="item-action">
                         <MoreHorizIcon />
@@ -160,7 +170,7 @@ export const Chat = ({ socket }) => {
                                     :
                                     <div className="item left">
                                         <div className="avatar">
-                                            <Avatar sx={{ width: 26, height: 26 }} alt="Remy Sharp" src="https://thpttranhungdao.edu.vn/wp-content/uploads/2022/11/Anh-Dep-Lam-Hinh-Nen.jpg" />
+                                            <Avatar sx={{ width: 26, height: 26 }} alt="Remy Sharp" src={msg.user_avatar} />
                                         </div>
                                         <div className="content">
                                             {msg.content}

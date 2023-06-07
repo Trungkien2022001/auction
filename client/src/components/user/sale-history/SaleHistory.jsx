@@ -286,7 +286,6 @@ export const SaleHistory = ({ currentUser, socket }) => {
   const handleCloseAuctionDialog = (option) => {
     setOpenAuctionDialog(false);
     if(option){
-      console.log(option)
       socket.current.emit('seller_confirm', {
         userId: currentUser.id,
         auctionId: currentAuctionId,

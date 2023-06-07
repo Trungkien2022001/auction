@@ -35,7 +35,6 @@ export const Product = ({ socket }) => {
     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
     if (result.status === 200) {
       setData(result.data.data)
-      console.log(result.data.data)
     }
     result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
     if (result.status === 200) {

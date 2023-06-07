@@ -247,7 +247,6 @@ export const User = ({ currentUser, socket }) => {
     let result = await get(`${api_endpoint}/user/${currentUserId}`, currentUser)
     if (result.status === 200) {
       setCurrentUserInfo(result.data.data)
-      console.log(result.data.data)
     }
 
   }

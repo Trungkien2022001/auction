@@ -231,7 +231,7 @@ export const User = ({ currentUser, socket }) => {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(8);
-  const [openUserDialog, setOpenUserDialog] = useState(true);
+  const [openUserDialog, setOpenUserDialog] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(319)
   const [currentUserInfo, setCurrentUserInfo] = useState({})
   const [data, setData] = useState({})

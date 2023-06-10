@@ -4,7 +4,7 @@ const uuid = require('uuid/v4')
 
 const Log = require('../models/log')
 
-const loggingMethod = ['POST', 'PUT', 'PATCH', 'DELETE', 'GET']
+const loggingMethod = ['POST', 'PUT', 'PATCH', 'DELETE']
 // const loggingPathIgnore = ['/login']
 async function log(ctx, next) {
     let error = null

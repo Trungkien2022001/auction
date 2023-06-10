@@ -3,40 +3,27 @@
 import './Chart.scss'
 import * as React from 'react';
 
-import { visuallyHidden } from '@mui/utils';
-import { InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { InputLabel, MenuItem, Select } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
-import moment from 'moment';
-// import { Link } from 'react-router-dom';
-import { AUCTION_STATUS } from '../../../utils/constants';
-import { filterTable } from '../../../utils/filterTable';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
 
 const api_endpoint = process.env.REACT_APP_API_ENDPOINT
 
 export const Chart = ({ currentUser, socket }) => {
   const [auctionRaise, setAuctionRaise] = useState([])
-  const [auctionRaiseType, setAuctionRaiseType] = useState('day')
   const [auction, setAuction] = useState([])
-  const [auctionType, setAuctionType] = useState('day')
   const [user, setUser] = useState([])
-  const [userType, setUserType] = useState('day')
   const [money, setMoney] = useState([])
   const [summary, setSummary] = useState({})
-  const [moneyType, setMoneyType] = useState('day')
+  const [auctionRaiseType, setAuctionRaiseType] = useState('day')
+  const [auctionType, setAuctionType] = useState('day')
+  const [userType, setUserType] = useState('day')
+  const [moneyType, setMoneyType] = useState('minute')
+  const [check, setCheck] = useState(false)
+  const [timeUpdate, setTimeUpdate] = useState(3600)
   async function getAuctionRaise() {
     let result = await get(`${api_endpoint}/dashboard-auction-raise?type=${auctionRaiseType}`, currentUser)
     if (result.status === 200) {
@@ -75,14 +62,18 @@ export const Chart = ({ currentUser, socket }) => {
     getSummary()
   }
   useEffect(() => {
+    getAll()
+  }, [check])
+  useEffect(() => {
+    setCheck(Math.random())
     const interval = setInterval(() => {
-      getAll();
-    }, 60000);
+      setCheck(Math.random());
+    }, timeUpdate * 1000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [])
+  }, [timeUpdate])
 
   useEffect(() => {
     getAuctionRaise()
@@ -168,6 +159,24 @@ export const Chart = ({ currentUser, socket }) => {
           </div>
         </div>
       </div>
+      <div className="filter">
+              <b style={{paddingLeft:"30px"}}>Refresh After:</b>{"        "} 
+              <Select
+                variant="standard"
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={timeUpdate}
+                style={{ width: '120px', textAlign: "center"}}
+                onChange={(e) => setTimeUpdate(e.target.value)}
+              >
+                <MenuItem value={1}>Realtime</MenuItem>
+                <MenuItem value={3}>3 Giây</MenuItem>
+                <MenuItem value={5}>5 Giây</MenuItem>
+                <MenuItem value={10}>10 Giây</MenuItem>
+                <MenuItem value={30}>30 Giây</MenuItem>
+                <MenuItem value={3600}>None</MenuItem>
+              </Select>
+            </div>
       <div className="chart-item">
         <div className="header">
           <div className="content">Doanh thu</div>

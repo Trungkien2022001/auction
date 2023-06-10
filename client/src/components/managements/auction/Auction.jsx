@@ -3,7 +3,6 @@
 import './Auction.scss'
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,7 +19,6 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import InfoIcon from '@mui/icons-material/Info';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
@@ -177,18 +175,13 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { numSelected, fn, fn1 } = props;
+  const { fn, fn1 } = props;
 
   return (
     <Toolbar
       style={{ paddingTop: "20px" }}
       sx={{
         pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
       }}
     >
       <Typography
@@ -236,7 +229,6 @@ export const Auction = ({ currentUser, socket }) => {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
-  const [selected, setSelected] = useState([]);
   const [data, setData] = useState([])
   const [initialData, setInitialData] = useState([])
   const [currentAuctionId, setCurrentAuctionId] = useState()
@@ -333,7 +325,6 @@ export const Auction = ({ currentUser, socket }) => {
   const handleChangeDense = (event) => {
     setDense(event.target.checked);
   };
-  const isSelected = (english) => selected.indexOf(english) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -344,7 +335,7 @@ export const Auction = ({ currentUser, socket }) => {
       <div>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} data={selected} fn={handleSearch} fn1={handleFilterByStatus} />
+            <EnhancedTableToolbar  fn={handleSearch} fn1={handleFilterByStatus} />
             <TableContainer>
               <Table
                 stickyHeader
@@ -362,18 +353,14 @@ export const Auction = ({ currentUser, socket }) => {
                   {data && data.length && stableSort(data, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
-                      const isItemSelected = isSelected(row.english);
                       const labelId = `enhanced-table-checkbox-${index}`;
 
                       return (
                         <TableRow className='sell-table-row'
                           hover
                           role="checkbox"
-                          aria-checked={isItemSelected}
                           tabIndex={-1}
                           key={row.id}
-                          selected={isItemSelected}
-                        // height='200px'
                         >
                           <TableCell
                             component="th"

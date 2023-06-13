@@ -1,11 +1,11 @@
-const debug = require('debug')('auction:middleware:security')
+// const debug = require('debug')('auction:middleware:security')
 const jwt = require('jwt-simple')
 const moment = require('moment')
 const config = require('../config')
 const { fetchUserByEmail } = require('../models/user')
 
 async function genericSecure(ctx, next) {
-    debug('genericSecure')
+    // debug('genericSecure')
 
     const { headers } = ctx
     const hasTokenAndKey = headers['x-access-token'] && headers['x-key']
@@ -27,7 +27,7 @@ async function genericSecure(ctx, next) {
         ctx.assert(notExpired, 401, 'token expired')
         ctx.assert(decoded.email === headers['x-key'], 401, 'invalid x-key')
     } catch (err) {
-        debug('genericSecure', err)
+        // debug('genericSecure', err)
         ctx.status = 401
         ctx.body = { success: false, message: 'invalid/expired token' }
 
@@ -50,7 +50,7 @@ async function genericSecure(ctx, next) {
 
 function checkPermission(permission) {
     return async (ctx, next) => {
-        debug('checkPermission')
+        // debug('checkPermission')
         if (ctx.User.role[permission] !== 1) {
             ctx.status = 401
             ctx.body = {

@@ -106,7 +106,7 @@ export const Chart = ({ currentUser, socket }) => {
 
     return (
       <g transform={`translate(${x},${y})`}>
-        <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-35)">
+        <text x={0} y={0} dy={16} textAnchor="end" fill="#666" transform="rotate(-15)">
           {formattedNumber}
         </text>
       </g>

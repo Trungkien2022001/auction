@@ -33,9 +33,39 @@ CREATE TABLE IF NOT EXISTS `action_logs` (
   `error` longtext,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=612 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.action_logs: ~13,789 rows (approximately)
+-- Dumping data for table auction.action_logs: ~29 rows (approximately)
+INSERT INTO `action_logs` (`id`, `path`, `matched_route`, `client_ip`, `user`, `method`, `status`, `request`, `response`, `error`, `created_at`) VALUES
+	(39, '/auction', '/auction', '::1', 'trungkien07yd@gmail.com', 'POST', 200, '{"query":{},"body":{"auction":{"start_time":"2023-06-08 20:32:00","auction_time":20,"is_returned":0,"is_finished_soon":0},"product":{"name":"Test","branch":"ạhbfd","status":"mới","title":"ffd","description":"dfdfd","key_word":"","category_id":1,"start_price":"50000","images":["http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231021/upload/eu101fz7vra6de6an0kc.jpg","http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231021/upload/foukkwrzjid2mltartjf.jpg","http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231021/upload/fuzjwjaeq2ai8zfbuosr.jpg"]}}}', '{"success":true}', 'null', '2023-06-08 20:30:29'),
+	(46, '/auction', '/auction', '::1', 'trungkien07yd@gmail.com', 'POST', 200, '{"query":{},"body":{"auction":{"start_time":"2023-06-08 20:33:00","auction_time":20,"is_returned":0,"is_finished_soon":0},"product":{"name":"4rtgfh","branch":"ẻger","status":"ẻgerg","title":"ds","description":"dsvdsv","key_word":"","category_id":7,"start_price":"50000","images":["http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/qhbznptmame1eiyptoe6.jpg","http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/ujfuku2dycfzec43kana.jpg","http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/futl7eh7gfnvxctxyc2w.png"]}}}', '{"success":true}', 'null', '2023-06-08 20:31:29'),
+	(56, '/auction', '/auction', '::1', 'trungkien07yd@gmail.com', 'POST', 200, '{"query":{},"body":{"auction":{"start_time":"2023-06-08 20:34:00","auction_time":20,"is_returned":0,"is_finished_soon":0},"product":{"name":"trgf","branch":"","status":"fgfg","title":"4rf","description":"ed","key_word":"","category_id":1,"start_price":5000,"images":["http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231117/upload/b2two0yehsdbtm5ioiue.jpg","http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231117/upload/rxg8fgnjusofj6fyrm1w.jpg","http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231120/upload/an2akquwiguuuvgmesbs.png"]}}}', '{"success":true}', 'null', '2023-06-08 20:32:06'),
+	(66, '/auction', '/auction', '::1', 'trungkien07yd@gmail.com', 'POST', 200, '{"query":{},"body":{"auction":{"start_time":"2023-06-08 20:35:00","auction_time":20,"is_returned":0,"is_finished_soon":0},"product":{"name":"ẻ","branch":"","status":"ẻg","title":"ưef","description":"ưefwe","key_word":"","category_id":8,"start_price":5000,"images":["http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231177/upload/je3ayfm8kq41vewjetuj.jpg","http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231178/upload/izqwy8q4gpsucq9ulees.jpg"]}}}', '{"success":true}', 'null', '2023-06-08 20:33:08'),
+	(129, '/auction/raise', '/auction/raise?auction_id=42', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"42"},"body":{"price":"50000000","time":"2023-06-08 20:40:21"}}', '{"success":true}', 'null', '2023-06-08 20:40:22'),
+	(404, '/auction/raise', '/auction/raise?auction_id=42', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"42"},"body":{"price":"51000000","time":"2023-06-10 09:17:01"}}', '{"success":true}', 'null', '2023-06-10 09:17:02'),
+	(415, '/auction/raise', '/auction/raise?auction_id=42', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"42"},"body":{"price":"51000000","time":"2023-06-10 09:17:04"}}', '{"success":false,"message":"Auction raise error : price must be > 51000000"}', 'Auction raise error : price must be > 51000000', '2023-06-10 09:17:04'),
+	(419, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"51000","time":"2023-06-10 09:17:18"}}', '{"success":true}', 'null', '2023-06-10 09:17:18'),
+	(430, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"52000","time":"2023-06-10 09:18:05"}}', '{"success":true}', 'null', '2023-06-10 09:18:05'),
+	(439, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"53000","time":"2023-06-10 09:19:17"}}', '{"success":true}', 'null', '2023-06-10 09:19:18'),
+	(450, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"54000","time":"2023-06-10 09:19:29"}}', '{"success":true}', 'null', '2023-06-10 09:19:29'),
+	(460, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"54000","time":"2023-06-10 09:19:31"}}', '{"success":false,"message":"Auction raise error : price must be > 54000"}', 'Auction raise error : price must be > 54000', '2023-06-10 09:19:32'),
+	(461, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"55000","time":"2023-06-10 09:19:37"}}', '{"success":true}', 'null', '2023-06-10 09:19:37'),
+	(472, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"56000","time":"2023-06-10 09:20:00"}}', '{"success":true}', 'null', '2023-06-10 09:20:00'),
+	(487, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"57000","time":"2023-06-10 09:20:27"}}', '{"success":true}', 'null', '2023-06-10 09:20:27'),
+	(501, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"58000","time":"2023-06-10 09:21:19"}}', '{"success":true}', 'null', '2023-06-10 09:21:19'),
+	(527, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"59000","time":"2023-06-10 09:23:10"}}', '{"success":true}', 'null', '2023-06-10 09:23:10'),
+	(532, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"60000","time":"2023-06-10 09:23:22"}}', '{"success":true}', 'null', '2023-06-10 09:23:22'),
+	(601, '/auction/raise', '/auction/raise?auction_id=43', '::1', 'null', 'POST', 400, '{"query":{"auction_id":"43"},"body":{"price":"61000","time":"2023-06-10 10:28:43"}}', '{"success":false,"message":"missing x-access-token/x-key in headers"}', 'missing x-access-token/x-key in headers', '2023-06-10 10:28:43'),
+	(602, '/auction/raise', '/auction/raise?auction_id=43', '::1', 'null', 'POST', 400, '{"query":{"auction_id":"43"},"body":{"price":"62000","time":"2023-06-10 10:28:48"}}', '{"success":false,"message":"missing x-access-token/x-key in headers"}', 'missing x-access-token/x-key in headers', '2023-06-10 10:28:48'),
+	(603, '/auction/raise', '/auction/raise?auction_id=43', '::1', 'null', 'POST', 400, '{"query":{"auction_id":"43"},"body":{"price":"62000","time":"2023-06-10 10:29:02"}}', '{"success":false,"message":"missing x-access-token/x-key in headers"}', 'missing x-access-token/x-key in headers', '2023-06-10 10:29:02'),
+	(604, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"61000","time":"2023-06-10 10:29:24"}}', '{"success":true}', 'null', '2023-06-10 10:29:24'),
+	(605, '/auction/raise', '/auction/raise?auction_id=43', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"43"},"body":{"price":"62000","time":"2023-06-10 10:29:34"}}', '{"success":false,"message":"Bạn đã đấu giá 10 lần cho sản phẩm này, bạn không thể đấu giá thêm"}', 'Bạn đã đấu giá 10 lần cho sản phẩm này, bạn không thể đấu giá thêm', '2023-06-10 10:29:34'),
+	(606, '/auction/raise', '/auction/raise?auction_id=42', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"42"},"body":{"price":"52000000","time":"2023-06-10 10:29:50"}}', '{"success":true}', 'null', '2023-06-10 10:29:50'),
+	(607, '/auction/raise', '/auction/raise?auction_id=41', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"41"},"body":{"price":"5003","time":"2023-06-10 10:31:12"}}', '{"success":true}', 'null', '2023-06-10 10:31:12'),
+	(608, '/auction/raise', '/auction/raise?auction_id=41', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"41"},"body":{"price":"5004","time":"2023-06-10 10:31:20"}}', '{"success":true}', 'null', '2023-06-10 10:31:20'),
+	(609, '/auction/raise', '/auction/raise?auction_id=41', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"41"},"body":{"price":"5005","time":"2023-06-10 10:31:31"}}', '{"success":true}', 'null', '2023-06-10 10:31:31'),
+	(610, '/auction/raise', '/auction/raise?auction_id=44', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"44"},"body":{"price":"6000","time":"2023-06-10 15:44:05"}}', '{"success":true}', 'null', '2023-06-10 15:44:05'),
+	(611, '/auction/raise', '/auction/raise?auction_id=44', '::1', '1@gmail.com', 'POST', 200, '{"query":{"auction_id":"44"},"body":{"price":"6001","time":"2023-06-10 15:44:15"}}', '{"success":true}', 'null', '2023-06-10 15:44:15');
 
 -- Dumping structure for table auction.auction
 CREATE TABLE IF NOT EXISTS `auction` (
@@ -57,7 +87,6 @@ CREATE TABLE IF NOT EXISTS `auction` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `deleted_at` datetime DEFAULT NULL,
-  `Column 18` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `auction_status` (`status`),
   KEY `user_id` (`seller_id`),
@@ -67,49 +96,53 @@ CREATE TABLE IF NOT EXISTS `auction` (
   CONSTRAINT `auction_time` FOREIGN KEY (`auction_time`) REFERENCES `auction_time` (`id`),
   CONSTRAINT `FK_auction_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
   CONSTRAINT `user_id` FOREIGN KEY (`seller_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.auction: ~38 rows (approximately)
-INSERT INTO `auction` (`id`, `start_time`, `end_time`, `auction_time`, `product_id`, `start_price`, `sell_price`, `seller_id`, `auction_count`, `auctioneer_win`, `status`, `is_returned`, `is_finished_soon`, `seller_confirm_time`, `auctioneer_confirm_time`, `created_at`, `updated_at`, `deleted_at`, `Column 18`) VALUES
-	(1, '2023-01-06 00:00:00', NULL, 19, 1, 12000000, 22000000, 319, 14, 1, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(2, '2023-01-06 00:00:00', NULL, 20, 2, 15000000, 29500000, 319, 16, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(3, '2023-01-06 00:00:00', NULL, 19, 3, 18000000, 18500005, 319, 6, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(4, '2023-01-06 00:00:00', NULL, 18, 4, 18000000, 18000000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(5, '2023-01-06 00:00:00', NULL, 19, 5, 18000000, 22000000, 319, 4, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(6, '2023-01-06 00:00:00', NULL, 20, 6, 5000, 20000, 325, 198, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(7, '2023-01-06 00:00:00', NULL, 18, 7, 5000000, 5000000, 325, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(10, '2023-01-06 00:00:00', NULL, 20, 10, 50000, 76000, 317, 26, NULL, 6, 1, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(11, '2023-01-06 00:00:00', NULL, 1, 11, 5000, 6000, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(12, '2023-01-06 00:00:00', NULL, 1, 12, 5000, 5000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(13, '2023-01-06 00:00:00', NULL, 13, 13, 5000, 5011, 319, 11, NULL, 6, 1, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(14, '2023-01-06 00:00:00', NULL, 13, 14, 50000, 50000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(15, '2023-01-06 00:00:00', NULL, 1, 15, 5000, 6000, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(16, '2023-01-06 00:00:00', NULL, 12, 16, 5000000, 5000000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(17, '2023-01-06 00:00:00', NULL, 13, 17, 5000, 5001, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(18, '2023-01-06 00:00:00', NULL, 10, 18, 50000, 50000, 319, 0, NULL, 6, 1, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(19, '2023-01-06 00:00:00', NULL, 1, 19, 5000, 5000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(20, '2023-01-06 00:00:00', NULL, 17, 20, 200000, 200000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(21, '2023-01-06 00:00:00', NULL, 13, 21, 5000, 6000, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(22, '2023-01-06 00:00:00', NULL, 1, 22, 5000, 6000, 324, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(23, '2023-01-06 00:00:00', NULL, 16, 23, 50000, 50000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(24, '2023-01-06 00:00:00', NULL, 17, 24, 499000, 499001, 319, 1, NULL, 6, 1, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(25, '2023-01-06 00:00:00', NULL, 1, 25, 50000, 51000, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL, NULL),
-	(26, '2023-02-16 10:06:00', NULL, 20, 26, 50000, 72000, 319, 22, NULL, 5, 0, 0, NULL, '2023-05-19 11:10:41', '2023-02-16 10:04:58', '2023-05-19 11:10:40', NULL, NULL),
-	(27, '2023-02-19 09:03:00', NULL, 1, 27, 1000000, 1100000, 319, 1, 317, 7, 1, 0, NULL, NULL, '2023-02-19 09:01:18', '2023-02-21 21:34:31', NULL, NULL),
-	(28, '2023-02-23 21:43:00', NULL, 18, 28, 36000000, 36000000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-23 21:41:36', '2023-03-24 08:28:59', NULL, NULL),
-	(29, '2023-02-23 23:24:00', NULL, 16, 29, 21000000, 22000000, 327, 1, NULL, 7, 1, 0, NULL, NULL, '2023-02-23 23:22:51', '2023-03-24 08:35:00', NULL, NULL),
-	(30, '2023-02-23 23:27:00', NULL, 19, 30, 80000000, 80000000, 327, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-23 23:25:42', '2023-03-24 08:28:59', NULL, NULL),
-	(31, '2023-02-23 23:31:00', NULL, 20, 31, 50000, 100000000, 327, 3, NULL, 7, 0, 0, NULL, NULL, '2023-02-23 23:28:43', '2023-03-31 09:30:00', NULL, NULL),
-	(32, '2023-02-23 23:33:00', NULL, 17, 32, 5000, 7000, 327, 2, NULL, 7, 0, 0, NULL, NULL, '2023-02-23 23:31:11', '2023-03-24 08:35:00', NULL, NULL),
-	(33, '2023-02-27 23:32:00', NULL, 19, 33, 5000000, 5000000, 327, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-23 23:33:23', '2023-03-24 08:35:00', NULL, NULL),
-	(34, '2023-02-26 23:34:00', NULL, 19, 34, 50000000, 50000000, 327, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-23 23:34:39', '2023-03-24 08:28:59', NULL, NULL),
-	(35, '2023-02-27 23:35:00', NULL, 19, 35, 500078, 500078, 327, 0, NULL, 6, 0, 0, NULL, '2023-05-19 09:19:03', '2023-02-23 23:35:49', '2023-05-19 09:19:02', NULL, NULL),
-	(36, '2023-02-27 23:36:00', NULL, 17, 36, 50007767, 50007767, 327, 0, NULL, 6, 0, 0, NULL, '2023-05-19 09:19:09', '2023-02-23 23:36:29', '2023-05-19 09:19:08', NULL, NULL),
-	(37, '2023-02-23 23:53:00', NULL, 1, 37, 5000, 8000, 319, 3, 327, 5, 0, 0, NULL, '2023-05-19 11:11:27', '2023-02-23 23:51:41', '2023-05-19 11:11:27', NULL, NULL),
-	(38, '2023-02-24 08:35:00', NULL, 13, 38, 500000, 600000, 327, 1, NULL, 7, 0, 0, NULL, NULL, '2023-02-24 08:33:14', '2023-02-27 20:50:00', NULL, NULL),
-	(39, '2023-03-24 08:41:00', NULL, 1, 39, 5000, 123456, 323, 1, 319, 5, 1, 0, '2023-03-24 08:44:43', '2023-05-19 11:10:55', '2023-03-24 08:39:48', '2023-05-19 11:10:55', NULL, NULL),
-	(40, '2023-04-14 17:15:00', NULL, 10, 40, 5000, 5000, 319, 0, NULL, 6, 0, 0, NULL, '2023-05-19 09:19:16', '2023-04-14 17:13:09', '2023-05-19 09:19:16', NULL, NULL),
-	(41, '2023-05-22 23:39:00', NULL, 20, 41, 5002, 5002, 319, 0, NULL, 2, 0, 0, NULL, NULL, '2023-05-22 23:34:34', '2023-05-22 23:39:00', NULL, NULL);
+-- Dumping data for table auction.auction: ~43 rows (approximately)
+INSERT INTO `auction` (`id`, `start_time`, `end_time`, `auction_time`, `product_id`, `start_price`, `sell_price`, `seller_id`, `auction_count`, `auctioneer_win`, `status`, `is_returned`, `is_finished_soon`, `seller_confirm_time`, `auctioneer_confirm_time`, `created_at`, `updated_at`, `deleted_at`) VALUES
+	(1, '2023-01-06 00:00:00', NULL, 19, 1, 12000000, 22000000, 319, 14, 1, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(2, '2023-01-06 00:00:00', NULL, 20, 2, 15000000, 29500000, 319, 16, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(3, '2023-01-06 00:00:00', NULL, 19, 3, 18000000, 18500005, 319, 6, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(4, '2023-01-06 00:00:00', NULL, 18, 4, 18000000, 18000000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(5, '2023-01-06 00:00:00', NULL, 19, 5, 18000000, 22000000, 319, 4, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(6, '2023-01-06 00:00:00', NULL, 20, 6, 5000, 20000, 325, 198, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(7, '2023-01-06 00:00:00', NULL, 18, 7, 5000000, 5000000, 325, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(10, '2023-01-06 00:00:00', NULL, 20, 10, 50000, 76000, 317, 26, NULL, 6, 1, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(11, '2023-01-06 00:00:00', NULL, 1, 11, 5000, 6000, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(12, '2023-01-06 00:00:00', NULL, 1, 12, 5000, 5000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(13, '2023-01-06 00:00:00', NULL, 13, 13, 5000, 5011, 319, 11, NULL, 6, 1, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(14, '2023-01-06 00:00:00', NULL, 13, 14, 50000, 50000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(15, '2023-01-06 00:00:00', NULL, 1, 15, 5000, 6000, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(16, '2023-01-06 00:00:00', NULL, 12, 16, 5000000, 5000000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(17, '2023-01-06 00:00:00', NULL, 13, 17, 5000, 5001, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(18, '2023-01-06 00:00:00', NULL, 10, 18, 50000, 50000, 319, 0, NULL, 6, 1, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(19, '2023-01-06 00:00:00', NULL, 1, 19, 5000, 5000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(20, '2023-01-06 00:00:00', NULL, 17, 20, 200000, 200000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(21, '2023-01-06 00:00:00', NULL, 13, 21, 5000, 6000, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(22, '2023-01-06 00:00:00', NULL, 1, 22, 5000, 6000, 324, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(23, '2023-01-06 00:00:00', NULL, 16, 23, 50000, 50000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(24, '2023-01-06 00:00:00', NULL, 17, 24, 499000, 499001, 319, 1, NULL, 6, 1, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(25, '2023-01-06 00:00:00', NULL, 1, 25, 50000, 51000, 319, 1, NULL, 6, 0, 0, NULL, NULL, '2023-02-14 09:46:51', '2023-02-16 10:00:00', NULL),
+	(26, '2023-02-16 10:06:00', NULL, 20, 26, 50000, 72000, 319, 22, NULL, 5, 0, 0, NULL, '2023-06-08 20:29:49', '2023-02-16 10:04:58', '2023-06-08 20:29:49', NULL),
+	(27, '2023-02-19 09:03:00', NULL, 1, 27, 1000000, 1100000, 319, 1, 317, 7, 1, 0, NULL, NULL, '2023-02-19 09:01:18', '2023-02-21 21:34:31', NULL),
+	(28, '2023-02-23 21:43:00', NULL, 18, 28, 36000000, 36000000, 319, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-23 21:41:36', '2023-03-24 08:28:59', NULL),
+	(29, '2023-02-23 23:24:00', NULL, 16, 29, 21000000, 22000000, 327, 1, NULL, 7, 1, 0, NULL, NULL, '2023-02-23 23:22:51', '2023-03-24 08:35:00', NULL),
+	(30, '2023-02-23 23:27:00', NULL, 19, 30, 80000000, 80000000, 327, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-23 23:25:42', '2023-03-24 08:28:59', NULL),
+	(31, '2023-02-23 23:31:00', NULL, 20, 31, 50000, 100000000, 327, 3, NULL, 7, 0, 0, NULL, NULL, '2023-02-23 23:28:43', '2023-03-31 09:30:00', NULL),
+	(32, '2023-02-23 23:33:00', NULL, 17, 32, 5000, 7000, 327, 2, NULL, 7, 0, 0, NULL, NULL, '2023-02-23 23:31:11', '2023-03-24 08:35:00', NULL),
+	(33, '2023-02-27 23:32:00', NULL, 19, 33, 5000000, 5000000, 327, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-23 23:33:23', '2023-03-24 08:35:00', NULL),
+	(34, '2023-02-26 23:34:00', NULL, 19, 34, 50000000, 50000000, 327, 0, NULL, 6, 0, 0, NULL, NULL, '2023-02-23 23:34:39', '2023-03-24 08:28:59', NULL),
+	(35, '2023-02-27 23:35:00', NULL, 19, 35, 500078, 500078, 327, 0, NULL, 6, 0, 0, NULL, '2023-05-19 09:19:03', '2023-02-23 23:35:49', '2023-05-19 09:19:02', NULL),
+	(36, '2023-02-27 23:36:00', NULL, 17, 36, 50007767, 50007767, 327, 0, NULL, 6, 0, 0, NULL, '2023-05-19 09:19:09', '2023-02-23 23:36:29', '2023-05-19 09:19:08', NULL),
+	(37, '2023-02-23 23:53:00', NULL, 1, 37, 5000, 8000, 319, 3, 327, 5, 0, 0, NULL, '2023-05-19 11:11:27', '2023-02-23 23:51:41', '2023-05-19 11:11:27', NULL),
+	(38, '2023-02-24 08:35:00', NULL, 13, 38, 500000, 600000, 327, 1, NULL, 7, 0, 0, NULL, NULL, '2023-02-24 08:33:14', '2023-02-27 20:50:00', NULL),
+	(39, '2023-03-24 08:41:00', NULL, 1, 39, 5000, 123456, 323, 1, 319, 5, 1, 0, '2023-03-24 08:44:43', '2023-05-19 11:10:55', '2023-03-24 08:39:48', '2023-05-19 11:10:55', NULL),
+	(40, '2023-04-14 17:15:00', NULL, 10, 40, 5000, 5000, 319, 0, NULL, 6, 0, 0, NULL, '2023-05-19 09:19:16', '2023-04-14 17:13:09', '2023-05-19 09:19:16', NULL),
+	(41, '2023-05-22 23:39:00', NULL, 20, 41, 5002, 5005, 319, 3, NULL, 2, 0, 0, NULL, NULL, '2023-05-22 23:34:34', '2023-06-10 10:31:31', NULL),
+	(42, '2023-06-08 20:32:00', NULL, 20, 42, 50000, 52000000, 319, 3, NULL, 2, 0, 0, NULL, NULL, '2023-06-08 20:30:29', '2023-06-10 10:29:50', NULL),
+	(43, '2023-06-08 20:33:00', NULL, 20, 43, 50000, 61000, 319, 11, NULL, 2, 0, 0, NULL, NULL, '2023-06-08 20:31:29', '2023-06-10 10:29:24', NULL),
+	(44, '2023-06-08 20:34:00', NULL, 20, 44, 5000, 6001, 319, 2, NULL, 2, 0, 0, NULL, NULL, '2023-06-08 20:32:06', '2023-06-10 15:44:15', NULL),
+	(45, '2023-06-08 20:35:00', NULL, 20, 45, 5000, 5000, 319, 0, NULL, 6, 0, 0, NULL, '2023-06-08 20:43:43', '2023-06-08 20:33:08', '2023-06-08 20:43:42', NULL);
 
 -- Dumping structure for table auction.auction_history
 CREATE TABLE IF NOT EXISTS `auction_history` (
@@ -126,9 +159,9 @@ CREATE TABLE IF NOT EXISTS `auction_history` (
   KEY `user_id_auction_history` (`auctioneer_id`),
   CONSTRAINT `aution_id_history` FOREIGN KEY (`auction_id`) REFERENCES `auction` (`id`),
   CONSTRAINT `user_id_auction_history` FOREIGN KEY (`auctioneer_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=319 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=338 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.auction_history: ~242 rows (approximately)
+-- Dumping data for table auction.auction_history: ~337 rows (approximately)
 INSERT INTO `auction_history` (`id`, `auction_id`, `auctioneer_id`, `bet_time`, `bet_amount`, `is_success`, `is_blocked`, `created_at`) VALUES
 	(1, 1, 319, '2022-12-05 16:00:00', 20000000, 1, 0, '2022-11-30 16:38:34'),
 	(2, 2, 319, '2022-11-30 16:39:24', 0, 1, 0, '2022-11-30 16:39:25'),
@@ -447,7 +480,26 @@ INSERT INTO `auction_history` (`id`, `auction_id`, `auctioneer_id`, `bet_time`, 
 	(315, 31, 323, '2023-03-24 08:33:41', 9999999, 0, 0, '2023-03-24 08:33:42'),
 	(316, 31, 319, '2023-03-24 08:34:10', 99999999, 0, 0, '2023-03-24 08:34:10'),
 	(317, 31, 323, '2023-03-24 08:34:39', 100000000, 0, 0, '2023-03-24 08:34:39'),
-	(318, 39, 319, '2023-03-24 08:41:29', 123456, 1, 0, '2023-03-24 08:41:29');
+	(318, 39, 319, '2023-03-24 08:41:29', 123456, 1, 0, '2023-03-24 08:41:29'),
+	(319, 42, 327, '2023-06-08 20:40:21', 50000000, 0, 0, '2023-06-08 20:40:22'),
+	(320, 42, 327, '2023-06-10 09:17:01', 51000000, 0, 0, '2023-06-10 09:17:02'),
+	(321, 43, 327, '2023-06-10 09:17:18', 51000, 0, 0, '2023-06-10 09:17:18'),
+	(322, 43, 327, '2023-06-10 09:18:05', 52000, 0, 0, '2023-06-10 09:18:05'),
+	(323, 43, 327, '2023-06-10 09:19:17', 53000, 0, 0, '2023-06-10 09:19:18'),
+	(324, 43, 327, '2023-06-10 09:19:29', 54000, 0, 0, '2023-06-10 09:19:29'),
+	(325, 43, 327, '2023-06-10 09:19:37', 55000, 0, 0, '2023-06-10 09:19:37'),
+	(326, 43, 327, '2023-06-10 09:20:00', 56000, 0, 0, '2023-06-10 09:20:00'),
+	(327, 43, 327, '2023-06-10 09:20:27', 57000, 0, 0, '2023-06-10 09:20:27'),
+	(328, 43, 327, '2023-06-10 09:21:19', 58000, 0, 0, '2023-06-10 09:21:19'),
+	(329, 43, 327, '2023-06-10 09:23:10', 59000, 0, 0, '2023-06-10 09:23:10'),
+	(330, 43, 327, '2023-06-10 09:23:22', 60000, 0, 0, '2023-06-10 09:23:22'),
+	(331, 43, 327, '2023-06-10 10:29:24', 61000, 0, 0, '2023-06-10 10:29:24'),
+	(332, 42, 327, '2023-06-10 10:29:50', 52000000, 0, 0, '2023-06-10 10:29:50'),
+	(333, 41, 327, '2023-06-10 10:31:12', 5003, 0, 0, '2023-06-10 10:31:12'),
+	(334, 41, 327, '2023-06-10 10:31:20', 5004, 0, 0, '2023-06-10 10:31:20'),
+	(335, 41, 327, '2023-06-10 10:31:31', 5005, 0, 0, '2023-06-10 10:31:31'),
+	(336, 44, 327, '2023-06-10 15:44:05', 6000, 0, 0, '2023-06-10 15:44:05'),
+	(337, 44, 327, '2023-06-10 15:44:15', 6001, 0, 0, '2023-06-10 15:44:15');
 
 -- Dumping structure for table auction.auction_key_word
 CREATE TABLE IF NOT EXISTS `auction_key_word` (
@@ -527,7 +579,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
 -- Dumping data for table auction.chat: ~4 rows (approximately)
 INSERT INTO `chat` (`id`, `user1`, `user2`, `last_msg`, `last_message_by`, `is_read`, `created_at`, `updated_at`) VALUES
 	(6, 319, 0, 'gi do', '319', 1, '2023-05-26 22:31:11', '2023-05-28 16:06:53'),
-	(8, 327, 0, 'jk', '327', 1, '2023-05-27 10:23:35', '2023-05-28 10:32:28'),
+	(8, 327, 0, ',m,m,m,m', '327', 0, '2023-05-27 10:23:35', '2023-06-13 08:17:56'),
 	(15, 328, 0, 'gi k', '328', 1, '2023-05-27 15:23:49', '2023-05-28 10:32:27'),
 	(16, 332, 0, 'rth', '332', 1, '2023-05-28 15:47:01', '2023-05-28 16:06:54');
 
@@ -546,9 +598,9 @@ CREATE TABLE IF NOT EXISTS `chat_history` (
   KEY `FK_chat_history_user` (`user_id`),
   CONSTRAINT `FK_chat_history_chat` FOREIGN KEY (`chat_id`) REFERENCES `chat` (`id`),
   CONSTRAINT `FK_chat_history_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=407 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=420 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.chat_history: ~271 rows (approximately)
+-- Dumping data for table auction.chat_history: ~299 rows (approximately)
 INSERT INTO `chat_history` (`id`, `chat_id`, `user_id`, `is_admin`, `content`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 6, 319, 0, 'hello', '2023-05-26 22:31:11', '2023-05-26 22:31:11', NULL),
 	(2, 6, 319, 0, 'ewger', '2023-05-26 22:53:00', '2023-05-26 23:04:05', NULL),
@@ -835,7 +887,20 @@ INSERT INTO `chat_history` (`id`, `chat_id`, `user_id`, `is_admin`, `content`, `
 	(397, 16, 332, 1, 't', '2023-05-28 16:03:46', '2023-05-28 16:03:46', NULL),
 	(398, 16, 332, 1, 'rth', '2023-05-28 16:03:47', '2023-05-28 16:03:47', NULL),
 	(399, 6, 319, 0, 'alo em', '2023-05-28 16:04:50', '2023-05-28 16:04:50', NULL),
-	(400, 6, 319, 1, 'gi do', '2023-05-28 16:05:05', '2023-05-28 16:05:05', NULL);
+	(400, 6, 319, 1, 'gi do', '2023-05-28 16:05:05', '2023-05-28 16:05:05', NULL),
+	(407, 8, 327, 0, 'anh', '2023-06-08 20:35:37', '2023-06-08 20:35:37', NULL),
+	(408, 8, 327, 1, 'abc', '2023-06-08 20:35:50', '2023-06-08 20:35:50', NULL),
+	(409, 8, 327, 0, 'hello', '2023-06-08 20:36:05', '2023-06-08 20:36:05', NULL),
+	(410, 8, 327, 0, 'abc', '2023-06-08 20:36:09', '2023-06-08 20:36:09', NULL),
+	(411, 8, 327, 0, 'vbvbvbvbv', '2023-06-13 08:17:14', '2023-06-13 08:17:14', NULL),
+	(412, 8, 327, 1, 'llll', '2023-06-13 08:17:22', '2023-06-13 08:17:22', NULL),
+	(413, 8, 327, 0, 'kkkk', '2023-06-13 08:17:42', '2023-06-13 08:17:42', NULL),
+	(414, 8, 327, 1, 'kk', '2023-06-13 08:17:45', '2023-06-13 08:17:45', NULL),
+	(415, 8, 327, 1, 'mmm', '2023-06-13 08:17:47', '2023-06-13 08:17:47', NULL),
+	(416, 8, 327, 1, ',', '2023-06-13 08:17:48', '2023-06-13 08:17:48', NULL),
+	(417, 8, 327, 1, ',kjkkk', '2023-06-13 08:17:50', '2023-06-13 08:17:50', NULL),
+	(418, 8, 327, 0, 'mm,m', '2023-06-13 08:17:54', '2023-06-13 08:17:54', NULL),
+	(419, 8, 327, 0, ',m,m,m,m', '2023-06-13 08:17:56', '2023-06-13 08:17:56', NULL);
 
 -- Dumping structure for table auction.comment
 CREATE TABLE IF NOT EXISTS `comment` (
@@ -866,9 +931,9 @@ CREATE TABLE IF NOT EXISTS `image` (
   PRIMARY KEY (`id`),
   KEY `product_id_auction_history` (`product_id`),
   CONSTRAINT `product_id_auction_history` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=144 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=155 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.image: ~122 rows (approximately)
+-- Dumping data for table auction.image: ~153 rows (approximately)
 INSERT INTO `image` (`id`, `url`, `product_id`, `isSuccess`, `deleted_at`) VALUES
 	(1, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1669779826/upload/hefa1thql0hgc14sw8tf.jpg', 1, 0, NULL),
 	(2, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1669779826/upload/zuuywm1s0kxxnhxyycoa.jpg', 1, 0, NULL),
@@ -1011,7 +1076,18 @@ INSERT INTO `image` (`id`, `url`, `product_id`, `isSuccess`, `deleted_at`) VALUE
 	(140, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1681467176/upload/sy3gn6ejyna4xd1nbrf1.png', 40, 0, NULL),
 	(141, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1681467177/upload/vulrmsn0psm6ajhce5fd.png', 40, 0, NULL),
 	(142, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1681467177/upload/gkerpyo9ir1lcixxx49t.png', 40, 0, NULL),
-	(143, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1684773269/upload/kdnmnjh85g0ovutx0thv.jpg', 41, 0, NULL);
+	(143, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1684773269/upload/kdnmnjh85g0ovutx0thv.jpg', 41, 0, NULL),
+	(144, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231021/upload/eu101fz7vra6de6an0kc.jpg', 42, 0, NULL),
+	(145, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231021/upload/foukkwrzjid2mltartjf.jpg', 42, 0, NULL),
+	(146, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231021/upload/fuzjwjaeq2ai8zfbuosr.jpg', 42, 0, NULL),
+	(147, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/qhbznptmame1eiyptoe6.jpg', 43, 0, NULL),
+	(148, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/ujfuku2dycfzec43kana.jpg', 43, 0, NULL),
+	(149, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/futl7eh7gfnvxctxyc2w.png', 43, 0, NULL),
+	(150, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231117/upload/b2two0yehsdbtm5ioiue.jpg', 44, 0, NULL),
+	(151, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231117/upload/rxg8fgnjusofj6fyrm1w.jpg', 44, 0, NULL),
+	(152, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231120/upload/an2akquwiguuuvgmesbs.png', 44, 0, NULL),
+	(153, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231177/upload/je3ayfm8kq41vewjetuj.jpg', 45, 0, NULL),
+	(154, 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231178/upload/izqwy8q4gpsucq9ulees.jpg', 45, 0, NULL);
 
 -- Dumping structure for table auction.mark_up
 CREATE TABLE IF NOT EXISTS `mark_up` (
@@ -1041,9 +1117,9 @@ CREATE TABLE IF NOT EXISTS `notification` (
   KEY `notif_type` (`type`),
   KEY `FK_notification_user` (`user_id`),
   CONSTRAINT `auction_notif` FOREIGN KEY (`auction_id`) REFERENCES `auction` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=233 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=235 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.notification: ~79 rows (approximately)
+-- Dumping data for table auction.notification: ~82 rows (approximately)
 INSERT INTO `notification` (`id`, `user_id`, `auction_id`, `action_user_id`, `type`, `created_at`, `updated_at`) VALUES
 	(3, 324, 6, 319, 4, '2022-12-10 00:57:06', '2022-12-17 08:43:04'),
 	(4, 317, 6, 319, 4, '2022-12-10 01:01:27', '2022-12-17 08:46:49'),
@@ -1124,7 +1200,9 @@ INSERT INTO `notification` (`id`, `user_id`, `auction_id`, `action_user_id`, `ty
 	(229, 319, 37, 319, 8, '2023-05-19 11:10:39', '2023-05-19 11:10:39'),
 	(230, 319, 26, 319, 8, '2023-05-19 11:10:40', '2023-05-19 11:10:40'),
 	(231, 323, 39, 319, 8, '2023-05-19 11:10:55', '2023-05-19 11:10:55'),
-	(232, 319, 37, 319, 8, '2023-05-19 11:11:27', '2023-05-19 11:11:27');
+	(232, 319, 37, 319, 8, '2023-05-19 11:11:27', '2023-05-19 11:11:27'),
+	(233, 319, 26, 319, 8, '2023-06-08 20:29:49', '2023-06-08 20:29:49'),
+	(234, 319, 45, 319, 8, '2023-06-08 20:43:42', '2023-06-08 20:43:42');
 
 -- Dumping structure for table auction.notification_category
 CREATE TABLE IF NOT EXISTS `notification_category` (
@@ -1133,7 +1211,7 @@ CREATE TABLE IF NOT EXISTS `notification_category` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.notification_category: ~6 rows (approximately)
+-- Dumping data for table auction.notification_category: ~7 rows (approximately)
 INSERT INTO `notification_category` (`id`, `name`) VALUES
 	(1, 'Thêm phiên đấu giá mới'),
 	(2, 'Hoàn thành đấu giá'),
@@ -1173,9 +1251,9 @@ CREATE TABLE IF NOT EXISTS `product` (
   KEY `seller_id_product` (`seller_id`),
   CONSTRAINT `product_type` FOREIGN KEY (`category_id`) REFERENCES `product_category` (`id`),
   CONSTRAINT `seller_id_product` FOREIGN KEY (`seller_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.product: ~35 rows (approximately)
+-- Dumping data for table auction.product: ~45 rows (approximately)
 INSERT INTO `product` (`id`, `name`, `description`, `branch`, `image`, `category_id`, `title`, `start_price`, `key_word`, `status`, `seller_id`, `created_at`, `updated_at`, `deleted_at`) VALUES
 	(1, 'Đồng hồ siêu đẹp', 'Đồng hồ chính hãng xuất xứ bên Nhật Đồng hồ chính hãng xuất xứ bên Nhật Đồng hồ chính hãng xuất xứ bên Nhật ', 'Casio', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1669779826/upload/hefa1thql0hgc14sw8tf.jpg', 1, 'Đồng hồ chính hãng xuất xứ bên Nhật', 12000000, 'dongho, banchay, casio', 'Chưa qua sử dụng', 319, '2022-11-30 10:46:51', '2022-11-30 10:46:51', '2022-11-30 10:46:51'),
 	(2, 'Laptop Dell Vostro 3500', 'Thông số: Đồng hồ chính hãng xuất xứ bên Nhật Đồng hồ chính hãng xuất xứ bên Nhật Đồng hồ chính hãng xuất xứ bên Nhật ', 'Dell', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1669780112/upload/rjrdjxioynzsafqfxgm9.png', 2, 'Laptop chính hãng dell', 15000000, 'laptop, dell, vostro', 'Sử dụng được 2 năm', 319, '2022-11-30 10:48:39', '2022-11-30 10:48:39', '2022-11-30 10:48:39'),
@@ -1217,7 +1295,11 @@ INSERT INTO `product` (`id`, `name`, `description`, `branch`, `image`, `category
 	(38, 'test', 'dfb', '', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1677202370/upload/wfc1mwjldw50kdm7arbn.jpg', 5, 'dfb', 500000, '', 'sdv', 327, '2023-02-24 08:33:14', '2023-02-24 08:33:14', '2023-02-24 08:33:14'),
 	(39, 'p', 'kcjjj', 'ư', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1679621984/upload/r20lir7alwo7xodubz80.jpg', 21, 'kcj', 5000, 'doxin', '1', 323, '2023-03-24 08:39:48', '2023-03-24 08:39:48', '2023-03-24 08:39:48'),
 	(40, 'rtt', 'ưefwef', 'rrytyr', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1681467176/upload/sy3gn6ejyna4xd1nbrf1.png', 6, 'uygy', 5000, 'rtytr', 'rtyrt', 319, '2023-04-14 17:13:09', '2023-04-14 17:13:09', '2023-04-14 17:13:09'),
-	(41, 'ekrjgerjge', 'ergerger', 'kerjgj', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1684773269/upload/kdnmnjh85g0ovutx0thv.jpg', 1, 'erger', 5002, 'erkjg', 'erkjgerkjg', 319, '2023-05-22 23:34:34', '2023-05-22 23:34:34', '2023-05-22 23:34:34');
+	(41, 'ekrjgerjge', 'ergerger', 'kerjgj', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1684773269/upload/kdnmnjh85g0ovutx0thv.jpg', 1, 'erger', 5002, 'erkjg', 'erkjgerkjg', 319, '2023-05-22 23:34:34', '2023-05-22 23:34:34', '2023-05-22 23:34:34'),
+	(42, 'Test', 'dfdfd', 'ạhbfd', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231021/upload/eu101fz7vra6de6an0kc.jpg', 1, 'ffd', 50000, '', 'mới', 319, '2023-06-08 20:30:29', '2023-06-08 20:30:29', '2023-06-08 20:30:29'),
+	(43, '4rtgfh', 'dsvdsv', 'ẻger', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/qhbznptmame1eiyptoe6.jpg', 7, 'ds', 50000, '', 'ẻgerg', 319, '2023-06-08 20:31:29', '2023-06-08 20:31:29', '2023-06-08 20:31:29'),
+	(44, 'trgf', 'ed', '', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231117/upload/b2two0yehsdbtm5ioiue.jpg', 1, '4rf', 5000, '', 'fgfg', 319, '2023-06-08 20:32:06', '2023-06-08 20:32:06', '2023-06-08 20:32:06'),
+	(45, 'ẻ', 'ưefwe', '', 'http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231177/upload/je3ayfm8kq41vewjetuj.jpg', 8, 'ưef', 5000, '', 'ẻg', 319, '2023-06-08 20:33:07', '2023-06-08 20:33:07', '2023-06-08 20:33:07');
 
 -- Dumping structure for table auction.product_branch
 CREATE TABLE IF NOT EXISTS `product_branch` (
@@ -1412,7 +1494,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=335 DEFAULT CHARSET=utf8mb3;
 
--- Dumping data for table auction.user: ~158 rows (approximately)
+-- Dumping data for table auction.user: ~160 rows (approximately)
 INSERT INTO `user` (`id`, `name`, `username`, `email`, `phone`, `password_hash`, `role_id`, `avatar`, `birthday`, `amount`, `address`, `refresh_token`, `prestige`, `is_verified`, `is_blocked`, `rating`, `sell_failed_count_by_seller`, `sell_failed_count_by_auctioneer`, `sell_success_count`, `buy_cancel_count_by_seller`, `buy_cancel_count_by_auctioneer`, `buy_success_count`, `custom_config`, `created_at`, `updated_at`, `del_flag`) VALUES
 	(0, 'Nguyễn Trung Kiên', 'trungkien', 'trungkien06yd@gmail.com', '0989983026', '$2a$05$NQ.qO9y9UwDfmiVsNaHJYuhg7sCVC0DGd3/UTXV3zWbO9JgJeR2xu', 'admin', 'https://i.pinimg.com/564x/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg', '2001-02-20 00:00:00', 0, '136 Nguyễn An Ninh, Hoàng Mai, Hà Nội', NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, NULL, '2022-11-19 08:59:39', '2023-05-26 23:47:36', 0),
 	(1, 'DOTW', 'Chưa đặt tên', 'dotw@goquo.com', '', '$2a$05$Ml9fnvJjmrOM28U3MAXBheOFe3YRngp8ON8z9RGVUaSpmeMa5V7Ra', 'user', 'https://i.pinimg.com/564x/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg', NULL, 0, NULL, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"a": 1, "b": {"c": 1, "d": 2}}', '2022-11-18 23:59:46', '2023-02-23 21:10:53', 0),
@@ -1587,9 +1669,9 @@ CREATE TABLE IF NOT EXISTS `user_auction` (
   KEY `FK_user_auction_auction` (`auction_id`),
   CONSTRAINT `FK_user_auction_auction` FOREIGN KEY (`auction_id`) REFERENCES `auction` (`id`),
   CONSTRAINT `FK_user_auction_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table auction.user_auction: ~44 rows (approximately)
+-- Dumping data for table auction.user_auction: ~51 rows (approximately)
 INSERT INTO `user_auction` (`id`, `user_id`, `auction_id`, `is_success`, `createdAt`) VALUES
 	(1, 324, 1, 0, '2022-12-09 00:20:11'),
 	(2, 324, 2, 0, '2022-12-09 00:20:11'),
@@ -1637,7 +1719,11 @@ INSERT INTO `user_auction` (`id`, `user_id`, `auction_id`, `is_success`, `create
 	(44, 329, 32, 0, '2023-02-24 09:03:03'),
 	(45, 323, 31, 0, '2023-03-24 08:33:42'),
 	(46, 319, 31, 0, '2023-03-24 08:34:10'),
-	(47, 319, 39, 0, '2023-03-24 08:41:29');
+	(47, 319, 39, 0, '2023-03-24 08:41:29'),
+	(48, 327, 42, 0, '2023-06-08 20:40:22'),
+	(49, 327, 43, 0, '2023-06-10 09:17:18'),
+	(50, 327, 41, 0, '2023-06-10 10:31:12'),
+	(51, 327, 44, 0, '2023-06-10 15:44:05');
 
 -- Dumping structure for table auction.user_rating_history
 CREATE TABLE IF NOT EXISTS `user_rating_history` (

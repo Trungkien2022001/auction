@@ -310,3 +310,19 @@ exports.summary = async () => {
         chat
     }
 }
+exports.insertRequestCount = async count => {
+    await knex('request').insert({ count })
+}
+exports.getRequestCount = async limit => {
+    const data = await knex('request')
+        .select()
+        .limit(limit || 100)
+        .orderBy('time', 'desc')
+
+    return data.map(i => {
+        return {
+            count: i.count,
+            created_at: moment(i.time).format('HH:mm:ss')
+        }
+    })
+}

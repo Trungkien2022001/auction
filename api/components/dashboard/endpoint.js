@@ -119,4 +119,27 @@ router.get(
     }
 )
 
+router.get(
+    '/dashboard-request-count',
+    genericSecure,
+    checkPermission('admin'),
+    async ctx => {
+        debug('GET / dashboard-summary')
+        try {
+            const { limit } = ctx.request.query
+            ctx.body = {
+                success: true,
+                data: await Dashboard.getRequestCount(limit)
+            }
+        } catch (error) {
+            ctx.status = 500
+            ctx.body = {
+                success: false,
+                message: error.message || JSON.stringify(error)
+            }
+            throw error
+        }
+    }
+)
+
 module.exports = router

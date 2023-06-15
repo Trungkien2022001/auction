@@ -15,7 +15,8 @@ const defaults = {
     redisPrefix: 'test:',
     auctionTime,
     mysqlConnectionUrl: 'mysql://root@localhost/auction',
-    messageLimit: 200
+    messageLimit: 200,
+    maxRateLimt: 100
 }
 const custom = {
     production:
@@ -30,7 +31,8 @@ const custom = {
     redisDb: process.env.REDIS_DB,
     redisPrefix: process.env.REDIS_PREFIX,
     mysqlConnectionUrl: process.env.MYSQL_CONNECTION_URL,
-    messageLimit: process.env.MESSAGE_LIMIT
+    messageLimit: process.env.MESSAGE_LIMIT,
+    maxRateLimt: process.env.MAX_RATE_LIMIT
 }
 
 const config = Hoek.applyToDefaults(defaults, custom)

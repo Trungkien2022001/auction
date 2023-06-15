@@ -18,6 +18,8 @@ export const Chart = ({ currentUser, socket }) => {
   const [user, setUser] = useState([])
   const [money, setMoney] = useState([])
   const [summary, setSummary] = useState({})
+  const [requestCount, setRequestCount] = useState([])
+  const [requestLimit, setRequestLimit] = useState(50)
   const [auctionRaiseType, setAuctionRaiseType] = useState('day')
   const [auctionType, setAuctionType] = useState('day')
   const [userType, setUserType] = useState('day')
@@ -34,6 +36,13 @@ export const Chart = ({ currentUser, socket }) => {
     let result = await get(`${api_endpoint}/dashboard-summary`, currentUser)
     if (result.status === 200) {
       setSummary(result.data.data)
+    }
+  }
+  async function getRequestCount() {
+    let result = await get(`${api_endpoint}/dashboard-request-count?limit=${requestLimit}`, currentUser)
+    if (result.status === 200) {
+      setRequestCount(result.data.data)
+      // setRequestCount(prev=>[...prev, ...result.data.data])
     }
   }
   async function getMoney() {
@@ -65,6 +74,15 @@ export const Chart = ({ currentUser, socket }) => {
     getAll()
   }, [check])
   useEffect(() => {
+    const interval = setInterval(() => {
+      getRequestCount()
+    }, 1 * 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [requestLimit])
+  useEffect(() => {
     setCheck(Math.random())
     const interval = setInterval(() => {
       setCheck(Math.random());
@@ -92,8 +110,9 @@ export const Chart = ({ currentUser, socket }) => {
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on('updateDashboard', () => {
+      socket.current.on('server-send-request-count', (data) => {
         // getAll()
+        console.log('data', data)
       })
     }
   }, [socket.current])
@@ -179,6 +198,42 @@ export const Chart = ({ currentUser, socket }) => {
             </div>
       <div className="chart-item">
         <div className="header">
+          <div className="content">Số lượng request</div>
+            <div className="filter">
+              <InputLabel id="select-label">Số request</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={requestLimit}
+                style={{ width: '120px' }}
+                onChange={(e) => setRequestLimit(e.target.value)}
+              >
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+                <MenuItem value={100}>100</MenuItem>
+                <MenuItem value={200}>200</MenuItem>
+                <MenuItem value={500}>500</MenuItem>
+              </Select>
+            </div>
+        </div>
+        <ResponsiveContainer className="" height={500}>
+          <LineChart
+            height={500}
+            data={requestCount}
+            margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+          >
+            <XAxis dataKey="created_at" tick={CustomizedAxisTick} />
+            <YAxis tickFormatter={numberWithCommas} />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip formatter={numberWithCommas} />
+            <Legend />
+            <Line type="monotone" dataKey="count" stroke="#8884d8" isAnimationActive={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="chart-item">
+        <div className="header">
           <div className="content">Doanh thu</div>
             <div className="filter">
               <InputLabel id="select-label">Lọc theo</InputLabel>
@@ -200,6 +255,7 @@ export const Chart = ({ currentUser, socket }) => {
           <LineChart
             height={500}
             data={money}
+            transform={'none'}
             margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
           >
             <XAxis dataKey="created_at" tick={CustomizedAxisTick} />

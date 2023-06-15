@@ -20,4 +20,9 @@ glob(
     }
 )
 
+// Health check
+router.get('/health', async ctx => {
+    ctx.body = 'ok kien!'
+})
+
 module.exports = router

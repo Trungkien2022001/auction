@@ -7,7 +7,7 @@ import "./Homepage.scss";
 // import axios from "axios";
 import { Link } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Divider, List, ListItem, ListItemText, TextField } from "@mui/material";
+import { Button, Divider, List, ListItem, ListItemText } from "@mui/material";
 import Countdown, { zeroPad } from 'react-countdown'
 import { useEffect } from "react";
 import { get } from "../../../utils/customRequest";

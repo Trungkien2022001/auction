@@ -30,8 +30,8 @@ async function get(n) {
                 await request.getAsync(url, options)
             })
         )
-        console.log('success')
+        console.log(`success ${s} request`)
     }
 }
-// node "e:\Code\Project\auction\api\smallTest.js" 1 100
+// node "e:\Code\Project\auction\api\test.js" 0 100
 get(count)

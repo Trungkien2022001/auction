@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './Chat.scss'
-import { Avatar, Button, Divider, MenuItem, Select, TextField } from '@mui/material';
+import { Avatar, Button, Divider, TextField } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { get } from '../../../utils/customRequest';
 import { useSelector } from 'react-redux';

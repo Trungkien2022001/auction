@@ -12,7 +12,8 @@ module.exports = class Log {
         request,
         response,
         client_ip,
-        error
+        error,
+        server_port
     }) {
         this.path = path
         this.matched_route = matchedRoute
@@ -25,6 +26,7 @@ module.exports = class Log {
         this.response =
             typeof response === 'object' ? JSON.stringify(response) : response
         this.error = typeof error === 'object' ? JSON.stringify(error) : error
+        this.server_port = server_port
     }
 
     toJson() {

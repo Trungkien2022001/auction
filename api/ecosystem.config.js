@@ -30,26 +30,26 @@ module.exports = {
             },
 
         },
-        {
-            name: "Worker server 2",
-            script: "./index.js",
-            instances: "1",
-            exec_mode: "fork",
-            env: {
-                NODE_ENV: "production",
-                PORT: 3033,
-            }
-        },
-        {
-            name: "Worker server 2",
-            script: "./index.js",
-            instances: "1",
-            exec_mode: "fork",
-            env: {
-                NODE_ENV: "production",
-                PORT: 3034,
-            }
-        }
+        // {
+        //     name: "Worker server 2",
+        //     script: "./index.js",
+        //     instances: "1",
+        //     exec_mode: "fork",
+        //     env: {
+        //         NODE_ENV: "production",
+        //         PORT: 3033,
+        //     }
+        // },
+        // {
+        //     name: "Worker server 2",
+        //     script: "./index.js",
+        //     instances: "1",
+        //     exec_mode: "fork",
+        //     env: {
+        //         NODE_ENV: "production",
+        //         PORT: 3034,
+        //     }
+        // }
     ]
 }
 

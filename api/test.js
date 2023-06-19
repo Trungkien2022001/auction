@@ -4,15 +4,15 @@ const request = Promise.promisifyAll(require('request'))
 
 const count = process.argv.slice(2)
 async function get(n) {
-    const s = parseInt(n[1], 10) || 1000
+    const s = parseInt(n[1], 10) || 10
     const s1 = parseInt(n[0], 10) || 0
     const arr = []
     for (let i = 0; i < s; i += 1) {
         arr.push(i)
     }
     const url = s1
-        ? 'http://localhost:3030/auction?id=1'
-        : 'http://localhost:3030/health'
+        ? 'https://22c6-3-121-151-64.eu.ngrok.io/auction?id=1'
+        : 'https://22c6-3-121-151-64.eu.ngrok.io/health'
     while (true) {
         await Promise.all(
             arr.map(async () => {

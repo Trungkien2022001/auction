@@ -112,7 +112,6 @@ export const Chart = ({ currentUser, socket }) => {
     if (socket.current) {
       socket.current.on('server-send-request-count', (data) => {
         // getAll()
-        console.log('data', data)
       })
     }
   }, [socket.current])

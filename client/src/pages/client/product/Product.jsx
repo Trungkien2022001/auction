@@ -32,7 +32,7 @@ export const Product = ({ socket }) => {
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
   const [bigImageIndex, setBigImageIndex] = useState(0)
   async function getData() {
-    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
+    let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
     if (result.status === 200) {
       setData(result.data.data)
     }

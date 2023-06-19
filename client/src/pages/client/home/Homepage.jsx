@@ -26,7 +26,7 @@ export const Homepage = ({ socket }) => {
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState({})
   const [productCategory, setProductCategory] = useState([]);
-  const [check, setCheck] = useState(false)
+  const [check, setCheck] = useState(true)
   const [message, setMessage] = useState("");
   const [mess, setMess] = useState([]);
 
@@ -37,9 +37,7 @@ export const Homepage = ({ socket }) => {
       })
       socket.current.on('receive-admin-msg', params => {
         // setMess(prev=>[...prev, {...params, updated_at: moment(new Date()).format()}])
-        if(params.chat_id === currentUser.id){
           setMess(prev => [...prev, { ...params }])
-        }
       })
     }
   }, [socket.current])
@@ -154,7 +152,7 @@ export const Homepage = ({ socket }) => {
                     Bạn cần giúp gì ?
                   </div>
                   <div className="close">
-                    <CloseIcon />
+                    <CloseIcon onClick={() => setCheck(!check)}/>
                   </div>
                 </div>
                 <div className="chat-container">
@@ -185,7 +183,7 @@ export const Homepage = ({ socket }) => {
                   <div ref={messageRef} />
                 </div>
                 <div className='chat-input'>
-                  <input
+                <input
                     style={{ width: "224px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
                     onKeyDown={onEnterPress}
                     value={message}

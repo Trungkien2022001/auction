@@ -45,7 +45,9 @@ export const Chat = ({ socket }) => {
             })
             socket.current.on('receive-client-msg', params => {
                 if (params.user_id === clientId) {
-                    setData(prev => [...prev, { ...params, updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
+                    setData(prev => [...prev, { ...params, id: data[data.length-1].id+1,updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
+                    console.log(data)
+                    // getData()
                 }
                 getAllLastMsg()
                 // setData(prev => [...prev, {...params}])
@@ -100,7 +102,7 @@ export const Chat = ({ socket }) => {
             socket.current.emit('admin-send-msg', msg)
             setData(prev =>
                 [...prev, {
-                    chat_id: data[0].chat_id,
+                    chat_id: data.length ? data[0].chat_id : 1,
                     user_id: clientId,
                     is_admin: 1,
                     content: message,

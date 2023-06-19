@@ -29,7 +29,7 @@ async function get(n) {
                 }
                 await request.getAsync(url, options)
             })
-        ).catch(e=>{
+        ).catch(e => {
             console.log(e)
         })
         console.log(`success ${s} request`)

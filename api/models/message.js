@@ -66,7 +66,7 @@ exports.getAllLastMessage = async params => {
         .select('c.*', 'u.avatar as user_avatar', 'u.name as username')
         .from('chat as c')
         .innerJoin('user as u', 'c.user1', 'u.id')
-        .orderBy('updated_at', 'desc')
+        .orderBy('c.updated_at', 'desc')
         .limit(params.limit || 200)
         .offset(params.offset || 0)
 

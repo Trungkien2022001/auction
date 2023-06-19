@@ -91,7 +91,7 @@ router.get('/auctions', validate(gets), async ctx => {
     }
 })
 
-router.get('/auction', validate(getDetail), async ctx => {
+router.post('/auction', validate(getDetail), async ctx => {
     debug('POST / get auction detail')
     try {
         const data = await auctionController.getAuctionDetail(ctx.request.query)

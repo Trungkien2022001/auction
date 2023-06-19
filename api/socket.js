@@ -63,13 +63,8 @@ socketIO.on('connection', socket => {
         if (user.id !== null) {
             addToRoom(user.id, socket.id, user.role_id === 'admin').then(
                 async id => {
-                    // console.log(id)
                     debug('authenticate', user.id, socket.id)
-                    socket.join(listOnlineUser[id].auctionRooms)
-                    if (listOnlineUser[id].chatRoom) {
-                        console.log(listOnlineUser[id])
-                        socket.join(listOnlineUser[id].chatRoom)
-                    }
+                    socket.join([...listOnlineUser[id].auctionRooms, ...listOnlineUser[id].chatRoom])
                 }
             )
         }
@@ -101,7 +96,6 @@ socketIO.on('connection', socket => {
         addToNewRoom(userId, socket.id, auctionId)
     })
     socket.on('client-send-msg', async data => {
-        console.log(data)
         let chatId = await insertMessage(data)
         if (!data.chat_id) {
             const index = listOnlineUser.findIndex(
@@ -115,28 +109,23 @@ socketIO.on('connection', socket => {
                     socket.to(ad.chatRoom).emit('new-user-join-chat', chatId)
                 }
             }
-            socket.emit('updateUI')
+            // socket.emit('updateUI')
         } else {
             chatId = data.chat_id
         }
         socket
             .to(`chat:${chatId}`)
             .emit('receive-client-msg', { ...data, chat_id: chatId })
-        socket.to(`chat:${chatId}`).emit('updateUI')
-        // socket.to(`chat:${chatId}`).emit('update-chat-id', {...data, chat_id: chatId})
-        // console.log(listOnlineUser)
     })
     socket.on('admin-send-msg', data => {
         insertMessage(data)
         socket.to(`chat:${data.chat_id}`).emit('receive-admin-msg', data)
-        //    console.log(data)
     })
     socket.on('admin-update-lst-user', params => {
         const ad = listOnlineUser.find(i => i.user === params.admin_id)
         if (ad) {
             ad.chatRoom.push(`chat:${params.chat_id}`)
         }
-        //    console.log(data)
     })
     socket.on('udpate-admin-read-msg', item => {
         messageModel.updateIsRead(item.user_id).then(() => {
@@ -313,7 +302,7 @@ async function addToRoom(userId, socketId, isAdmin) {
     if (index !== -1) {
         listOnlineUser[index].socket.push(socketId)
 
-        return index
+        // return index
     }
     const auctionIds = await auctionModel.getAllAuctionOfUser(userId)
     let chatRoom

@@ -28,12 +28,13 @@ export const Product = ({ socket }) => {
   const [successAuction, setSuccessAuction] = useState(false);
   const [reload, setReload] = useState(false);
   const [auctionBet, setAuctionBet] = useState(0);
-  const [data, setData] = useState(null);
-  const [auctionHistoryData, setAuctionHistoryData] = useState([]);
+  const [data, setData] = useState(JSON.parse(`{"product":{"id":43,"start_time":"2023-06-08T13:33:00.000Z","start_price":50000,"sell_price":61000,"seller_id":319,"auction_count":11,"auction_status":2,"is_finished_soon":0,"is_returned":0,"name":"Đồng hồ phiên bản Limited Xuất Xừ từ Ninh Bình, Thụy sĩ","branch":"Đồng Hồ Thụy Sĩ","key_word":"","title":"Chiếc đồng hồ có 1 0 2 trên thế giới được chế tác bằng uranium","description":"Về phương pháp định giá đất, trong phiên thảo luận dự án Luật Đất đai sửa đổi, nhiều đại biểu quan tâm đến vấn đề này. Bộ trưởng TN&MT cho biết, dự thảo luật lần này đưa ra 4 phương pháp định giá đất là: Phương pháp so sánh trực tiếp với giá thị trường, phương pháp chiết trừ, phương pháp thu nhập và phương pháp hệ số điều chỉnh.Tuỳ trường hợp cụ thể, UBND tỉnh, thành sẽ xác định phương pháp phù hợp để định giá đất. Các phương án lựa chọn bảo đảm công bằng, sát giá thị trường, đồng thời phòng chống tiêu cực, tham nhũng”, ông Đặng Quốc Khánh cho hay.Về chính sách tái định cư cho người dân mất đất, người đứng đầu ngành TN&MT cho biết, trong Luật Đất đai sửa đổi sẽ cố gắng xây dựng các điều khoản với nội dung đảm bảo cuộc sống bằng hoặc tốt hơn nơi ở cũ cho người mất đất. Việc này không chỉ là về cơ sở hạ tầng mà còn phải phù hợp với phong tục, tập quán, bản sắc văn hoá, tính cộng đồng. Do vậy, chính quyền địa phương phải tham khảo, đối thoại với nhân dân để quyết định nơi tái định cư phù hợp.“Chắc chắn là chúng ta phải xây dựng hạ tầng kỹ thuật, hạ tầng xã hội tốt hơn nơi ở cũ. Nhưng về lâu dài, chúng ta phải đảm bảo sinh kế cho người dân mất đất thông qua việc đào tạo việc làm cho thế hệ trẻ”, ông Đặng Quốc Khánh nói thêm.","status":"Chưa được dùng một lần nào hết","product_category":"Thời trang - Phụ kiện","time":43200,"images":[{"url":"http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/futl7eh7gfnvxctxyc2w.png"},{"url":"http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/ujfuku2dycfzec43kana.jpg"},{"url":"http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/futl7eh7gfnvxctxyc2w.png"},{"url":"http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/qhbznptmame1eiyptoe6.jpg"},{"url":"http://res.cloudinary.com/nguyenkien2022001/image/upload/v1686231083/upload/ujfuku2dycfzec43kana.jpg"}]},"seller_info":{"id":319,"name":"Nguyễn Trung Kiên","username":"trungkien2022001","email":"trungkien07yd@gmail.com","phone":"0989983025","role_id":"admin","avatar":"https://i.pinimg.com/564x/c6/e5/65/c6e56503cfdd87da299f72dc416023d4.jpg","birthday":"2001-02-19T17:00:00.000Z","address":"136 Nguyễn An Ninh, Hoàng Mai, Hà Nội","prestige":0,"is_verified":1,"is_blocked":0,"rating":0,"sell_failed_count_by_seller":0,"sell_failed_count_by_auctioneer":0,"sell_success_count":0,"buy_cancel_count_by_seller":0,"buy_cancel_count_by_auctioneer":0,"buy_success_count":0,"created_at":"2022-11-19T01:59:39.000Z","updated_at":"2023-05-22T15:15:40.000Z","del_flag":0}}`));
+  const [auctionHistoryData, setAuctionHistoryData] = useState(JSON.parse(`[{"id":331,"bet_time":"2023-06-10T03:29:24.000Z","bet_amount":61000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":330,"bet_time":"2023-06-10T02:23:22.000Z","bet_amount":60000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":329,"bet_time":"2023-06-10T02:23:10.000Z","bet_amount":59000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":328,"bet_time":"2023-06-10T02:21:19.000Z","bet_amount":58000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":327,"bet_time":"2023-06-10T02:20:27.000Z","bet_amount":57000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":326,"bet_time":"2023-06-10T02:20:00.000Z","bet_amount":56000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":325,"bet_time":"2023-06-10T02:19:37.000Z","bet_amount":55000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":324,"bet_time":"2023-06-10T02:19:29.000Z","bet_amount":54000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":323,"bet_time":"2023-06-10T02:19:17.000Z","bet_amount":53000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":322,"bet_time":"2023-06-10T02:18:05.000Z","bet_amount":52000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"},{"id":321,"bet_time":"2023-06-10T02:17:18.000Z","bet_amount":51000,"is_blocked":0,"auctioneer_name":"Phạm Thị Diệu Linh"}]`));
   const [bigImageIndex, setBigImageIndex] = useState(0)
   async function getData() {
-    let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
+    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
     if (result.status === 200) {
+   
       setData(result.data.data)
     }
     result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
@@ -268,15 +269,15 @@ export const Product = ({ socket }) => {
                 </div>
                 <div className="seller-history">
                   <div className="history history__all">
-                    <div className="history-count">{data.seller_info.auction_sale_all_count}</div>
+                    <div className="history-count">{data.seller_info.auction_sale_all_count|| 100}</div>
                     <div className="history-title ">Đã bán</div>
                   </div>
                   <div className="history  history__success">
-                    <div className="history-count">{data.seller_info.auction_sale_success_count}</div>
+                    <div className="history-count">{data.seller_info.auction_sale_success_count|| 100}</div>
                     <div className="history-title">Thành công</div>
                   </div>
                   <div className="history  history__failed">
-                    <div className="history-count">{data.seller_info.auction_sale_failed_count}</div>
+                    <div className="history-count">{data.seller_info.auction_sale_failed_count|| 100}</div>
                     <div className="history-title">Thất bại</div>
                   </div>
                 </div>

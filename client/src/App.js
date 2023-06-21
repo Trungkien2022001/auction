@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
 import { socketServer} from './context/socket';
 import { Products } from './pages/client/products/Products';
+import { Tutorial } from './pages/client/tutorial/Tutorial';
 
 function App() {
   const CustomToastWithLink = (metaData) => (
@@ -90,6 +91,7 @@ function App() {
           <Route path='/new-auction' element = {<NewProduct/>}/>
           <Route path='/login' element = {<Login/>}/>
           <Route path='/register' element = {<Register/>}/>
+          <Route path='/tutorial' element = {<Tutorial/>}/>
           <Route path='/*' element = {<NotFound/>}/>
         </Routes>
       </BrowserRouter>

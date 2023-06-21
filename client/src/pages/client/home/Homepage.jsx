@@ -215,9 +215,12 @@ export const Homepage = ({ socket }) => {
           </div>
 
           {/* Sản phẩm nổi bật */}
-          <div className="without-backend" style={{ fontSize: "22px", padding: "10px 30px", color: "red" , border: "1px solid red", borderRadius: "10px"}}>Hiện tại hệ thống server đang được bảo trì nên một vài tính năng không thể sủ dụng được. Xin lỗi bạn vì sự bất tiện này, trên đây là giao diện demo của chúng tôi, vui lòng xem  <Link to={'/tutorial'}>
-           Hướng dẫn sử dụng!
-          </Link></div>
+          <div className="without-backend" style={{ fontSize: "22px", padding: "10px 30px", color: "red", border: "1px solid red", borderRadius: "10px" }}>Hiện tại hệ thống server đang được bảo trì nên một vài tính năng không thể sủ dụng được. Xin lỗi bạn vì sự bất tiện này, trên đây là giao diện demo của chúng tôi, vui lòng xem  <Link to={'/tutorial'}>
+            Hướng dẫn sử dụng!{"                "}
+          </Link>
+            <Link to={'/Management'}>
+              Trang quản lý nè!
+            </Link></div>
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
@@ -388,6 +391,6 @@ export const Homepage = ({ socket }) => {
         </div>
       </div>
       <Footer />
-    </div>
+    </div >
   );
 };

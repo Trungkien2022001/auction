@@ -111,6 +111,11 @@ export const Login = () => {
             </div>
           </Link>
         </div>
+        <div>
+        <div style={{marginTop: "30px"}}>
+              Tài khoản demo: 1@gmail.com 123456
+            </div>
+        </div>
 
       </div>
       <Footer/>

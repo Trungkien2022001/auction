@@ -90,6 +90,7 @@ socketIO.on('connection', socket => {
                 auction_id: data.auction.product.id
             })
         }
+        socketIO.to(seller.socket).emit('updateUI')
     })
 
     socket.on('add-to-new-room', (auctionId, userId) => {

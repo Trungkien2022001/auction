@@ -61,8 +61,12 @@ function App() {
           position: toast.POSITION.BOTTOM_RIGHT
         })
     })
-    socket.current.on('notif-to-seller', ({auctionId})=>{
-        toast.info('sản phẩm của bạn có một đấu giá mới', {
+    socket.current.on('notif-to-seller', ({auction_id})=>{
+        toast.info(() => (
+          <div onClick={()=>{window.location.href=`/auction/${auction_id}`}}>
+            {`Sản phẩm của bạn có một đấu giá mới`}
+          </div>
+        ), {
           position: toast.POSITION.BOTTOM_RIGHT
         })
     })

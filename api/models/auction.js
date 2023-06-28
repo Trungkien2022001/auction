@@ -111,7 +111,7 @@ exports.getLatestAuction = async () => {
             .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.updated_at', 'desc')
-            .limit(4)
+            .limit(6)
             .offset(0)
 
         return result
@@ -132,7 +132,7 @@ exports.getFeaturedAuction = async () => {
             .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.auction_count', 'desc')
-            .limit(4)
+            .limit(6)
             .offset(0)
 
         return result
@@ -152,7 +152,7 @@ exports.getCheapAuction = async () => {
             .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.start_price', 'asc')
-            .limit(4)
+            .limit(6)
             .offset(0)
 
         return result
@@ -172,7 +172,7 @@ exports.getIncomingAuction = async () => {
             .where('a.status', 1)
             .whereNull('a.deleted_at')
             .orderBy('a.updated_at', 'desc')
-            .limit(4)
+            .limit(6)
             .offset(0)
 
         return result

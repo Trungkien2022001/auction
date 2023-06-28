@@ -24,8 +24,6 @@ router.post('/login', validate(loginSchema), async ctx => {
             success: false,
             message: `login failed: ${e.message}`
         }
-
-        throw e
     }
 })
 
@@ -42,8 +40,6 @@ router.post('/signup', validate(signupSchema), async ctx => {
             success: false,
             message: `cannot create user: ${e.message}`
         }
-
-        throw e
     }
 })
 

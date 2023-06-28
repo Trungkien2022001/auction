@@ -8,6 +8,10 @@ import "./Homepage.scss";
 import { Link } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import { Button, Divider, List, ListItem, ListItemText } from "@mui/material";
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import SellIcon from '@mui/icons-material/Sell';
 import Countdown, { zeroPad } from 'react-countdown'
 import { useEffect } from "react";
 import { get } from "../../../utils/customRequest";
@@ -17,7 +21,7 @@ import moment from "moment";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
-    {days} day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
+    {days}d {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
   </span>
 );;
 
@@ -29,7 +33,7 @@ export const Homepage = ({ socket }) => {
   const [check, setCheck] = useState(true)
   const [message, setMessage] = useState("");
   const [mess, setMess] = useState([]);
-  
+
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', async () => {
@@ -230,24 +234,35 @@ export const Homepage = ({ socket }) => {
                       <div className="productImg">
                         <img src={item.image} alt="Product_Image" />
                       </div>
-                      <div className="product-action">
-                        <div className="product-time">
-                          <Countdown
-                            onComplete={() => handleStop()}
-                            // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                            renderer={renderer}
-                          />
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
+                        <div className="product-time product-item">
+                          <div className="product-icon">
+                            <AccessTimeIcon />
+                          </div>
+                          <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
+                            <Countdown
+                              onComplete={() => handleStop()}
+                              // onStop={()=>handleStop()}
+                              date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
+                              renderer={renderer}
+                            />
+                          </div>
                         </div>
-                        <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
+                        <div className="product-vote product-item">
+                          <div className="product-icon">
+                            <EmojiPeopleIcon />
+                          </div>
+                          <div className="product-content" style={{ fontSize: "1.2rem" }}>
+                            {item.auction_count}
+                          </div>
+                        </div>
                       </div>
                       <div className="product-name">{item.name}</div>
-                      <div className="product-detail">{item.title}</div>
-                      <div className="product-price">
-                        Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                        <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                       </div>
-                      <div className="product-price">
-                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                        <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                       </div>
                     </div>
                   </Link>
@@ -268,28 +283,39 @@ export const Homepage = ({ socket }) => {
               {
                 data && data.latest && data.latest.map(item => (
                   <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                    <div className="product" key={item.id}>
+                    <div className="product">
                       <div className="productImg">
                         <img src={item.image} alt="Product_Image" />
                       </div>
-                      <div className="product-action">
-                        <div className="product-time">
-                          <Countdown
-                            onComplete={() => handleStop()}
-                            // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                            renderer={renderer}
-                          />
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
+                        <div className="product-time product-item">
+                          <div className="product-icon">
+                            <AccessTimeIcon />
+                          </div>
+                          <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
+                            <Countdown
+                              onComplete={() => handleStop()}
+                              // onStop={()=>handleStop()}
+                              date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
+                              renderer={renderer}
+                            />
+                          </div>
                         </div>
-                        <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
+                        <div className="product-vote product-item">
+                          <div className="product-icon">
+                            <EmojiPeopleIcon />
+                          </div>
+                          <div className="product-content" style={{ fontSize: "1.2rem" }}>
+                            {item.auction_count}
+                          </div>
+                        </div>
                       </div>
                       <div className="product-name">{item.name}</div>
-                      <div className="product-detail">{item.title}</div>
-                      <div className="product-price">
-                        Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                        <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                       </div>
-                      <div className="product-price">
-                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                        <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                       </div>
                     </div>
                   </Link>
@@ -310,28 +336,39 @@ export const Homepage = ({ socket }) => {
               {
                 data && data.cheap && data.cheap.map(item => (
                   <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                    <div className="product" key={item.id}>
+                    <div className="product">
                       <div className="productImg">
                         <img src={item.image} alt="Product_Image" />
                       </div>
-                      <div className="product-action">
-                        <div className="product-time">
-                          <Countdown
-                            onComplete={() => handleStop()}
-                            // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                            renderer={renderer}
-                          />
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
+                        <div className="product-time product-item">
+                          <div className="product-icon">
+                            <AccessTimeIcon />
+                          </div>
+                          <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
+                            <Countdown
+                              onComplete={() => handleStop()}
+                              // onStop={()=>handleStop()}
+                              date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
+                              renderer={renderer}
+                            />
+                          </div>
                         </div>
-                        <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
+                        <div className="product-vote product-item">
+                          <div className="product-icon">
+                            <EmojiPeopleIcon />
+                          </div>
+                          <div className="product-content" style={{ fontSize: "1.2rem" }}>
+                            {item.auction_count}
+                          </div>
+                        </div>
                       </div>
                       <div className="product-name">{item.name}</div>
-                      <div className="product-detail">{item.title}</div>
-                      <div className="product-price">
-                        Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                        <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                       </div>
-                      <div className="product-price">
-                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                        <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                       </div>
                     </div>
                   </Link>
@@ -352,31 +389,42 @@ export const Homepage = ({ socket }) => {
               {
                 data && data.incoming && data.incoming.map(item => (
                   <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                    <div className="product" key={item.id}>
-                      <div className="productImg">
-                        <img src={item.image} alt="Product_Image" />
-                      </div>
-                      <div className="product-action">
-                        <div className="product-time">
+                  <div className="product">
+                    <div className="productImg">
+                      <img src={item.image} alt="Product_Image" />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
+                      <div className="product-time product-item">
+                        <div className="product-icon">
+                          <AccessTimeIcon />
+                        </div>
+                        <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            date={moment(item.start_time)}
+                            date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
                             renderer={renderer}
                           />
                         </div>
-                        <div className="product-vote">{item.auction_count} Lượt đấu giá</div>
                       </div>
-                      <div className="product-name">{item.name}</div>
-                      <div className="product-detail">{item.title}</div>
-                      <div className="product-price">
-                        Khởi điểm: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                      </div>
-                      <div className="product-price">
-                        Giá hiện tại: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                      <div className="product-vote product-item">
+                        <div className="product-icon">
+                          <EmojiPeopleIcon />
+                        </div>
+                        <div className="product-content" style={{ fontSize: "1.2rem" }}>
+                          {item.auction_count}
+                        </div>
                       </div>
                     </div>
-                  </Link>
+                    <div className="product-name">{item.name}</div>
+                    <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                      <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                    </div>
+                    <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                      <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                    </div>
+                  </div>
+                </Link>
                 ))
                 || <></>
               }

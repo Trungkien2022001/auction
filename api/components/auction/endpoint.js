@@ -30,7 +30,7 @@ router.get('/auction-helper', async ctx => {
 })
 
 router.post(
-    '/auction',
+    '/new-auction',
     genericSecure,
     validate(create),
     checkPermission('auction'),
@@ -91,9 +91,10 @@ router.get('/auctions', validate(gets), async ctx => {
     }
 })
 
-router.get('/auction', validate(getDetail), async ctx => {
+router.post('/auction', validate(getDetail), async ctx => {
     debug('POST / get auction detail')
     try {
+        console.log('Hello')
         const data = await auctionController.getAuctionDetail(ctx.request.query)
         ctx.body = {
             success: true,

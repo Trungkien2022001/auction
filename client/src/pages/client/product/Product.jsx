@@ -34,7 +34,7 @@ export const Product = ({ socket }) => {
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
   const [bigImageIndex, setBigImageIndex] = useState(0)
   async function getData() {
-    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, currentUser)
+    let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, {},currentUser)
     if (result.status === 200) {
       setData(result.data.data)
     }
@@ -158,18 +158,29 @@ export const Product = ({ socket }) => {
   }
 
   function customDescription(str) {
-    str = str.replaceAll('\r', '')
+    // str = str.replaceAll('\r', '')
     let customStr
     let arr = str.split('\n')
     if (arr.length > 1) {
-      customStr = arr.map(i=>`<div>${i}</div>`)
+      customStr = arr.map(i=>{
+        if(i.replaceAll(' ', '') !== ''){
+          return `<div>${i}</div>`
+        }
+        return `<div style='opacity:0'>none-content</div>`
+      }).join('')
     } else {
       arr = str.split('. ')
       if (arr.length > 1) {
         str.split('. ')
-        customStr = arr.map(i => `<li>${i}</li>`)
+        customStr = arr.map(i =>
+          {
+            if(i.replaceAll(' ', '') !== ''){
+              return `<li>${i}</li>`
+            }
+            return `<li style='opacity:0'>none-content</li>`
+          }).join('')
       } else {
-        customStr = _.chunk(str.split(' '), 20).map(a => `<li>${a.join(' ')}</li>`)
+        customStr = _.chunk(str.split(' '), 20).map(a => `<li>${a.join(' ')}</li>`).join('')
       }
     }
     console.log(customStr)
@@ -191,7 +202,7 @@ export const Product = ({ socket }) => {
                 <div className='product__left'>
                   <div className="product-image">
                     <div className="product-image__wrapper">
-                      <img src={data.product.images[bigImageIndex].url} alt="" />
+                      <img src={data.product.images.length ? data.product.images[bigImageIndex].url : 'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227724992-stock-illustration-image-available-icon-flat-vector.jpg'} alt="" />
                     </div>
                   </div>
                   <div className="product-sub-image">

@@ -62,7 +62,7 @@ export const NewProduct = ({socket}) => {
             return
         }
         
-        let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction`, {
+        let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/new-auction`, {
             auction,
             product : {...product, images: imageList}
         }, currentUser)

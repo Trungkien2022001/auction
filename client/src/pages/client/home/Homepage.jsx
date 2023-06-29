@@ -83,14 +83,14 @@ export const Homepage = ({ socket }) => {
           user: currentUser.name,
           user_id: currentUser.id,
           isUpdatedLastMsg: true
-        } 
+        }
         setMess([{
-            chat_id: 1,
-            user_id: currentUser.id,
-            is_admin: 0,
-            content: message,
-            updated_at: new Date()
-          }])
+          chat_id: 1,
+          user_id: currentUser.id,
+          is_admin: 0,
+          content: message,
+          updated_at: new Date()
+        }])
       } else {
         msg = {
           is_admin: 0,
@@ -129,7 +129,7 @@ export const Homepage = ({ socket }) => {
   };
   return (
     <div>
-      <Header socket = {socket}/>
+      <Header socket={socket} />
       <div className="padding__main container">
         <div className='left-container'>
           <div className="head-m">Danh mục sản phẩm</div>
@@ -151,7 +151,7 @@ export const Homepage = ({ socket }) => {
         <div className='right-container'>
           <div className="chat">
             {check ?
-              <img
+              <img className="chat-icon"
                 onClick={() => setCheck(!check)}
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/512px-Facebook_Messenger_logo_2020.svg.png?20220118041828"
                 alt=""
@@ -217,7 +217,7 @@ export const Homepage = ({ socket }) => {
           <div className="new-auction-btn">
             <Link to={'/new-auction'}>
               <img
-                src="https://banner2.cleanpng.com/20180315/sdw/kisspng-plus-and-minus-signs-computer-icons-clip-art-plus-sign-5aaad8632b3888.9799936515211459551771.jpg"
+                src="https://media.istockphoto.com/id/1437225090/vi/vec-to/bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-pop-m%E1%BB%9Bi-s%E1%BA%A3n-ph%E1%BA%A9m-m%E1%BB%9Bi-khuy%E1%BA%BFn-m%C3%A3i-%C4%91%E1%BA%B7t-vect%C6%A1.jpg?s=2048x2048&w=is&k=20&c=Y16uTx7wkfTGLZzKYsRbogVMpzcU9k-LiTqA9euXYRQ="
                 alt=""
               />
             </Link>
@@ -396,42 +396,42 @@ export const Homepage = ({ socket }) => {
               {
                 data && data.incoming && data.incoming.map(item => (
                   <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                  <div className="product">
-                    <div className="productImg">
-                      <img src={item.image} alt="Product_Image" />
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
-                      <div className="product-time product-item">
-                        <div className="product-icon">
-                          <AccessTimeIcon />
+                    <div className="product">
+                      <div className="productImg">
+                        <img src={item.image} alt="Product_Image" />
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
+                        <div className="product-time product-item">
+                          <div className="product-icon">
+                            <AccessTimeIcon />
+                          </div>
+                          <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
+                            <Countdown
+                              onComplete={() => handleStop()}
+                              // onStop={()=>handleStop()}
+                              date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
+                              renderer={renderer}
+                            />
+                          </div>
                         </div>
-                        <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
-                          <Countdown
-                            onComplete={() => handleStop()}
-                            // onStop={()=>handleStop()}
-                            date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                            renderer={renderer}
-                          />
+                        <div className="product-vote product-item">
+                          <div className="product-icon">
+                            <EmojiPeopleIcon />
+                          </div>
+                          <div className="product-content" style={{ fontSize: "1.2rem" }}>
+                            {item.auction_count}
+                          </div>
                         </div>
                       </div>
-                      <div className="product-vote product-item">
-                        <div className="product-icon">
-                          <EmojiPeopleIcon />
-                        </div>
-                        <div className="product-content" style={{ fontSize: "1.2rem" }}>
-                          {item.auction_count}
-                        </div>
+                      <div className="product-name">{item.name}</div>
+                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                        <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                      </div>
+                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                        <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                       </div>
                     </div>
-                    <div className="product-name">{item.name}</div>
-                    <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                      <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                    </div>
-                    <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                      <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
-                    </div>
-                  </div>
-                </Link>
+                  </Link>
                 ))
                 || <></>
               }

@@ -121,7 +121,6 @@ export const Header = ({socket}) => {
   async function getData(id) {
     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/notification/${id}`, currentUser)
     if (result.status === 200) {
-      console.log(JSON.stringify(result.data.notification))
       setData(result.data.notification)
     }
 

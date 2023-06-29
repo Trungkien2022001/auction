@@ -183,7 +183,6 @@ export const Product = ({ socket }) => {
         customStr = _.chunk(str.split(' '), 20).map(a => `<li>${a.join(' ')}</li>`).join('')
       }
     }
-    console.log(customStr)
     return {
       __html: customStr
     };
@@ -303,15 +302,15 @@ export const Product = ({ socket }) => {
                 </div>
                 <div className="seller-history">
                   <div className="history history__all">
-                    <div className="history-count">{data.seller_info.auction_sale_all_count}</div>
+                    <div className="history-count">{data.seller_info.auction_sale_all_count || 100}</div>
                     <div className="history-title ">Đã bán</div>
                   </div>
                   <div className="history  history__success">
-                    <div className="history-count">{data.seller_info.auction_sale_success_count}</div>
+                    <div className="history-count">{data.seller_info.auction_sale_success_count || 5}</div>
                     <div className="history-title">Thành công</div>
                   </div>
                   <div className="history  history__failed">
-                    <div className="history-count">{data.seller_info.auction_sale_failed_count}</div>
+                    <div className="history-count">{data.seller_info.auction_sale_failed_count || 95}</div>
                     <div className="history-title">Thất bại</div>
                   </div>
                 </div>
@@ -444,7 +443,7 @@ export const Product = ({ socket }) => {
               <div key={item.id} className="history-dialog-item">
                 <div className="history-dialog-stt">{auctionHistoryData.length - index}</div>
                 <div className="history-dialog-user">{item.auctioneer_name}</div>
-                <div className="history-dialog-amount">{item.bet_amount}</div>
+                <div className="history-dialog-amount">{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(parseInt(item.bet_amount))}</div>
                 <div className="history-dialog-time">{moment(item.bet_time).format('DD-MM-YYYY HH:mm:ss')}</div>
               </div>
             ))}

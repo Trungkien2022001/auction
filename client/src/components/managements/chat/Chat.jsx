@@ -159,7 +159,7 @@ export const Chat = ({ socket }) => {
                                         <div className="content">
                                             {msg.content}
                                             <div className='time'>
-                                                {msg.updated_at}
+                                                {moment(msg.updated_at).format('DD/MM/YYYY HH:mm')}
                                             </div>
                                         </div>
                                         <div className="avatar">
@@ -174,7 +174,7 @@ export const Chat = ({ socket }) => {
                                         <div className="content">
                                             {msg.content}
                                             <div className='time'>
-                                                {msg.updated_at}
+                                                {moment(msg.updated_at).format('DD/MM/YYYY HH:mm')}
                                             </div>
                                         </div>
                                     </div>

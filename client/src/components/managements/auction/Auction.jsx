@@ -528,7 +528,7 @@ export const Auction = ({ currentUser, socket }) => {
                 <div key={item.id} className="history-dialog-item">
                   <div className="history-dialog-stt">{auctionHistoryData.length - index}</div>
                   <div className="history-dialog-user">{item.auctioneer_name}</div>
-                  <div className="history-dialog-amount">{item.bet_amount}</div>
+                  <div className="history-dialog-amount">{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(parseInt(item.bet_amount))}</div>
                   <div className="history-dialog-time">{moment(item.bet_time).format('DD-MM-YYYY HH:mm:ss')}</div>
                 </div>
               ))}

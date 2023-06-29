@@ -20,7 +20,7 @@ import { Button } from "@mui/material";
 import Swal from "sweetalert2";
 
 
-export const Login = () => {
+export const Login = ({socket}) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState("");
@@ -69,7 +69,7 @@ export const Login = () => {
 
   return (
     <div>
-      <Header></Header>
+      <Header socket = {socket}></Header>
       <div className="input-container">
         <div className="login-form">
           <div style={{marginLeft: '8px'}} className="login-input">

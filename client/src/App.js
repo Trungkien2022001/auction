@@ -94,10 +94,10 @@ function App() {
           <Route path='/user/:id' element = {<User socket = {socket}/>}/>
           <Route path='/auction/:id' element = {<Product socket = {socket}/>}/>
           <Route path='/new-auction' element = {<NewProduct socket = {socket}/>}/>
-          <Route path='/login' element = {<Login/>}/>
-          <Route path='/register' element = {<Register/>}/>
-          <Route path='/tutorial' element = {<Tutorial/>}/>
-          <Route path='/*' element = {<NotFound/>}/>
+          <Route path='/login' element = {<Login socket = {socket}/>}/>
+          <Route path='/register' element = {<Register socket = {socket}/>}/>
+          <Route path='/tutorial' element = {<Tutorial socket = {socket}/>}/>
+          <Route path='/*' element = {<NotFound socket = {socket}/>}/>
         </Routes>
       </BrowserRouter>
     </div>

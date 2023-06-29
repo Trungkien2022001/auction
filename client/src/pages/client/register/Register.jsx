@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 import { Footer } from "../../../components/footer/Footer";
 
 
-export const Register = () => {
+export const Register = ({socket}) => {
   const dispatch = useDispatch()
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
@@ -116,7 +116,7 @@ export const Register = () => {
 
   return (
     <div>
-      <Header />
+      <Header socket = {socket}/>
       <div className="register-container">
         <div className="register-container-back">
           <Link to={'../'} style={{ color: "black" }}>Quay lại trang chủ</Link>

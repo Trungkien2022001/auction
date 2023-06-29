@@ -3,11 +3,11 @@ import { Divider } from "@mui/material";
 import { Header } from "../../../components/header/Header";
 import "./Tutorial.scss";
 
-export const Tutorial = () => {
+export const Tutorial = ({socket}) => {
 
   return (
     <div>
-      <Header></Header>
+      <Header socket = {socket}></Header>
       <div className="tutorial" style={{margin: "90px 60px"}}>
         <div>
           <div className="header">

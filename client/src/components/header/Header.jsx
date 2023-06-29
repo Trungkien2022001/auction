@@ -111,12 +111,12 @@ export const Header = ({socket}) => {
   }, [currentUser.id])
 
   useEffect(() => {
-    if (socket.current) {
+    if (socket && socket.current) {
       socket.current.on('updateUI', async () => {
         await getData(currentUser.id)
       })
     }
-  }, [socket.current])
+  }, [socket])
 
   async function getData(id) {
     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/notification/${id}`, currentUser)

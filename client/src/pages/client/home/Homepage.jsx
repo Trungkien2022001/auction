@@ -83,7 +83,14 @@ export const Homepage = ({ socket }) => {
           user: currentUser.name,
           user_id: currentUser.id,
           isUpdatedLastMsg: true
-        }
+        } 
+        setMess([{
+            chat_id: 1,
+            user_id: currentUser.id,
+            is_admin: 0,
+            content: message,
+            updated_at: new Date()
+          }])
       } else {
         msg = {
           is_admin: 0,
@@ -113,7 +120,7 @@ export const Homepage = ({ socket }) => {
   };
 
   const handleChangePage = id => {
-    window.location.href = (`/product/${id}`)
+    window.location.href = (`/products/${id}`)
   }
 
   const style = {
@@ -122,7 +129,7 @@ export const Homepage = ({ socket }) => {
   };
   return (
     <div>
-      <Header />
+      <Header socket = {socket}/>
       <div className="padding__main container">
         <div className='left-container'>
           <div className="head-m">Danh mục sản phẩm</div>
@@ -223,7 +230,7 @@ export const Homepage = ({ socket }) => {
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
-              <Link to={'/product/2000'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm nổi bật</h2></Link>
+              <Link to={'/products/2000'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm nổi bật</h2></Link>
               <b></b>
             </div>
             <div className="product-wrapper">
@@ -276,7 +283,7 @@ export const Homepage = ({ socket }) => {
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
-              <Link to={'/product/1000'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm mới nhất</h2></Link>
+              <Link to={'/products/1000'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm mới nhất</h2></Link>
               <b></b>
             </div>
             <div className="product-wrapper">
@@ -329,7 +336,7 @@ export const Homepage = ({ socket }) => {
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
-              <Link to={'/product/3000'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm siêu rẻ</h2></Link>
+              <Link to={'/products/3000'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm siêu rẻ</h2></Link>
               <b></b>
             </div>
             <div className="product-wrapper">
@@ -382,7 +389,7 @@ export const Homepage = ({ socket }) => {
           <div className="product-part-wrapper">
             <div className="title-header">
               <b></b>
-              <Link to={'/product/4000'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm sắp đấu giá</h2></Link>
+              <Link to={'/products/4000'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm sắp đấu giá</h2></Link>
               <b></b>
             </div>
             <div className="product-wrapper">

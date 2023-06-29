@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const debug = require('debug')('auction:model:notification')
 const { knex } = require('../connectors')
 
@@ -40,6 +41,39 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                     }
                 })
                 // )
+                break
+            case 9:
+                const auction = await knex('auction')
+                    .first()
+                    .where('id', auctionId)
+                let userId = 319 // default admin
+                if (auction) {
+                    userId = auction.seller_id
+                }
+                const exist = await knex('notification')
+                    .select()
+                    .where({
+                        user_id: userId,
+                        auction_id: auctionId,
+                        type: 9
+                    })
+                if (exist.length) {
+                    await knex('notification')
+                        .update({
+                            action_user_id: actionUser
+                        })
+                        .where({
+                            user_id: userId,
+                            auction_id: auctionId
+                        })
+                } else {
+                    await knex('notification').insert({
+                        user_id: userId,
+                        auction_id: auctionId,
+                        action_user_id: actionUser,
+                        type: 9
+                    })
+                }
                 break
 
             default:

@@ -119,7 +119,7 @@ export const Products = ({ socket }) => {
   };
   return (
     <div>
-      <Header />
+      <Header socket = {socket}/>
       <div className="padding__products product-container">
         <div className="chat">
           <img

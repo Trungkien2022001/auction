@@ -112,7 +112,7 @@
         flex-wrap: wrap;
         transition: opacity 2s linear;
         .product {
-          background-color: #83d0c9;
+          background-color: cyan;
           box-shadow: 10px 5px 10px #999;
           border-radius: 10px;
           cursor: pointer;
@@ -121,7 +121,7 @@
           min-width: 150px;
           height: 315px;
           position: relative;
-          margin: 20px 20px;
+          margin: 20px 15px;
           .productImg {
             img {
               width: 100%;

@@ -14,7 +14,7 @@ import Swal from 'sweetalert2'
 import moment from 'moment'
 
 
-export const NewProduct = () => {
+export const NewProduct = ({socket}) => {
 
     const currentUser = useSelector((state) => state.user);
     const inputRef = useRef()
@@ -110,7 +110,7 @@ export const NewProduct = () => {
     }
     return (
         <div>
-            <Header />
+            <Header socket = {socket}/>
             <div className="new-container">
                 <div className="new-container-header">
                     Thêm một phiên đấu giá mới

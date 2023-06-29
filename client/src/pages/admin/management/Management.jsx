@@ -12,7 +12,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookIcon from '@mui/icons-material/Book';
-import QuizIcon from '@mui/icons-material/Quiz';
 
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -41,22 +40,52 @@ import { useSelector } from 'react-redux';
 import { User } from '../../../components/managements/user/User';
 import { Chat } from '../../../components/managements/chat/Chat';
 import { Chart } from '../../../components/managements/chart/Chart';
+import { useLocation } from 'react-router-dom';
 
 const drawerWidth = 250;
 
 
-export const Management = ({ page = 1, socket }) => {
+export const Management = ({socket }) => {
   const themes = THEME
   const currentUser = useSelector((state) => state.user);
+  const location = useLocation();
+  let type = location.pathname.split('/')[2]
 
   const [selectedTheme, setSelectedTheme] = useState(themes[14]);
-  const [currentPage, setCurrentPage] = useState(page)
+  const [currentPage, setCurrentPage] = useState(1)
   const [mobileOpen, setMobileOpen] = useState(false);
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
   const [themeOpen, setThemeOpen] = useState(false);
   const [englishNavOpen, setEnglishNavOpen] = useState(false);
+
+  const handleChangePage = (t) => {
+    console.log(t)
+    switch (t) {
+      case 'auction':
+        window.location.href=`./auction`
+        break;
+      case 'dashboard':
+        window.location.href=`./dashboard`
+        break;
+    
+      case 'user':
+        window.location.href=`./user`
+        break;
+    
+      case 'chat':
+        window.location.href=`./chat`
+        break;
+    
+      case 'action-log':
+        window.location.href=`./action-log`
+        break;
+    
+      default:
+        break;
+    }
+  }
 
   const handleClickOpenTheme = () => {
     setThemeOpen(true);
@@ -130,8 +159,8 @@ export const Management = ({ page = 1, socket }) => {
         </div>
         <Divider />
         <ListItemButton
-          onClick={() => setCurrentPage(1)}
-          sx={currentPage === 1 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          onClick={() => handleChangePage('dashboard')}
+          sx={type==='dashboard' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <DashboardIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -139,8 +168,8 @@ export const Management = ({ page = 1, socket }) => {
           <ListItemText primary="Dashboard" />
         </ListItemButton>
         <ListItemButton
-          onClick={() => setCurrentPage(2)}
-          sx={currentPage === 2 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          onClick={() => handleChangePage('auction')}
+          sx={type==='auction' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -149,8 +178,8 @@ export const Management = ({ page = 1, socket }) => {
         </ListItemButton>
 
         <ListItemButton
-          onClick={() => setCurrentPage(3)}
-          sx={currentPage === 3 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          onClick={() => handleChangePage('user')}
+          sx={type==='user' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -158,8 +187,8 @@ export const Management = ({ page = 1, socket }) => {
           <ListItemText primary="User" />
         </ListItemButton>
         <ListItemButton
-          onClick={() => setCurrentPage(4)}
-          sx={currentPage === 4 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          onClick={() => handleChangePage('chat')}
+          sx={type==='chat' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -167,8 +196,8 @@ export const Management = ({ page = 1, socket }) => {
           <ListItemText primary="Chat" />
         </ListItemButton>
         <ListItemButton
-          onClick={() => setCurrentPage(5)}
-          sx={currentPage === 5 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          onClick={() => handleChangePage('action-log')}
+          sx={type==='action-log' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -176,7 +205,7 @@ export const Management = ({ page = 1, socket }) => {
           <ListItemText primary="Action Log" />
         </ListItemButton>
         <ListItemButton
-          onClick={() => setCurrentPage(6)}
+          onClick={() => handleChangePage(6)}
           sx={currentPage === 6 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
@@ -201,60 +230,17 @@ export const Management = ({ page = 1, socket }) => {
             </ListItemButton>
           </List>
           <List component="div" disablePadding sx={currentPage === 11 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-            <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(11)}>
+            <ListItemButton sx={{ pl: 4 }} onClick={() => handleChangePage(11)}>
               <ListItemIcon>
                 <BookmarkIcon sx={{ color: `${selectedTheme.textColor}` }} />
               </ListItemIcon>
               <ListItemText primary="Anh Viet Dictionary" />
             </ListItemButton>
           </List>
-          <List component="div" disablePadding sx={currentPage === 12 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-            <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(12)}>
-              <ListItemIcon>
-                <BookmarkIcon sx={{ color: `${selectedTheme.textColor}` }} />
-              </ListItemIcon>
-              <ListItemText primary="Viet Anh Dictionary" />
-            </ListItemButton>
-          </List>
-
-          <List component="div" disablePadding sx={currentPage === 13 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-            <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(13)}>
-              <ListItemIcon>
-                <BookmarkIcon sx={{ color: `${selectedTheme.textColor}` }} />
-              </ListItemIcon>
-              <ListItemText primary="Viet Anh Bonus" />
-            </ListItemButton>
-          </List>
-
-          <List component="div" disablePadding sx={currentPage === 21 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-            <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(21)}>
-              <ListItemIcon>
-                <QuizIcon sx={{ color: `${selectedTheme.textColor}` }} />
-              </ListItemIcon>
-              {/* <ListItemText primary="Test" onClick={() => window.location.href = './english'} /> */}
-              <ListItemText primary="Test" />
-            </ListItemButton>
-          </List>
-          <List component="div" disablePadding sx={currentPage === 22 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-            <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(22)}>
-              <ListItemIcon>
-                <QuizIcon sx={{ color: `${selectedTheme.textColor}` }} />
-              </ListItemIcon>
-              <ListItemText primary="Dictionary Test" />
-            </ListItemButton>
-          </List>
-          <List component="div" disablePadding sx={currentPage === 23 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : { bgcolor: `${selectedTheme.subItemColor}` }}>
-            <ListItemButton sx={{ pl: 4 }} onClick={() => setCurrentPage(23)}>
-              <ListItemIcon>
-                <QuizIcon sx={{ color: `${selectedTheme.textColor}` }} />
-              </ListItemIcon>
-              <ListItemText primary="Fill Test" />
-            </ListItemButton>
-          </List>
         </Collapse>
 
         <ListItemButton
-          onClick={() => setCurrentPage(20)}
+          onClick={() => handleChangePage(20)}
           sx={currentPage === 20 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
@@ -270,7 +256,7 @@ export const Management = ({ page = 1, socket }) => {
           <ListItemText primary="Admin setting" />
         </ListItemButton> */}
 
-        <ListItemButton onClick={() => window.location.href = './'}>
+        <ListItemButton onClick={() => window.location.href = '/'}>
           <ListItemIcon>
             <HomeIcon sx={{ color: `${selectedTheme.textColor}` }} />
           </ListItemIcon>
@@ -348,11 +334,11 @@ export const Management = ({ page = 1, socket }) => {
       >
 
         <div className='user-info-item'>
-          {currentPage === 1 ? <Chart currentUser={currentUser} socket={socket} /> : <></>}
-          {currentPage === 2 ? <Auction currentUser={currentUser} socket={socket} /> : <></>}
-          {currentPage === 3 ? <User currentUser={currentUser} socket={socket} /> : <></>}
-          {currentPage === 5 ? <ActionLog currentUser={currentUser} socket={socket} /> : <></>}
-          {currentPage === 4 ? <Chat currentUser={currentUser} socket={socket} /> : <></>}
+          {type === 'dashboard' || !type ? <Chart currentUser={currentUser} socket={socket} /> : <></>}
+          {type === 'auction' ? <Auction currentUser={currentUser} socket={socket} /> : <></>}
+          {type === 'user' ? <User currentUser={currentUser} socket={socket} /> : <></>}
+          {type === 'action-log' ? <ActionLog currentUser={currentUser} socket={socket} /> : <></>}
+          {type === 'chat' ? <Chat currentUser={currentUser} socket={socket} /> : <></>}
         </div>
       </Box>
       <SimpleDialog

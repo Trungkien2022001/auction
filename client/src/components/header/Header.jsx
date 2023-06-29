@@ -83,7 +83,7 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
   border: `2px solid ${theme.palette.background.paper}`,
 }));
 
-export const Header = () => {
+export const Header = ({socket}) => {
   const dispatch = useDispatch()
   const currentUser = useSelector(state => state.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -110,9 +110,18 @@ export const Header = () => {
     }
   }, [currentUser.id])
 
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on('updateUI', async () => {
+        await getData(currentUser.id)
+      })
+    }
+  }, [socket.current])
+
   async function getData(id) {
     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/notification/${id}`, currentUser)
     if (result.status === 200) {
+      console.log(JSON.stringify(result.data.notification))
       setData(result.data.notification)
     }
 
@@ -184,7 +193,7 @@ export const Header = () => {
     >
       <MenuItem onClick={() => handleMenuClose('profile')}>Profile</MenuItem>
       <MenuItem onClick={() => handleMenuClose('')}>
-        <Link style={{ textDecoration: "none", color: "black" }} to={"/management"}>
+        <Link style={{ textDecoration: "none", color: "black" }} to={"/management/dashboard"}>
           Management
         </Link>
       </MenuItem>
@@ -386,6 +395,53 @@ export const Header = () => {
                       </div>
                     )
                     break;
+                  case 8:
+                    return (
+                      <div className='notification-item'>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://www.citypng.com/public/uploads/preview/png-info-information-round-red-icon-symbol-11640517577hdkfkc5pnj.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>From Admin</span> Chả có ai đấu giá sản phẩm của bạn hết. vui lòng đăng chi tiết thông tin của sản phẩm hoặc giảm giá đi nhé hehehe!
+                        </div>
+                      </div>
+                    )
+                    break;
+                    case 9:
+                    return (
+                      <div key={item.id} className='notification-item' onClick={() => handleGotoAuction(item.auction_id)}>
+                        <div className='notification-item-avatar'>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src='https://cdn-icons-png.flaticon.com/512/7616/7616550.png' />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src={item.action_user_avatar} />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                          <span style={{ fontWeight: 'bold' }}>{item.action_username}</span> đã đấu giá một sản phẩm của bạn!!!
+                        </div>
+                      </div>
+                    )
+                    break;
 
                   default:
                     break;
@@ -521,7 +577,7 @@ export const Header = () => {
     >
       <MenuItem>
         <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
+          <Badge badgeContent={0} color="error">
             <MailIcon />
           </Badge>
         </IconButton>
@@ -533,7 +589,7 @@ export const Header = () => {
           aria-label="show 17 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={17} color="error">
+          <Badge badgeContent={data.length} color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>
@@ -578,13 +634,8 @@ export const Header = () => {
             }}
           >
             <MenuItem onClick={handleCloseMenu}>
-              <Link style={{ textDecoration: "none", color: "black" }} to={"/management"}>
+              <Link style={{ textDecoration: "none", color: "black" }} to={"/management/dashboard"}>
                 Management
-              </Link>
-            </MenuItem>
-            <MenuItem onClick={handleCloseMenu}>
-              <Link style={{ textDecoration: "none", color: "black" }} to={"/english"}>
-                English Test
               </Link>
             </MenuItem>
             <MenuItem onClick={handleCloseMenu}>Feature under development</MenuItem>
@@ -610,9 +661,9 @@ export const Header = () => {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }}>
-            <TargetTextWrapper>
+            <TargetTextWrapper style={{fontSize: "22px"}}>
               {/* trang này không tồn tại, trang này không tồn tại trang này không tồn tại, trang này không tồn tại, trang này không tồn tại, trang này không tồn */}
-              Trang web đấu giá hàng đầu Việt Nam, bạn cần mua, chúng tôi có, hahaha
+              Trang web đấu giá hàng đầu Việt Nam, thuận mua vừa bán hehehe (^__^)
             </TargetTextWrapper>
           </Box>
           <Box sx={{ display: "flex" }}>
@@ -622,12 +673,12 @@ export const Header = () => {
               color="inherit"
               onClick={handleNotificationMenuOpen}
             >
-              <Badge badgeContent={17} color="error" >
+              <Badge badgeContent={data.length} color="error" >
                 <NotificationsIcon />
               </Badge >
             </IconButton>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={0} color="error">
                 <MailIcon />
               </Badge>
             </IconButton>

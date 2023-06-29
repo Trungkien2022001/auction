@@ -180,7 +180,7 @@ export const Product = ({ socket }) => {
 
   return (
     <div>
-      <Header />
+      <Header socket = {socket}/>
       <div className="padding__product product-container">
         <div className="product-header">
         </div>

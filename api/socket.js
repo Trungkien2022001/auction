@@ -64,7 +64,10 @@ socketIO.on('connection', socket => {
             addToRoom(user.id, socket.id, user.role_id === 'admin').then(
                 async id => {
                     debug('authenticate', user.id, socket.id)
-                    socket.join([...listOnlineUser[id].auctionRooms, ...listOnlineUser[id].chatRoom])
+                    socket.join([
+                        ...listOnlineUser[id].auctionRooms,
+                        ...listOnlineUser[id].chatRoom
+                    ])
                 }
             )
         }
@@ -110,7 +113,7 @@ socketIO.on('connection', socket => {
                     socket.to(ad.chatRoom).emit('new-user-join-chat', chatId)
                 }
             }
-            // socket.emit('updateUI')
+            socket.to(`chat:${chatId}`).emit('updateUI')
         } else {
             chatId = data.chat_id
         }
@@ -295,7 +298,12 @@ async function handleRaise(data) {
         auction.product.id,
         userIds
     )
-    // }
+    await notificationModel.createNotification(
+        9,
+        user.id,
+        auction.product.id,
+        userIds
+    )
 }
 
 async function addToRoom(userId, socketId, isAdmin) {

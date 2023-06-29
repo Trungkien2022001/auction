@@ -105,7 +105,7 @@ export const User = ({ socket }) => {
   };
   return (
     <div>
-      <Header />
+      <Header socket = {socket}/>
       <div className='user-info-container'>
         <div onClick={() => handleDrawerToggle()} className='user-info-sidebar-open'>
           <KeyboardDoubleArrowRightIcon />

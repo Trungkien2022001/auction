@@ -26,7 +26,7 @@ const renderer = ({ days, hours, minutes, seconds }) => (
 );;
 
 export const Homepage = ({ socket }) => {
-  const messageRef = useRef(null);
+  const messageRef = useRef();
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState({})
   const [productCategory, setProductCategory] = useState([]);

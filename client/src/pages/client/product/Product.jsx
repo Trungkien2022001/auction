@@ -34,7 +34,7 @@ export const Product = ({ socket }) => {
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
   const [bigImageIndex, setBigImageIndex] = useState(0)
   async function getData() {
-    let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, {},currentUser)
+    let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, {}, currentUser)
     if (result.status === 200) {
       setData(result.data.data)
     }
@@ -71,13 +71,13 @@ export const Product = ({ socket }) => {
 
   const onEnterWork = (e) => {
     if (e.keyCode === 13 && e.shiftKey === false) {
+      setOpenAuctionDialog(false);
       handleSubmitAuction()
     }
   }
 
   const handleSubmitAuction = async () => {
     authenticate(currentUser, Swal)
-    setOpenAuctionDialog(false);
     if (data.product.sell_price > auctionBet) {
       Swal.fire(
         'Vui lòng đặt mức đấu giá lớn hơn?',
@@ -111,6 +111,7 @@ export const Product = ({ socket }) => {
           }
         })
       }
+      setOpenAuctionDialog(false);
       Swal.fire({
         icon: 'success',
         title: 'Raise thành công',
@@ -128,6 +129,7 @@ export const Product = ({ socket }) => {
         setReload(!reload)
       })
     } else {
+      setOpenAuctionDialog(false);
       Swal.fire({
         icon: 'error',
         title: 'Đã xảy ra lỗi',
@@ -162,8 +164,8 @@ export const Product = ({ socket }) => {
     let customStr
     let arr = str.split('\n')
     if (arr.length > 1) {
-      customStr = arr.map(i=>{
-        if(i.replaceAll(' ', '') !== ''){
+      customStr = arr.map(i => {
+        if (i.replaceAll(' ', '') !== '') {
           return `<div>${i}</div>`
         }
         return `<div style='opacity:0'>none-content</div>`
@@ -172,13 +174,12 @@ export const Product = ({ socket }) => {
       arr = str.split('. ')
       if (arr.length > 1) {
         str.split('. ')
-        customStr = arr.map(i =>
-          {
-            if(i.replaceAll(' ', '') !== ''){
-              return `<li>${i}</li>`
-            }
-            return `<li style='opacity:0'>none-content</li>`
-          }).join('')
+        customStr = arr.map(i => {
+          if (i.replaceAll(' ', '') !== '') {
+            return `<li>${i}</li>`
+          }
+          return `<li style='opacity:0'>none-content</li>`
+        }).join('')
       } else {
         customStr = _.chunk(str.split(' '), 20).map(a => `<li>${a.join(' ')}</li>`).join('')
       }
@@ -190,7 +191,7 @@ export const Product = ({ socket }) => {
 
   return (
     <div>
-      <Header socket = {socket}/>
+      <Header socket={socket} />
       <div className="padding__product product-container">
         <div className="product-header">
         </div>

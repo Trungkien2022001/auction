@@ -178,43 +178,43 @@ export const Chart = ({ currentUser, socket }) => {
         </div>
       </div>
       <div className="filter">
-              <b style={{paddingLeft:"30px"}}>Refresh After:</b>{"        "} 
-              <Select
-                variant="standard"
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={timeUpdate}
-                style={{ width: '120px', textAlign: "center"}}
-                onChange={(e) => setTimeUpdate(e.target.value)}
-              >
-                <MenuItem value={1}>Realtime</MenuItem>
-                <MenuItem value={3}>3 Giây</MenuItem>
-                <MenuItem value={5}>5 Giây</MenuItem>
-                <MenuItem value={10}>10 Giây</MenuItem>
-                <MenuItem value={30}>30 Giây</MenuItem>
-                <MenuItem value={3600}>None</MenuItem>
-              </Select>
-            </div>
+        <b style={{ paddingLeft: "30px" }}>Refresh After:</b>{"        "}
+        <Select
+          variant="standard"
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={timeUpdate}
+          style={{ width: '120px', textAlign: "center" }}
+          onChange={(e) => setTimeUpdate(e.target.value)}
+        >
+          <MenuItem value={1}>Realtime</MenuItem>
+          <MenuItem value={3}>3 Giây</MenuItem>
+          <MenuItem value={5}>5 Giây</MenuItem>
+          <MenuItem value={10}>10 Giây</MenuItem>
+          <MenuItem value={30}>30 Giây</MenuItem>
+          <MenuItem value={3600}>None</MenuItem>
+        </Select>
+      </div>
       <div className="chart-item">
         <div className="header">
           <div className="content">Số lượng request</div>
-            <div className="filter">
-              <InputLabel id="select-label">Số request</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={requestLimit}
-                style={{ width: '120px' }}
-                onChange={(e) => setRequestLimit(e.target.value)}
-              >
-                <MenuItem value={10}>10</MenuItem>
-                <MenuItem value={20}>20</MenuItem>
-                <MenuItem value={50}>50</MenuItem>
-                <MenuItem value={100}>100</MenuItem>
-                <MenuItem value={200}>200</MenuItem>
-                <MenuItem value={500}>500</MenuItem>
-              </Select>
-            </div>
+          <div className="filter">
+            <InputLabel id="select-label">Số request</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={requestLimit}
+              style={{ width: '120px' }}
+              onChange={(e) => setRequestLimit(e.target.value)}
+            >
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+              <MenuItem value={100}>100</MenuItem>
+              <MenuItem value={200}>200</MenuItem>
+              <MenuItem value={500}>500</MenuItem>
+            </Select>
+          </div>
         </div>
         <ResponsiveContainer className="" height={500}>
           <LineChart
@@ -234,28 +234,28 @@ export const Chart = ({ currentUser, socket }) => {
       <div className="chart-item">
         <div className="header">
           <div className="content">Doanh thu</div>
-            <div className="filter">
-              <InputLabel id="select-label">Lọc theo</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={moneyType}
-                style={{ width: '120px' }}
-                onChange={(e) => setMoneyType(e.target.value)}
-              >
-                <MenuItem value={'minute'}>Phút</MenuItem>
-                <MenuItem value={'hour'}>Giờ</MenuItem>
-                <MenuItem value={'day'}>Ngày</MenuItem>
-                <MenuItem value={'month'}>Tháng</MenuItem>
-              </Select>
-            </div>
+          <div className="filter">
+            <InputLabel id="select-label">Lọc theo</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={moneyType}
+              style={{ width: '120px' }}
+              onChange={(e) => setMoneyType(e.target.value)}
+            >
+              <MenuItem value={'minute'}>Phút</MenuItem>
+              <MenuItem value={'hour'}>Giờ</MenuItem>
+              <MenuItem value={'day'}>Ngày</MenuItem>
+              <MenuItem value={'month'}>Tháng</MenuItem>
+            </Select>
+          </div>
         </div>
         <ResponsiveContainer className="" height={500}>
           <LineChart
             height={500}
             data={money}
             transform={'none'}
-            margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+            margin={{ top: 5, right: 30, left: 75, bottom: 5 }}
           >
             <XAxis dataKey="created_at" tick={CustomizedAxisTick} />
             <YAxis tickFormatter={numberWithCommas} />

@@ -14,7 +14,7 @@ import Swal from 'sweetalert2'
 import moment from 'moment'
 
 
-export const NewProduct = () => {
+export const NewProduct = ({socket}) => {
 
     const currentUser = useSelector((state) => state.user);
     const inputRef = useRef()
@@ -62,7 +62,7 @@ export const NewProduct = () => {
             return
         }
         
-        let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction`, {
+        let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/new-auction`, {
             auction,
             product : {...product, images: imageList}
         }, currentUser)
@@ -110,7 +110,7 @@ export const NewProduct = () => {
     }
     return (
         <div>
-            <Header />
+            <Header socket = {socket}/>
             <div className="new-container">
                 <div className="new-container-header">
                     Thêm một phiên đấu giá mới

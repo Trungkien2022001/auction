@@ -11,8 +11,8 @@ async function get(n) {
         arr.push(i)
     }
     const url = s1
-        ? 'https://22c6-3-121-151-64.eu.ngrok.io/auction?id=1'
-        : 'https://22c6-3-121-151-64.eu.ngrok.io/health'
+        ? 'http://localhost:3030/auction?id=1'
+        : 'http://localhost:3030/health'
     while (true) {
         await Promise.all(
             arr.map(async () => {

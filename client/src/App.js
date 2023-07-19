@@ -61,8 +61,12 @@ function App() {
           position: toast.POSITION.BOTTOM_RIGHT
         })
     })
-    socket.current.on('notif-to-seller', ({auctionId})=>{
-        toast.info('sản phẩm của bạn có một đấu giá mới', {
+    socket.current.on('notif-to-seller', ({auction_id})=>{
+        toast.info(() => (
+          <div onClick={()=>{window.location.href=`/auction/${auction_id}`}}>
+            {`Sản phẩm của bạn có một đấu giá mới`}
+          </div>
+        ), {
           position: toast.POSITION.BOTTOM_RIGHT
         })
     })
@@ -83,16 +87,17 @@ function App() {
         <Routes>
           <Route path='/' element = {<Homepage socket = {socket}/>}/>
           <Route path='/test' element = {<Test/>}/>
-          <Route path='/product/:sort' element = {<Products socket = {socket}/>}/>
-          <Route path='/product' element = {<Products socket = {socket}/>}/>
+          <Route path='/products/:sort' element = {<Products socket = {socket}/>}/>
+          <Route path='/products' element = {<Products socket = {socket}/>}/>
           <Route path='/management' element = {<Management socket = {socket}/>}/>
+          <Route path='/management/:type' element = {<Management socket = {socket}/>}/>
           <Route path='/user/:id' element = {<User socket = {socket}/>}/>
           <Route path='/auction/:id' element = {<Product socket = {socket}/>}/>
-          <Route path='/new-auction' element = {<NewProduct/>}/>
-          <Route path='/login' element = {<Login/>}/>
-          <Route path='/register' element = {<Register/>}/>
-          <Route path='/tutorial' element = {<Tutorial/>}/>
-          <Route path='/*' element = {<NotFound/>}/>
+          <Route path='/new-auction' element = {<NewProduct socket = {socket}/>}/>
+          <Route path='/login' element = {<Login socket = {socket}/>}/>
+          <Route path='/register' element = {<Register socket = {socket}/>}/>
+          <Route path='/tutorial' element = {<Tutorial socket = {socket}/>}/>
+          <Route path='/*' element = {<NotFound socket = {socket}/>}/>
         </Routes>
       </BrowserRouter>
     </div>

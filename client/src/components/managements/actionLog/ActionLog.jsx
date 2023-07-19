@@ -25,7 +25,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 // import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 
 import { visuallyHidden } from '@mui/utils';
-import {  MenuItem, Select, TextField } from '@mui/material';
+import { MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
@@ -71,55 +71,46 @@ const headCells = [
   },
   {
     id: 'mothod',
-    numeric: true,
     disablePadding: false,
     label: 'Method',
   },
   {
     id: 'status',
-    numeric: true,
     disablePadding: false,
     label: 'Status',
   },
   {
     id: 'path',
-    numeric: true,
     disablePadding: false,
     label: 'Path',
   },
   {
     id: 'user',
-    numeric: true,
     disablePadding: false,
     label: 'User',
   },
   {
     id: 'client_ip',
-    numeric: true,
     disablePadding: false,
     label: 'Client IP',
   },
   {
     id: 'request',
-    numeric: true,
     disablePadding: false,
     label: 'Request',
   },
   {
     id: 'response',
-    numeric: true,
     disablePadding: false,
     label: 'Response',
   },
   {
     id: 'error',
-    numeric: true,
     disablePadding: false,
     label: 'Error',
   },
   {
     id: 'created_at',
-    numeric: true,
     disablePadding: false,
     label: 'Created At',
   },
@@ -331,7 +322,7 @@ export const ActionLog = ({ currentUser, socket }) => {
                           <TableCell align="center">{row.status}</TableCell>
                           <TableCell align="center" className='small-cell'>{row.path}</TableCell>
                           <TableCell align="center" className='small-cell'>{row.user}</TableCell>
-                          <TableCell align="center">{row.client_ip}</TableCell>
+                          <TableCell align="center" className='small-cell'>{row.client_ip}</TableCell>
                           <TableCell align="center" className='big-cell1'>{row.request}</TableCell>
                           <TableCell align="center" className='big-cell'>{row.response}</TableCell>
                           <TableCell align="center" className='big-cell1'>{row.error}</TableCell>

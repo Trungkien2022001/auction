@@ -16,7 +16,6 @@ export const Chat = ({ socket }) => {
 
     async function getData() {
         if (clientId) {
-
             const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
             if (result.status === 200) {
                 setData(result.data.body)
@@ -41,16 +40,14 @@ export const Chat = ({ socket }) => {
     useEffect(() => {
         if (socket.current) {
             socket.current.on('updateUI', () => {
-                // getData()
+                getData()
+                getAllLastMsg()
             })
             socket.current.on('receive-client-msg', params => {
-                if (params.user_id === clientId) {
-                    setData(prev => [...prev, { ...params, id: data[data.length-1].id+1,updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
-                    console.log(data)
-                    // getData()
+                if (params.user_id === clientId || !clientId) {
+                    setData(prev => [...prev, { ...params, id: data[data.length-1]?.id+1,updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
                 }
                 getAllLastMsg()
-                // setData(prev => [...prev, {...params}])
             })
             socket.current.on('new-user-join-chat', async chatId => {
                 await getAllLastMsg()
@@ -162,7 +159,7 @@ export const Chat = ({ socket }) => {
                                         <div className="content">
                                             {msg.content}
                                             <div className='time'>
-                                                {msg.updated_at}
+                                                {moment(msg.updated_at).format('DD/MM/YYYY HH:mm')}
                                             </div>
                                         </div>
                                         <div className="avatar">
@@ -177,7 +174,7 @@ export const Chat = ({ socket }) => {
                                         <div className="content">
                                             {msg.content}
                                             <div className='time'>
-                                                {msg.updated_at}
+                                                {moment(msg.updated_at).format('DD/MM/YYYY HH:mm')}
                                             </div>
                                         </div>
                                     </div>

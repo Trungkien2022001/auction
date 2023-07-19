@@ -69,6 +69,7 @@ exports.getAuctions = async (type = 'homepage') => {
                         .where('a.status', 2)
                         .orWhere('a.status', 1)
                         .whereNull('a.deleted_at')
+                        .limit(160)
                         .orderBy('a.updated_at', 'desc')
                 }
                 break
@@ -111,7 +112,7 @@ exports.getLatestAuction = async () => {
             .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.updated_at', 'desc')
-            .limit(4)
+            .limit(6)
             .offset(0)
 
         return result
@@ -132,7 +133,7 @@ exports.getFeaturedAuction = async () => {
             .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.auction_count', 'desc')
-            .limit(4)
+            .limit(6)
             .offset(0)
 
         return result
@@ -152,7 +153,7 @@ exports.getCheapAuction = async () => {
             .where('a.status', 2)
             .whereNull('a.deleted_at')
             .orderBy('a.start_price', 'asc')
-            .limit(4)
+            .limit(6)
             .offset(0)
 
         return result
@@ -172,7 +173,7 @@ exports.getIncomingAuction = async () => {
             .where('a.status', 1)
             .whereNull('a.deleted_at')
             .orderBy('a.updated_at', 'desc')
-            .limit(4)
+            .limit(6)
             .offset(0)
 
         return result
@@ -723,7 +724,10 @@ exports.finishedAuction = async id => {
         .select()
         .where('id', id)
     await knex('auction')
-        .update('auctioneer_win', win_auctioneer[0].auctioneer_id)
+        .update(
+            'auctioneer_win',
+            win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1
+        )
         .where('id', id)
     await knex('notification').insert([
         {

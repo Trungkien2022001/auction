@@ -4,7 +4,7 @@ const request = Promise.promisifyAll(require('request'))
 
 const count = process.argv.slice(2)
 async function get(n) {
-    const s = parseInt(n[1], 10) || 10
+    const s = parseInt(n[1], 10) || 100
     const s1 = parseInt(n[0], 10) || 0
     const arr = []
     for (let i = 0; i < s; i += 1) {

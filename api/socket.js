@@ -206,7 +206,7 @@ async function initAuctionTime() {
     })
 
     for (const item of auctions) {
-        if (item.timeToStart > 0) {
+        if (item.timeToStart > 0 && item.timeToStart < 1000000) {
             const timeout = setTimeout(() => {
                 console.log(
                     `-----------Starting for auction id: ${item.auctionId}`

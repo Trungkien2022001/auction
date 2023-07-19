@@ -511,6 +511,6 @@ export const Homepage = ({ socket }) => {
         </div>
       </div>
       <Footer />
-    </div>
+    </div >
   );
 };

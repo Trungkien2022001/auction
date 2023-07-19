@@ -54,6 +54,7 @@
     "jsonpath-object-transform": "1.0.4",
     "jwt-simple": "0.5.6",
     "knex": "0.20.9",
+    "knex-paginate": "^3.1.1",
     "koa": "2.11.0",
     "koa-body": "^4.2.0",
     "koa-bodyparser": "4.2.1",

@@ -1,5 +1,5 @@
 const Hoek = require('@hapi/hoek')
-const auctionTime = require('./auctionTime')
+const auctionTime = require('./constant')
 
 const defaults = {
     production: false,

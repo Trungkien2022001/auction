@@ -83,18 +83,31 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
   border: `2px solid ${theme.palette.background.paper}`,
 }));
 
-export const Header = ({socket}) => {
+export const Header = ({ socket }) => {
   const dispatch = useDispatch()
   const currentUser = useSelector(state => state.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [data, setData] = useState([])
+  const [text, setText] = useState('')
   const [anchorE2, setAnchorE2] = React.useState(null);
   const [anchorE3, setAnchorE3] = React.useState(null);
   const openMenu = Boolean(anchorE2);
   const isMenuOpen = Boolean(anchorEl);
   const isNotificationOpen = Boolean(anchorE3);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleSearch = () => {
+    if(text != ''){
+      window.location.href = (`/products?sort=featured&category=all&name=${text}`)
+    }
+  }
+
+  const onEnterPress = (e) => {
+    if (e.keyCode === 13 && e.shiftKey === false) {
+      handleSearch();
+    }
+  };
 
   const handleProfileMenuOpen = (event) => {
     if (!currentUser.id) {
@@ -144,8 +157,8 @@ export const Header = ({socket}) => {
     if (target === 'profile') {
       window.location.href = `/user/${currentUser.id}`
     }
-    if (target === 'logout'){
-      dispatch(userSlice.actions.logout())  
+    if (target === 'logout') {
+      dispatch(userSlice.actions.logout())
       Swal.fire({
         icon: 'success',
         title: 'Login Successfully',
@@ -418,7 +431,7 @@ export const Header = ({socket}) => {
                       </div>
                     )
                     break;
-                    case 9:
+                  case 9:
                     return (
                       <div key={item.id} className='notification-item' onClick={() => handleGotoAuction(item.auction_id)}>
                         <div className='notification-item-avatar'>
@@ -447,106 +460,7 @@ export const Header = ({socket}) => {
                 }
               })()
             )}
-              {/* <div className='notification-item'>
-                <div className='notification-item-avatar'>
-                  <Badge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
-                    }
-                  >
-                    <Avatar
-                      sx={{ width: 55, height: 55 }}
-                      alt="Action"
-                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
-                    />
-                  </Badge>
-                </div>
-                <div className='notification-item-content'>
-                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Chúc mừng, bạn đã thêm một phiên đấu giá mới
-                </div>
-              </div> */}
-              {/* <div className='notification-item'>
-                <div className='notification-item-avatar'>
-                  <Badge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
-                    }
-                  >
-                    <Avatar
-                      sx={{ width: 55, height: 55 }}
-                      alt="Action"
-                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
-                    />
-                  </Badge>
-                </div>
-                <div className='notification-item-content'>
-                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Một sản phẩm của bạn đã hoàn thành đấu giá. Vui lòng xác nhận!
-                </div>
-              </div> */}
-              {/* <div className='notification-item'>
-                <div className='notification-item-avatar'>
-                  <Badge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
-                    }
-                  >
-                    <Avatar
-                      sx={{ width: 55, height: 55 }}
-                      alt="Action"
-                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
-                    />
-                  </Badge>
-                </div>
-                <div className='notification-item-content'>
-                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Bạn đã thắng cược một phiên đấu giá. Sản phẩm sẽ được người bán xác nhận !
-                </div>
-              </div> */}
-              {/* <div className='notification-item'>
-                <div className='notification-item-avatar'>
-                  <Badge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <SmallAvatar alt="Avatar" src="https://e7.pngegg.com/pngimages/567/97/png-clipart-computer-icons-information-signal-miscellaneous-text.png" />
-                    }
-                  >
-                    <Avatar
-                      sx={{ width: 55, height: 55 }}
-                      alt="Action"
-                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
-                    />
-                  </Badge>
-                </div>
-                <div className='notification-item-content'>
-                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Người bán đã xác nhận bán sản phẩm. Vui lòng xác nhận lấy hàng!
-                </div>
-              </div> */}
-              {/* <div className='notification-item'>
-                <div className='notification-item-avatar'>
-                  <Badge
-                    overlap="circular"
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    badgeContent={
-                      <SmallAvatar alt="Avatar" src="https://www.citypng.com/public/uploads/preview/png-info-information-round-red-icon-symbol-11640517577hdkfkc5pnj.png" />
-                    }
-                  >
-                    <Avatar
-                      sx={{ width: 55, height: 55 }}
-                      alt="Action"
-                      src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
-                    />
-                  </Badge>
-                </div>
-                <div className='notification-item-content'>
-                  <span style={{ fontWeight: 'bold' }}>From Admin</span> Tài khoản của bạn bị cảnh cáo vì có hành phi vi phạm chính sách của chúng tôi. Bạn sẽ không thể thêm hay đấu giá sản phẩm nữa!
-                </div>
-              </div> */}
+
             </>
             :
             <div className='notification-item'>
@@ -649,18 +563,23 @@ export const Header = ({socket}) => {
             </Link>
           </Typography>
           <Search
-          sx={{ display: { xs: 'none', sm: 'block' } }}
+            sx={{ display: { xs: 'none', sm: 'block' } }}
           >
             <SearchIconWrapper>
-              <SearchIcon />
+              <SearchIcon
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleSearch()}
+              />
             </SearchIconWrapper>
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
+              onChange={e => setText(e.target.value)}
+              onKeyDown={onEnterPress}
             />
           </Search>
           <Box sx={{ flexGrow: 1 }}>
-            <TargetTextWrapper style={{fontSize: "22px"}}>
+            <TargetTextWrapper style={{ fontSize: "22px" }}>
               {/* trang này không tồn tại, trang này không tồn tại trang này không tồn tại, trang này không tồn tại, trang này không tồn tại, trang này không tồn */}
               Trang web đấu giá hàng đầu Việt Nam, thuận mua vừa bán hehehe (^__^)
             </TargetTextWrapper>

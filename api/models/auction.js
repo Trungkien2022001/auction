@@ -3,9 +3,14 @@
 /* eslint-disable camelcase */
 const debug = require('debug')('auction:model:auction')
 const moment = require('moment')
+const { attachPaginate } = require('knex-paginate')
 const { knex } = require('../connectors')
 const { auctionTime } = require('../config')
 const commonModel = require('../models/common')
+const { PRODUCT_CATEGORY } = require('../config/constant')
+
+attachPaginate()
+const collationVietnamese = 'utf8mb4_unicode_ci'
 
 const baseFields = {
     getAuctions: [
@@ -14,7 +19,9 @@ const baseFields = {
         'a.start_time',
         'a.start_price',
         'a.sell_price',
-        'a.auction_count',
+        'a.seller_id',
+        'a.auction_count as auction_count',
+        'ast.name as auction_status',
         'p.category_id',
         'p.name',
         'p.title',
@@ -28,9 +35,11 @@ const baseFields = {
         'a.start_price',
         'a.sell_price',
         'a.seller_id',
+        'a.status',
+        'p.category_id',
         'a.auction_count',
         'a.auctioneer_win',
-        'as.name as status',
+        'ast.name as auction_status',
         'p.name as product_name',
         'at.title as auction_time'
     ],
@@ -50,56 +59,101 @@ exports.saveAuction = async auction => {
     return knex('auction').insert(auction)
 }
 
-exports.getAuctions = async (type = 'homepage') => {
+exports.getAuctions = async params => {
     debug('MODEL/auction getAuctions')
+    const {
+        type = 'homepage',
+        limit = 24,
+        page = 0,
+        sort,
+        category = 'all',
+        name,
+        seller_id,
+        price_from,
+        price_to
+    } = params
+    const sorted = type === 'homepage' ? sort || 'featured' : sort
     try {
-        let fn
-        switch (type) {
-            case 'homepage':
-                fn = async () => {
-                    return knex
-                        .select(...baseFields.getAuctions)
-                        .from('auction as a')
-                        .innerJoin('product as p', 'a.product_id', 'p.id')
-                        .innerJoin(
-                            'auction_time as at',
-                            'a.auction_time',
-                            'at.id'
-                        )
-                        .where('a.status', 2)
-                        .orWhere('a.status', 1)
-                        .whereNull('a.deleted_at')
-                        .limit(160)
-                        .orderBy('a.updated_at', 'desc')
+        const fields =
+            type === 'homepage'
+                ? baseFields.getAuctions
+                : baseFields.getAuctionsDashboard
+        let query = knex
+            .select(...fields)
+            .from('auction as a')
+            .innerJoin('product as p', 'a.product_id', 'p.id')
+            .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+            .innerJoin('auction_status as ast', 'a.status', 'ast.id')
+            .where(function() {
+                if (type === 'homepage') {
+                    this.whereNull('a.deleted_at')
                 }
-                break
-
-            case 'dashboard':
-                fn = async () => {
-                    return knex
-                        .select(...baseFields.getAuctionsDashboard)
-                        .from('auction as a')
-                        .innerJoin('product as p', 'a.product_id', 'p.id')
-                        .innerJoin(
-                            'auction_time as at',
-                            'a.auction_time',
-                            'at.id'
-                        )
-                        .innerJoin('auction_status as as', 'a.status', 'as.id')
-                        .orderBy('a.updated_at', 'desc')
+                if (name) {
+                    this.whereRaw('p.name COLLATE ?? LIKE ?', [
+                        collationVietnamese,
+                        `%${name}%`
+                    ])
+                    // this.where('p.name1', 'like', `%${name}%`);
                 }
-                break
+                if (seller_id) {
+                    this.where('a.seller_id', seller_id)
+                }
+                if (category !== 'all' && PRODUCT_CATEGORY[category]) {
+                    this.where('p.category_id', PRODUCT_CATEGORY[category])
+                }
 
+                if (price_from && parseInt(price_from) <= parseInt(price_to)) {
+                    this.where('a.sell_price', '>=', price_from)
+                }
+                if (price_to) {
+                    this.where('a.sell_price', '<=', price_to)
+                }
+                switch (sorted) {
+                    case 'featured':
+                    case 'cheapest':
+                    case 'lastest':
+                        this.where('a.status', 2)
+                        break
+                    case 'incoming':
+                        this.where('a.status', 2)
+                        break
+                    default:
+                        break
+                }
+            })
+
+        switch (sorted) {
+            case 'featured':
+                query = query.orderBy('a.auction_count', 'desc')
+                break
+            case 'cheapest':
+                query = query.orderBy('a.sell_price', 'asc')
+                break
+            case 'expensive':
+                query = query.orderBy('a.sell_price', 'desc')
+                break
+            case 'incoming':
+            case 'lastest':
+                query.orderBy('a.start_time', 'desc')
+                break
             default:
                 break
         }
-        const result = await fn()
+        const result = await query.paginate({
+            perPage: limit,
+            currentPage: page,
+            isLengthAware: true
+        })
 
-        return result
+        return {
+            count: result.pagination,
+            products: result.data
+        }
     } catch (err) {
         throw new Error(err.message || JSON.stringify(err))
     }
 }
+
 exports.getLatestAuction = async () => {
     debug('MODEL/auction getLatestAuction')
     try {

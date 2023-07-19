@@ -18,7 +18,10 @@ import moment from "moment";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { authenticate } from "../../../utils/authenticate";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
 const _ = require('lodash')
+
 
 
 export const Product = ({ socket }) => {
@@ -33,15 +36,26 @@ export const Product = ({ socket }) => {
   const [data, setData] = useState(null);
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
   const [bigImageIndex, setBigImageIndex] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [preLoading, setPreLoading] = useState(false)
+
   async function getData() {
-    let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, {}, currentUser)
-    if (result.status === 200) {
-      setData(result.data.data)
+    setLoading(true)
+    setPreLoading(false)
+    const f = async () => {
+      let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, {}, currentUser)
+      if (result.status === 200) {
+        setData(result.data.data)
+        setPreLoading(true)
+      }
+      result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
+      if (result.status === 200) {
+        setAuctionHistoryData(result.data.data)
+      }
     }
-    result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
-    if (result.status === 200) {
-      setAuctionHistoryData(result.data.data)
-    }
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.PRODUCT_WAIT_TIME || 3000));
+    await Promise.all([f(), delayPromise])
+    setLoading(false)
   }
   useEffect(() => {
     getData()
@@ -195,6 +209,13 @@ export const Product = ({ socket }) => {
       <div className="padding__product product-container">
         <div className="product-header">
         </div>
+        {
+          preLoading && data && data.product.images ? data.product.images.map((item, index) =>
+            <div key={index}>
+              <img style={{ display: 'none' }} rel="prefetch" src={item.url} alt="Product_Image" />
+            </div>
+          ) : <></>
+        }
         {data ?
           <>
             <div className="product-detail">
@@ -202,17 +223,30 @@ export const Product = ({ socket }) => {
                 <div className='product__left'>
                   <div className="product-image">
                     <div className="product-image__wrapper">
-                      <img src={data.product.images.length ? data.product.images[bigImageIndex].url : 'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227724992-stock-illustration-image-available-icon-flat-vector.jpg'} alt="" />
+                      {loading ?
+                        <div className="loading">
+                          <Skeleton width={350} height={350} />
+                        </div>
+                        :
+                        <img src={data.product.images.length ? data.product.images[bigImageIndex].url : 'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227724992-stock-illustration-image-available-icon-flat-vector.jpg'} alt="" />
+
+                      }
                     </div>
                   </div>
                   <div className="product-sub-image">
-                    {data && data.product.images && data.product.images.map((item, index) => (
-                      <div className="product-sub-image__wrapper" key={index} onClick={() => setBigImageIndex(index)}>
-                        <img src={item.url} alt="" />
+                    {loading ? Array(5).fill(1).map((item, index) =>
+                      <div key={index} className="loading" style={{ margin: '5px' }}>
+                        <Skeleton width={50} height={60} />
                       </div>
-                    ))
-                    }
-
+                    ) :
+                      <>
+                        {data && data.product.images && data.product.images.map((item, index) => (
+                          <div className="product-sub-image__wrapper" key={index} onClick={() => setBigImageIndex(index)}>
+                            <img src={item.url} alt="" />
+                          </div>
+                        ))
+                        }
+                      </>}
                   </div>
                 </div>
                 <div className='product__right'>

@@ -17,7 +17,8 @@ import { get } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
 import moment from "moment";
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
     {days} day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
@@ -27,15 +28,27 @@ const renderer = ({ days, hours, minutes, seconds }) => (
 export const Products = ({ socket }) => {
   const location = useLocation();
   let id = location.pathname.split('/')[2]
+  const params = new URLSearchParams(location.search)
   const limit = 24
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState([])
   const [initialData, setInitialData] = useState({})
-  const [type, setType] = useState(id >= 1000 ? parseInt(id/1000) : 1)
-  const [category, setCategory] = useState(id && id < 1000? parseInt(id) : 0)
+  const [type, setType] = useState(id >= 1000 ? parseInt(id / 1000) : 1)
+  const [category, setCategory] = useState(id && id < 1000 ? parseInt(id) : 0)
   const [search, setSearch] = useState('')
   const [productCategory, setProductCategory] = useState([])
-  const [page, setPage] = useState(1)
+  const [cnt, setCnt] = useState(1)
+  const [loading, setLoading] = useState(true)
+  const [preLoading, setPreLoading] = useState(false)
+  const [filter, setFilter] = useState({
+    type: params.get('type') === 'dashboard' ? 'dashboard' : 'homepage',
+    category: params.get('category') || 'all',
+    price_from: params.get('price_from') || 0,
+    price_to: params.get('price_to') || 99999999999,
+    name: params.get('name') || '',
+    page: params.get('page') || 1,
+    limit: params.get('limit') || 24
+  })
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', () => {
@@ -44,82 +57,70 @@ export const Products = ({ socket }) => {
     }
   }, [socket.current])
 
+
   async function getData() {
-    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auctions`, currentUser)
-    if (result.status === 200) {
-      setInitialData(result.data.data)
-      if(id){
-        handleSearchAll(result.data.data, id && id < 1000? id : 0, '', id >= 1000 ? id/1000 : 1)
-      } else {
-        setData(result.data.data)
+    setLoading(true)
+    setPreLoading(false)
+    const f = async () => {
+      const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auctions?type=${filter.type}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${filter.name}&page=${filter.page}&limit=${filter.limit}`, currentUser)
+      if (result.status === 200) {
+        setInitialData(result.data.data.products)
+        setCnt(result.data.data.count.total)
+        setPreLoading(true)
+        if (id) {
+          handleSearchAll(result.data.data, id && id < 1000 ? id : 0, '', id >= 1000 ? id / 1000 : 1)
+        } else {
+          setData(result.data.data.products)
+        }
       }
     }
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.PRODUCTS_WAIT_TIME || 3000));
+    await Promise.all([f(), delayPromise])
+    setLoading(false)
+  }
 
-    result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+  async function getMetaData() {
+    const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
     if (result.status === 200) {
       setProductCategory(result.data.product_category)
     }
   }
+
   useEffect(() => {
     getData()
+    getMetaData()
   }, [])
   const handleStop = () => {
   }
 
   const handleSearchAll = (metaData, category, search, type) => {
-    let firstData, secondData, finalData
-    if(category){
-      firstData = metaData.filter(i=>i.category_id === parseInt(category))
-    } else {
-      firstData = metaData
-    }
-    if(search === ''){
-      secondData = firstData
-    } else {
-      secondData = firstData.filter(i=>i.name.toLowerCase().includes(search.toLowerCase()))
-    }
-    switch (type) {
-      case 1: 
-        finalData = secondData.sort((a, b)=> a.start_time < b.start_time ? 1 : -1).filter(i=>i.status === 2)
-        break
-      case 2: 
-        finalData = secondData.sort((a, b)=> a.auction_count < b.auction_count ? 1 : -1).filter(i=>i.status === 2)
-        break
-      case 3: 
-        finalData = secondData.sort((a, b)=> a.start_price > b.start_price ? 1 : -1).filter(i=>i.status === 2)
-        break
-      case 4: 
-      finalData = secondData.sort((a, b)=> a.start_time < b.start_time ? 1 : -1).filter(i=>i.status === 1)
-        break
-      default: 
-        break
-    }
-    setData(finalData)
-    
+
   }
 
-  const handleSearch = (value, t)=>{
-    if(t === 'type') {
+  const handleSearch = (value, t) => {
+    if (t === 'type') {
       setType(value)
       handleSearchAll(initialData, category, search, value)
 
     }
-    if(t === 'category') {
+    if (t === 'category') {
       setCategory(value)
       handleSearchAll(initialData, value, search, type)
     }
-    if(t === 'search') {
+    if (t === 'search') {
       setSearch(value)
       handleSearchAll(initialData, category, value, type)
     }
   }
 
   const handleChangePage = (event, value) => {
-    setPage(value);
+    setFilter(prev => {
+      return { ...prev, page: value }
+    });
   };
   return (
     <div>
-      <Header socket = {socket}/>
+      <Header socket={socket} />
       <div className="padding__products product-container">
         <div className="chat">
           <img
@@ -152,8 +153,8 @@ export const Products = ({ socket }) => {
                   id="demo-simple-select"
                   value={type}
                   label="Chủ đề"
-                  style={{ width: '30vw' , maxWidth: '150px'}}
-                  onChange={(e)=>handleSearch(e.target.value, 'type')}
+                  style={{ width: '30vw', maxWidth: '150px' }}
+                  onChange={(e) => handleSearch(e.target.value, 'type')}
                 >
                   <MenuItem value={1}>Mới nhất</MenuItem>
                   <MenuItem value={2}>Nổi bật</MenuItem>
@@ -170,13 +171,13 @@ export const Products = ({ socket }) => {
                   id="demo-simple-select"
                   value={category}
                   label="Chủ đề"
-                  style={{ width: '30vw' , maxWidth: '150px'}}
-                  onChange={(e)=>handleSearch(e.target.value, 'category')}
-                > 
+                  style={{ width: '30vw', maxWidth: '150px' }}
+                  onChange={(e) => handleSearch(e.target.value, 'category')}
+                >
                   <MenuItem value={0}>Tất cả</MenuItem>
                   {
                     productCategory.length && productCategory.map((item) => (
-                        <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
+                      <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
                     ))
                     || <div></div>
                   }
@@ -184,67 +185,81 @@ export const Products = ({ socket }) => {
               </FormControl>
             </div>
             <div className="products-search-item">
-              <TextField 
-                id="outlined-basic" 
-                label="Tên sản phẩm" 
-                variant="outlined" 
-                onChange={(e)=>handleSearch(e.target.value, 'search')}
-                />
+              <TextField
+                id="outlined-basic"
+                label="Tên sản phẩm"
+                variant="outlined"
+                onChange={(e) => handleSearch(e.target.value, 'search')}
+              />
             </div>
           </div>
           <div className="product-wrapper">
-            {
-              data && data.length && data.slice(limit*(page-1), limit * page).map(item => (
-                <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                   <div className="product">
-                      <div className="productImg">
-                        <img src={item.image} alt="Product_Image" />
-                      </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
-                        <div className="product-time product-item">
-                          <div className="product-icon">
-                            <AccessTimeIcon />
+            {loading ? Array(6).fill(1).map((item, index) =>
+              <div key={index} className="loading" style={{ margin: '20px' }}>
+                <Skeleton width={175} height={200} />
+                <Skeleton width={175} height={45} count={2} style={{ marginTop: "10px" }} />
+              </div>
+            ) :
+              <>
+                {
+                  data && data.length ? data.slice(filter.limit * (filter.page - 1), filter.limit * filter.page).map(item => (
+                    <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
+                      <div className="product">
+                        <div className="productImg">
+                          <img rel="prefetch" src={item.image} alt="Product_Image" />
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
+                          <div className="product-time product-item">
+                            <div className="product-icon">
+                              <AccessTimeIcon />
+                            </div>
+                            <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
+                              <Countdown
+                                onComplete={() => handleStop()}
+                                // onStop={()=>handleStop()}
+                                date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
+                                renderer={renderer}
+                              />
+                            </div>
                           </div>
-                          <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
-                            <Countdown
-                              onComplete={() => handleStop()}
-                              // onStop={()=>handleStop()}
-                              date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                              renderer={renderer}
-                            />
+                          <div className="product-vote product-item">
+                            <div className="product-icon">
+                              <EmojiPeopleIcon />
+                            </div>
+                            <div className="product-content" style={{ fontSize: "1.2rem" }}>
+                              {item.auction_count}
+                            </div>
                           </div>
                         </div>
-                        <div className="product-vote product-item">
-                          <div className="product-icon">
-                            <EmojiPeopleIcon />
-                          </div>
-                          <div className="product-content" style={{ fontSize: "1.2rem" }}>
-                            {item.auction_count}
-                          </div>
+                        <div className="product-name">{item.name}</div>
+                        <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                          <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                        </div>
+                        <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                          <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                         </div>
                       </div>
-                      <div className="product-name">{item.name}</div>
-                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                        <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                      </div>
-                      <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                        <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
-                      </div>
-                    </div>
-                </Link>
-              ))
-              || <></>
-            }
+                    </Link>
+                  )) : <div className="none-content" style={{ height: "280px", textAlign: "center" }}>Không có sản phẩm nào</div>
+                }
+              </>}
           </div>
 
         </div>
         <div className="products-pagination">
           <Pagination spacing={2}
-              count={data.length % limit === 0 ? data.length / limit : parseInt(data.length / limit + 1)}
-              page={page}
-              onChange={handleChangePage}
-            />
+            count={cnt % limit === 0 ? cnt / limit : parseInt(cnt / limit + 1)}
+            page={filter.page}
+            onChange={handleChangePage}
+          />
         </div>
+        {
+          preLoading && data && data.length ? data.map((item, index) =>
+            <div key={index}>
+              <img style={{ display: 'none' }} rel="prefetch" src={item.image} alt="Product_Image" />
+            </div>
+          ) : <></>
+        }
       </div>
       <Footer />
     </div>

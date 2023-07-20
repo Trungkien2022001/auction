@@ -63,7 +63,7 @@ export const Product = ({ socket }) => {
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', () => {
-        getData()
+        // getData()
       })
     }
   }, [socket.current])
@@ -83,15 +83,18 @@ export const Product = ({ socket }) => {
     setOpenAuctionDialog(false);
   };
 
-  const onEnterWork = (e) => {
-    if (e.keyCode === 13 && e.shiftKey === false) {
-      setOpenAuctionDialog(false);
-      handleSubmitAuction()
-    }
-  }
+  // const onEnterWork = (e) => {
+  //   if (e.keyCode === 13 && e.shiftKey === false) {
+  //     Promise.resolve(setOpenAuctionDialog(true)).then(
+  //       handleSubmitAuction()
+  //     );
+  //   }
+  // }
 
   const handleSubmitAuction = async () => {
-    authenticate(currentUser, Swal)
+    Promise.resolve(setOpenAuctionDialog(false)).then(
+      authenticate(currentUser, Swal)()
+    );
     if (data.product.sell_price > auctionBet) {
       Swal.fire(
         'Vui lòng đặt mức đấu giá lớn hơn?',
@@ -125,7 +128,6 @@ export const Product = ({ socket }) => {
           }
         })
       }
-      setOpenAuctionDialog(false);
       Swal.fire({
         icon: 'success',
         title: 'Raise thành công',
@@ -143,7 +145,6 @@ export const Product = ({ socket }) => {
         setReload(!reload)
       })
     } else {
-      setOpenAuctionDialog(false);
       Swal.fire({
         icon: 'error',
         title: 'Đã xảy ra lỗi',
@@ -456,7 +457,7 @@ export const Product = ({ socket }) => {
             fullWidth
             variant="standard"
             onChange={e => setAuctionBet(e.target.value)}
-            onKeyDown={onEnterWork}
+          // onKeyDown={onEnterWork}
           />
         </DialogContent>
         <DialogActions>

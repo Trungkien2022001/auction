@@ -55,7 +55,7 @@ export const Products = ({ socket }) => {
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', () => {
-        getData(filter)
+        // getData(filter)
       })
     }
   }, [socket.current])

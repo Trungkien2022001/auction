@@ -45,9 +45,12 @@ import { useLocation } from 'react-router-dom';
 const drawerWidth = 250;
 
 
-export const Management = ({socket }) => {
+export const Management = ({ socket }) => {
   const themes = THEME
   const currentUser = useSelector((state) => state.user);
+  if (!currentUser || !currentUser.role.admin) {
+    window.location.href = '/'
+  }
   const location = useLocation();
   let type = location.pathname.split('/')[2]
 
@@ -64,24 +67,24 @@ export const Management = ({socket }) => {
     console.log(t)
     switch (t) {
       case 'auction':
-        window.location.href=`./auction`
+        window.location.href = `./auction`
         break;
       case 'dashboard':
-        window.location.href=`./dashboard`
+        window.location.href = `./dashboard`
         break;
-    
+
       case 'user':
-        window.location.href=`./user`
+        window.location.href = `./user`
         break;
-    
+
       case 'chat':
-        window.location.href=`./chat`
+        window.location.href = `./chat`
         break;
-    
+
       case 'action-log':
-        window.location.href=`./action-log`
+        window.location.href = `./action-log`
         break;
-    
+
       default:
         break;
     }
@@ -160,7 +163,7 @@ export const Management = ({socket }) => {
         <Divider />
         <ListItemButton
           onClick={() => handleChangePage('dashboard')}
-          sx={type==='dashboard' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          sx={type === 'dashboard' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <DashboardIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -169,7 +172,7 @@ export const Management = ({socket }) => {
         </ListItemButton>
         <ListItemButton
           onClick={() => handleChangePage('auction')}
-          sx={type==='auction' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          sx={type === 'auction' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -179,7 +182,7 @@ export const Management = ({socket }) => {
 
         <ListItemButton
           onClick={() => handleChangePage('user')}
-          sx={type==='user' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          sx={type === 'user' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -188,7 +191,7 @@ export const Management = ({socket }) => {
         </ListItemButton>
         <ListItemButton
           onClick={() => handleChangePage('chat')}
-          sx={type==='chat' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          sx={type === 'chat' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -197,7 +200,7 @@ export const Management = ({socket }) => {
         </ListItemButton>
         <ListItemButton
           onClick={() => handleChangePage('action-log')}
-          sx={type==='action-log' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          sx={type === 'action-log' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
         >
           <ListItemIcon>
             <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />

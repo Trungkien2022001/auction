@@ -65,7 +65,7 @@ export const Homepage = ({ socket }) => {
       setPreLoading(true)
 
     }
-    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_WAIT_TIME || 2500));
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_WAIT_TIME || 3500));
     await Promise.all([f(), delayPromise])
     setLoading(false)
   }
@@ -400,6 +400,71 @@ export const Homepage = ({ socket }) => {
                 <div className="product-wrapper">
                   {
                     data && data.cheap && data.cheap.map(item => (
+                      <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
+                        <div className="product">
+                          <div className="productImg">
+                            <img src={item.image} alt="Product_Image" />
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
+                            <div className="product-time product-item">
+                              <div className="product-icon">
+                                <AccessTimeIcon />
+                              </div>
+                              <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
+                                <Countdown
+                                  onComplete={() => handleStop()}
+                                  // onStop={()=>handleStop()}
+                                  date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
+                                  renderer={renderer}
+                                />
+                              </div>
+                            </div>
+                            <div className="product-vote product-item">
+                              <div className="product-icon">
+                                <EmojiPeopleIcon />
+                              </div>
+                              <div className="product-content" style={{ fontSize: "1.2rem" }}>
+                                {item.auction_count}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="product-name">{item.name}</div>
+                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                            <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                          </div>
+                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                            <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                          </div>
+                        </div>
+                      </Link>
+                    ))
+                    || <></>
+                  }
+                </div>
+            }
+
+          </div>
+          {/* Sản phẩm cao cấp */}
+          <div className="product-part-wrapper">
+            <div className="title-header">
+              <b></b>
+              <Link to={'/products/type=cheapest'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm cao cấp</h2></Link>
+              <b></b>
+            </div>
+            {
+              loading ?
+                <div className="product-wrapper">
+                  {Array(6).fill(1).map((item, index) =>
+                    <div key={index} className="loading" style={{ margin: '20px' }}>
+                      <Skeleton width={165} height={200} />
+                      <Skeleton width={165} height={45} count={2} style={{ marginTop: "10px" }} />
+                    </div>
+                  )}
+                </div>
+                :
+                <div className="product-wrapper">
+                  {
+                    data && data.expensive && data.expensive.map(item => (
                       <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
                         <div className="product">
                           <div className="productImg">

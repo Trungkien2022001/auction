@@ -27,7 +27,7 @@ import { visuallyHidden } from '@mui/utils';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { get } from '../../../utils/customRequest';
+import { get, post } from '../../../utils/customRequest';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { AUCTION_STATUS, AUCTION_TIMES } from '../../../utils/constants';
@@ -195,15 +195,15 @@ function EnhancedTableToolbar(props) {
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
-        defaultValue={-1}  
+        defaultValue={-1}
         label="Age"
         placeholder='Lọc theo trạng thái'
         style={{ width: "400px" }}
         onChange={fn1}
       >
         <MenuItem value={-1}>Tất cả</MenuItem>
-        {AUCTION_STATUS.map((item, index)=>
-         <MenuItem key={index} value={item.value}>{item.title}</MenuItem>
+        {AUCTION_STATUS.map((item, index) =>
+          <MenuItem key={index} value={item.value}>{item.title}</MenuItem>
         )}
       </Select>
       <TextField style={{ width: "400px" }} id="outlined-basic" label="Tìm kiếm" variant="outlined" onChange={fn} />
@@ -230,6 +230,7 @@ export const Auction = ({ currentUser, socket }) => {
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [data, setData] = useState([])
+  // const [cnt, setCnt] = useState([])
   const [initialData, setInitialData] = useState([])
   const [currentAuctionId, setCurrentAuctionId] = useState()
   const [currentAuction, setCurrentAuction] = useState({})
@@ -237,10 +238,10 @@ export const Auction = ({ currentUser, socket }) => {
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
 
   async function getData() {
-    let result = await get(`${api_endpoint}/auctions?type=dashboard`, currentUser)
+    let result = await post(`${api_endpoint}/auctions?type=dashboard`, {}, currentUser)
     if (result.status === 200) {
-      setData(result.data.data)
-      setInitialData(result.data.data)
+      setData(result.data.data.products)
+      setInitialData(result.data.data.products)
     }
   }
   const handleSearch = (event) => {
@@ -249,10 +250,10 @@ export const Auction = ({ currentUser, socket }) => {
   }
   const handleFilterByStatus = (event) => {
     const option = event.target.value
-    if(option === -1){
+    if (option === -1) {
       setData(initialData)
     } else {
-      setData(initialData.filter(i=>i.status === AUCTION_STATUS.find(s=>s.value === option).title))
+      setData(initialData.filter(i => i.status === AUCTION_STATUS.find(s => s.value === option).title))
     }
     // const dataList = filterTable(event.target.value, initialData, headCells)
     // setData(dataList)
@@ -270,7 +271,9 @@ export const Auction = ({ currentUser, socket }) => {
   }
 
   useEffect(() => {
-    getAuctionDetail()
+    if (currentAuctionId) {
+      getAuctionDetail()
+    }
   }, [currentAuctionId])
   useEffect(() => {
 
@@ -279,7 +282,7 @@ export const Auction = ({ currentUser, socket }) => {
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', () => {
-        getData()
+        // getData()
       })
     }
   }, [socket.current])
@@ -335,7 +338,7 @@ export const Auction = ({ currentUser, socket }) => {
       <div>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar  fn={handleSearch} fn1={handleFilterByStatus} />
+            <EnhancedTableToolbar fn={handleSearch} fn1={handleFilterByStatus} />
             <TableContainer>
               <Table
                 stickyHeader

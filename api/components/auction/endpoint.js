@@ -109,7 +109,7 @@ router.post('/auction', validate(getDetail), async ctx => {
     }
 })
 
-router.get('/auction-history', genericSecure, async ctx => {
+router.get('/auction-history', async ctx => {
     debug('GET /auction-history')
 
     try {

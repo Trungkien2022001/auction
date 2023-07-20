@@ -196,6 +196,7 @@ exports.getFeaturedAuction = async () => {
         throw new Error(err.message || JSON.stringify(err))
     }
 }
+
 exports.getCheapAuction = async () => {
     debug('MODEL/auction getCheapAuction')
     try {
@@ -207,7 +208,28 @@ exports.getCheapAuction = async () => {
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
             .where('a.status', 2)
             .whereNull('a.deleted_at')
-            .orderBy('a.start_price', 'asc')
+            .orderBy('a.sell_price', 'asc')
+            .limit(6)
+            .offset(0)
+
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.getExpensiveAuction = async () => {
+    debug('MODEL/auction getExpensiveAuction')
+    try {
+        const result = await knex
+            .select(...baseFields.getDemoAuctions)
+            .from('auction as a')
+            .innerJoin('product as p', 'a.product_id', 'p.id')
+            .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+            // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+            .where('a.status', 2)
+            .whereNull('a.deleted_at')
+            .orderBy('a.sell_price', 'desc')
             .limit(6)
             .offset(0)
 
@@ -272,7 +294,9 @@ exports.getProductAuction = async auctionId => {
             throw new Error('Auction not found')
         }
         const images =
-            (await commonModel.getProductImages(result[0].product_id)) || []
+            (await commonModel.getProductImages(result[0].id)) ||
+            (await commonModel.getProductImages(result[0].product_id)) ||
+            []
 
         return {
             ...result[0],

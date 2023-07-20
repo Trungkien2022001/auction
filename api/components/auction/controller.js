@@ -88,13 +88,15 @@ exports.getAuctionOverview = async params => {
     const latest = await auctionModel.getLatestAuction(params)
     const featured = await auctionModel.getFeaturedAuction(params)
     const cheap = await auctionModel.getCheapAuction(params)
+    const expensive = await auctionModel.getExpensiveAuction(params)
     const incoming = await auctionModel.getIncomingAuction(params)
 
     return {
         latest,
         featured,
         cheap,
-        incoming
+        incoming,
+        expensive
     }
 }
 

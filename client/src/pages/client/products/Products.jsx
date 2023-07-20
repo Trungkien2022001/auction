@@ -5,20 +5,22 @@ import { useState } from "react";
 import { Header } from "../../../components/header/Header";
 import "./Products.scss";
 // import axios from "axios";
-import { Link, useLocation } from "react-router-dom";
-import { FormControl, InputLabel, MenuItem, Pagination, Select, TextField } from "@mui/material";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Pagination, Select, TextField } from "@mui/material";
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SellIcon from '@mui/icons-material/Sell';
 import Countdown, { zeroPad } from 'react-countdown'
 import { useEffect } from "react";
-import { get } from "../../../utils/customRequest";
+import { get, post } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import moment from "moment";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
     {days} day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
@@ -27,54 +29,50 @@ const renderer = ({ days, hours, minutes, seconds }) => (
 
 export const Products = ({ socket }) => {
   const location = useLocation();
-  let id = location.pathname.split('/')[2]
+  const navigate = useNavigate();
+
+
   const params = new URLSearchParams(location.search)
   const limit = 24
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState([])
-  const [initialData, setInitialData] = useState({})
-  const [type, setType] = useState(id >= 1000 ? parseInt(id / 1000) : 1)
-  const [category, setCategory] = useState(id && id < 1000 ? parseInt(id) : 0)
-  const [search, setSearch] = useState('')
   const [productCategory, setProductCategory] = useState([])
+  const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [cnt, setCnt] = useState(1)
   const [loading, setLoading] = useState(true)
   const [preLoading, setPreLoading] = useState(false)
-  const [filter, setFilter] = useState({
+  const initialSeach = {
     type: params.get('type') === 'dashboard' ? 'dashboard' : 'homepage',
+    sort: params.get('sort') || 'featured',
     category: params.get('category') || 'all',
-    price_from: params.get('price_from') || 0,
-    price_to: params.get('price_to') || 99999999999,
+    price_from: params.get('price_from') || 5000,
+    price_to: params.get('price_to') || 5000000000,
     name: params.get('name') || '',
     page: params.get('page') || 1,
     limit: params.get('limit') || 24
-  })
+  }
+  const [filter, setFilter] = useState(initialSeach)
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', () => {
-        getData()
+        getData(filter)
       })
     }
   }, [socket.current])
 
 
-  async function getData() {
+  async function getData(filter) {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auctions?type=${filter.type}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${filter.name}&page=${filter.page}&limit=${filter.limit}`, currentUser)
+      const result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auctions?type=${filter.type}&sort=${filter.sort}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${filter.name}&page=${filter.page}&limit=${filter.limit}`, {},currentUser)
       if (result.status === 200) {
-        setInitialData(result.data.data.products)
-        setCnt(result.data.data.count.total)
         setPreLoading(true)
-        if (id) {
-          handleSearchAll(result.data.data, id && id < 1000 ? id : 0, '', id >= 1000 ? id / 1000 : 1)
-        } else {
-          setData(result.data.data.products)
-        }
+        setCnt(result.data.data.count.total)
+        setData(result.data.data.products)
       }
     }
-    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.PRODUCTS_WAIT_TIME || 3000));
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.PRODUCTS_WAIT_TIME || 2000));
     await Promise.all([f(), delayPromise])
     setLoading(false)
   }
@@ -87,36 +85,36 @@ export const Products = ({ socket }) => {
   }
 
   useEffect(() => {
-    getData()
+    getData(filter)
     getMetaData()
   }, [])
   const handleStop = () => {
   }
 
-  const handleSearchAll = (metaData, category, search, type) => {
-
+  const buildParamURL = () => {
+    return `/products?type=${filter.type}&category=${filter.category}&sort=${filter.sort}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${filter.name}&page=${filter.page}&limit=${filter.limit}`
   }
 
-  const handleSearch = (value, t) => {
-    if (t === 'type') {
-      setType(value)
-      handleSearchAll(initialData, category, search, value)
-
-    }
-    if (t === 'category') {
-      setCategory(value)
-      handleSearchAll(initialData, value, search, type)
-    }
-    if (t === 'search') {
-      setSearch(value)
-      handleSearchAll(initialData, category, value, type)
-    }
+  const handleSearch = () => {
+    navigate(buildParamURL())
+    handleCloseAuctionDialog();
+    setCnt(1)
+    getData(filter)
   }
+
+  const handleClickOpenAuctionDialog = () => {
+    setOpenAuctionDialog(true);
+  };
+
+  const handleCloseAuctionDialog = () => {
+    setOpenAuctionDialog(false);
+  };
 
   const handleChangePage = (event, value) => {
     setFilter(prev => {
       return { ...prev, page: value }
     });
+    getData({...filter, page: value})
   };
   return (
     <div>
@@ -145,64 +143,28 @@ export const Products = ({ socket }) => {
             <b></b>
           </div>
           <div className='products-search'>
+            {
+              !loading ? <div className="products-search-item">
+                Có {cnt} kết quả được tìm thấy
+              </div> :
+                <div className="products-search-item">
+                  <Skeleton width={220} height={30} />
+                </div>
+            }
             <div className="products-search-item">
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Chủ đề</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={type}
-                  label="Chủ đề"
-                  style={{ width: '30vw', maxWidth: '150px' }}
-                  onChange={(e) => handleSearch(e.target.value, 'type')}
-                >
-                  <MenuItem value={1}>Mới nhất</MenuItem>
-                  <MenuItem value={2}>Nổi bật</MenuItem>
-                  <MenuItem value={3}>Siêu rẻ</MenuItem>
-                  <MenuItem value={4}>Sắp đấu giá</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-            <div className="products-search-item">
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Danh mục</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={category}
-                  label="Chủ đề"
-                  style={{ width: '30vw', maxWidth: '150px' }}
-                  onChange={(e) => handleSearch(e.target.value, 'category')}
-                >
-                  <MenuItem value={0}>Tất cả</MenuItem>
-                  {
-                    productCategory.length && productCategory.map((item) => (
-                      <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
-                    ))
-                    || <div></div>
-                  }
-                </Select>
-              </FormControl>
-            </div>
-            <div className="products-search-item">
-              <TextField
-                id="outlined-basic"
-                label="Tên sản phẩm"
-                variant="outlined"
-                onChange={(e) => handleSearch(e.target.value, 'search')}
-              />
+              <Button onClick={() => handleClickOpenAuctionDialog()} variant="contained"><FilterAltIcon /></Button>
             </div>
           </div>
           <div className="product-wrapper">
             {loading ? Array(6).fill(1).map((item, index) =>
               <div key={index} className="loading" style={{ margin: '20px' }}>
-                <Skeleton width={175} height={200} />
-                <Skeleton width={175} height={45} count={2} style={{ marginTop: "10px" }} />
+                <Skeleton width={178} height={200} />
+                <Skeleton width={178} height={45} count={2} style={{ marginTop: "10px" }} />
               </div>
             ) :
               <>
                 {
-                  data && data.length ? data.slice(filter.limit * (filter.page - 1), filter.limit * filter.page).map(item => (
+                  data && data.length ? data.map(item => (
                     <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
                       <div className="product">
                         <div className="productImg">
@@ -233,14 +195,14 @@ export const Products = ({ socket }) => {
                         </div>
                         <div className="product-name">{item.name}</div>
                         <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                          <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
+                          <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "18px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                         </div>
                         <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                          <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                          <SellIcon style={{ marginBottom: '-5px', fontSize: "18px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                         </div>
                       </div>
                     </Link>
-                  )) : <div className="none-content" style={{ height: "280px", textAlign: "center" }}>Không có sản phẩm nào</div>
+                  )) : <div className="none-content" style={{ height: "280px", textAlign: "center" }}></div>
                 }
               </>}
           </div>
@@ -252,15 +214,108 @@ export const Products = ({ socket }) => {
             page={filter.page}
             onChange={handleChangePage}
           />
+          {
+            preLoading && data && data.length ? data.map((item, index) =>
+              <div key={index}>
+                <img style={{ display: 'none' }} rel="prefetch" src={item.image} alt="Product_Image" />
+              </div>
+            ) : <></>
+          }
         </div>
-        {
-          preLoading && data && data.length ? data.map((item, index) =>
-            <div key={index}>
-              <img style={{ display: 'none' }} rel="prefetch" src={item.image} alt="Product_Image" />
-            </div>
-          ) : <></>
-        }
       </div>
+      <Dialog className="filter-dialog" open={openAuctionDialog} onClose={handleCloseAuctionDialog}>
+        <DialogTitle>Đấu giá</DialogTitle>
+        <DialogContent>
+          <div className="filter-dialog-item">
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Chủ đề</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filter.sort}
+                label="Chủ đề"
+                onChange={e => setFilter({ ...filter, sort: e.target.value })}
+              >
+                <MenuItem value={'latest'}>Mới nhất</MenuItem>
+                <MenuItem value={'featured'}>Nổi bật</MenuItem>
+                <MenuItem value={'cheapest'}>Siêu rẻ</MenuItem>
+                <MenuItem value={'expensive'}>Cao cấp</MenuItem>
+                <MenuItem value={'incoming'}>Sắp đấu giá</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          <div className="filter-dialog-item">
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Danh mục</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={filter.category}
+                label="Chủ đề"
+                onChange={e => setFilter({ ...filter, category: e.target.value })}
+              >
+                <MenuItem value={'all'}>Tất cả</MenuItem>
+                {
+                  productCategory.length && productCategory.map((item) => (
+                    <MenuItem key={item.id} value={item.key}>{item.name}</MenuItem>
+                  ))
+                  || <div></div>
+                }
+              </Select>
+            </FormControl>
+          </div>
+          {/* <div className="filter-dialog-item">
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Khoảng giá</InputLabel>
+              <Slider
+                getAriaLabel={() => 'Temperature range'}
+                // value={value}
+                // onChange={handleChange}
+                valueLabelDisplay="auto"
+                min={50}
+                max={50000}
+                // getAriaValueText={valuetext}
+              />
+            </FormControl>
+          </div> */}
+          <div className="filter-dialog-item">
+            <TextField
+              id="outlined-basic"
+              label="Giá từ"
+              variant="outlined"
+              type="number"
+              value={filter.price_from}
+              style={{ width: "250px" }}
+              onChange={e => setFilter({ ...filter, price_from: e.target.value })}
+            />
+          </div>
+          <div className="filter-dialog-item">
+            <TextField
+              id="outlined-basic"
+              label="Đến"
+              variant="outlined"
+              type="number"
+              value={filter.price_to}
+              style={{ width: "250px" }}
+              onChange={e => setFilter({ ...filter, price_to: e.target.value })}
+            />
+          </div>
+          <div className="filter-dialog-item">
+            <TextField
+              id="outlined-basic"
+              label="Tên sản phẩm"
+              variant="outlined"
+              value={filter.name}
+              style={{ width: "250px" }}
+              onChange={e => setFilter({ ...filter, name: e.target.value })}
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
+          <Button onClick={handleSearch} >Xác nhận</Button>
+        </DialogActions>
+      </Dialog>
       <Footer />
     </div>
   );

@@ -53,7 +53,7 @@ export const Product = ({ socket }) => {
         setAuctionHistoryData(result.data.data)
       }
     }
-    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.PRODUCT_WAIT_TIME || 3000));
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.PRODUCT_WAIT_TIME || 1500));
     await Promise.all([f(), delayPromise])
     setLoading(false)
   }

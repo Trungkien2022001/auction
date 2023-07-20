@@ -14,7 +14,7 @@ import Swal from 'sweetalert2'
 import moment from 'moment'
 
 
-export const NewProduct = ({socket}) => {
+export const NewProduct = ({ socket }) => {
 
     const currentUser = useSelector((state) => state.user);
     const inputRef = useRef()
@@ -52,7 +52,7 @@ export const NewProduct = ({socket}) => {
     }, [])
 
     const handleSubmit = async () => {
-        let validate = newAuctionValidate({...product, ...auction})
+        let validate = newAuctionValidate({ ...product, ...auction })
         if (validate.err) {
             Swal.fire(
                 'Có lỗi khi tạo buổi đấu giá mới?',
@@ -61,29 +61,71 @@ export const NewProduct = ({socket}) => {
             )
             return
         }
-        
+
         let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/new-auction`, {
             auction,
-            product : {...product, images: imageList}
+            product: { ...product, images: imageList }
         }, currentUser)
         if (result.data.success) {
             Swal.fire({
-              icon: 'success',
-              title: 'Tạo phiên đấu giá mới thành công',
-              showConfirmButton: true,
-              timer: 10000
-            }).then(()=>{
-              window.location.href = './';
+                icon: 'success',
+                title: 'Tạo phiên đấu giá mới thành công',
+                showConfirmButton: true,
+                timer: 10000
+            }).then(() => {
+                window.location.href = './';
             })
-          } else {
+        } else {
             Swal.fire({
-              icon: 'error',
-              title: 'Đã xảy ra lỗi',
-              text: result.data.message,
-              showConfirmButton: true,
+                icon: 'error',
+                title: 'Đã xảy ra lỗi',
+                text: result.data.message,
+                showConfirmButton: true,
             })
-          }
+        }
     }
+
+    const resizeImage = (file, maxWidth, maxHeight) => {
+        return new Promise((resolve) => {
+            const image = new Image();
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            image.onload = () => {
+                let width = image.width;
+                let height = image.height;
+
+                if (width > maxWidth || height > maxHeight) {
+                    const aspectRatio = width / height;
+
+                    if (width > maxWidth) {
+                        width = maxWidth;
+                        height = width / aspectRatio;
+                    }
+
+                    if (height > maxHeight) {
+                        height = maxHeight;
+                        width = height * aspectRatio;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                ctx.drawImage(image, 0, 0, width, height);
+
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], file.name, { type: file.type }));
+                }, file.type);
+            };
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                image.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    };
 
     const handleAddImage = async () => {
         const files = inputRef.current.files
@@ -91,7 +133,8 @@ export const NewProduct = ({socket}) => {
             await Promise.all(
                 Object.values(files).map(async (file) => {
                     const data = new FormData();
-                    data.append("file", file);
+                    const resizedFile = await resizeImage(file, 800, 600);
+                    data.append("file", resizedFile);
                     data.append("upload_preset", "upload");
                     const uploadRes = await axios.post(
                         "https://api.cloudinary.com/v1_1/nguyenkien2022001/image/upload",
@@ -110,7 +153,7 @@ export const NewProduct = ({socket}) => {
     }
     return (
         <div>
-            <Header socket = {socket}/>
+            <Header socket={socket} />
             <div className="new-container">
                 <div className="new-container-header">
                     Thêm một phiên đấu giá mới
@@ -137,7 +180,7 @@ export const NewProduct = ({socket}) => {
                         />
                     </div>
                 </div>
-               
+
                 <div className='new-product-part'>
                     <div className='new-product-item'>
                         <TextField
@@ -193,7 +236,7 @@ export const NewProduct = ({socket}) => {
                         />
                     </div>
                 </div>
-                
+
                 <div className='new-product-part'>
                     <div className='new-product-item'>
                         <TextField

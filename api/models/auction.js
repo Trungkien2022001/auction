@@ -111,11 +111,12 @@ exports.getAuctions = async params => {
                 switch (sorted) {
                     case 'featured':
                     case 'cheapest':
-                    case 'lastest':
+                    case 'latest':
+                    case 'expensive':
                         this.where('a.status', 2)
                         break
                     case 'incoming':
-                        this.where('a.status', 2)
+                        this.where('a.status', 1)
                         break
                     default:
                         break
@@ -133,7 +134,7 @@ exports.getAuctions = async params => {
                 query = query.orderBy('a.sell_price', 'desc')
                 break
             case 'incoming':
-            case 'lastest':
+            case 'latest':
                 query.orderBy('a.start_time', 'desc')
                 break
             default:
@@ -250,6 +251,7 @@ exports.getProductAuction = async auctionId => {
                 'a.status as auction_status',
                 'a.is_finished_soon',
                 'a.is_returned',
+                'p.id as product_id',
                 'p.name',
                 'p.title',
                 'p.description',
@@ -269,7 +271,8 @@ exports.getProductAuction = async auctionId => {
         if (!result.length) {
             throw new Error('Auction not found')
         }
-        const images = (await commonModel.getProductImages(result[0].id)) || []
+        const images =
+            (await commonModel.getProductImages(result[0].product_id)) || []
 
         return {
             ...result[0],

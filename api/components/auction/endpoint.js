@@ -72,7 +72,7 @@ router.get('/auction-overview', async ctx => {
         throw error
     }
 })
-router.get('/auctions', validate(gets), async ctx => {
+router.post('/auctions', validate(gets), async ctx => {
     debug('POST / get auctions')
     const { query } = ctx.request
     try {

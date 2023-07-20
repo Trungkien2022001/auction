@@ -44,7 +44,7 @@ export const Homepage = ({ socket }) => {
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', async () => {
-        await getData()
+        // await getData()
       })
       socket.current.on('receive-admin-msg', params => {
         // setMess(prev=>[...prev, {...params, updated_at: moment(new Date()).format()}])
@@ -65,7 +65,7 @@ export const Homepage = ({ socket }) => {
       setPreLoading(true)
 
     }
-    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_WAIT_TIME || 4000));
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_WAIT_TIME || 2500));
     await Promise.all([f(), delayPromise])
     setLoading(false)
   }

@@ -12,7 +12,7 @@ const defaults = {
     redisPort: 6379,
     redisPassword: null,
     redisDb: 0,
-    redisPrefix: 'test:',
+    redisPrefix: 'auction:',
     auctionTime,
     mysqlConnectionUrl: 'mysql://root@localhost/auction',
     messageLimit: 200,

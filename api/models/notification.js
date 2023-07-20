@@ -100,6 +100,7 @@ exports.getNotifications = async userId => {
             .from('notification as n')
             .innerJoin('user as u', 'n.action_user_id', 'u.id')
             .where('n.user_id', userId)
+            .limit(101)
             .orderBy('n.updated_at', 'desc')
 
         return result

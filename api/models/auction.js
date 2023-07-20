@@ -262,46 +262,63 @@ exports.getIncomingAuction = async () => {
 exports.getProductAuction = async auctionId => {
     debug('MODEL/auction getProductAuction')
     try {
-        const result = await knex
-            .select(
-                'a.id',
-                'a.start_time',
-                'a.start_price',
-                'a.sell_price',
-                'a.seller_id',
-                'a.auction_count',
-                'a.status as auction_status',
-                'a.is_finished_soon',
-                'a.is_returned',
-                'p.id as product_id',
-                'p.name',
-                'p.title',
-                'p.description',
-                'p.branch',
-                'p.key_word',
-                'p.status',
-                'pc.name as product_category',
-                'at.time'
-            )
-            .from('auction as a')
-            .innerJoin('product as p', 'a.product_id', 'p.id')
-            .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
-            .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
-            // .innerJoin('auction_history as ah', 'a.id', 'ah.auction_id')
-            .where('a.id', auctionId)
-        // .whereNull('a.deleted_at')
-        if (!result.length) {
-            throw new Error('Auction not found')
-        }
-        const images =
-            (await commonModel.getProductImages(result[0].id)) ||
-            (await commonModel.getProductImages(result[0].product_id)) ||
-            []
+        const fn = async () => {
+            const result = await knex
+                .select(
+                    'a.id',
+                    'a.start_time',
+                    'a.start_price',
+                    'a.sell_price',
+                    'a.seller_id',
+                    'a.auction_count',
+                    'a.status as auction_status',
+                    'a.is_finished_soon',
+                    'a.is_returned',
+                    'p.id as product_id',
+                    'p.name',
+                    'p.title',
+                    'p.description',
+                    'p.branch',
+                    'p.key_word',
+                    'p.status',
+                    'pc.name as product_category',
+                    'at.time'
+                )
+                .from('auction as a')
+                .innerJoin('product as p', 'a.product_id', 'p.id')
+                .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+                .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
+                // .innerJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+                .where('a.id', auctionId)
+            // .whereNull('a.deleted_at')
+            if (!result.length) {
+                throw new Error('Auction not found')
+            }
+            let images = await commonModel.getProductImages(result[0].id)
+            if (!images.length) {
+                // Stupid bug
+                images =
+                    (await commonModel.getProductImages(
+                        result[0].product_id
+                    )) || []
+            }
 
-        return {
-            ...result[0],
-            images
+            return {
+                ...result[0],
+                images
+            }
         }
+
+        return await fn()
+
+        // return redis.cachedExecute(
+        //     {
+        //         key: `auction:${auctionId}`,
+        //         ttl: '2 days',
+        //         json: true
+        //     },
+        //     fn
+        // )
     } catch (err) {
         throw new Error(err.message || JSON.stringify(err))
     }

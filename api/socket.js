@@ -23,6 +23,7 @@ const auctionModel = require('./models/auction')
 const messageModel = require('./models/message')
 const notificationModel = require('./models/notification')
 const { insertMessage } = require('./models/message')
+const { redis } = require('./connectors')
 
 let auctions = []
 const listOnlineUser = []
@@ -286,6 +287,7 @@ async function handleRaise(data) {
     //         highestBet: maxRaise
     //     }
     // } else {
+    await redis.del(`auction:auction:${auction.product.id}`)
     await auctionModel.insertUserAuction(user.id, auction.product.id)
     const userIds = await auctionModel.getAllAuctioneerOfAuction(
         auction.product.id

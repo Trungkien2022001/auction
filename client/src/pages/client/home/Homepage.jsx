@@ -59,7 +59,6 @@ export const Homepage = ({ socket }) => {
     const f = async () => {
       const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-overview`, currentUser)
       if (result.status === 200) {
-        let d = result.data.data
         setData(result.data.data)
       }
       setPreLoading(true)

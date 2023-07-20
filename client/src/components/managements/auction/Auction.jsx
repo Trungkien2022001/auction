@@ -259,7 +259,7 @@ export const Auction = ({ currentUser, socket }) => {
     // setData(dataList)
   }
   async function getAuctionDetail() {
-    let result = await get(`${api_endpoint}/auction?id=${currentAuctionId}`, currentUser)
+    let result = await post(`${api_endpoint}/auction?id=${currentAuctionId}`, {}, currentUser)
     if (result.status === 200) {
       setCurrentAuction(result.data.data.product)
     }

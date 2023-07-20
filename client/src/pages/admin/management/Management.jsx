@@ -64,25 +64,24 @@ export const Management = ({ socket }) => {
   const [englishNavOpen, setEnglishNavOpen] = useState(false);
 
   const handleChangePage = (t) => {
-    console.log(t)
     switch (t) {
       case 'auction':
-        window.location.href = `./auction`
+        window.location.href = `/management/auction`
         break;
       case 'dashboard':
-        window.location.href = `./dashboard`
+        window.location.href = `/management/dashboard`
         break;
 
       case 'user':
-        window.location.href = `./user`
+        window.location.href = `/management/user`
         break;
 
       case 'chat':
-        window.location.href = `./chat`
+        window.location.href = `/management/chat`
         break;
 
       case 'action-log':
-        window.location.href = `./action-log`
+        window.location.href = `/management/action-log`
         break;
 
       default:

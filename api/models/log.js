@@ -40,7 +40,7 @@ module.exports = class Log {
     static async getLogs() {
         return await knex('action_logs')
             .select()
-            .limit(100)
+            .limit(250)
             .orderBy('created_at', 'desc')
     }
 

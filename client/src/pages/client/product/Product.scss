@@ -361,6 +361,10 @@
       }
       .history-dialog-user {
         flex: 3;
+        margin-right: 10px;
+        max-width: 150px;
+        overflow: hidden;
+        word-wrap: break-word
       }
       .history-dialog-amount {
         flex: 2;

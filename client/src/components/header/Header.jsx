@@ -98,7 +98,7 @@ export const Header = ({ socket }) => {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleSearch = () => {
-    if(text != ''){
+    if(text !== ''){
       window.location.href = (`/products?sort=featured&category=all&name=${text}`)
     }
   }

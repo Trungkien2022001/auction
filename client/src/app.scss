@@ -1,3 +1,5 @@
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+@import 'bootstrap/dist/css/bootstrap.min.css';
 :root {
     font-family: 'Quicksand', sans-serif;
 }
@@ -23,7 +25,7 @@ body{
 }
 .padding__main {
     padding: 0px 200px;
-    
+
     @media only screen and (max-width: 1750px) {
         padding: 5px 100px;
     }

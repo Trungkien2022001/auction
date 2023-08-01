@@ -70,7 +70,7 @@ export const Login = ({socket}) => {
   return (
     <div>
       <Header socket = {socket}></Header>
-      <div className="input-container">
+      <div className="input-container padding__main">
         <div className="login-form">
           <div style={{marginLeft: '8px'}} className="login-input">
               <TextField onChange={e=>setUsername(e.target.value)} id="outlined-basic" label="Email" variant="outlined" />

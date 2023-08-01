@@ -21,6 +21,7 @@ import moment from "moment";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import { CustomSlider } from "../../../components/slider/Slider";
 const _ = require('lodash')
 
 
@@ -149,6 +150,7 @@ export const Homepage = ({ socket }) => {
   return (
     <div>
       <Header socket={socket} />
+      <CustomSlider/>
       {
         preLoading && data ? _.flatten(Object.keys(data).map((item) => data[item].map(p => p.image))).map((item, index) =>
           <div key={index}>
@@ -156,7 +158,7 @@ export const Homepage = ({ socket }) => {
           </div>
         ) : <></>
       }
-      <div className="padding__main container">
+      <div className="padding__main homepage-container">
         <div className='left-container'>
           <div className="head-m">Danh mục sản phẩm</div>
           <List sx={style} component="nav" aria-label="mailbox folders" className="homepage-sidebar">
@@ -264,8 +266,8 @@ export const Homepage = ({ socket }) => {
                 <div className="product-wrapper">
                   {Array(6).fill(1).map((item, index) =>
                     <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={165} height={200} />
-                      <Skeleton width={165} height={45} count={2} style={{ marginTop: "10px" }} />
+                      <Skeleton width={170} height={200} />
+                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
                     </div>
                   )}
                 </div>
@@ -326,8 +328,8 @@ export const Homepage = ({ socket }) => {
                 <div className="product-wrapper">
                   {Array(6).fill(1).map((item, index) =>
                     <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={165} height={200} />
-                      <Skeleton width={165} height={45} count={2} style={{ marginTop: "10px" }} />
+                      <Skeleton width={170} height={200} />
+                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
                     </div>
                   )}
                 </div>
@@ -390,8 +392,8 @@ export const Homepage = ({ socket }) => {
                 <div className="product-wrapper">
                   {Array(6).fill(1).map((item, index) =>
                     <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={165} height={200} />
-                      <Skeleton width={165} height={45} count={2} style={{ marginTop: "10px" }} />
+                      <Skeleton width={170} height={200} />
+                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
                     </div>
                   )}
                 </div>
@@ -455,8 +457,8 @@ export const Homepage = ({ socket }) => {
                 <div className="product-wrapper">
                   {Array(6).fill(1).map((item, index) =>
                     <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={165} height={200} />
-                      <Skeleton width={165} height={45} count={2} style={{ marginTop: "10px" }} />
+                      <Skeleton width={170} height={200} />
+                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
                     </div>
                   )}
                 </div>
@@ -520,8 +522,8 @@ export const Homepage = ({ socket }) => {
                 <div className="product-wrapper">
                   {Array(6).fill(1).map((item, index) =>
                     <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={165} height={200} />
-                      <Skeleton width={165} height={45} count={2} style={{ marginTop: "10px" }} />
+                      <Skeleton width={170} height={200} />
+                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
                     </div>
                   )}
                 </div>

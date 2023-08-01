@@ -1,0 +1,14 @@
+.slider-custom{
+    margin-top: 65px;
+    height: 280px;
+    img{
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+}
+@media screen and (max-width: 1520px){
+    .slider-custom{
+        display: none;
+    }
+}

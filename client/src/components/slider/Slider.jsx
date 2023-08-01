@@ -4,7 +4,8 @@ import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-export const CustomSlider = () => {
+import Skeleton from 'react-loading-skeleton';
+export const CustomSlider = ({ loading }) => {
   const images = [
     {
       url: 'https://cf.shopee.vn/file/vn-50009109-d8e17acb2723cb1ec37171c97f518aa2_xxhdpi'
@@ -33,20 +34,27 @@ export const CustomSlider = () => {
     speed: 500,
   };
 
-    return (
-      <div className='slider-custom padding__main'>
-        <Slider {...settings}>
-        {
-          images.length ? images.map((item, index) =>
-            <div>
-              <img key={index} src={item.url} alt="" />
-            </div>
-          ) :
-            <div>
-              <img src="https://cf.shopee.vn/file/vn-50009109-d8e17acb2723cb1ec37171c97f518aa2_xxhdpi" alt="" />
-            </div>
-        }
-        </Slider>
-      </div>
+  return (
+    <div className='slider-custom padding__main'>
+      {
+        loading ?
+          <div className="loading" style={{width: "100%"}}>
+            <Skeleton width={"100%"} height={250} />
+          </div>
+          :
+          <Slider {...settings}>
+            {
+              images.length ? images.map((item, index) =>
+                <div>
+                  <img key={index} src={item.url} alt="" />
+                </div>
+              ) :
+                <div>
+                  <img src="https://cf.shopee.vn/file/vn-50009109-d8e17acb2723cb1ec37171c97f518aa2_xxhdpi" alt="" />
+                </div>
+            }
+          </Slider>
+      }
+    </div>
   );
 }

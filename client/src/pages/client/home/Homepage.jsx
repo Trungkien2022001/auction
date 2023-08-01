@@ -4,32 +4,22 @@ import React, { useRef } from "react";
 import { useState } from "react";
 import { Header } from "../../../components/header/Header";
 import "./Homepage.scss";
-// import axios from "axios";
 import { Link } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Divider, List, ListItem, ListItemText } from "@mui/material";
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import SellIcon from '@mui/icons-material/Sell';
-import Countdown, { zeroPad } from 'react-countdown'
+import { Avatar, Button } from "@mui/material";
 import { useEffect } from "react";
 import { get } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
 import moment from "moment";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
-import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { CustomSlider } from "../../../components/slider/Slider";
-const _ = require('lodash')
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import _ from 'lodash'
+import { ProductComponent } from "../../../components/product/ProductComponent";
+import Skeleton from "react-loading-skeleton";
 
-
-const renderer = ({ days, hours, minutes, seconds }) => (
-  <span>
-    {days}d {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
-  </span>
-);;
 
 export const Homepage = ({ socket }) => {
   const messageRef = useRef();
@@ -40,7 +30,9 @@ export const Homepage = ({ socket }) => {
   const [message, setMessage] = useState("");
   const [mess, setMess] = useState([]);
   const [loading, setLoading] = useState(true)
+  const [loadingMeta, setLoadingMeta] = useState(true)
   const [preLoading, setPreLoading] = useState(false)
+  const [preLoadingMeta, setPreLoadingMeta] = useState(false)
 
   useEffect(() => {
     if (socket.current) {
@@ -63,7 +55,6 @@ export const Homepage = ({ socket }) => {
         setData(result.data.data)
       }
       setPreLoading(true)
-
     }
     const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_WAIT_TIME || 3500));
     await Promise.all([f(), delayPromise])
@@ -71,27 +62,37 @@ export const Homepage = ({ socket }) => {
   }
 
   async function getMetaData() {
-    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
-    if (result.status === 200) {
+    setLoadingMeta(true)
+    setPreLoadingMeta(false)
+    const f = async () => {
+      let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+      if (result.status === 200) {
+        setProductCategory(result.data.product_category)
+        setPreLoadingMeta(true)
+      }
 
-      setProductCategory(result.data.product_category)
     }
     if (currentUser.id) {
-      result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${currentUser.id}`, currentUser)
+      let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${currentUser.id}`, currentUser)
       if (result.status === 200) {
         setMess(result.data.body)
       }
     }
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_METADATA_WAIT_TIME || 2500));
+    await Promise.all([f(), delayPromise])
+    setLoadingMeta(false)
   }
   useEffect(() => {
     getData()
     getMetaData()
   }, [])
-  const handleStop = () => {
-  }
   useEffect(() => {
     messageRef.current?.scrollIntoView()
   }, [mess.length])
+
+  const handleChangePage = id => {
+    window.location.href = (`/products?sort=featured&category=${PRODUCT_CATEGORY[id]}`)
+  }
 
   async function sendMessage() {
     if (message !== "" && currentUser.id && currentUser.id !== 1) {
@@ -139,442 +140,153 @@ export const Homepage = ({ socket }) => {
     }
   };
 
-  const handleChangePage = id => {
-    window.location.href = (`/products?sort=featured&category=${PRODUCT_CATEGORY[id]}`)
-  }
-
-  const style = {
-    width: '100%',
-    bgcolor: 'background.paper',
-  };
   return (
     <div>
       <Header socket={socket} />
-      <CustomSlider/>
-      {
-        preLoading && data ? _.flatten(Object.keys(data).map((item) => data[item].map(p => p.image))).map((item, index) =>
-          <div key={index}>
-            <img style={{ display: 'none' }} rel="prefetch" src={item} alt="Product_Image" />
-          </div>
-        ) : <></>
-      }
+      <CustomSlider loading={loadingMeta} />
       <div className="padding__main homepage-container">
-        <div className='left-container'>
-          <div className="head-m">Danh mục sản phẩm</div>
-          <List sx={style} component="nav" aria-label="mailbox folders" className="homepage-sidebar">
-            {
-              productCategory.length && productCategory.map((item, index) => (
-
-                <div key={index}>
-                  <ListItem style={{ padding: '4px 5px' }} className="list-item-category">
-                    <ListItemText style={{ cursor: 'pointer' }} primary={item.name} onClick={() => handleChangePage(item.id)} />
-                  </ListItem>
-                  <Divider />
-                </div>
-              ))
-              || <></>
-            }
-          </List>
-        </div>
-        <div className='right-container'>
-          <div className="chat">
-            {check ?
-              <img className="chat-icon"
-                onClick={() => setCheck(!check)}
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/512px-Facebook_Messenger_logo_2020.svg.png?20220118041828"
-                alt=""
-              />
-              :
-              <div className="chatbox">
-                <div className="chatbox-header">
-                  <div className="content">
-                    Bạn cần giúp gì ?
-                  </div>
-                  <div className="close">
-                    <CloseIcon onClick={() => setCheck(!check)} />
-                  </div>
-                </div>
-                <div className="chat-container">
-                  {
-                    mess.map((item, index) =>
-                      <div key={index} className={!item.is_admin ? "right item" : "left item"}>
-                        <div className="content">
-                          {item.content}
-                          <div className='time'>
-                            {moment(item.updated_at).format("DD/MM/YYYY HH:mm")}
-                          </div>
+        {
+          loadingMeta ?
+            <div className="product-category">
+              <div className="product-category-header">
+                <Skeleton width={250} height={30} />
+              </div>
+              <div style={{ width: "100%" }}>
+                <Skeleton width={"100%"} height={110} />
+                <Skeleton width={"100%"} height={110} style={{ marginTop: "12px" }} />
+              </div>
+            </div>
+            :
+            <div className="product-category">
+              <div className="product-category-header">
+                Danh mục sản phẩm
+              </div>
+              <div className="product-category-wrapper">
+                {
+                  productCategory.length && _.chunk(productCategory, 2).map((item, index) => (
+                    <div className="group-category">
+                      <div className="product-category-item" onClick={() => handleChangePage(item[0].id)}>
+                        <div className="product-category-image">
+                          <Avatar sx={{ width: 70, height: 70 }} alt="" src={item[0].image} />
+                        </div>
+                        <div className="product-category-title">
+                          {item[0].name}
                         </div>
                       </div>
-                    )
-                  }
-                  {!mess.length ?
-                    <div className="left item">
-                      <div className="content">
-                        Nếu bạn có bất cứ câu hỏi gì hoặc cần giúp đỡ thì hãy nhắn vào đây nhé.
-                        Chúng tôi sẽ giúp đỡ bạn ngay lập tức!
-                        Tổng đài hỗ trợ 24/24
-                        Vui lòng đăng nhập để sử dụng tính năng này
-                      </div>
+                      {item[1] ?
+                        <div className="product-category-item">
+                          <div className="product-category-image">
+                            <Avatar sx={{ width: 70, height: 70 }} alt="" src={item[1].image} onClick={() => handleChangePage(item[1].id)} />
+                          </div>
+                          <div className="product-category-title">
+                            {item[1].name}
+                          </div>
+                        </div> :
+                        <></>
+                      }
+
                     </div>
-                    :
-                    <></>
-                  }
-                  <div ref={messageRef} />
+                  ))
+                  || <></>
+                }
+              </div>
+            </div>
+        }
+
+        <ProductComponent data={data.featured} title={'Sản phẩm nổi bật'} loading={loading} keyword={'featured'}/>
+        <ProductComponent data={data.latest} title={'Sản phẩm mới nhất'} loading={loading} keyword={'latest'}/>
+        <ProductComponent data={data.cheap} title={'Sản phẩm siêu rẻ'} loading={loading} keyword={'cheapest'}/>
+        <ProductComponent data={data.expensive} title={'Sản phẩm cao cấp'} loading={loading} keyword={'expensive'}/>
+        <ProductComponent data={data.incoming} title={'Sản phẩm sắp đấu giá'} loading={loading} keyword={'incoming'}/>
+        <div className="chat">
+          {check ?
+            <img className="chat-icon"
+              onClick={() => setCheck(!check)}
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/512px-Facebook_Messenger_logo_2020.svg.png?20220118041828"
+              alt=""
+            />
+            :
+            <div className="chatbox">
+              <div className="chatbox-header">
+                <div className="content">
+                  Bạn cần giúp gì ?
                 </div>
-                <div className='chat-input'>
-                  <input
-                    style={{ width: "224px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
-                    onKeyDown={onEnterPress}
-                    value={message}
-                    disabled={currentUser.id ? false : true}
-                    onChange={e => setMessage(e.target.value)}
-                    type="text"
-                    placeholder="Nhập tin nhắn"
-                  />
-                  <Button
-                    style={{ width: "70px", height: "44px" }}
-                    onClick={sendMessage} variant="contained"
-                    disabled={currentUser.id ? false : true}
-                  >
-                    Send
-                  </Button>
+                <div className="close">
+                  <CloseIcon onClick={() => setCheck(!check)} />
                 </div>
               </div>
-            }
-          </div>
-          <div className="new-auction-btn">
-            <Link to={'/new-auction'}>
-              <img
-                src="https://media.istockphoto.com/id/1437225090/vi/vec-to/bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-pop-m%E1%BB%9Bi-s%E1%BA%A3n-ph%E1%BA%A9m-m%E1%BB%9Bi-khuy%E1%BA%BFn-m%C3%A3i-%C4%91%E1%BA%B7t-vect%C6%A1.jpg?s=2048x2048&w=is&k=20&c=Y16uTx7wkfTGLZzKYsRbogVMpzcU9k-LiTqA9euXYRQ="
-                alt=""
-              />
-            </Link>
-          </div>
-
-          {/* Sản phẩm nổi bật */}
-          {/* <div className="without-backend" style={{ fontSize: "22px", padding: "10px 30px", color: "red" , border: "1px solid red", borderRadius: "10px"}}>Hiện tại hệ thống server đang được bảo trì nên một vài tính năng không thể sủ dụng được. Xin lỗi bạn vì sự bất tiện này, trên đây là giao diện demo của chúng tôi, vui lòng xem  <Link to={'/tutorial'}>
-           Hướng dẫn sử dụng!
-          </Link></div> */}
-          <div className="product-part-wrapper">
-            <div className="title-header">
-              <b></b>
-              <Link to={'/products?type=featured'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm nổi bật</h2></Link>
-              <b></b>
-            </div>
-            {
-              loading ?
-                <div className="product-wrapper">
-                  {Array(6).fill(1).map((item, index) =>
-                    <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={170} height={200} />
-                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
-                    </div>
-                  )}
-                </div>
-                :
-                <div className="product-wrapper">
-                  {
-                    data && data.featured && data.featured.map(item => (
-                      <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                        <div className="product">
-                          <div className="productImg">
-                            <img src={item.image} alt="Product_Image" />
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
-                            <div className="product-time product-item">
-                              <div className="product-icon">
-                                <AccessTimeIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
-                                <Countdown
-                                  onComplete={() => handleStop()}
-                                  // onStop={()=>handleStop()}
-                                  date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                                  renderer={renderer}
-                                />
-                              </div>
-                            </div>
-                            <div className="product-vote product-item">
-                              <div className="product-icon">
-                                <EmojiPeopleIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "1.2rem" }}>
-                                {item.auction_count}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="product-name">{item.name}</div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                          </div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
-                          </div>
+              <div className="chat-container">
+                {
+                  mess.map((item, index) =>
+                    <div key={index} className={!item.is_admin ? "right item" : "left item"}>
+                      <div className="content">
+                        {item.content}
+                        <div className='time'>
+                          {moment(item.updated_at).format("DD/MM/YYYY HH:mm")}
                         </div>
-                      </Link>
-                    ))
-                  }
-                </div>
-            }
-          </div>
-          <div className="product-part-wrapper">
-            <div className="title-header">
-              <b></b>
-              <Link to={'/products?type=featured'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm mới nhất</h2></Link>
-              <b></b>
-            </div>
-            {
-              loading ?
-                <div className="product-wrapper">
-                  {Array(6).fill(1).map((item, index) =>
-                    <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={170} height={200} />
-                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
+                      </div>
                     </div>
-                  )}
-                </div>
-                :
-                <div className="product-wrapper">
-                  {
-                    data && data.latest && data.latest.map(item => (
-                      <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                        <div className="product">
-                          <div className="productImg">
-                            <img src={item.image} alt="Product_Image" />
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
-                            <div className="product-time product-item">
-                              <div className="product-icon">
-                                <AccessTimeIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
-                                <Countdown
-                                  onComplete={() => handleStop()}
-                                  // onStop={()=>handleStop()}
-                                  date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                                  renderer={renderer}
-                                />
-                              </div>
-                            </div>
-                            <div className="product-vote product-item">
-                              <div className="product-icon">
-                                <EmojiPeopleIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "1.2rem" }}>
-                                {item.auction_count}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="product-name">{item.name}</div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                          </div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
-                          </div>
-                        </div>
-                      </Link>
-                    ))
-                    || <></>
-                  }
-                </div>
-            }
-          </div>
-          {/* Sản phẩm siêu rẻ */}
-          <div className="product-part-wrapper">
-            <div className="title-header">
-              <b></b>
-              <Link to={'/products/type=cheapest'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm siêu rẻ</h2></Link>
-              <b></b>
-            </div>
-            {
-              loading ?
-                <div className="product-wrapper">
-                  {Array(6).fill(1).map((item, index) =>
-                    <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={170} height={200} />
-                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
+                  )
+                }
+                {!mess.length ?
+                  <div className="left item">
+                    <div className="content">
+                      Nếu bạn có bất cứ câu hỏi gì hoặc cần giúp đỡ thì hãy nhắn vào đây nhé.
+                      Chúng tôi sẽ giúp đỡ bạn ngay lập tức!
+                      Tổng đài hỗ trợ 24/24
+                      Vui lòng đăng nhập để sử dụng tính năng này
                     </div>
-                  )}
-                </div>
-                :
-                <div className="product-wrapper">
-                  {
-                    data && data.cheap && data.cheap.map(item => (
-                      <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                        <div className="product">
-                          <div className="productImg">
-                            <img src={item.image} alt="Product_Image" />
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
-                            <div className="product-time product-item">
-                              <div className="product-icon">
-                                <AccessTimeIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
-                                <Countdown
-                                  onComplete={() => handleStop()}
-                                  // onStop={()=>handleStop()}
-                                  date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                                  renderer={renderer}
-                                />
-                              </div>
-                            </div>
-                            <div className="product-vote product-item">
-                              <div className="product-icon">
-                                <EmojiPeopleIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "1.2rem" }}>
-                                {item.auction_count}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="product-name">{item.name}</div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                          </div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
-                          </div>
-                        </div>
-                      </Link>
-                    ))
-                    || <></>
-                  }
-                </div>
-            }
-
-          </div>
-          {/* Sản phẩm cao cấp */}
-          <div className="product-part-wrapper">
-            <div className="title-header">
-              <b></b>
-              <Link to={'/products/type=cheapest'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm cao cấp</h2></Link>
-              <b></b>
+                  </div>
+                  :
+                  <></>
+                }
+                <div ref={messageRef} />
+              </div>
+              <div className='chat-input'>
+                <input
+                  style={{ width: "224px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
+                  onKeyDown={onEnterPress}
+                  value={message}
+                  disabled={currentUser.id ? false : true}
+                  onChange={e => setMessage(e.target.value)}
+                  type="text"
+                  placeholder="Nhập tin nhắn"
+                />
+                <Button
+                  style={{ width: "70px", height: "44px" }}
+                  onClick={sendMessage} variant="contained"
+                  disabled={currentUser.id ? false : true}
+                >
+                  Send
+                </Button>
+              </div>
             </div>
-            {
-              loading ?
-                <div className="product-wrapper">
-                  {Array(6).fill(1).map((item, index) =>
-                    <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={170} height={200} />
-                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
-                    </div>
-                  )}
-                </div>
-                :
-                <div className="product-wrapper">
-                  {
-                    data && data.expensive && data.expensive.map(item => (
-                      <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                        <div className="product">
-                          <div className="productImg">
-                            <img src={item.image} alt="Product_Image" />
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
-                            <div className="product-time product-item">
-                              <div className="product-icon">
-                                <AccessTimeIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
-                                <Countdown
-                                  onComplete={() => handleStop()}
-                                  // onStop={()=>handleStop()}
-                                  date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                                  renderer={renderer}
-                                />
-                              </div>
-                            </div>
-                            <div className="product-vote product-item">
-                              <div className="product-icon">
-                                <EmojiPeopleIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "1.2rem" }}>
-                                {item.auction_count}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="product-name">{item.name}</div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                          </div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
-                          </div>
-                        </div>
-                      </Link>
-                    ))
-                    || <></>
-                  }
-                </div>
-            }
-
-          </div>
-          {/* Sản phẩm sắp đấu giá */}
-          <div className="product-part-wrapper">
-            <div className="title-header">
-              <b></b>
-              <Link to={'/products?type=incoming'} style={{ color: 'black', textDecoration: 'none' }}> <h2>Sản phẩm sắp đấu giá</h2></Link>
-              <b></b>
-            </div>
-            {
-              loading ?
-                <div className="product-wrapper">
-                  {Array(6).fill(1).map((item, index) =>
-                    <div key={index} className="loading" style={{ margin: '20px' }}>
-                      <Skeleton width={170} height={200} />
-                      <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
-                    </div>
-                  )}
-                </div>
-                :
-                <div className="product-wrapper">
-                  {
-                    data && data.incoming && data.incoming.map(item => (
-                      <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                        <div className="product">
-                          <div className="productImg">
-                            <img src={item.image} alt="Product_Image" />
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
-                            <div className="product-time product-item">
-                              <div className="product-icon">
-                                <AccessTimeIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
-                                <Countdown
-                                  onComplete={() => handleStop()}
-                                  // onStop={()=>handleStop()}
-                                  date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                                  renderer={renderer}
-                                />
-                              </div>
-                            </div>
-                            <div className="product-vote product-item">
-                              <div className="product-icon">
-                                <EmojiPeopleIcon />
-                              </div>
-                              <div className="product-content" style={{ fontSize: "1.2rem" }}>
-                                {item.auction_count}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="product-name">{item.name}</div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                          </div>
-                          <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                            <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
-                          </div>
-                        </div>
-                      </Link>
-                    ))
-                    || <></>
-                  }
-                </div>
-            }
-          </div>
+          }
         </div>
+        <div className="new-auction-btn">
+          <Link to={'/new-auction'}>
+            <img
+              src="https://media.istockphoto.com/id/1437225090/vi/vec-to/bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-pop-m%E1%BB%9Bi-s%E1%BA%A3n-ph%E1%BA%A9m-m%E1%BB%9Bi-khuy%E1%BA%BFn-m%C3%A3i-%C4%91%E1%BA%B7t-vect%C6%A1.jpg?s=2048x2048&w=is&k=20&c=Y16uTx7wkfTGLZzKYsRbogVMpzcU9k-LiTqA9euXYRQ="
+              alt=""
+            />
+          </Link>
+        </div>
+      </div>
+      <div className="tmp">
+        {
+          preLoading && data ? _.flatten(Object.keys(data).map((item) => data[item].map(p => p.image))).map((item, index) =>
+            <div key={index}>
+              <img style={{ display: 'none' }} rel="prefetch" src={item} alt="Product_Image" />
+            </div>
+          ) : <></>
+        }
+        {
+          preLoadingMeta && productCategory && productCategory.length ? productCategory.map((item, index) =>
+            <div key={index}>
+              <img style={{ display: 'none' }} rel="prefetch" src={item.image} alt="Product_Image" />
+            </div>
+          ) : <></>
+        }
       </div>
       <Footer />
     </div >

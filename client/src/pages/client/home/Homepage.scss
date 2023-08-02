@@ -107,8 +107,6 @@
 .product-category {
   width: 100%;
   max-width: 100%;
-  overflow-x: scroll;
-  overflow-y: hidden;
   .product-category-header {
     color: #d0011b;
     text-align: center;
@@ -117,6 +115,8 @@
     padding-bottom: 15px;
   }
   .product-category-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
     position: relative;
     display: flex;
     width: 100%;

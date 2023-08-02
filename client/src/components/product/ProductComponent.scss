@@ -87,7 +87,7 @@
     margin-top: 65px;
     flex: 3;
     .product-wrapper {
-      justify-content: flex-start;
+      justify-content: space-between;
       .product {
         margin: 20px 10px;
       }
@@ -95,6 +95,13 @@
   }
 }
 @media screen and (max-width: 860px) {
+  .product-component-container{
+    .product-part-wrapper{
+      .product-wrapper{
+        justify-content: center
+      }
+    }
+  }
   .product-container {
     margin-top: 75px;
     flex: 3;
@@ -108,7 +115,7 @@
 @media screen and (max-width: 700px) {
   .product-container {
     .product-wrapper {
-      justify-content: space-around;
+      justify-content: center !important;
       .product {
         margin: 20px 10px;
       }

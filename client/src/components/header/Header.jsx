@@ -581,7 +581,7 @@ export const Header = ({ socket }) => {
           <Box sx={{ flexGrow: 1 }}>
             <TargetTextWrapper style={{ fontSize: "22px" }}>
               {/* trang này không tồn tại, trang này không tồn tại trang này không tồn tại, trang này không tồn tại, trang này không tồn tại, trang này không tồn */}
-              Trang web đấu giá hàng đầu Việt Nam, thuận mua vừa bán hehehe (^__^)
+              Đấu giá không giới hạn - Sở hữu sản phẩm uy tín!
             </TargetTextWrapper>
           </Box>
           <Box sx={{ display: "flex" }}>

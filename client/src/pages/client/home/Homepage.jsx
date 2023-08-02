@@ -15,7 +15,6 @@ import moment from "moment";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { CustomSlider } from "../../../components/slider/Slider";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import _ from 'lodash'
 import { ProductComponent } from "../../../components/product/ProductComponent";
 import Skeleton from "react-loading-skeleton";

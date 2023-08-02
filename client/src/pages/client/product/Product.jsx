@@ -20,6 +20,7 @@ import { Link } from "react-router-dom";
 import { authenticate } from "../../../utils/authenticate";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import { checkApiResponse } from "../../../utils/checkApiResponse";
 const _ = require('lodash')
 
 
@@ -44,12 +45,12 @@ export const Product = ({ socket }) => {
     setPreLoading(false)
     const f = async () => {
       let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, {}, currentUser)
-      if (result.status === 200) {
+      if (checkApiResponse(result)) {
         setData(result.data.data)
         setPreLoading(true)
       }
       result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
-      if (result.status === 200) {
+      if (checkApiResponse(result)) {
         setAuctionHistoryData(result.data.data)
       }
     }

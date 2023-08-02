@@ -32,6 +32,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { AUCTION_STATUS, AUCTION_TIMES } from '../../../utils/constants';
 import { filterTable } from '../../../utils/filterTable';
+import { checkApiResponse } from '../../../utils/checkApiResponse';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -239,7 +240,7 @@ export const Auction = ({ currentUser, socket }) => {
 
   async function getData() {
     let result = await post(`${api_endpoint}/auctions?type=dashboard`, {}, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setData(result.data.data.products)
       setInitialData(result.data.data.products)
     }
@@ -260,11 +261,11 @@ export const Auction = ({ currentUser, socket }) => {
   }
   async function getAuctionDetail() {
     let result = await post(`${api_endpoint}/auction?id=${currentAuctionId}`, {}, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setCurrentAuction(result.data.data.product)
     }
     result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${currentAuctionId}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setAuctionHistoryData(result.data.data)
     }
 

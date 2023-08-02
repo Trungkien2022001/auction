@@ -15,9 +15,11 @@ import moment from "moment";
 import { PRODUCT_CATEGORY } from "../../../utils/constants";
 import 'react-loading-skeleton/dist/skeleton.css'
 import { CustomSlider } from "../../../components/slider/Slider";
-import _ from 'lodash'
+import _ from 'lodash';
 import { ProductComponent } from "../../../components/product/ProductComponent";
 import Skeleton from "react-loading-skeleton";
+import { checkApiResponse } from "../../../utils/checkApiResponse";
+import { tryParseJson } from "../../../utils/common";
 
 
 export const Homepage = ({ socket }) => {
@@ -25,6 +27,7 @@ export const Homepage = ({ socket }) => {
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState({})
   const [productCategory, setProductCategory] = useState([]);
+  const [bannerImage, setBannerImage] = useState([]);
   const [check, setCheck] = useState(true)
   const [message, setMessage] = useState("");
   const [mess, setMess] = useState([]);
@@ -50,7 +53,7 @@ export const Homepage = ({ socket }) => {
     setPreLoading(false)
     const f = async () => {
       const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-overview`, currentUser)
-      if (result.status === 200) {
+      if (checkApiResponse(result)) {
         setData(result.data.data)
       }
       setPreLoading(true)
@@ -64,17 +67,32 @@ export const Homepage = ({ socket }) => {
     setLoadingMeta(true)
     setPreLoadingMeta(false)
     const f = async () => {
-      let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
-      if (result.status === 200) {
-        setProductCategory(result.data.product_category)
-        setPreLoadingMeta(true)
-      }
+      let tmp_product_category = tryParseJson(localStorage.getItem('product_category'))
+      let tmp_banner_image = tryParseJson(localStorage.getItem('banner_image'))
+      if (
+        !tmp_product_category ||
+        !tmp_banner_image ||
+        moment().diff(moment(tmp_product_category.created_at), 'days') > 1 ||
+        moment().diff(moment(tmp_banner_image.created_at), 'days') > 1
+      ) {
+        let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+        if (checkApiResponse(result)) {
+          setProductCategory(result.data.product_category)
+          setBannerImage(result.data.banner_image)
+          localStorage.setItem('product_category', JSON.stringify({ data: result.data.product_category, created_at: moment().format() }));
+          localStorage.setItem('banner_image', JSON.stringify({ data: result.data.banner_image, created_at: moment().format() }));
+        }
 
-    }
-    if (currentUser.id) {
-      let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${currentUser.id}`, currentUser)
-      if (result.status === 200) {
-        setMess(result.data.body)
+      } else {
+        setProductCategory(tmp_product_category.data)
+        setBannerImage(tmp_banner_image.data)
+      }
+      setPreLoadingMeta(true)
+      if (currentUser.id) {
+        let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${currentUser.id}`, currentUser)
+        if (checkApiResponse(result)) {
+          setMess(result.data.body)
+        }
       }
     }
     const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_METADATA_WAIT_TIME || 2500));
@@ -142,7 +160,7 @@ export const Homepage = ({ socket }) => {
   return (
     <div>
       <Header socket={socket} />
-      <CustomSlider loading={loadingMeta} />
+      <CustomSlider loading={loadingMeta} images={bannerImage} />
       <div className="padding__main homepage-container">
         {
           loadingMeta ?
@@ -163,7 +181,7 @@ export const Homepage = ({ socket }) => {
               <div className="product-category-wrapper">
                 {
                   productCategory.length && _.chunk(productCategory, 2).map((item, index) => (
-                    <div className="group-category">
+                    <div className="group-category" key={index}>
                       <div className="product-category-item" onClick={() => handleChangePage(item[0].id)}>
                         <div className="product-category-image">
                           <Avatar sx={{ width: 70, height: 70 }} alt="" src={item[0].image} />
@@ -192,11 +210,11 @@ export const Homepage = ({ socket }) => {
             </div>
         }
 
-        <ProductComponent data={data.featured} title={'Sản phẩm nổi bật'} loading={loading} keyword={'featured'}/>
-        <ProductComponent data={data.latest} title={'Sản phẩm mới nhất'} loading={loading} keyword={'latest'}/>
-        <ProductComponent data={data.cheap} title={'Sản phẩm siêu rẻ'} loading={loading} keyword={'cheapest'}/>
-        <ProductComponent data={data.expensive} title={'Sản phẩm cao cấp'} loading={loading} keyword={'expensive'}/>
-        <ProductComponent data={data.incoming} title={'Sản phẩm sắp đấu giá'} loading={loading} keyword={'incoming'}/>
+        <ProductComponent data={data.featured} title={'Sản phẩm nổi bật'} loading={loading} keyword={'featured'} />
+        <ProductComponent data={data.latest} title={'Sản phẩm mới nhất'} loading={loading} keyword={'latest'} />
+        <ProductComponent data={data.cheap} title={'Sản phẩm siêu rẻ'} loading={loading} keyword={'cheapest'} />
+        <ProductComponent data={data.expensive} title={'Sản phẩm cao cấp'} loading={loading} keyword={'expensive'} />
+        <ProductComponent data={data.incoming} title={'Sản phẩm sắp đấu giá'} loading={loading} keyword={'incoming'} />
         <div className="chat">
           {check ?
             <img className="chat-icon"

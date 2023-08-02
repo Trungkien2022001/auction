@@ -30,6 +30,7 @@ import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment';
 import { AUCTION_PRESTIGE, USER_STATUS } from '../../../utils/constants';
+import { checkApiResponse } from '../../../utils/checkApiResponse';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -239,13 +240,13 @@ export const User = ({ currentUser, socket }) => {
 
   async function getData() {
     let result = await get(`${api_endpoint}/users`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setData(result.data.users)
     }
   }
   async function getAuctionDetail() {
     let result = await get(`${api_endpoint}/user/${currentUserId}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setCurrentUserInfo(result.data.data)
     }
 

@@ -20,6 +20,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import moment from "moment";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import { checkApiResponse } from "../../../utils/checkApiResponse";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
@@ -66,7 +67,7 @@ export const Products = ({ socket }) => {
     setPreLoading(false)
     const f = async () => {
       const result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auctions?type=${filter.type}&sort=${filter.sort}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${filter.name}&page=${filter.page}&limit=${filter.limit}`, {},currentUser)
-      if (result.status === 200) {
+      if (checkApiResponse(result)) {
         setPreLoading(true)
         setCnt(result.data.data.count.total)
         setData(result.data.data.products)
@@ -79,7 +80,7 @@ export const Products = ({ socket }) => {
 
   async function getMetaData() {
     const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setProductCategory(result.data.product_category)
     }
   }

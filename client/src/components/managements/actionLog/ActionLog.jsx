@@ -33,6 +33,7 @@ import moment from 'moment';
 // import { Link } from 'react-router-dom';
 import { AUCTION_STATUS } from '../../../utils/constants';
 import { filterTable } from '../../../utils/filterTable';
+import { checkApiResponse } from '../../../utils/checkApiResponse';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -223,7 +224,7 @@ export const ActionLog = ({ currentUser, socket }) => {
   const [initialData, setInitialData] = useState([])
   async function getData() {
     let result = await get(`${api_endpoint}/logs`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setData(result.data.body)
       setInitialData(result.data.body)
     }

@@ -12,6 +12,7 @@ import { get, post } from '../../../utils/customRequest'
 import { newAuctionValidate } from '../../../utils/validateFormInput'
 import Swal from 'sweetalert2'
 import moment from 'moment'
+import { checkApiResponse } from '../../../utils/checkApiResponse';
 
 
 export const NewProduct = ({ socket }) => {
@@ -42,7 +43,7 @@ export const NewProduct = ({ socket }) => {
     useEffect(() => {
         async function getData() {
             const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
-            if (result.status === 200) {
+            if (checkApiResponse(result)) {
                 setAuctionTime(result.data.auction_time)
                 setProductCategory(result.data.product_category)
             }

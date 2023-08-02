@@ -170,21 +170,10 @@
 @media screen and (max-width: 860px) {
   .homepage-container {
     margin-top: 75px;
-    flex: 3;
-    .product-wrapper {
-      .product {
-        margin: 20px 10px;
-      }
-    }
   }
 }
 @media screen and (max-width: 700px) {
   .homepage-container {
-    .product-wrapper {
-      .product {
-        margin: 20px 10px;
-      }
-    }
     .new-auction-btn {
       left: 5px !important;
       img {

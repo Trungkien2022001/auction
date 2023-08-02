@@ -4,6 +4,7 @@ const { genericSecure, checkPermission } = require('../../middleware/security')
 const { validate } = require('../../middleware/validator')
 const commonModel = require('../../models/common')
 const auctionModel = require('../../models/auction')
+const systemModel = require('../../models/system')
 const auctionController = require('./controller')
 const { create, getDetail, gets } = require('./schema')
 
@@ -12,20 +13,22 @@ const router = new Router()
 router.get('/auction-helper', async ctx => {
     debug('GET /auction-helper')
     try {
-        const auctionTime = await commonModel.getAuctionTime()
+        // const auctionTime = await commonModel.getAuctionTime()
         const productCategory = await commonModel.getProductCategory()
+        const bannerImage = await systemModel.getBannerImage()
         ctx.status = 200
         ctx.body = {
-            auction_time: auctionTime,
-            product_category: productCategory
+            // auction_time: auctionTime,
+            product_category: productCategory,
+            banner_image: bannerImage
         }
     } catch (error) {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
+            code: error.code || 500,
             success: false,
             message: error.message || JSON.stringify(error)
         }
-        throw error
     }
 })
 
@@ -45,12 +48,12 @@ router.post(
                 success: true
             }
         } catch (error) {
-            ctx.status = 500
+            ctx.status = 200
             ctx.body = {
+                code: error.code || 500,
                 success: false,
                 message: error.message || JSON.stringify(error)
             }
-            throw error
         }
     }
 )
@@ -64,12 +67,12 @@ router.get('/auction-overview', async ctx => {
             data
         }
     } catch (error) {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
+            code: error.code || 500,
             success: false,
             message: error.message || JSON.stringify(error)
         }
-        throw error
     }
 })
 router.post('/auctions', validate(gets), async ctx => {
@@ -82,12 +85,12 @@ router.post('/auctions', validate(gets), async ctx => {
             data
         }
     } catch (error) {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
+            code: error.code || 500,
             success: false,
             message: error.message || JSON.stringify(error)
         }
-        throw error
     }
 })
 
@@ -100,12 +103,12 @@ router.post('/auction', validate(getDetail), async ctx => {
             data
         }
     } catch (error) {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
+            code: error.code || 500,
             success: false,
             message: error.message || JSON.stringify(error)
         }
-        throw error
     }
 })
 
@@ -122,13 +125,12 @@ router.get('/auction-history', async ctx => {
             data
         }
     } catch (err) {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
+            code: err.code || 500,
             success: false,
             message: err.message || JSON.stringify(err)
         }
-
-        throw err
     }
 })
 
@@ -144,13 +146,12 @@ router.get('/auction-purchase-history', genericSecure, async ctx => {
             result
         }
     } catch (err) {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
+            code: err.code || 500,
             success: false,
             message: err.message || JSON.stringify(err)
         }
-
-        throw err
     }
 })
 
@@ -166,13 +167,12 @@ router.get('/auction-sell-history', genericSecure, async ctx => {
             result
         }
     } catch (err) {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
+            code: err.code || 500,
             success: false,
             message: err.message || JSON.stringify(err)
         }
-
-        throw err
     }
 })
 
@@ -187,8 +187,9 @@ router.post('/auction/raise', genericSecure, async ctx => {
         })
         ctx.body = check
     } catch (err) {
-        ctx.status = 500
+        ctx.status = 200
         ctx.body = {
+            code: err.code || 500,
             success: false,
             message: err.message || JSON.stringify(err)
         }

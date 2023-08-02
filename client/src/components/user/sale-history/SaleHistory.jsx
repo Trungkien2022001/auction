@@ -28,6 +28,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment'
+import { checkApiResponse } from '../../../utils/checkApiResponse';
 
 function createData(name, calories, fat, d, e, f, g, h, i, carbs, protein, a, b, c) {
   return {
@@ -264,7 +265,7 @@ export const SaleHistory = ({ currentUser, socket }) => {
 
   async function getData() {
     let result = await get(`${api_endpoint}/auction-sell-history?user_id=${currentUser.id}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setData(result.data.result)
     }
   }

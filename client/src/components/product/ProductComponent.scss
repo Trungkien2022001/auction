@@ -83,18 +83,15 @@
 }
 
 @media screen and (max-width: 1520px) {
-  .product-container {
-    margin-top: 65px;
-    flex: 3;
-    .product-wrapper {
-      justify-content: space-between;
-      .product {
-        margin: 20px 10px;
+  .product-component-container{
+    .product-part-wrapper{
+      .product-wrapper{
+        justify-content: flex-start
       }
     }
   }
 }
-@media screen and (max-width: 860px) {
+@media screen and (max-width: 800px) {
   .product-component-container{
     .product-part-wrapper{
       .product-wrapper{
@@ -102,30 +99,16 @@
       }
     }
   }
-  .product-container {
-    margin-top: 75px;
-    flex: 3;
-    .product-wrapper {
-      .product {
-        margin: 20px 10px;
-      }
-    }
-  }
-}
-@media screen and (max-width: 700px) {
-  .product-container {
-    .product-wrapper {
-      justify-content: center !important;
-      .product {
-        margin: 20px 10px;
-      }
-    }
     .new-auction-btn {
       left: 5px !important;
       img {
         width: 55px !important;
       }
     }
+}
+@media screen and (max-width: 500) {
+  .product{
+    margin: 20px 0px 0 0px;
   }
 }
 img {

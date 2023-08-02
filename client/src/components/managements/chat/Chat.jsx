@@ -4,6 +4,7 @@ import { Avatar, Button, Divider, TextField } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { get } from '../../../utils/customRequest';
 import { useSelector } from 'react-redux';
+import { checkApiResponse } from '../../../utils/checkApiResponse';
 const moment = require('moment')
 
 export const Chat = ({ socket }) => {
@@ -17,14 +18,14 @@ export const Chat = ({ socket }) => {
     async function getData() {
         if (clientId) {
             const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
-            if (result.status === 200) {
+            if (checkApiResponse(result)) {
                 setData(result.data.body)
             }
         }
     }
     async function getAllLastMsg() {
         let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/messages`, currentUser)
-        if (result.status === 200) {
+        if (checkApiResponse(result)) {
             setLstMsg(result.data.body)
         }
     }

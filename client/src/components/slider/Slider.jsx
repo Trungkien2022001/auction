@@ -5,27 +5,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Skeleton from 'react-loading-skeleton';
-export const CustomSlider = ({ loading }) => {
-  const images = [
-    {
-      url: 'https://cf.shopee.vn/file/vn-50009109-d8e17acb2723cb1ec37171c97f518aa2_xxhdpi'
-    },
-    {
-      url: 'https://cf.shopee.vn/file/vn-50009109-f752a84a7b2e658ee19f3ff1095deb8f_xxhdpi'
-    },
-    {
-      url: 'https://cf.shopee.vn/file/vn-50009109-252ec83328b8d79f7ff7f1539659b943_xxhdpi'
-    },
-    {
-      url: 'https://cf.shopee.vn/file/vn-50009109-4ec8e585c47bb735462d6c36710d20f5_xxhdpi'
-    },
-    {
-      url: 'https://cf.shopee.vn/file/vn-50009109-995c96fe752c2815075fa3f72cf52f4b_xxhdpi'
-    },
-    {
-      url: 'https://cf.shopee.vn/file/vn-50009109-af1267e10fa930adc551532664fddc2e_xxhdpi'
-    },
-  ]
+export const CustomSlider = ({ loading, images }) => {
   const settings = {
     dots: true,
     infinite: true,
@@ -45,7 +25,7 @@ export const CustomSlider = ({ loading }) => {
           <Slider {...settings}>
             {
               images.length ? images.map((item, index) =>
-                <div>
+                <div key={index}>
                   <img key={index} src={item.url} alt="" />
                 </div>
               ) :

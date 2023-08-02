@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { checkApiResponse } from '../../../utils/checkApiResponse';
 
 
 const api_endpoint = process.env.REACT_APP_API_ENDPOINT
@@ -28,38 +29,38 @@ export const Chart = ({ currentUser, socket }) => {
   const [timeUpdate, setTimeUpdate] = useState(3600)
   async function getAuctionRaise() {
     let result = await get(`${api_endpoint}/dashboard-auction-raise?type=${auctionRaiseType}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setAuctionRaise(result.data.data)
     }
   }
   async function getSummary() {
     let result = await get(`${api_endpoint}/dashboard-summary`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setSummary(result.data.data)
     }
   }
   async function getRequestCount() {
     let result = await get(`${api_endpoint}/dashboard-request-count?limit=${requestLimit}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setRequestCount(result.data.data)
       // setRequestCount(prev=>[...prev, ...result.data.data])
     }
   }
   async function getMoney() {
     let result = await get(`${api_endpoint}/dashboard-money?type=${moneyType}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setMoney(result.data.data)
     }
   }
   async function getUser() {
     let result = await get(`${api_endpoint}/dashboard-user?type=${userType}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setUser(result.data.data)
     }
   }
   async function getAuction() {
     let result = await get(`${api_endpoint}/dashboard-auction?type=${auctionType}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setAuction(result.data.data)
     }
   }

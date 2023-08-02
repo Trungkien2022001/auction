@@ -25,6 +25,7 @@ import { get } from '../../utils/customRequest';
 import { useDispatch, useSelector } from "react-redux";
 import { userSlice } from "../../redux/userSlice";
 import Swal from 'sweetalert2';
+import { checkApiResponse } from '../../utils/checkApiResponse';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -133,7 +134,7 @@ export const Header = ({ socket }) => {
 
   async function getData(id) {
     let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/notification/${id}`, currentUser)
-    if (result.status === 200) {
+    if (checkApiResponse(result)) {
       setData(result.data.notification)
     }
 

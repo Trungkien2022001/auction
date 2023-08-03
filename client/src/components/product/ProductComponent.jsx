@@ -102,7 +102,7 @@ export const ProductComponent = ({ data, title, loading, keyword }) => {
                                     ))
                                 }
                             </div>
-                            <hr />
+                            {/* <hr /> */}
                         </div>
                 }
             </div>

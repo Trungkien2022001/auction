@@ -1,5 +1,8 @@
 .product-component-container {
-    margin-top: 10px;
+    margin-top: 20px;
+    padding: 10px 0px 5px 0px;
+    border-radius: 10px;
+    background-color: #fff;
   .product-part-wrapper {
     .title-header{
         padding: 0px 15px;
@@ -25,19 +28,22 @@
       justify-content: space-between;
       margin-left: auto;
       transition: opacity 2s linear;
+      padding-bottom: 10px;
       .product {
         // background-color: #E6FFFD;
-        box-shadow: 8px 5px 8px #ccc;
         border-radius: 10px;
+        box-shadow: 8px 5px 8px #ccc;
+        border: 1px solid #f0e9e9;
         cursor: pointer;
         align-items: center;
-        width: 9.6vw;
+        width: 10.5vw;
         min-width: 150px;
         height: 320px;
         position: relative;
         margin: 20px 15px 0 15px;
         .productImg {
           img {
+            border-radius: 10px;
             width: 100%;
             height: 200px;
           }

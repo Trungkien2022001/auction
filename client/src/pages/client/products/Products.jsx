@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useState } from "react";
+import unidecode from 'unidecode'; 
 import { Header } from "../../../components/header/Header";
 import "./Products.scss";
 // import axios from "axios";
@@ -66,7 +67,7 @@ export const Products = ({ socket }) => {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      const result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auctions?type=${filter.type}&sort=${filter.sort}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${filter.name}&page=${filter.page}&limit=${filter.limit}`, {},currentUser)
+      const result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auctions?type=${filter.type}&sort=${filter.sort}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${unidecode(filter.name)}&page=${filter.page}&limit=${filter.limit}`, {},currentUser)
       if (checkApiResponse(result)) {
         setPreLoading(true)
         setCnt(result.data.data.count.total)

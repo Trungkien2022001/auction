@@ -21,6 +21,7 @@ import { authenticate } from "../../../utils/authenticate";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
+import { AUCTION_STATUS, AUCTION_TIMES } from "../../../utils/constants";
 const _ = require('lodash')
 
 
@@ -405,20 +406,36 @@ export const Product = ({ socket }) => {
               </div>
               <div className="product-info-wrap">
                 <div className="product-info">
+                  <div className="product-info-title">ID</div>
+                  <div className="product-info-detail">{data.product.id}</div>
+                </div>
+                <div className="product-info">
                   <div className="product-info-title">Danh mục</div>
                   <div className="product-info-detail">{data.product.product_category}</div>
                 </div>
                 <div className="product-info">
-                  <div className="product-info-title">Số lượng</div>
-                  <div className="product-info-detail">1</div>
+                  <div className="product-info-title">Nhãn hiệu</div>
+                  <div className="product-info-detail">{data.product.branch}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Tình trạng sản phẩm</div>
                   <div className="product-info-detail">{data.product.status}</div>
                 </div>
                 <div className="product-info">
+                  <div className="product-info-title">Keyword</div>
+                  <div className="product-info-detail">{data.product.key_word}</div>
+                </div>
+                <div className="product-info">
+                  <div className="product-info-title">Số lượng</div>
+                  <div className="product-info-detail">1</div>
+                </div>
+                <div className="product-info">
                   <div className="product-info-title">Hoàn trả</div>
                   <div className="product-info-detail">{data.product.is_returned ? 'Có' : 'Không'}</div>
+                </div>
+                <div className="product-info">
+                  <div className="product-info-title">Thời gian đấu giá</div>
+                  <div className="product-info-detail">{AUCTION_TIMES[data.product.time]}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Thời gian bắt đầu</div>
@@ -427,6 +444,14 @@ export const Product = ({ socket }) => {
                 <div className="product-info">
                   <div className="product-info-title">Thời gian kết thúc</div>
                   <div className="product-info-detail">{moment(data.product.start_time).add(data.product.time, 'minutes').format('DD-MM-YYYY HH:mm:ss')}</div>
+                </div>
+                <div className="product-info">
+                  <div className="product-info-title">Kết thúc sớm</div>
+                  <div className="product-info-detail">{data.product.is_finished_soon ? "Có" : "Không"}</div>
+                </div>
+                <div className="product-info">
+                  <div className="product-info-title">Tình trạng phiên đấu giá</div>
+                  <div className="product-info-detail">{AUCTION_STATUS.find(i=>i.value ==data.product.auction_status)?.title}</div>
                 </div>
               </div>
             </div>

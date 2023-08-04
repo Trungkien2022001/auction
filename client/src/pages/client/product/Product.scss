@@ -61,17 +61,21 @@
         .product-name {
           font-size: 33px;
           text-align: center;
-        overflow: hidden; 
-        text-overflow: ellipsis; 
-        display: -webkit-box; /* Thêm tiền tố -webkit- để hỗ trợ các trình duyệt WebKit (Chrome, Safari) */
-        -webkit-line-clamp: 2; /* Giới hạn số dòng */
-        -webkit-box-orient: vertical; 
+          text-overflow: ellipsis;
+          display: -webkit-box; /* Thêm tiền tố -webkit- để hỗ trợ các trình duyệt WebKit (Chrome, Safari) */
+          -webkit-line-clamp: 2; /* Giới hạn số dòng */
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
         .product-title {
-          margin: 10px 00px 30px;
+          padding: 10px 0px 30px;
+          margin-bottom: 10px;
           font-size: 18px;
           height: 41px;
+          text-align: center;
           overflow: hidden;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
         }
         .product-auction {
           display: flex;
@@ -82,7 +86,7 @@
             display: flex;
             align-items: flex-start;
             .product-time-icon {
-              transform: scale(1.5);
+              transform: scale(1.2);
               margin-right: 5px;
             }
             .product-success-auction {
@@ -104,11 +108,11 @@
               margin: 5px 0px 20px;
               align-items: center;
               .product-price-icon {
-                transform: scale(1.5);
+                transform: scale(1.2);
                 margin-right: 5px;
               }
               .product-price-title {
-                font-size: 27px;
+                font-size: 22px;
                 font-weight: bold;
               }
             }
@@ -246,14 +250,22 @@
       flex-wrap: wrap;
       justify-content: flex-start;
       .product-info {
-        padding: 0px 5px;
+        padding: 5px 5px;
         width: 15%;
-        min-width: 150px;
+        max-width: 150px;
+        min-width: 100px;
         .product-info-title {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: bold;
+          margin-bottom: 5px;
         }
-        .product-infor-detail {
+        .product-info-detail {
+          max-width: 100%;
+          word-wrap: break-word;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          white-space: normal;
         }
       }
     }
@@ -316,7 +328,7 @@
           margin-top: 10px;
         }
         .product-price {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 550;
         }
         .product-detail {
@@ -364,7 +376,7 @@
         margin-right: 10px;
         max-width: 150px;
         overflow: hidden;
-        word-wrap: break-word
+        word-wrap: break-word;
       }
       .history-dialog-amount {
         flex: 2;

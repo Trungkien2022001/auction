@@ -830,20 +830,22 @@ exports.finishedAuction = async id => {
     await knex('notification').insert([
         {
             user_id: seller[0].seller_id,
-            action_user_id: win_auctioneer[0].auctioneer_id,
+            action_user_id: win_auctioneer[0]
+                ? win_auctioneer[0].auctioneer_id
+                : 1,
             auction_id: id,
             type: 2
         },
         {
             action_user_id: seller[0].seller_id,
-            user_id: win_auctioneer[0].auctioneer_id,
+            user_id: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
             auction_id: id,
             type: 4
         }
     ])
 
     return {
-        auctioneer: win_auctioneer[0].auctioneer_id,
+        auctioneer: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
         seller: seller[0].seller_id
     }
 }

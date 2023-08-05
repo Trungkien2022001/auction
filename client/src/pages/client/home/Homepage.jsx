@@ -27,7 +27,7 @@ export const Homepage = ({ socket }) => {
   const currentUser = useSelector(state => state.user)
   const [data, setData] = useState({})
   const [productCategory, setProductCategory] = useState([]);
-  const [bannerImage, setBannerImage] = useState([]);
+  const [sytemConfig, setSytemConfig] = useState({});
   const [check, setCheck] = useState(true)
   const [message, setMessage] = useState("");
   const [mess, setMess] = useState([]);
@@ -68,7 +68,7 @@ export const Homepage = ({ socket }) => {
     setPreLoadingMeta(false)
     const f = async () => {
       let tmp_product_category = tryParseJson(localStorage.getItem('product_category'))
-      let tmp_banner_image = tryParseJson(localStorage.getItem('banner_image'))
+      let tmp_banner_image = tryParseJson(localStorage.getItem('sytem_config'))
       if (
         !tmp_product_category ||
         !tmp_banner_image ||
@@ -78,14 +78,14 @@ export const Homepage = ({ socket }) => {
         let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
         if (checkApiResponse(result)) {
           setProductCategory(result.data.product_category)
-          setBannerImage(result.data.banner_image)
+          setSytemConfig(result.data.system_config)
           localStorage.setItem('product_category', JSON.stringify({ data: result.data.product_category, created_at: moment().format() }));
-          localStorage.setItem('banner_image', JSON.stringify({ data: result.data.banner_image, created_at: moment().format() }));
+          localStorage.setItem('system_config', JSON.stringify({ data: result.data.system_config, created_at: moment().format() }));
         }
 
       } else {
         setProductCategory(tmp_product_category.data)
-        setBannerImage(tmp_banner_image.data)
+        setSytemConfig(tmp_banner_image.data)
       }
       setPreLoadingMeta(true)
       if (currentUser.id) {
@@ -159,8 +159,8 @@ export const Homepage = ({ socket }) => {
 
   return (
     <div>
-      <Header socket={socket} />
-      <CustomSlider loading={loadingMeta} images={bannerImage} />
+      <Header socket={socket} systemConfig={sytemConfig}/>
+      <CustomSlider loading={loadingMeta} images={sytemConfig.banner_image} />
       <div className="padding__main homepage-container">
         {
           loadingMeta ?
@@ -305,7 +305,7 @@ export const Homepage = ({ socket }) => {
           ) : <></>
         }
       </div>
-      <Footer />
+      <Footer systemConfig={sytemConfig}/>
     </div >
   );
 };

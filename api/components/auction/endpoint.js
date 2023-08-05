@@ -15,12 +15,12 @@ router.get('/auction-helper', async ctx => {
     try {
         // const auctionTime = await commonModel.getAuctionTime()
         const productCategory = await commonModel.getProductCategory()
-        const bannerImage = await systemModel.getBannerImage()
+        const bannerImage = await systemModel.getCurrentSystemConfig()
         ctx.status = 200
         ctx.body = {
             // auction_time: auctionTime,
             product_category: productCategory,
-            banner_image: bannerImage
+            system_config: bannerImage
         }
     } catch (error) {
         ctx.status = 200

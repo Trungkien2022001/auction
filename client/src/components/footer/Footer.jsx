@@ -1,7 +1,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { tryParseJson } from "../../utils/common"
 import "./footer.scss"
 
-export const Footer = () => {
+export const Footer = ({systemConfig}) => {
+    if(!systemConfig){
+        systemConfig = tryParseJson(localStorage.getItem('sytem_config'))?.data || {}
+    }
     return (
         <footer className="footer padding__main" style={{ backgroundColor: '#1c2331' }}>
             <div className="footer-container">
@@ -24,10 +28,10 @@ export const Footer = () => {
 
                 <div className="footer-item">
                     <h3 >Liên hệ</h3>
-                    <p><i className="fas fa-home mr-3"></i> 136 Nguyễn An Ninh, Hoàng Mai, HN</p>
-                    <p><i className="fas fa-envelope mr-3"></i> nguyenkien2022001@gmail.com</p>
-                    <p><i className="fas fa-phone mr-3"></i> +84 989983025</p>
-                    <p><i className="fas fa-print mr-3"></i> +84 989983025</p>
+                    <p><i className="fas fa-home mr-3"></i> {systemConfig.company_address || '136 Nguyễn An Ninh, Hoàng Mai, HN'}</p>
+                    <p><i className="fas fa-envelope mr-3"></i> {systemConfig.company_email || 'Nguyenkien2022001@gmail.com'}</p>
+                    <p><i className="fas fa-phone mr-3"></i> {systemConfig.company_phone || '+84 989983025'}</p>
+                    <p><i className="fas fa-print mr-3"></i> {systemConfig.company_fax || '+84 989983025'}</p>
                 </div>
 
                 <div className="footer-item">

@@ -26,7 +26,7 @@ export const CustomSlider = ({ loading, images }) => {
             {
               images.length ? images.map((item, index) =>
                 <div key={index}>
-                  <img key={index} src={item.url} alt="" />
+                  <img key={index} src={item} alt="" />
                 </div>
               ) :
                 <div>

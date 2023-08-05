@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userSlice } from "../../redux/userSlice";
 import Swal from 'sweetalert2';
 import { checkApiResponse } from '../../utils/checkApiResponse';
+import { tryParseJson } from '../../utils/common';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -84,7 +85,7 @@ const SmallAvatar = styled(Avatar)(({ theme }) => ({
   border: `2px solid ${theme.palette.background.paper}`,
 }));
 
-export const Header = ({ socket }) => {
+export const Header = ({ socket, systemConfig }) => {
   const dispatch = useDispatch()
   const currentUser = useSelector(state => state.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -97,6 +98,9 @@ export const Header = ({ socket }) => {
   const isMenuOpen = Boolean(anchorEl);
   const isNotificationOpen = Boolean(anchorE3);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  if(!systemConfig){
+    systemConfig = tryParseJson(localStorage.getItem('sytem_config'))?.data || {}
+}
 
   const handleSearch = () => {
     if(text !== ''){
@@ -159,10 +163,12 @@ export const Header = ({ socket }) => {
       window.location.href = `/user/${currentUser.id}`
     }
     if (target === 'logout') {
+      localStorage.removeItem("system-config");
+      localStorage.removeItem("product_category");
       dispatch(userSlice.actions.logout())
       Swal.fire({
         icon: 'success',
-        title: 'Login Successfully',
+        title: 'Logout Successfully',
         showConfirmButton: false,
         timer: 1500
       })
@@ -560,7 +566,7 @@ export const Header = ({ socket }) => {
             component="div"
           >
             <Link to={'/'} style={{ textDecoration: 'none', color: '#fff' }}>
-              TIKA
+              {systemConfig.app_name || 'TIKA'}
             </Link>
           </Typography>
           <Search
@@ -582,7 +588,7 @@ export const Header = ({ socket }) => {
           <Box sx={{ flexGrow: 1 }}>
             <TargetTextWrapper style={{ fontSize: "22px" }}>
               {/* trang này không tồn tại, trang này không tồn tại trang này không tồn tại, trang này không tồn tại, trang này không tồn tại, trang này không tồn */}
-              Đấu giá không giới hạn - Sở hữu sản phẩm uy tín!
+              {systemConfig.slogan}
             </TargetTextWrapper>
           </Box>
           <Box sx={{ display: "flex" }}>

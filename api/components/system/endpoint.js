@@ -15,9 +15,10 @@ router.get(
 
         try {
             const data = await systemModel.getCurrentSystemConfig()
+            delete data.system_config
             ctx.body = {
                 success: true,
-                data
+                body: data
             }
         } catch (e) {
             ctx.body = {
@@ -28,23 +29,49 @@ router.get(
         }
     }
 )
+router.get(
+    '/system/all',
+    genericSecure,
+    checkPermission('admin'),
+    async ctx => {
+        debug('GET /system/all')
 
-router.get('/system/banner_image', async ctx => {
-    debug('GET /system/banner_image')
-
-    try {
-        const data = await systemModel.getBannerImage()
-        ctx.body = {
-            success: true,
-            data
-        }
-    } catch (e) {
-        ctx.body = {
-            code: 500,
-            success: false,
-            message: `login failed: ${e.message}`
+        try {
+            const data = await systemModel.getAllSystemConfig()
+            delete data.system_config
+            ctx.body = {
+                success: true,
+                body: data
+            }
+        } catch (e) {
+            ctx.body = {
+                code: 500,
+                success: false,
+                message: `login failed: ${e.message}`
+            }
         }
     }
-})
+)
+router.post(
+    '/system/update',
+    genericSecure,
+    checkPermission('admin'),
+    async ctx => {
+        debug('POST /system/current')
+
+        try {
+            await systemModel.updateSystem(ctx.request.body)
+            ctx.body = {
+                success: true
+            }
+        } catch (e) {
+            ctx.body = {
+                code: 500,
+                success: false,
+                message: `login failed: ${e.message}`
+            }
+        }
+    }
+)
 
 module.exports = router

@@ -41,6 +41,7 @@ import { User } from '../../../components/managements/user/User';
 import { Chat } from '../../../components/managements/chat/Chat';
 import { Chart } from '../../../components/managements/chart/Chart';
 import { useLocation } from 'react-router-dom';
+import { SystemConfig } from '../../../components/managements/systemConfig/SystemConfig';
 
 const drawerWidth = 250;
 
@@ -82,6 +83,9 @@ export const Management = ({ socket }) => {
 
       case 'action-log':
         window.location.href = `/management/action-log`
+        break;
+      case 'system-config':
+        window.location.href = `/management/system-config`
         break;
 
       default:
@@ -156,8 +160,8 @@ export const Management = ({ socket }) => {
             // src="https://kynguyenlamdep.com/wp-content/uploads/2022/06/anh-gai-xinh-cuc-dep.jpg"
             sx={{ width: 150, height: 150 }}
           />
-          <div className='username-dashboard'>Trung Kiên</div>
-          <div className='username-dashboard-role'>Administrator</div>
+          <div className='username-dashboard'>{currentUser.name}</div>
+          <div className='username-dashboard-role'>{currentUser.role.description}</div>
         </div>
         <Divider />
         <ListItemButton
@@ -169,52 +173,66 @@ export const Management = ({ socket }) => {
           </ListItemIcon>
           <ListItemText primary="Dashboard" />
         </ListItemButton>
-        <ListItemButton
-          onClick={() => handleChangePage('auction')}
-          sx={type === 'auction' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-        >
-          <ListItemIcon>
-            <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
-          </ListItemIcon>
-          <ListItemText primary="Auction" />
-        </ListItemButton>
-
-        <ListItemButton
-          onClick={() => handleChangePage('user')}
-          sx={type === 'user' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-        >
-          <ListItemIcon>
-            <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
-          </ListItemIcon>
-          <ListItemText primary="User" />
-        </ListItemButton>
-        <ListItemButton
-          onClick={() => handleChangePage('chat')}
-          sx={type === 'chat' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-        >
-          <ListItemIcon>
-            <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
-          </ListItemIcon>
-          <ListItemText primary="Chat" />
-        </ListItemButton>
-        <ListItemButton
-          onClick={() => handleChangePage('action-log')}
-          sx={type === 'action-log' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-        >
-          <ListItemIcon>
-            <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
-          </ListItemIcon>
-          <ListItemText primary="Action Log" />
-        </ListItemButton>
-        <ListItemButton
-          onClick={() => handleChangePage(6)}
-          sx={currentPage === 6 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
-        >
-          <ListItemIcon>
-            <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
-          </ListItemIcon>
-          <ListItemText primary="System config" />
-        </ListItemButton>
+        {currentUser.role.dashboard_auction ?
+          <ListItemButton
+            onClick={() => handleChangePage('auction')}
+            sx={type === 'auction' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          >
+            <ListItemIcon>
+              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+            </ListItemIcon>
+            <ListItemText primary="Auction" />
+          </ListItemButton>
+          : <></>
+        }
+        {currentUser.role.dashboard_user ?
+          <ListItemButton
+            onClick={() => handleChangePage('user')}
+            sx={type === 'user' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          >
+            <ListItemIcon>
+              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+            </ListItemIcon>
+            <ListItemText primary="User" />
+          </ListItemButton>
+          : <></>
+        }
+        {currentUser.role.dashboard_chat ?
+          <ListItemButton
+            onClick={() => handleChangePage('chat')}
+            sx={type === 'chat' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          >
+            <ListItemIcon>
+              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+            </ListItemIcon>
+            <ListItemText primary="Chat" />
+          </ListItemButton>
+          : <></>
+        }
+        {currentUser.role.dashboard_action_log ?
+          <ListItemButton
+            onClick={() => handleChangePage('action-log')}
+            sx={type === 'action-log' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          >
+            <ListItemIcon>
+              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+            </ListItemIcon>
+            <ListItemText primary="Action Log" />
+          </ListItemButton>
+          : <></>
+        }
+        {currentUser.role.dashboard_config ?
+          <ListItemButton
+            onClick={() => handleChangePage('system-config')}
+            sx={currentPage === 6 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          >
+            <ListItemIcon>
+              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+            </ListItemIcon>
+            <ListItemText primary="System config" />
+          </ListItemButton>
+          : <></>
+        }
         <ListItemButton onClick={() => setEnglishNavOpen(!englishNavOpen)}>
           <ListItemIcon>
             <LocalLibraryIcon sx={{ color: `${selectedTheme.textColor}` }} />
@@ -341,6 +359,7 @@ export const Management = ({ socket }) => {
           {type === 'user' ? <User currentUser={currentUser} socket={socket} /> : <></>}
           {type === 'action-log' ? <ActionLog currentUser={currentUser} socket={socket} /> : <></>}
           {type === 'chat' ? <Chat currentUser={currentUser} socket={socket} /> : <></>}
+          {type === 'system-config' ? <SystemConfig currentUser={currentUser} socket={socket} /> : <></>}
         </div>
       </Box>
       <SimpleDialog

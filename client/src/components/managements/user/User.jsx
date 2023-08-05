@@ -238,6 +238,10 @@ export const User = ({ currentUser, socket }) => {
   const [data, setData] = useState({})
   // const [currentUserId, setCurrentUserId] = useState()
 
+  if(!currentUser.role.dashboard_user){
+    window.location.href = `/management/dashboard`
+  }
+
   async function getData() {
     let result = await get(`${api_endpoint}/users`, currentUser)
     if (checkApiResponse(result)) {

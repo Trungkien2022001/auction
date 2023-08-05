@@ -5,7 +5,7 @@ const _ = require('lodash')
 const { knex, redis } = require('../connectors')
 
 async function getCurrentSystemConfig() {
-    const result = await redis.cachedExecute(
+    const system_config = await redis.cachedExecute(
         {
             key: 'system_config',
             ttl: '1 days',
@@ -13,28 +13,30 @@ async function getCurrentSystemConfig() {
         },
         () =>
             knex()
-                .select(
-                    'sv.version as system_version',
-                    'sv.id',
-                    'sv.version',
-                    'sc.value as system_config',
-                    'sc.created_at',
-                    'sc.updated_at',
-                    'u.id as created_by'
-                )
-                .from('system_version as sv')
-                .innerJoin(
-                    'system_config as sc',
-                    'sc.system_version_id',
-                    'sv.id'
-                )
-                .innerJoin('user as u', 'u.id', 'sc.updated_by')
+                .select('value')
+                .from('system_config as sv')
                 .orderBy('sv.id', 'desc')
                 .limit(1)
                 .offset(0)
     )
 
-    return result
+    return system_config[0].value
+}
+async function getAllSystemConfig() {
+    const system_config = await redis.cachedExecute(
+        {
+            key: 'all_system_config',
+            ttl: '1 days',
+            json: true
+        },
+        () =>
+            knex()
+                .select('value')
+                .from('system_config as sv')
+                .orderBy('sv.id', 'desc')
+    )
+
+    return system_config.map(i => i.value)
 }
 
 async function getBannerImage() {
@@ -57,8 +59,19 @@ async function getBannerImage() {
 
     return result
 }
+async function updateSystem(params) {
+    await knex('system_config').insert({
+        version: params.system_version,
+        value: JSON.stringify(params),
+        created_by: parseInt(params.created_by.split('~~')[0])
+    })
+    await redis.del('system_config')
+    await redis.del('all_system_config')
+}
 
 module.exports = {
     getCurrentSystemConfig,
-    getBannerImage
+    getBannerImage,
+    updateSystem,
+    getAllSystemConfig
 }

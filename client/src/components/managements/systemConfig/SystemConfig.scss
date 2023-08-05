@@ -1,0 +1,87 @@
+.system-config-container {
+  margin-top: 15px;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  //   align-items: center;
+  height: 100vh;
+  .wrapper {
+    padding: 10px 20px;
+    .system-config-item {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      .system-config-title {
+        width: 150px;
+        font-weight: bold;
+      }
+      .system-config-input {
+        width: 1250px;
+        .new-product-image {
+          margin-top: 15px;
+          .new-product-image-header {
+            font-size: 20px;
+            font-weight: 550;
+            margin-bottom: 10px;
+          }
+          .new-product-image-review {
+            display: flex;
+            flex-wrap: wrap;
+            .addImage {
+              width: 150px;
+              min-height: 110px;
+              display: flex;
+              position: relative;
+              justify-content: center;
+              flex-direction: column;
+              align-items: center;
+              border: 1px solid black;
+              border-radius: 5px;
+              cursor: pointer;
+              input {
+                position: absolute;
+                width: 110px;
+                height: 110px;
+                opacity: 0;
+                top: 0;
+                left: 0;
+              }
+            }
+            .imageItem {
+              position: relative;
+              padding-right: 20px;
+              img {
+                height: 120px;
+                width: auto;
+                max-width: 600px;
+              }
+              .remove_small_image {
+                position: absolute;
+                transform: scale(2.5);
+                opacity: 0;
+                z-index: 1;
+                top: calc(50% - 10px);
+                right: calc(50%);
+                cursor: pointer;
+              }
+            }
+            .imageItem:hover {
+              img {
+                opacity: 0.8;
+              }
+              .remove_small_image {
+                opacity: 1;
+              }
+            }
+            .new-product-imaged {
+              background-color: #999;
+              height: 100px;
+              min-width: 75px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -222,6 +222,11 @@ export const ActionLog = ({ currentUser, socket }) => {
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [data, setData] = useState([])
   const [initialData, setInitialData] = useState([])
+
+  if(!currentUser.role.dashboard_action_log){
+    window.location.href = `/management/dashboard`
+  }
+
   async function getData() {
     let result = await get(`${api_endpoint}/logs`, currentUser)
     if (checkApiResponse(result)) {
@@ -229,6 +234,7 @@ export const ActionLog = ({ currentUser, socket }) => {
       setInitialData(result.data.body)
     }
   }
+
   const handleSearch = (event) => {
     const dataList = filterTable(event.target.value, initialData, headCells)
     setData(dataList)

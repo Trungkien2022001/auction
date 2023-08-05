@@ -15,6 +15,10 @@ export const Chat = ({ socket }) => {
     const [lstMsg, setLstMsg] = useState([])
     const [clientId, setClientId] = useState()
 
+    if(!currentUser.role.dashboard_chat){
+        window.location.href = `/management/dashboard`
+      }
+
     async function getData() {
         if (clientId) {
             const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)

@@ -238,6 +238,10 @@ export const Auction = ({ currentUser, socket }) => {
   const [openAuctionHistoryDialog, setOpenAuctionHistoryDialog] = useState(false);
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
 
+  if(!currentUser.role.dashboard_auction){
+    window.location.href = `/management/dashboard`
+  }
+
   async function getData() {
     let result = await post(`${api_endpoint}/auctions?type=dashboard`, {}, currentUser)
     if (checkApiResponse(result)) {

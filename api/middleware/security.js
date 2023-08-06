@@ -51,7 +51,17 @@ async function genericSecure(ctx, next) {
 function checkPermission(permission) {
     return async (ctx, next) => {
         // debug('checkPermission')
-        if (ctx.User.role[permission] !== 1) {
+        if (Array.isArray(permission)) {
+            permission.forEach(p => {
+                if (ctx.User.role[p] !== 1) {
+                    ctx.status = 401
+                    ctx.body = {
+                        success: false,
+                        message: `Expected permission "${p}" to call this request`
+                    }
+                }
+            })
+        } else if (ctx.User.role[permission] !== 1) {
             ctx.status = 401
             ctx.body = {
                 success: false,

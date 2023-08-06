@@ -19,7 +19,7 @@ import _ from 'lodash';
 import { ProductComponent } from "../../../components/product/ProductComponent";
 import Skeleton from "react-loading-skeleton";
 import { checkApiResponse } from "../../../utils/checkApiResponse";
-import { tryParseJson } from "../../../utils/common";
+import { checkIsBlockedUser, tryParseJson } from "../../../utils/common";
 
 
 export const Homepage = ({ socket }) => {
@@ -102,6 +102,7 @@ export const Homepage = ({ socket }) => {
   useEffect(() => {
     getData()
     getMetaData()
+    checkIsBlockedUser(currentUser.is_blocked)
   }, [])
   useEffect(() => {
     messageRef.current?.scrollIntoView()

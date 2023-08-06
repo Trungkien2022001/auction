@@ -24,13 +24,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import InfoIcon from '@mui/icons-material/Info';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { get } from '../../../utils/customRequest';
+import { get, post } from '../../../utils/customRequest';
 import moment from 'moment';
 import { AUCTION_PRESTIGE, USER_STATUS } from '../../../utils/constants';
 import { checkApiResponse } from '../../../utils/checkApiResponse';
+import Swal from 'sweetalert2';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -238,7 +239,7 @@ export const User = ({ currentUser, socket }) => {
   const [data, setData] = useState({})
   // const [currentUserId, setCurrentUserId] = useState()
 
-  if(!currentUser.role.dashboard_user){
+  if (!currentUser.role.dashboard_user) {
     window.location.href = `/management/dashboard`
   }
 
@@ -254,6 +255,58 @@ export const User = ({ currentUser, socket }) => {
       setCurrentUserInfo(result.data.data)
     }
 
+  }
+
+  const handleBlock = async (status) => {
+    handleCloseUserDialog()
+    let textTitle = 'Bạn có chắc chắn muốn '
+    const tmp = data.find(i=>i.id === currentUserId )
+    switch (status) {
+      case 'normal_unblock':
+        textTitle += `bỏ chặn cho người dùng ${tmp.name}?`
+        break;
+
+      case 'normal_block':
+        textTitle += `chặn người dùng ${tmp.name} một tuần?`
+        break;
+    
+      case 'permanent_block':
+        textTitle += `chặn người dùng ${tmp.name} vĩnh viễn?`
+        break;
+    
+      default:
+        break;
+    }
+    Swal.fire({
+      icon: 'question',
+      title: textTitle,
+      showCancelButton: true,
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const r = await post(`${process.env.REACT_APP_API_ENDPOINT}/user/block`, {
+          user_id: currentUserId,
+          type: status,
+        }, currentUser)
+        if (r.data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Thành công',
+            showConfirmButton: true,
+            timer: 10000
+          })
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Đã xảy ra lỗi',
+            text: result.data.message,
+            showConfirmButton: true,
+          })
+        }
+
+      }
+    });
   }
 
   useEffect(() => {
@@ -450,7 +503,7 @@ export const User = ({ currentUser, socket }) => {
                   </div>
                   <div className="p1-item">
                     <div className="title">Trạng thái</div>
-                    <div className="content">{USER_STATUS[currentUserInfo.is_blocked]}</div>
+                    <div className="content">{USER_STATUS[currentUserInfo.is_blocked] || 'Active'}</div>
                   </div>
                   <div className="p1-item">
                     <div className="title">Rating</div>
@@ -460,7 +513,25 @@ export const User = ({ currentUser, socket }) => {
                     <div className="title">Ngày tạo</div>
                     <div className="content">{moment(currentUserInfo.created_at).format('DD/MM/YYYY')}</div>
                   </div>
-                 
+                  <div className="p1-item">
+                    <div className="title">Hành động</div>
+                    <div className="content">
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label"></InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          defaultValue={'normal_unblock'}
+                          onChange={(e) => handleBlock(e.target.value)}
+                        >
+                          <MenuItem value={'normal_block'}>Chặn 1 tuần</MenuItem>
+                          <MenuItem value={'permanent_block'}>Chặn vĩnh viễn</MenuItem>
+                          <MenuItem value={'normal_unblock'}>Bỏ chặn</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+                  </div>
+
                 </div>
               </div>
             </div>

@@ -217,8 +217,8 @@ exports.THEME = [
   },
 ]
 exports.USER_STATUS = {
-  1: 'Blocked',
-  0: 'Active',
+  'normal_block': 'Chặn 1 tuần',
+  'permanent_block': 'Chặn vĩnh viễn',
 }
 exports.AUCTION_TIMES = {
   1: '1 Phút',

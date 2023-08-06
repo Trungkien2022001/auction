@@ -13,31 +13,33 @@
   overflow-y: hidden;
 }
 .auction-popup {
-  .auction-view {
+  .auction-view1 {
     display: flex;
     .img-view {
       flex: 1;
-      display: flex;
-      flex-wrap: wrap;
       .img-item{
+        margin: 5px 5px;
         img {
-          padding: 5px 5px;
+          margin: 5px 5px;
           border-radius: 5px;
-          height: 120px;
-          width: 100%;
-          max-width: 300px;
+          height: auto;
+          width: 200px;
+          max-width: 200px;
           object-fit: cover;
         }
       }
     }
     .p1 {
-      flex: 2;
+      flex: 3;
       .p1-item{
         display: flex;
         line-height: 2;
         .title{
           font-weight: bold;
           width: 150px;
+        }
+        .content{
+          max-width: 700px;
         }
 
       }

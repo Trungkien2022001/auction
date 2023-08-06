@@ -435,7 +435,7 @@ export const Auction = ({ currentUser, socket }) => {
             <div className='auction-popup'>
               {currentAuction.id ?
                 <>
-                  <div className="auction-view">
+                  <div className="auction-view1">
                     <div className="img-view">
                       {currentAuction.images.map((image, index) =>
                         <div className="img-item" key={index}>

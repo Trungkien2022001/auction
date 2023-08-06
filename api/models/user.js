@@ -143,38 +143,33 @@ async function getAllInfoSeller(id) {
     debug('MODEL/user getAllInfoSeller')
     try {
         const user_info = await fetchUserByID(id, 'seller_info')
-        const auction_history_count = await auctionModels.auctionHistoryCount(
-            id
-        )
-        const all_auction_history_count = await auctionModels.allAuctionHistoryCount(
-            id
-        )
-        const auction_won_count = await auctionModels.auctionWonCount(id)
-        const auction_sale_success_count = await auctionModels.auctionSaleSuccessCount(
-            id
-        )
-        const auction_sale_delivered_count = await auctionModels.auctionSaleDeliveredCount(
-            id
-        )
-        const auction_sale_all_count = await auctionModels.auctionSaleAllCount(
-            id
-        )
         const profit = await auctionModels.auctionProfitSum(id)
         const spent = await auctionModels.auctionSpentSum(id)
 
         return {
             ...user_info,
-            all_auction_history_count: all_auction_history_count.cnt,
-            auction_history_count: auction_history_count.cnt,
-            auction_won_count: auction_won_count.cnt,
-            auction_sale_success_count: auction_sale_success_count.cnt,
-            auction_sale_delivered_count: auction_sale_delivered_count.cnt,
-            auction_sale_all_count: auction_sale_all_count.cnt,
-            auction_sale_failed_count:
-                auction_sale_all_count.cnt - auction_sale_success_count.cnt,
             profit: profit.sum || 0,
             spent: spent.sum || 0
         }
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+async function blockUser(params) {
+    debug('MODEL/user blockUser')
+    try {
+        await knex('block_user').insert(params)
+        if (['normal_block', 'permanent_block'].includes(params.type)) {
+            await knex('user')
+                .update({ is_blocked: params.type })
+                .where('id', params.user_id)
+        } else {
+            await knex('user')
+                .update({ is_blocked: '' })
+                .where('id', params.user_id)
+        }
+        await redis.del(`user:${params.user_id}`)
     } catch (err) {
         throw new Error(err.message || JSON.stringify(err))
     }
@@ -187,5 +182,6 @@ module.exports = {
     updateUser,
     addUser,
     getAllInfoSeller,
-    getUserTransactionHistory
+    getUserTransactionHistory,
+    blockUser
 }

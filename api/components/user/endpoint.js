@@ -131,4 +131,31 @@ router.put(
     }
 )
 
+router.post(
+    '/user/block',
+    genericSecure,
+    checkPermission('dashboard_user'),
+    async ctx => {
+        debug('POST / block')
+        try {
+            const params = ctx.request.body
+            await User.blockUser({
+                ...params,
+                created_by: ctx.User.id
+            })
+            ctx.body = {
+                success: true
+            }
+        } catch (error) {
+            ctx.status = 200
+            ctx.body = {
+                code: 500,
+                success: false,
+                message: error.message || JSON.stringify(error)
+            }
+            throw error
+        }
+    }
+)
+
 module.exports = router

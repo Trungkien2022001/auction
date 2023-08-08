@@ -77,8 +77,8 @@ export const Homepage = ({ socket }) => {
       ) {
         let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
         if (checkApiResponse(result)) {
-          setProductCategory(result.data.product_category)
-          setSytemConfig(result.data.system_config)
+          setProductCategory(result.data.product_category || [])
+          setSytemConfig(result.data.system_config || {})
           localStorage.setItem('product_category', JSON.stringify({ data: result.data.product_category, created_at: moment().format() }));
           localStorage.setItem('system_config', JSON.stringify({ data: result.data.system_config, created_at: moment().format() }));
         }

@@ -95,7 +95,9 @@ export const Product = ({ socket }) => {
 
   const handleSubmitAuction = async () => {
     setOpenAuctionDialog(false)
-    authenticate(currentUser, Swal)
+    if(authenticate(currentUser)){
+      return
+    }
     if (data.product.sell_price > auctionBet) {
       Swal.fire(
         'Vui lòng đặt mức đấu giá lớn hơn?',

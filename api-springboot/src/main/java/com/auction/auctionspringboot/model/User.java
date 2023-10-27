@@ -49,7 +49,7 @@ public class User {
     private Date birthday;
     
     @Column(name = "amount", nullable = false)
-    private Long amount;
+    private int amount;
     
     @Column(name = "prestige", nullable = false)
     private Boolean prestige;

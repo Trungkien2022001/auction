@@ -1,4 +1,5 @@
 package com.auction.auctionspringboot.model;
+
 import java.sql.Date;
 
 import jakarta.persistence.Column;
@@ -20,24 +21,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "image")
-public class Image {
+@Table(name = "user_auction")
+public class UserAuction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @Column(name = "url", nullable = false, columnDefinition = "VARCHAR(2000)")
-    private String url;
+    @Column(name = "user_id", nullable = false)
+    private int userId;
 
-    @Column(name = "product_id", nullable = false)
-    private int productId;
+    @Column(name = "auction_id", nullable = false)
+    private int auctionId;
 
-    @Column(name = "isSuccess", nullable = false)
+    @Column(name = "is_success", nullable = false)
     private int isSuccess;
 
-    @Column(name = "deleted_at")
-    private Date deletedAt;
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
 
     // Constructors, getters, and setters
 }

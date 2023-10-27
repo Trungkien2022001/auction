@@ -1,4 +1,5 @@
 package com.auction.auctionspringboot.model;
+
 import java.sql.Date;
 
 import jakarta.persistence.Column;
@@ -11,7 +12,6 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,24 +20,30 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "image")
-public class Image {
+@Table(name = "user_rating_history")
+public class UserRatingHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
-    @Column(name = "url", nullable = false, columnDefinition = "VARCHAR(2000)")
-    private String url;
+    @Column(name = "user_id", nullable = false)
+    private int userId;
 
-    @Column(name = "product_id", nullable = false)
-    private int productId;
+    @Column(name = "rated_by", nullable = false)
+    private int ratedBy;
 
-    @Column(name = "isSuccess", nullable = false)
-    private int isSuccess;
+    @Column(name = "rating", nullable = false)
+    private int rating;
 
-    @Column(name = "deleted_at")
-    private Date deletedAt;
+    @Column(name = "desc", columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
+    private String desc;
+
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Date updatedAt;
 
     // Constructors, getters, and setters
 }

@@ -1,4 +1,5 @@
 package com.auction.auctionspringboot.model;
+
 import java.sql.Date;
 
 import jakarta.persistence.Column;
@@ -11,7 +12,6 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,24 +20,32 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "image")
-public class Image {
+@Table(name = "auction_history")
+public class AuctionHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
 
-    @Column(name = "url", nullable = false, columnDefinition = "VARCHAR(2000)")
-    private String url;
+    @Column(name = "auction_id", nullable = false)
+    private int auctionId;
 
-    @Column(name = "product_id", nullable = false)
-    private int productId;
+    @Column(name = "auctioneer_id", nullable = false)
+    private int auctioneerId;
 
-    @Column(name = "isSuccess", nullable = false)
-    private int isSuccess;
+    @Column(name = "bet_time", nullable = false)
+    private Date betTime;
 
-    @Column(name = "deleted_at")
-    private Date deletedAt;
+    @Column(name = "bet_amount", nullable = false)
+    private Integer betAmount;
+
+    @Column(name = "is_success", nullable = false)
+    private Boolean isSuccess;
+
+    @Column(name = "is_blocked", nullable = false)
+    private Integer isBlocked;
+
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
 
     // Constructors, getters, and setters
 }

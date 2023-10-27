@@ -3,12 +3,10 @@ package com.auction.auctionspringboot.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.auction.auctionspringboot.model.Auction;
 import com.auction.auctionspringboot.repository.AuctionRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -17,8 +15,6 @@ public class AuctionService {
     @Autowired
     private AuctionRepository auctionRepository;
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired

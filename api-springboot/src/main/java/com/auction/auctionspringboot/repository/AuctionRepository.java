@@ -12,6 +12,6 @@ public interface AuctionRepository extends JpaRepository<Auction, Integer> {
     // @Query("select u from auction u limit 100")
     // List<Auction> findAll();
     
-    @Query(nativeQuery = true, value = "SELECT * FROM auction LIMIT 20")
+    @Query(nativeQuery = true, value = "SELECT * FROM auction LIMIT 1")
     List<Auction> findAll();
 }

@@ -102,7 +102,7 @@ public class User {
     // @Column(name = "role_id")
     // private String role_id;
     
-    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Role role;
 

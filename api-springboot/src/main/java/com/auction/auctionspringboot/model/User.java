@@ -10,10 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapKey;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -54,9 +50,6 @@ public class User {
     
     @Column(name = "amount", nullable = false)
     private Long amount;
-    
-    @Column(name = "rank", nullable = false)
-    private Integer rank;
     
     @Column(name = "prestige", nullable = false)
     private Boolean prestige;

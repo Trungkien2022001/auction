@@ -7,9 +7,9 @@ public class UserDtoConvertor {
     public static User toCreateModel(UserDto userDto){
         User user = new User();
         user.setId(userDto.getId());
-        user.setPassword(userDto.getPassword());
-        user.setFirst_name(userDto.getFirst_name());
-        user.setLast_name(userDto.getLast_name());
+        // user.setPassword(userDto.getPassword());
+        // user.setFirst_name(userDto.getFirst_name());
+        // user.setLast_name(userDto.getLast_name());
         user.setUsername(userDto.getUsername());
         System.out.println(user);
         return user;
@@ -23,7 +23,7 @@ public class UserDtoConvertor {
             user.setUsername(userDto.getUsername());
         }
         if(userDto.getFirst_name() != null){
-            user.setFirst_name(userDto.getFirst_name());
+            // user.setFirst_name(userDto.getFirst_name());
         }
         // if(userDto.getUsername() != null){
         //     user.setUsername(userDto.getUsername());

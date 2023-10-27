@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -38,7 +37,6 @@ public class UserController {
 
     @GetMapping()
     public ResponseEntity<?> findAll() {
-        //TODO: process POST request
         
         return userService.findAll();
     }
@@ -46,7 +44,6 @@ public class UserController {
     @GetMapping("/{userId}")
     public ResponseEntity<?> find(@PathVariable int userId) {
         System.out.println(userId);
-        //TODO: process POST request
         
         return userService.find(userId);
     }
@@ -54,7 +51,6 @@ public class UserController {
     @PutMapping("/{userId}")
     public ResponseEntity<?> update(@PathVariable int userId, @RequestBody UserDto userDto) {
         System.out.println(userDto);
-        //TODO: process POST request
         
         return userService.update(userId, userDto);
     }

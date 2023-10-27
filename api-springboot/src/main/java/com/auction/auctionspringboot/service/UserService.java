@@ -22,6 +22,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired CacheService<Optional<User>> cache;
+
     public ResponseEntity<?> findAll(){
         List<User> users = userRepository.findAll();
         return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
@@ -29,8 +31,9 @@ public class UserService {
 
     public ResponseEntity<?> find(int userId){
         Optional<User> user = Optional.of(new User());
-        user = userRepository.findById(userId);
-        // System.out.println(user.getRole());
+        final String key = "user:" + userId;
+        final int time = 24*7*60*60;
+        user = cache.cachedExecute(key,time ,true, (t)->userRepository.findById(userId)) ;
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 

@@ -105,11 +105,8 @@ public class User implements UserDetails{
     @Column(name = "del_flag", nullable = false)
     private Boolean del_flag;
     
-    // @Column(name = "role_id")
-    // private String role_id;
-
-    @Enumerated(EnumType.STRING)
-    private RoleType roleAuthor;
+    @Column(name = "role_id")
+    private String role_id;
     
     @OneToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -121,7 +118,7 @@ public class User implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roleAuthor.getAuthorities();
+        return RoleType.ADMIN.getAuthorities();
     }
 
     @Override

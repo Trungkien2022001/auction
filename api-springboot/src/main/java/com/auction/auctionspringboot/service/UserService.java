@@ -37,6 +37,12 @@ public class UserService {
         return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
     }
 
+    public Optional<User> findByUserName(String username){
+        Optional<User> user = Optional.of(new User());
+        user = userRepository.findByUsername(username);
+        return user;
+    }
+
     public ResponseEntity<?> update(int userId, UserDto userDto){
        User user = userRepository.findById(userId).orElse(null);
         if(user == null){

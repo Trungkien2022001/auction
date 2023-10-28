@@ -1,9 +1,17 @@
 package com.auction.auctionspringboot.model;
 
 import java.sql.Date;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.auction.auctionspringboot.constant.RoleType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +27,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "user")
 @Entity
-public class User {
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
@@ -99,10 +107,52 @@ public class User {
     
     // @Column(name = "role_id")
     // private String role_id;
+
+    @Enumerated(EnumType.STRING)
+    private RoleType roleAuthor;
     
     @OneToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Role role;
+
+    public Object orElseThrow(Object object) {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roleAuthor.getAuthorities();
+    }
+
+    @Override
+    public String getPassword() {
+      return password_hash;
+    }
+  
+    @Override
+    public String getUsername() {
+      return email;
+    }
+  
+    @Override
+    public boolean isAccountNonExpired() {
+      return true;
+    }
+  
+    @Override
+    public boolean isAccountNonLocked() {
+      return true;
+    }
+  
+    @Override
+    public boolean isCredentialsNonExpired() {
+      return true;
+    }
+  
+    @Override
+    public boolean isEnabled() {
+      return true;
+    }
 
     // @ManyToOne
     // @JoinColumn(name = "id", referencedColumnName = "selled_id", insertable = false, updatable = false)

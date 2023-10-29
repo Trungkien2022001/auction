@@ -108,17 +108,17 @@ public class User implements UserDetails{
     @Column(name = "role_id")
     private String role_id;
     
+    
+    public Object orElseThrow(Object object) {
+      return null;
+    }
     @OneToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Role role;
 
-    public Object orElseThrow(Object object) {
-        return null;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return RoleType.ADMIN.getAuthorities();
+      return RoleType.mapToRoleType(role_id).getAuthorities();
     }
 
     @Override

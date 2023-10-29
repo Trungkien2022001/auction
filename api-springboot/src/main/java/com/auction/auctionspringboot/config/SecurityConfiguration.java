@@ -8,10 +8,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
+
+import com.auction.auctionspringboot.security.JwtAuthenticationFilter;
+import com.auction.auctionspringboot.utils.log.Log;
 
 import static com.auction.auctionspringboot.constant.Permission.ADMIN_CREATE;
 import static com.auction.auctionspringboot.constant.Permission.ADMIN_DELETE;
@@ -56,6 +57,7 @@ public class SecurityConfiguration {
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                Log.info("Init SecurityFilterChain", SecurityConfiguration.class);
                 http
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL)

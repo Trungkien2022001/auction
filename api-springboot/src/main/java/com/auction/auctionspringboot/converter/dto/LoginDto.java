@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.dto;
+package com.auction.auctionspringboot.converter.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.config;
+package com.auction.auctionspringboot.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -13,8 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.auction.auctionspringboot.auditing.ApplicationAuditAware;
 import com.auction.auctionspringboot.repository.UserRepository;
+import com.auction.auctionspringboot.security.ApplicationAuditAware;
 
 @Configuration
 @RequiredArgsConstructor

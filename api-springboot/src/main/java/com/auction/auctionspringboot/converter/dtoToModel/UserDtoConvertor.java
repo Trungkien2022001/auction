@@ -1,6 +1,6 @@
-package com.auction.auctionspringboot.dtoToModel;
+package com.auction.auctionspringboot.converter.dtoToModel;
 
-import com.auction.auctionspringboot.dto.UserDto;
+import com.auction.auctionspringboot.converter.dto.UserDto;
 import com.auction.auctionspringboot.model.User;
 
 public class UserDtoConvertor {

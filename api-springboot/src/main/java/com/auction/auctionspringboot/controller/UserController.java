@@ -2,8 +2,8 @@ package com.auction.auctionspringboot.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.auction.auctionspringboot.dto.UserDto;
-import com.auction.auctionspringboot.dtoToModel.UserDtoConvertor;
+import com.auction.auctionspringboot.converter.dto.UserDto;
+import com.auction.auctionspringboot.converter.dtoToModel.UserDtoConvertor;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.UserService;
 

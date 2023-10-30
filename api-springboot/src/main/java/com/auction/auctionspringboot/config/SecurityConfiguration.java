@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                         "/configuration/ui",
                         "/configuration/security",
                         "/swagger-ui/**",
-                        "/**",
+                        // "/**",
                         "/webjars/**",
                         "/swagger-ui.html" 
                 };
@@ -60,7 +60,8 @@ public class SecurityConfiguration {
                 Log.info("Init SecurityFilterChain", SecurityConfiguration.class);
                 http
                                 .csrf(AbstractHttpConfigurer::disable)
-                                .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL)
+                                .authorizeHttpRequests(
+                                        req -> req.requestMatchers(WHITE_LIST_URL)
                                                 .permitAll()
                                                 .requestMatchers("/api/v1/management/**")
                                                 .hasAnyRole(ADMIN.name(), MANAGER.name())
@@ -73,7 +74,8 @@ public class SecurityConfiguration {
                                                 .requestMatchers(DELETE, "/api/v1/management/**")
                                                 .hasAnyAuthority(ADMIN_DELETE.name(), MANAGER_DELETE.name())
                                                 .anyRequest()
-                                                .authenticated())
+                                                .authenticated()
+                                                )
                                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                                 .authenticationProvider(authenticationProvider)
                                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

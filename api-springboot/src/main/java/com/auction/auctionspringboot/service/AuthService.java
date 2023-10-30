@@ -5,7 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import com.auction.auctionspringboot.converter.dto.LoginDto;
+import com.auction.auctionspringboot.converter.dto.LoginRequestDto;
 import com.auction.auctionspringboot.repository.UserRepository;
 import com.auction.auctionspringboot.security.JwtService;
 
@@ -20,7 +20,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public String login(LoginDto request) {
+    public String login(LoginRequestDto request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),

@@ -2,7 +2,7 @@ package com.auction.auctionspringboot.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.auction.auctionspringboot.converter.dto.UserDto;
+import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
 import com.auction.auctionspringboot.converter.dtoToModel.UserDtoConvertor;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.UserService;
@@ -29,7 +29,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> create(
         @RequestBody
-        UserDto userDto
+        RegisterRequestDto userDto
     ) {
         User user = UserDtoConvertor.toCreateModel(userDto);
         return userService.create(user);
@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> update(@PathVariable int userId, @RequestBody UserDto userDto) {
+    public ResponseEntity<?> update(@PathVariable int userId, @RequestBody RegisterRequestDto userDto) {
         System.out.println(userDto);
         
         return userService.update(userId, userDto);

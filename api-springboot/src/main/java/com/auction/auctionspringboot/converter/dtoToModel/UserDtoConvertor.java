@@ -1,10 +1,10 @@
 package com.auction.auctionspringboot.converter.dtoToModel;
 
-import com.auction.auctionspringboot.converter.dto.UserDto;
+import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
 import com.auction.auctionspringboot.model.User;
 
 public class UserDtoConvertor {
-    public static User toCreateModel(UserDto userDto){
+    public static User toCreateModel(RegisterRequestDto userDto){
         User user = new User();
         user.setId(userDto.getId());
         // user.setPassword(userDto.getPassword());
@@ -15,7 +15,7 @@ public class UserDtoConvertor {
         return user;
     }
 
-    public static User toUpdateModel(User user, UserDto userDto){
+    public static User toUpdateModel(User user, RegisterRequestDto userDto){
         if(user == null){
             return null;
         }

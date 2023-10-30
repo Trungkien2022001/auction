@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.auction.auctionspringboot.security.JwtAuthenticationFilter;
-import com.auction.auctionspringboot.utils.log.Log;
+import com.auction.auctionspringboot.utils.Log;
 
 import static com.auction.auctionspringboot.constant.Permission.ADMIN_CREATE;
 import static com.auction.auctionspringboot.constant.Permission.ADMIN_DELETE;
@@ -47,7 +47,7 @@ public class SecurityConfiguration {
                         "/configuration/ui",
                         "/configuration/security",
                         "/swagger-ui/**",
-                        // "/**",
+                        "/**",
                         "/webjars/**",
                         "/swagger-ui.html" 
                 };

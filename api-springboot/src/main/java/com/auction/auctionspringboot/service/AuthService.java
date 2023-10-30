@@ -5,7 +5,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import com.auction.auctionspringboot.converter.dto.LoginRequestDto;
+import com.auction.auctionspringboot.converter.dto.auth.LoginRequestDto;
 import com.auction.auctionspringboot.repository.UserRepository;
 import com.auction.auctionspringboot.security.JwtService;
 

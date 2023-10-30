@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.auction.auctionspringboot.converter.dto.UserDto;
+import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
 import com.auction.auctionspringboot.converter.dtoToModel.UserDtoConvertor;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.repository.UserRepository;
@@ -43,7 +43,7 @@ public class UserService {
         return user;
     }
 
-    public ResponseEntity<?> update(int userId, UserDto userDto){
+    public ResponseEntity<?> update(int userId, RegisterRequestDto userDto){
        User user = userRepository.findById(userId).orElse(null);
         if(user == null){
             throw new EntityNotFoundException("User not found");

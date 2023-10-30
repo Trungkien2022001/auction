@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.utils.log;
+package com.auction.auctionspringboot.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

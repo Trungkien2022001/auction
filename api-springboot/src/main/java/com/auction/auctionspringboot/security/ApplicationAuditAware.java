@@ -6,7 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.auction.auctionspringboot.model.User;
-import com.auction.auctionspringboot.utils.log.Log;
+import com.auction.auctionspringboot.utils.Log;
 
 import java.util.Optional;
 

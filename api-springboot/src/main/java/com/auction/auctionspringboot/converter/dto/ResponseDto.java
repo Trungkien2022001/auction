@@ -13,6 +13,13 @@ public class ResponseDto<T> {
         this.data = data;
     }
 
+    public ResponseDto(boolean success, T data) {
+        this.success = success;
+        this.statusCode = 200;
+        this.message = "Success";
+        this.data = data;
+    }
+
     public ResponseDto(boolean success, int statusCode, String message) {
         this.success = success;
         this.statusCode = statusCode;

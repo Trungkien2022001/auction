@@ -2,8 +2,13 @@ package com.auction.auctionspringboot.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auction.auctionspringboot.config.RequestCredential;
+import com.auction.auctionspringboot.converter.dto.ResponseDto;
 import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
+import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.UserService;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,16 +30,28 @@ public class UserController {
 
 
     @GetMapping()
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> findAll() throws Exception {
         
         return userService.findAll();
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> find(@PathVariable int userId) {
-        System.out.println(userId);
-        
-        return userService.find(userId);
+        ResponseDto<List<User>> resp;
+        try {
+            User userRq = RequestCredential.getCreds();
+    
+            List<User> user =  userService.find(userId, userRq);
+            resp = new ResponseDto<List<User>>(user);
+        return new ResponseEntity<>(resp, HttpStatus.ACCEPTED);
+
+        } catch (Exception e) {
+            resp = new ResponseDto<List<User>>(
+                    false,
+                    400,
+                    e.getMessage());
+            return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/{userId}")

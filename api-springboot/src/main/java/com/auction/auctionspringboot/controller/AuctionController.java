@@ -19,7 +19,7 @@ public class AuctionController {
     private AuctionService auctionService;
 
     @GetMapping()
-    public ResponseEntity<?> findAll(){
+    public ResponseEntity<?> findAll() throws Exception{
         List<Auction> auctions = auctionService.findAll();
         return new ResponseEntity<>(auctions, HttpStatus.ACCEPTED);
     }

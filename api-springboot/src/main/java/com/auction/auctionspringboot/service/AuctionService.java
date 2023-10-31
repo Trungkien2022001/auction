@@ -20,18 +20,17 @@ public class AuctionService {
     @Autowired
     private CacheService<List<Auction>> cacheService;
 
-    public List<Auction> findAll() {
+    public List<Auction> findAll() throws Exception {
         
 
         // List<Auction> auctions = auctionRepository.findAll();
         // String auctionsJson;
-         List<Auction> auctions= cacheService.cachedExecute("t", 10000, true, (t) -> auctionRepository.findAll());
+         List<Auction> auctions = cacheService.cachedExecute("t", 10000, true, (t) -> auctionRepository.findAll());
 
         // try {
         //     auctionsJson = objectMapper.writeValueAsString(auctions);
         //     stringRedisTemplate.opsForValue().set("myKey", auctionsJson);
         // } catch (JsonProcessingException e) {
-        //     // TODO Auto-generated catch block
         //     e.printStackTrace();
         // }
         return auctions;

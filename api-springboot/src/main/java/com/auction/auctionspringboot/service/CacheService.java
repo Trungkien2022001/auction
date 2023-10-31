@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -19,13 +20,14 @@ public class CacheService<R> {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    public <T> R cachedExecute(String key, long ttlInSeconds, boolean json, Function<T, R> fn) {
+    public <T> R cachedExecute(String key, long ttlInSeconds, boolean json, Function<T, R> fn) throws Exception {
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
         String cached = ops.get(key);
 
         R toReturned = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new Jdk8Module());
         if (cached == null) {
-            ObjectMapper objectMapper = new ObjectMapper();
             R val = fn.apply(null);
             String valString;
             try {
@@ -36,22 +38,18 @@ public class CacheService<R> {
                 e.printStackTrace();
             }
 
-            return  val;
-        } 
+            return val;
+        }
         if (json == true) {
-            ObjectMapper objectMapper = new ObjectMapper();
             try {
-                toReturned = objectMapper.readValue(cached, new TypeReference<R>() {
-                });
-                return toReturned;
+                toReturned = objectMapper.readValue(cached, new TypeReference<R>() {});
+                return (R) toReturned;
             } catch (JsonMappingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
-                 return null;
+                return null;
             } catch (JsonProcessingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
-                 return null;
+                return null;
             }
         } else {
             return null;
@@ -59,15 +57,15 @@ public class CacheService<R> {
 
     }
 
-    public Boolean destroy(String key){
+    public Boolean destroy(String key) {
         return stringRedisTemplate.delete(key);
     }
 
-    public <T> void setExpired(String key, T value, int tll){
+    public <T> void setExpired(String key, T value, int tll) {
         stringRedisTemplate.expire(key, tll, TimeUnit.SECONDS);
     }
 
-    public <T> void setValueWithExpired(String key, T value, Boolean json, int tll){
+    public <T> void setValueWithExpired(String key, T value, Boolean json, int tll) {
         stringRedisTemplate.expire(key, tll, TimeUnit.SECONDS);
     }
 

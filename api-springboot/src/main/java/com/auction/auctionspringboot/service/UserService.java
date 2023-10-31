@@ -53,14 +53,6 @@ public class UserService {
         return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<?> create(User user){
-        System.out.println(user);
-        User savedUser;
-        savedUser = userRepository.save(user);
-        System.out.println((savedUser));
-        return new ResponseEntity<>(savedUser, HttpStatus.ACCEPTED);
-    }
-
     public ResponseEntity<?> delete(int userId){
         User user = userRepository.findById(userId).orElse(null);
         if (user == null){

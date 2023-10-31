@@ -1,5 +1,9 @@
 package com.auction.auctionspringboot.converter.dto.auth;
 
+import java.sql.Date;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +12,31 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequestDto {
-    private int id;
-    private String first_name;
-    private String last_name;
+
+    @NotNull
+    @Size(max = 50)
+    private String name;
+
+    @NotNull
+    @Size(max = 20)
+    private String email;
+
+    @NotNull
+    @Size(max = 50)
     private String username;
+
+    @NotNull
+    @Size(max = 500)
     private String password;
+
+    @NotNull
+    @Size(max = 1000)
+    private String avatar;
+
+    @NotNull
+    private Date birthday;
+
+    @NotNull
+    @Size(max = 1000)
+    private String address;
 }

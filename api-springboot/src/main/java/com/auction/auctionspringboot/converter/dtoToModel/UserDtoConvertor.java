@@ -6,7 +6,7 @@ import com.auction.auctionspringboot.model.User;
 public class UserDtoConvertor {
     public static User toCreateModel(RegisterRequestDto userDto){
         User user = new User();
-        user.setId(userDto.getId());
+        // user.setId(userDto.getId());
         // user.setPassword(userDto.getPassword());
         // user.setFirst_name(userDto.getFirst_name());
         // user.setLast_name(userDto.getLast_name());
@@ -22,9 +22,9 @@ public class UserDtoConvertor {
         if(userDto.getUsername() != null){
             user.setUsername(userDto.getUsername());
         }
-        if(userDto.getFirst_name() != null){
-            // user.setFirst_name(userDto.getFirst_name());
-        }
+        // if(userDto.getFirst_name() != null){
+        //     // user.setFirst_name(userDto.getFirst_name());
+        // }
         // if(userDto.getUsername() != null){
         //     user.setUsername(userDto.getUsername());
         // }

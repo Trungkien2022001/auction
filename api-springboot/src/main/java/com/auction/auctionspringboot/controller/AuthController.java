@@ -3,13 +3,14 @@ package com.auction.auctionspringboot.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.auction.auctionspringboot.converter.dto.ResponseDto;
 import com.auction.auctionspringboot.converter.dto.auth.LoginRequestDto;
 import com.auction.auctionspringboot.converter.dto.auth.LoginResponseDto;
+import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
+import com.auction.auctionspringboot.converter.dtoToModel.UserDtoConvertor;
+import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.AuthService;
 import com.auction.auctionspringboot.utils.ValidationUtil;
 
@@ -19,9 +20,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -33,7 +33,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping()
+    @PostMapping()
     @Operation(summary = "Login", tags = { "Auth" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
@@ -58,6 +58,21 @@ public class AuthController {
                     e.getMessage());
             return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping
+    @Operation(summary = "Register", tags = { "Auth" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = RegisterRequestDto.class), mediaType = "application/json")
+            }),
+            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) })
+    })
+    public ResponseEntity<?> create(@RequestBody RegisterRequestDto userDto) {
+        User user = UserDtoConvertor.toCreateModel(userDto);
+        User savedUser= authService.create(user);
+         return new ResponseEntity<>("resp", HttpStatus.BAD_REQUEST);
+    
     }
 
 }

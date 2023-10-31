@@ -3,6 +3,8 @@ package com.auction.auctionspringboot.model;
 import java.sql.Date;
 import java.util.Collection;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -27,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class User implements UserDetails{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", nullable = false, unique = true)
     private int id;
     
@@ -94,9 +96,11 @@ public class User implements UserDetails{
     @Column(name = "custom_config", columnDefinition = "json")
     private String custom_config;
     
+    @CreatedDate 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date created_at;
     
+    @LastModifiedDate 
     @Column(name = "updated_at", nullable = false)
     private Date updated_at;
     
@@ -107,12 +111,13 @@ public class User implements UserDetails{
     private String role_id;
     
     
-    public Object orElseThrow(Object object) {
-      return null;
-    }
     @OneToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Role role;
+    
+    public Object orElseThrow(Object object) {
+      return null;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,8 +1,8 @@
 package com.auction.auctionspringboot.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -34,11 +34,13 @@ public class AuthService {
         return jwtToken;
     }
 
-    public User create(User user) {
-        System.out.println(user);
-        User savedUser;
+    public User register(User user) throws Exception {
+        User savedUser = new User();
+        List<User> existUser =  userRepository.findByConditional(user.getUsername(), user.getEmail(), user.getPhone());
+        if (existUser.toString() != "[]"){
+            throw new Exception("Username or Email or Phone is exited in our system, please try again!");
+        }
         savedUser = userRepository.save(user);
-        System.out.println((savedUser));
         return savedUser;
     }
 }

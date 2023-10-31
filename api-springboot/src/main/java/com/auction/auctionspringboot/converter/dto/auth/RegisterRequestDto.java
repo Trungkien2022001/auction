@@ -34,6 +34,10 @@ public class RegisterRequestDto {
     private String avatar;
 
     @NotNull
+    @Size(max = 15)
+    private String phone;
+
+    @NotNull
     private Date birthday;
 
     @NotNull

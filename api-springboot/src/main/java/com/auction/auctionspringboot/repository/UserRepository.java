@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.auction.auctionspringboot.model.User;
-import java.util.Optional;
+import java.util.*;
 
 
 @Repository
@@ -17,4 +17,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     
     @Query(nativeQuery = true, value = "SELECT * FROM user where email = :username")
     Optional<User> findByUsername(String username);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM user where username = :username or email = :email or phone = :phone")
+    List<User> findByConditional(String username, String email, String phone);
 }

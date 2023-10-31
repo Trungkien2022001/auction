@@ -1,10 +1,12 @@
 package com.auction.auctionspringboot.model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Collection;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,6 +14,7 @@ import com.auction.auctionspringboot.constant.RoleType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,6 +30,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "user")
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -58,13 +62,13 @@ public class User implements UserDetails{
     private int amount;
     
     @Column(name = "prestige", nullable = false)
-    private Boolean prestige;
+    private int prestige = 0;
     
     @Column(name = "is_verified", nullable = false)
-    private Boolean is_verified;
+    private int is_verified = 0;
     
     @Column(name = "is_blocked", length = 50, nullable = false)
-    private String is_blocked;
+    private String is_blocked = "";
     
     @Column(name = "address", length = 1000)
     private String address;
@@ -73,42 +77,43 @@ public class User implements UserDetails{
     private String refresh_token;
     
     @Column(name = "rating", nullable = false)
-    private Float rating;
+    private Float rating= 0.0f;
     
     @Column(name = "sell_failed_count_by_seller", nullable = false)
-    private Integer sell_failed_count_by_seller;
+    private Integer sell_failed_count_by_seller = 0;
     
     @Column(name = "sell_failed_count_by_auctioneer", nullable = false)
-    private Integer sell_failed_count_by_auctioneer;
+    private Integer sell_failed_count_by_auctioneer = 0;
     
     @Column(name = "sell_success_count", nullable = false)
-    private Integer sell_success_count;
+    private Integer sell_success_count = 0;
     
     @Column(name = "buy_cancel_count_by_seller", nullable = false)
-    private Integer buy_cancel_count_by_seller;
+    private Integer buy_cancel_count_by_seller = 0;
     
     @Column(name = "buy_cancel_count_by_auctioneer", nullable = false)
-    private Integer buy_cancel_count_by_auctioneer;
+    private Integer buy_cancel_count_by_auctioneer = 0;
     
     @Column(name = "buy_success_count", nullable = false)
-    private Integer buy_success_count;
+    private Integer buy_success_count = 0;
     
     @Column(name = "custom_config", columnDefinition = "json")
     private String custom_config;
-    
-    @CreatedDate 
+
+    @CreatedDate
+    // @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Date created_at;
+    private Timestamp created_at;
     
     @LastModifiedDate 
     @Column(name = "updated_at", nullable = false)
-    private Date updated_at;
+    private Timestamp   updated_at;
     
     @Column(name = "del_flag", nullable = false)
-    private Boolean del_flag;
+    private int del_flag;
     
     @Column(name = "role_id")
-    private String role_id;
+    private String role_id = "user";
     
     
     @OneToOne
@@ -118,6 +123,8 @@ public class User implements UserDetails{
     public Object orElseThrow(Object object) {
       return null;
     }
+
+    @CreatedDate
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

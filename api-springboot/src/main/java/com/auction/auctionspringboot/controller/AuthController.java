@@ -33,7 +33,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @PostMapping()
+    @PostMapping("/login")
     @Operation(summary = "Login", tags = { "Auth" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
@@ -60,7 +60,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/register")
     @Operation(summary = "Register", tags = { "Auth" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
@@ -68,11 +68,27 @@ public class AuthController {
             }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) })
     })
-    public ResponseEntity<?> create(@RequestBody RegisterRequestDto userDto) {
-        User user = UserDtoConvertor.toCreateModel(userDto);
-        User savedUser= authService.create(user);
-         return new ResponseEntity<>("resp", HttpStatus.BAD_REQUEST);
-    
+    public ResponseEntity<?> create(@RequestBody RegisterRequestDto registerRequestDto) {
+                ResponseDto<User> resp;
+        try {
+                
+                ValidationUtil.validate(registerRequestDto);
+                User user = UserDtoConvertor.toCreateModel(registerRequestDto);
+                User savedUser= authService.register(user);
+                resp = new ResponseDto<User>(
+                    true,
+                    400,
+                    "Register Success",
+                    savedUser);
+                 return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            resp = new ResponseDto<>(
+                    false,
+                    400,
+                    e.getMessage());
+            return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 }

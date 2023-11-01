@@ -20,6 +20,12 @@ public class CacheService<R> {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    public String get(String key){
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        String cached = ops.get(key);
+        return cached;
+    }
+
     public <T> R cachedExecute(String key, long ttlInSeconds, boolean json, Function<T, R> fn) throws Exception {
         ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
         String cached = ops.get(key);

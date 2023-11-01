@@ -8,7 +8,7 @@ import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.UserService;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,16 +37,16 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> find(@PathVariable int userId) {
-        ResponseDto<List<User>> resp;
+        ResponseDto<Optional<User>> resp;
         try {
             User userRq = RequestCredential.getCreds();
     
-            List<User> user =  userService.find(userId, userRq);
-            resp = new ResponseDto<List<User>>(user);
+            Optional<User> user =  userService.find(userId, userRq);
+            resp = new ResponseDto<Optional<User>>(user);
         return new ResponseEntity<>(resp, HttpStatus.ACCEPTED);
 
         } catch (Exception e) {
-            resp = new ResponseDto<List<User>>(
+            resp = new ResponseDto<Optional<User>>(
                     false,
                     400,
                     e.getMessage());

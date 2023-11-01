@@ -10,6 +10,7 @@ import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -28,13 +29,17 @@ public class UserService {
         return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
     }
 
-    public List<User> find(int userId, User userRq) throws Exception {
-        List<User> user;
-        final String key = "user:" + userId;
-        final int time = 24 * 7 * 60 * 60;
-        user = cache.cachedExecute(key, time, true, (t) -> userRepository.findById(userId));
-        if(user == null || user.isEmpty()){
+    public Optional<User> find(int userId, User userRq) throws Exception {
+        Optional<User> user;
+        user = userRepository.findById(userId);
+        // final String key = "user:" + userId;
+        // final int time = 24 * 7 * 60 * 60;
+        // user = cache.cachedExecute(key, time, true, (t) -> userRepository.findById(userId));
+
+        if(user == null){
             throw new Exception("User not found!");
+        } else {
+            cache.setExpired("user:"+userId, user, userId);
         }
         
         // if(userRq.getId() != userId || userRq.getRole_id() != "admin" || userRq.getRole_id() != "admin_user"){

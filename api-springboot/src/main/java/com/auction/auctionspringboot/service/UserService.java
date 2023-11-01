@@ -6,11 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
+import com.auction.auctionspringboot.converter.dto.user.UpdateUserDto;
+import com.auction.auctionspringboot.converter.dtoToModel.UserDtoConvertor;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,62 +21,66 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    
     @Autowired
     CacheService<List<User>> cache;
+
     public ResponseEntity<?> findAll() throws Exception {
-         List<User> users;
-        final String key = "users";
-        final int time = 24 * 7 * 60 * 60;
-        users = cache.cachedExecute(key, time, true, (t) -> userRepository.findAll());
-        return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
+        // List<User> users;
+        // final String key = "users";
+        // final int time = 24 * 7 * 60 * 60;
+        // users = cache.cachedExecute(key, time, true, (t) -> userRepository.findAll());
+        // return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
-    public Optional<User> find(int userId, User userRq) throws Exception {
-        Optional<User> user;
-        user = userRepository.findById(userId);
-        // final String key = "user:" + userId;
-        // final int time = 24 * 7 * 60 * 60;
-        // user = cache.cachedExecute(key, time, true, (t) -> userRepository.findById(userId));
-
-        if(user == null){
-            throw new Exception("User not found!");
+    public User find(int userId, User userRq) throws Exception {
+        User user = new User();
+        User cached = cache.get("test", User.class);
+        if (cached != null) {
+            user = cached;
         } else {
-            cache.setExpired("user:"+userId, user, userId);
+            user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                throw new Exception("User not found!");
+            } else {
+                cache.set("test", user, 86400, true);
+
+            }
         }
-        
-        // if(userRq.getId() != userId || userRq.getRole_id() != "admin" || userRq.getRole_id() != "admin_user"){
-        //     System.out.println("hahahah");
-        // }
-        // User toReturned = user.get(0);
-        // List<User> list = new ArrayList<>();
-        // list.add(toReturned);
+        if (userId != userRq.getId() || !userRq.getRole().isDashboard_user() || !userRq.getRole().isAdmin()) {
+            user.setPassword_hash("");
+            user.setCustom_config(null);
+            user.setRefresh_token(null);
+            user.setRole(null);
+            user.setRole_id(null);
+        }
         return user;
     }
 
-    // public Optional<User> findByUserName(String username){
-    // Optional<User> user = Optional.of(new User());
-    // user = userRepository.findByUsername(username);
-    // return user;
-    // }
+    public User update(int userId, UpdateUserDto userDto, User userRq) throws Exception {
+        if (userId == userRq.getId() || userRq.getRole().isDashboard_user() || userRq.getRole().isAdmin()) {
+            User user = userRepository.findById(userId).orElse(null);
+            if (user == null) {
+                throw new EntityNotFoundException("User not found");
+            }
+            User updatedUser = UserDtoConvertor.toUpdateModel(user, userDto);
+            userRepository.save(updatedUser);
+            return updatedUser;
+        } else {
+            throw new Exception("You dont have permission to do this!");
+        }
 
-    public ResponseEntity<?> update(int userId, RegisterRequestDto userDto) {
-        // User user = userRepository.findById(userId);
-        // if(user == null){
-        // throw new EntityNotFoundException("User not found");
-        // }
-        // User updatedUser = UserDtoConvertor.toUpdateModel(user, userDto);
-        // userRepository.save(updatedUser);
-        // return new ResponseEntity<>(updatedUser, HttpStatus.ACCEPTED);
-        return null;
     }
 
+    /*
+     * Pls dont use this method hahahaha
+     */
     public ResponseEntity<?> delete(int userId) {
-        // User user = userRepository.findById(userId);
-        // if (user == null){
-        // throw new EntityNotFoundException("User not found");
-        // }
-        // userRepository.deleteById(userId);
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        userRepository.deleteById(userId);
         return null;
     }
 }

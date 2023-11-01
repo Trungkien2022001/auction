@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.auction.auctionspringboot.constant.RoleType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -125,13 +126,14 @@ public class User implements UserDetails{
     }
 
     @CreatedDate
-
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
       return RoleType.mapToRoleType(role_id).getAuthorities();
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
       return password_hash;
     }
@@ -142,21 +144,25 @@ public class User implements UserDetails{
     }
   
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
       return true;
     }
   
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
       return true;
     }
   
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
       return true;
     }
   
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
       return true;
     }

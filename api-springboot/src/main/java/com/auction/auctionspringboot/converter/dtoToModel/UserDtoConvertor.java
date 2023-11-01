@@ -1,6 +1,7 @@
 package com.auction.auctionspringboot.converter.dtoToModel;
 
 import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
+import com.auction.auctionspringboot.converter.dto.user.UpdateUserDto;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.utils.BCryptEncoder;
 
@@ -20,20 +21,31 @@ public class UserDtoConvertor {
         return user;
     }
 
-    public static User toUpdateModel(User user, RegisterRequestDto userDto){
+    public static User toUpdateModel(User user, UpdateUserDto userDto){
         if(user == null){
             return null;
         }
-        if(userDto.getUsername() != null){
-            user.setUsername(userDto.getUsername());
-        }
-        // if(userDto.getFirst_name() != null){
-        //     // user.setFirst_name(userDto.getFirst_name());
-        // }
-        // if(userDto.getUsername() != null){
-        //     user.setUsername(userDto.getUsername());
-        // }
 
+        if(userDto.getName() != null){
+            user.setName(userDto.getName());
+        }
+
+        if(userDto.getAddress() != null){
+            user.setAddress(userDto.getAddress());
+        }
+        
+        if(userDto.getPassword() != null){
+            user.setPassword_hash(BCryptEncoder.encodePassword(userDto.getPassword()));
+        }
+
+        if (userDto.getAvatar() != null){
+            user.setAvatar(userDto.getAvatar());
+        }
+
+        if (userDto.getBirthday() != null){
+            user.setBirthday(userDto.getBirthday());
+        }
+        
         return user;
     }
 }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -20,10 +21,27 @@ public class CacheService<R> {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    public String get(String key){
-        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
-        String cached = ops.get(key);
-        return cached;
+    public <T> T get(String key, Class<T> clazz) {
+        String value = stringRedisTemplate.opsForValue().get(key);
+    
+        if (value == null) {
+            return null;
+        }
+    
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            T toReturned = objectMapper.readValue(value, clazz);
+            return toReturned;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String get(String key) {
+        String value = stringRedisTemplate.opsForValue().get(key);
+    
+        return value;
     }
 
     public <T> R cachedExecute(String key, long ttlInSeconds, boolean json, Function<T, R> fn) throws Exception {
@@ -63,7 +81,29 @@ public class CacheService<R> {
 
     }
 
-    public Boolean destroy(String key) {
+    public <T> void set(String key, T value, long ttl, boolean json) {
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        String valString;
+        if (json == true) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new Jdk8Module());
+                valString = objectMapper.writeValueAsString(value);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return;
+            }
+        } else if(value instanceof String) {
+            valString =(String) value;
+        } else {
+            return;
+        }
+         ops.set(key, valString);
+         stringRedisTemplate.expire(key, Duration.ofSeconds(ttl));
+
+    }
+
+    public Boolean del(String key) {
         return stringRedisTemplate.delete(key);
     }
 

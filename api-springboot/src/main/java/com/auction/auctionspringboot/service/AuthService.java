@@ -20,6 +20,9 @@ public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    CacheService<List<User>> cache;
+
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
@@ -41,6 +44,8 @@ public class AuthService {
             throw new Exception("Username or Email or Phone is exited in our system, please try again!");
         }
         savedUser = userRepository.save(user);
+        final String USERS_KEY = "users";
+        cache.del(USERS_KEY);
         return savedUser;
     }
 }

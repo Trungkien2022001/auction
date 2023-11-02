@@ -21,7 +21,7 @@ public class AuctionResponseDto {
     private int sell_price;
     private int seller_id;
     private int auction_count;
-    private int auctioneer_win;
+    private Integer auctioneer_win;
     private int status_id;
     private String status;
     private int is_returned;

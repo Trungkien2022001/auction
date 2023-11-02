@@ -33,7 +33,8 @@ public class AuctionController {
     @GetMapping()
     public ResponseEntity<?> findAll() throws Exception {
         List<Auction> auctions = auctionService.findAll();
-        return new ResponseEntity<>(auctions, HttpStatus.ACCEPTED);
+        List<AuctionResponseDto> lstAuctions= AuctionResponseConvertor.convertList(auctions);
+        return new ResponseEntity<>(lstAuctions, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{auctionId}")

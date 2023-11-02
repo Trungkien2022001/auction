@@ -21,18 +21,22 @@ public class AuctionService {
     private CacheService<List<Auction>> cacheService;
 
     public List<Auction> findAll() throws Exception {
+        // List<Auction> auctions = cacheService.cachedExecute("t", 10000, true, (t) ->
+        // auctionRepository.findAll());
 
-        // List<Auction> auctions = auctionRepository.findAll();
-        // String auctionsJson;
-        List<Auction> auctions = cacheService.cachedExecute("t", 10000, true, (t) -> auctionRepository.findAll());
-
-        // try {
-        // auctionsJson = objectMapper.writeValueAsString(auctions);
-        // stringRedisTemplate.opsForValue().set("myKey", auctionsJson);
-        // } catch (JsonProcessingException e) {
-        // e.printStackTrace();
-        // }
-        return auctions;
+        // return auctions;
+        List<Auction> auction;
+        String key = "auction";
+        List<Auction> cached = (List<Auction>) cacheService.get(key, Auction.class);
+        auction = auctionRepository.findAll();
+        if (cached != null) {
+            auction = cached;
+        } else {
+            auction = auctionRepository.findAll();
+            ;
+            cacheService.set(key, auction, 86400, true);
+        }
+        return auction;
     }
 
     public Auction find(int auctionId) throws Exception {
@@ -50,6 +54,7 @@ public class AuctionService {
                 cacheService.set(key, auction, 86400, true);
             }
         }
+
         return auction;
     }
 }

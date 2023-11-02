@@ -1,5 +1,8 @@
 package com.auction.auctionspringboot.converter.dto.auction;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.auction.auctionspringboot.model.Auction;
 import com.auction.auctionspringboot.model.Product;
 import com.auction.auctionspringboot.model.User;
@@ -45,4 +48,10 @@ public class AuctionResponseConvertor {
         resp.setImages(product.getImages());
         return resp ;
     }
+
+    public static List<AuctionResponseDto> convertList(List<Auction> auctions) {
+    return auctions.stream()
+            .map(AuctionResponseConvertor::convert)
+            .collect(Collectors.toList());
+}
 }

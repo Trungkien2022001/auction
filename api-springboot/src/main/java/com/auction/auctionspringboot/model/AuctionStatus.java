@@ -23,5 +23,8 @@ public class AuctionStatus {
     @Column(name = "name", nullable = false)
     private String name;
 
+    
+
+
     // Constructors, getters, and setters
 }

@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
 import com.auction.auctionspringboot.converter.dto.user.UpdateUserDto;
 import com.auction.auctionspringboot.converter.dtoToModel.UserDtoConvertor;
 import com.auction.auctionspringboot.model.User;
@@ -35,7 +34,8 @@ public class UserService {
 
     public User find(int userId, User userRq) throws Exception {
         User user = new User();
-        User cached = cache.get("test", User.class);
+        String key = "user:" + userRq;
+        User cached = cache.get(key, User.class);
         if (cached != null) {
             user = cached;
         } else {
@@ -43,7 +43,7 @@ public class UserService {
             if (user == null) {
                 throw new Exception("User not found!");
             } else {
-                cache.set("test", user, 86400, true);
+                cache.set(key, user, 86400, true);
 
             }
         }

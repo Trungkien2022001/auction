@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auction.auctionspringboot.config.RequestCredential;
 import com.auction.auctionspringboot.converter.dto.ResponseDto;
-import com.auction.auctionspringboot.converter.dto.auth.LoginResponseDto;
-import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
 import com.auction.auctionspringboot.converter.dto.user.UpdateUserDto;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.UserService;

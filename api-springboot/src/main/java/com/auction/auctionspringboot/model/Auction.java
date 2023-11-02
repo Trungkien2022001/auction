@@ -1,5 +1,8 @@
 package com.auction.auctionspringboot.model;
-import java.sql.Date;
+
+import java.sql.Timestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,10 +29,10 @@ public class Auction {
     private int id;
 
     @Column(name = "start_time", nullable = false)
-    private Date startTime;
+    private Timestamp startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private Timestamp endTime;
 
     @Column(name = "auction_time", nullable = false)
     private int auctionTime;
@@ -53,6 +56,7 @@ public class Auction {
     private Integer auctioneerWin;
 
     @Column(name = "status", nullable = false)
+    @JsonIgnore
     private int status;
 
     @Column(name = "is_returned", nullable = false)
@@ -62,22 +66,30 @@ public class Auction {
     private int isFinishedSoon;
 
     @Column(name = "seller_confirm_time")
-    private Date sellerConfirmTime;
+    private Timestamp sellerConfirmTime;
 
     @Column(name = "auctioneer_confirm_time")
-    private Date auctioneerConfirmTime;
+    private Timestamp auctioneerConfirmTime;
 
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+    private Timestamp updatedAt;
 
     @Column(name = "deleted_at")
-    private Date deletedAt;
+    private Timestamp deletedAt;
 
     @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
+
+    @OneToOne
+    @JoinColumn(name = "status", insertable = false, updatable = false)
+    private AuctionStatus auctionStatus;
+
+    @OneToOne
+    @JoinColumn(name = "seller_id", insertable = false, updatable = false)
+    private User seller;
 
 }

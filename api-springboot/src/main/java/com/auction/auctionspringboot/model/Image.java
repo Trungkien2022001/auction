@@ -1,6 +1,6 @@
 package com.auction.auctionspringboot.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -39,7 +39,7 @@ public class Image {
 
     @Column(name = "deleted_at")
     @JsonIgnore
-    private Timestamp  deletedAt;
+    private LocalDateTime  deletedAt;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

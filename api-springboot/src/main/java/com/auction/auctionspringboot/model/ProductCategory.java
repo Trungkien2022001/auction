@@ -1,6 +1,10 @@
 package com.auction.auctionspringboot.model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.beans.factory.annotation.Value;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,13 +30,15 @@ public class ProductCategory {
     @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(200)")
     private String name;
 
-    @Column(name = "key", nullable = false, columnDefinition = "VARCHAR(100)")
+    @Column(name = "keyword", nullable = false, columnDefinition = "VARCHAR(100)")
     private String key;
 
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-    @Column(name = "image", nullable = false, columnDefinition = "VARCHAR(500)")
+    @Column(name = "image", nullable = false, length = 500, columnDefinition = "varchar(500) default ''")
+    // @Value()
     private String image;
 
     // Constructors, getters, and setters

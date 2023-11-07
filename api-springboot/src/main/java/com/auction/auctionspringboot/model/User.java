@@ -2,6 +2,7 @@ package com.auction.auctionspringboot.model;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -102,13 +103,12 @@ public class User implements UserDetails{
     private String custom_config;
 
     @CreatedDate
-    // @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Timestamp created_at;
-    
-    @LastModifiedDate 
-    @Column(name = "updated_at", nullable = false)
-    private Timestamp   updated_at;
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime default current_timestamp ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime updatedAt;
     
     @Column(name = "del_flag", nullable = false)
     private int del_flag;

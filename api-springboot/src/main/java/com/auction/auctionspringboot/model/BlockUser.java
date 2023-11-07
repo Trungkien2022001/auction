@@ -1,6 +1,6 @@
 package com.auction.auctionspringboot.model;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,8 +32,8 @@ public class BlockUser {
     @Column(name = "created_by", nullable = false)
     private int created_by;
 
-    @Column(name = "created_at", nullable = false)
-    private Date created_at;
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
+    private LocalDateTime created_at;
 
     // Constructors, getters, and setters
 }

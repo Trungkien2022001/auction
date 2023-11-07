@@ -1,6 +1,7 @@
 package com.auction.auctionspringboot.model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +30,7 @@ public class AuctionHistory {
     private int auctioneerId;
 
     @Column(name = "bet_time", nullable = false)
-    private Date betTime;
+    private LocalDateTime betTime;
 
     @Column(name = "bet_amount", nullable = false)
     private Integer betAmount;
@@ -40,8 +41,8 @@ public class AuctionHistory {
     @Column(name = "is_blocked", nullable = false)
     private Integer isBlocked;
 
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
+    private LocalDateTime createdAt;
 
     // Constructors, getters, and setters
 }

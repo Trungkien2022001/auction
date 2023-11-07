@@ -1,6 +1,6 @@
 package com.auction.auctionspringboot.model;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -60,14 +60,15 @@ public class Product {
     @Column(name = "seller_id", nullable = false)
     private int seller_id;
 
-    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "datetime default current_timestamp")
-    private Date created_at;
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime default current_timestamp")
-    private Date updated_at;
+
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime default current_timestamp ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at", nullable = false, columnDefinition = "datetime default current_timestamp")
-    private Date deleted_at;
+    private LocalDateTime deleted_at;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Image> images;

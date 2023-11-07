@@ -1,6 +1,7 @@
 package com.auction.auctionspringboot.model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +28,7 @@ public class Request {
     private int count;
 
     @Column(name = "time", nullable = false)
-    private Date time;
+    private LocalDateTime time;
 
     // Constructors, getters, and setters
 }

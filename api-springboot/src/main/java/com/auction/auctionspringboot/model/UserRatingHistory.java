@@ -1,6 +1,7 @@
 package com.auction.auctionspringboot.model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,11 +36,12 @@ public class UserRatingHistory {
     @Column(name = "desc", columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
     private String desc;
 
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
-    private Date updatedAt;
+
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime default current_timestamp ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime updatedAt;
 
     // Constructors, getters, and setters
 }

@@ -1,6 +1,6 @@
 package com.auction.auctionspringboot.model;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,8 +32,7 @@ public class UserAuction {
     @Column(name = "is_success", nullable = false)
     private int isSuccess;
 
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
+    private LocalDateTime createdAt;
 
-    // Constructors, getters, and setters
 }

@@ -4,7 +4,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.auction.auctionspringboot.constant.ProductCategory;
 import com.auction.auctionspringboot.model.Auction;
-import com.auction.auctionspringboot.model.Product;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

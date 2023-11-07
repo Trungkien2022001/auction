@@ -1,6 +1,7 @@
 package com.auction.auctionspringboot.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -71,11 +72,11 @@ public class Auction {
     @Column(name = "auctioneer_confirm_time")
     private Timestamp auctioneerConfirmTime;
 
-    @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
+    private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
-    private Timestamp updatedAt;
+    @Column(name = "updated_at", nullable = false, columnDefinition = "datetime default current_timestamp ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
     private Timestamp deletedAt;

@@ -28,7 +28,7 @@ public class AuctionHistory {
     @Column(name = "auctioneer_id", nullable = false)
     private int auctioneerId;
 
-    @Column(name = "bet_time", nullable = false)
+    @Column(name = "bet_time", nullable = false, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime betTime;
 
     @Column(name = "bet_amount", nullable = false)

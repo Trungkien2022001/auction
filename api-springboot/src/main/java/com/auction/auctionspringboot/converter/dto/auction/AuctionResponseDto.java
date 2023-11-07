@@ -1,6 +1,7 @@
 package com.auction.auctionspringboot.converter.dto.auction;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.auction.auctionspringboot.model.Image;
@@ -38,7 +39,7 @@ public class AuctionResponseDto {
     private List<Image> images;
     private Timestamp seller_confirm_time;
     private Timestamp auctioneer_confirm_time;
-    private Timestamp created_at;
-    private Timestamp updated_at;
+    private LocalDateTime created_at;
+    private LocalDateTime updated_at;
     private Timestamp deletedAt;
 }

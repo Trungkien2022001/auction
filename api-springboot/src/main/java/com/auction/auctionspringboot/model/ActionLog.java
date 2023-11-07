@@ -29,7 +29,7 @@ public class ActionLog {
     @Column(name = "matched_route", length = 500, nullable = false)
     private String matchedRoute;
 
-    @Column(name = "client_ip", length = 50, nullable = false)
+    @Column(name = "client_ip", length = 50, nullable = true)
     private String clientIp;
 
     @Column(name = "server_port", length = 6)

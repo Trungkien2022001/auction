@@ -34,8 +34,8 @@ public class Auction {
     @Column(name = "end_time")
     private Timestamp endTime;
 
-    @Column(name = "auction_time", nullable = false)
-    private int auctionTime;
+    // @Column(name = "auction_time", nullable = false)
+    // private int auctionTime;
 
     @Column(name = "product_id", nullable = false)
     private int productId;
@@ -91,5 +91,9 @@ public class Auction {
     @OneToOne
     @JoinColumn(name = "seller_id", insertable = false, updatable = false)
     private User seller;
+
+    @OneToOne
+    @JoinColumn(name = "auction_time", insertable = false, updatable = false)
+    private AuctionTime auctionTime;
 
 }

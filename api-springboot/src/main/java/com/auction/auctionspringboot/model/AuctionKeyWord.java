@@ -20,7 +20,7 @@ public class AuctionKeyWord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "key", nullable = false)
+    @Column(name = "keyword", nullable = false)
     private String key;
 
     // Constructors, getters, and setters

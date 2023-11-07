@@ -33,7 +33,7 @@ public class UserRatingHistory {
     @Column(name = "rating", nullable = false)
     private int rating;
 
-    @Column(name = "desc", columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci")
+    @Column(name = "description", columnDefinition = "LONGTEXT")
     private String desc;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")

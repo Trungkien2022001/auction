@@ -3,6 +3,7 @@ package com.auction.auctionspringboot.model;
 import java.sql.Time;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "auction_time")
+@Entity
 public class AuctionTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

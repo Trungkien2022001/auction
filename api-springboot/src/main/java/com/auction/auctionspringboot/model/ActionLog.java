@@ -56,7 +56,7 @@ public class ActionLog {
     @Column(name = "error", columnDefinition = "LONGTEXT")
     private String error;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime createdAt;
 
     // Constructors, getters, and setters

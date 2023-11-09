@@ -39,5 +39,4 @@ public class Banner {
     @OneToMany(mappedBy = "banner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BannerImage> bannerImages;
 
-    // Constructors, getters, and setters
 }

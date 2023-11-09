@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Auction {
+public class NewAuction {
     private String start_time;
     private int auction_time;
     private int is_returned;

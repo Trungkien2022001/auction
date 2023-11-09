@@ -29,5 +29,4 @@ public class Request {
     @Column(name = "time", nullable = false)
     private LocalDateTime time;
 
-    // Constructors, getters, and setters
 }

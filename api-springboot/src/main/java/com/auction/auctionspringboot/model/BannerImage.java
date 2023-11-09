@@ -35,5 +35,4 @@ public class BannerImage {
     @Column(name = "url", nullable = false)
     private String url;
 
-    // Constructors, getters, and setters
 }

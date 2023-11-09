@@ -42,5 +42,4 @@ public class UserRatingHistory {
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime default current_timestamp ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt;
 
-    // Constructors, getters, and setters
 }

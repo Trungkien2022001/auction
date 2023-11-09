@@ -24,5 +24,4 @@ public class Payment {
     @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(50)")
     private String name;
 
-    // Constructors, getters, and setters
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateUserDto {
+public class UpdateUserRequestDto {
 
     @Size(max = 50)
     private String name;

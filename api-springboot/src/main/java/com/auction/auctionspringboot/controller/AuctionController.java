@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.auction.auctionspringboot.converter.dto.ResponseDto;
-import com.auction.auctionspringboot.converter.dto.auction.AuctionResponseConvertor;
-import com.auction.auctionspringboot.converter.dto.auction.AuctionResponseDto;
+import com.auction.auctionspringboot.converter.dto.auction.GetAuctionResponseConvertor;
+import com.auction.auctionspringboot.converter.dto.auction.GetAuctionResponseDto;
 import com.auction.auctionspringboot.converter.dto.auction.NewAuctionDto;
 import com.auction.auctionspringboot.model.Auction;
 import com.auction.auctionspringboot.model.User;
@@ -52,7 +52,7 @@ public class AuctionController {
             @RequestParam(name = "category", required = true) String category) throws Exception {
         List<Auction> auctions = auctionService.findAll(sort, limit, sort_price, page, seller_id, name, type,
                 price_from, price_to, category);
-        List<AuctionResponseDto> lstAuctions = AuctionResponseConvertor.convertList(auctions);
+        List<GetAuctionResponseDto> lstAuctions = GetAuctionResponseConvertor.convertList(auctions);
         return new ResponseEntity<>(lstAuctions, HttpStatus.ACCEPTED);
     }
 
@@ -60,18 +60,18 @@ public class AuctionController {
     @Operation(summary = "Get Auction", tags = { "Auction" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = AuctionResponseDto.class), mediaType = "application/json")
+                    @Content(schema = @Schema(implementation = GetAuctionResponseDto.class), mediaType = "application/json")
             }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
     public ResponseEntity<?> find(@PathVariable int auctionId) throws Exception {
-        ResponseDto<AuctionResponseDto> resp;
+        ResponseDto<GetAuctionResponseDto> resp;
         try {
 
             // ValidationUtil.validate(registerRequestDto);
             // User user = UserDtoConvertor.toCreateModel(registerRequestDto);
             Auction auction = auctionService.find(auctionId);
-            AuctionResponseDto auctionResponseDto = AuctionResponseConvertor.convert(auction);
-            resp = new ResponseDto<AuctionResponseDto>(
+            GetAuctionResponseDto auctionResponseDto = GetAuctionResponseConvertor.convert(auction);
+            resp = new ResponseDto<GetAuctionResponseDto>(
                     true,
                     400,
                     "Get Auction Success",
@@ -90,7 +90,7 @@ public class AuctionController {
     @Operation(summary = "Create Auction", tags = { "Auction" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = AuctionResponseDto.class), mediaType = "application/json")
+                    @Content(schema = @Schema(implementation = GetAuctionResponseDto.class), mediaType = "application/json")
             }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
     public ResponseEntity<?> create(

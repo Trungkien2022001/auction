@@ -9,7 +9,7 @@ import com.auction.auctionspringboot.converter.dto.ResponseDto;
 import com.auction.auctionspringboot.converter.dto.auth.LoginRequestDto;
 import com.auction.auctionspringboot.converter.dto.auth.LoginResponseDto;
 import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
-import com.auction.auctionspringboot.converter.dtoToModel.UserDtoConvertor;
+import com.auction.auctionspringboot.converter.toModel.UserDtoConvertor;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.AuthService;
 import com.auction.auctionspringboot.utils.ValidationUtil;

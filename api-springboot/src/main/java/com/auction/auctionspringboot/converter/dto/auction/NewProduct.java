@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class NewProduct {
     private String name;
     private String branch;
     private String status;

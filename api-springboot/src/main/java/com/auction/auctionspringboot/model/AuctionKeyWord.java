@@ -23,5 +23,4 @@ public class AuctionKeyWord {
     @Column(name = "keyword", nullable = false)
     private String key;
 
-    // Constructors, getters, and setters
 }

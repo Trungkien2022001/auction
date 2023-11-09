@@ -24,5 +24,4 @@ public class BlockType {
     @Column(name = "type", nullable = false)
     private String type;
 
-    // Constructors, getters, and setters
 }

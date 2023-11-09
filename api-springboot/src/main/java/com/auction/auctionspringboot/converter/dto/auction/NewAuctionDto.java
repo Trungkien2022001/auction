@@ -11,35 +11,8 @@ import lombok.NoArgsConstructor;
 public class NewAuctionDto {
 
     @NotNull
-    public Auction auction;
+    public NewAuction auction;
 
     @NotNull
-    public Product product;
+    public NewProduct product;
 }
-
-// @Data
-// @AllArgsConstructor
-// @NoArgsConstructor
-// public
-// class Auction {
-//     private String start_time;
-//     private int auction_time;
-//     private int is_returned;
-//     private int is_finished_soon;
-// }
-
-// @Data
-// @AllArgsConstructor
-// @NoArgsConstructor
-// class Product {
-//     private String name;
-//     private String branch;
-//     private String status;
-//     private String title;
-//     private String description;
-//     private String key_word;
-//     private int category_id;
-//     private String start_price;
-//     private List<String> images;
-
-// }

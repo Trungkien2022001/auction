@@ -39,7 +39,6 @@ public class ProductCategory {
     // @Value()
     private String image;
 
-    // Constructors, getters, and setters
 }
 
 

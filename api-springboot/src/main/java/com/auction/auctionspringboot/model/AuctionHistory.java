@@ -43,5 +43,4 @@ public class AuctionHistory {
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime createdAt;
 
-    // Constructors, getters, and setters
 }

@@ -24,5 +24,4 @@ public class NotificationCategory {
     @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(100)")
     private String name;
 
-    // Constructors, getters, and setters
 }

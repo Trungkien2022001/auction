@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auction.auctionspringboot.config.RequestCredential;
 import com.auction.auctionspringboot.converter.dto.ResponseDto;
-import com.auction.auctionspringboot.converter.dto.user.UpdateUserDto;
+import com.auction.auctionspringboot.converter.dto.user.UpdateUserRequestDto;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.UserService;
 
@@ -79,7 +79,7 @@ public class UserController {
                     @Content(schema = @Schema(implementation = User.class), mediaType = "application/json")
             }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
-    public ResponseEntity<?> update(@PathVariable int userId, @RequestBody UpdateUserDto userDto) {
+    public ResponseEntity<?> update(@PathVariable int userId, @RequestBody UpdateUserRequestDto userDto) {
          ResponseDto<User> resp;
         try {
             User userRq = RequestCredential.getCreds();

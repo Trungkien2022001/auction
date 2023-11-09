@@ -45,5 +45,4 @@ public class ChatHistory {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    // Constructors, getters, and setters
 }

@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.auditing;
+package com.auction.auctionspringboot.security.auditing;
 
 import java.util.Optional;
 

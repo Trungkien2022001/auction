@@ -7,9 +7,9 @@ import com.auction.auctionspringboot.model.Auction;
 import com.auction.auctionspringboot.model.Product;
 import com.auction.auctionspringboot.model.User;
 
-public class AuctionResponseConvertor {
-    public static AuctionResponseDto convert (Auction auction){
-        AuctionResponseDto resp = new AuctionResponseDto();
+public class GetAuctionResponseConvertor {
+    public static GetAuctionResponseDto convert (Auction auction){
+        GetAuctionResponseDto resp = new GetAuctionResponseDto();
         Product product = auction.getProduct();
         // List<Image> img = product.getImages();
 
@@ -49,9 +49,9 @@ public class AuctionResponseConvertor {
         return resp ;
     }
 
-    public static List<AuctionResponseDto> convertList(List<Auction> auctions) {
+    public static List<GetAuctionResponseDto> convertList(List<Auction> auctions) {
     return auctions.stream()
-            .map(AuctionResponseConvertor::convert)
+            .map(GetAuctionResponseConvertor::convert)
             .collect(Collectors.toList());
 }
 }

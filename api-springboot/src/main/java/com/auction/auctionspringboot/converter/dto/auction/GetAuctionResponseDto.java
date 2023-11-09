@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuctionResponseDto {
+public class GetAuctionResponseDto {
     private int id;
     private LocalDateTime start_time;
     private LocalDateTime end_time;

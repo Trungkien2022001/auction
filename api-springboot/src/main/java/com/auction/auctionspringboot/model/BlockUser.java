@@ -35,5 +35,4 @@ public class BlockUser {
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime created_at;
 
-    // Constructors, getters, and setters
 }

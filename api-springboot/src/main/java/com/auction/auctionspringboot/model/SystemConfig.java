@@ -46,5 +46,4 @@ public class SystemConfig {
     @Column(name = "system_version")
     private Integer systemVersion;
 
-    // Constructors, getters, and setters
 }

@@ -9,8 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.auction.auctionspringboot.converter.dto.auction.NewAuctionDto;
-import com.auction.auctionspringboot.converter.dtoToModel.AuctionDtoConvertor;
-import com.auction.auctionspringboot.converter.dtoToModel.ProductDtoConvertor;
+import com.auction.auctionspringboot.converter.toModel.AuctionDtoConvertor;
+import com.auction.auctionspringboot.converter.toModel.ProductDtoConvertor;
 import com.auction.auctionspringboot.model.Auction;
 import com.auction.auctionspringboot.model.Image;
 import com.auction.auctionspringboot.model.Product;

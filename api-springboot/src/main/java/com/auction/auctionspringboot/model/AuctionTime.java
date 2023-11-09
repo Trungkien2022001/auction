@@ -31,5 +31,4 @@ public class AuctionTime {
     @Column(name = "time_full", nullable = false)
     private Time timeFull;
 
-    // Constructors, getters, and setters
 }

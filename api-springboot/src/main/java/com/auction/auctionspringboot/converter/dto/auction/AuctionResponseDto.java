@@ -1,6 +1,5 @@
 package com.auction.auctionspringboot.converter.dto.auction;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,8 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuctionResponseDto {
     private int id;
-    private Timestamp start_time;
-    private Timestamp end_time;
+    private LocalDateTime start_time;
+    private LocalDateTime end_time;
     private int auction_time;
     private int start_price;
     private int sell_price;
@@ -37,9 +36,9 @@ public class AuctionResponseDto {
     private String product_status;
     private User seller;
     private List<Image> images;
-    private Timestamp seller_confirm_time;
-    private Timestamp auctioneer_confirm_time;
+    private LocalDateTime seller_confirm_time;
+    private LocalDateTime auctioneer_confirm_time;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
-    private Timestamp deletedAt;
+    private LocalDateTime deletedAt;
 }

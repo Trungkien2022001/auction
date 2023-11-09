@@ -1,10 +1,10 @@
 package com.auction.auctionspringboot.model;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +12,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,13 +32,13 @@ public class Auction {
     private int id;
 
     @Column(name = "start_time", nullable = false)
-    private Timestamp startTime;
+    private LocalDateTime startTime;
 
     @Column(name = "end_time")
-    private Timestamp endTime;
+    private LocalDateTime endTime;
 
-    // @Column(name = "auction_time", nullable = false)
-    // private int auctionTime;
+    @Column(name = "auction_time", nullable = false)
+    private int auction_time;
 
     @Column(name = "product_id", nullable = false)
     private int productId;
@@ -67,10 +69,10 @@ public class Auction {
     private int isFinishedSoon;
 
     @Column(name = "seller_confirm_time")
-    private Timestamp sellerConfirmTime;
+    private LocalDateTime sellerConfirmTime;
 
     @Column(name = "auctioneer_confirm_time")
-    private Timestamp auctioneerConfirmTime;
+    private LocalDateTime auctioneerConfirmTime;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime createdAt;
@@ -79,9 +81,9 @@ public class Auction {
     private LocalDateTime updatedAt;
 
     @Column(name = "deleted_at")
-    private Timestamp deletedAt;
+    private LocalDateTime deletedAt;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
 
@@ -96,5 +98,16 @@ public class Auction {
     @OneToOne
     @JoinColumn(name = "auction_time", insertable = false, updatable = false)
     private AuctionTime auctionTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
 }

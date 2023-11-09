@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,16 +36,15 @@ public class Image {
 
     @Column(name = "isSuccess", nullable = false)
     @JsonIgnore
-    private int isSuccess;
+    private int isSuccess = 1;
 
     @Column(name = "deleted_at")
     @JsonIgnore
     private LocalDateTime  deletedAt;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "product_id")
-    @JsonIgnore
+    // @JsonIgnore
     private Product product; 
 
-    // Constructors, getters, and setters
 }

@@ -9,27 +9,59 @@ export class RoleEntity {
   @Column({ type: 'varchar', length: 250, nullable: true })
   description: string;
 
-  @Column({ type: 'tinyint', nullable: false, default: 0 })
+  @Column({
+    type: 'bit',
+    transformer: { from: (v: Buffer) => !!v.readInt8(0), to: (v) => v },
+    nullable: false,
+    default: 0,
+  })
   admin: number;
 
-  @Column({ type: 'tinyint', nullable: false, default: 0 })
+  @Column({
+    type: 'bit',
+    transformer: { from: (v: Buffer) => !!v.readInt8(0), to: (v) => v },
+    nullable: false,
+    default: 0,
+  })
   user: number;
 
-  @Column({ type: 'tinyint', nullable: false, default: 0 })
+  @Column({
+    type: 'bit',
+    transformer: { from: (v: Buffer) => !!v.readInt8(0), to: (v) => v },
+    nullable: false,
+    default: 0,
+  })
   auction: number;
 
-  @Column({ type: 'tinyint', nullable: false, default: 1 })
+  @Column({
+    type: 'bit',
+    transformer: { from: (v: Buffer) => !!v.readInt8(0), to: (v) => v },
+    nullable: false,
+    default: 1,
+  })
   homepage: number;
 
-  @Column({ type: 'tinyint', nullable: false, default: 0 })
+  @Column({
+    type: 'bit',
+    transformer: { from: (v: Buffer) => !!v.readInt8(0), to: (v) => v },
+    nullable: false,
+    default: 0,
+  })
   dashboard_auction: number;
 
-  @Column({ type: 'tinyint', nullable: false, default: 0 })
+  @Column({
+    type: 'bit',
+    transformer: { from: (v: Buffer) => !!v.readInt8(0), to: (v) => v },
+    nullable: false,
+    default: 0,
+  })
   dashboard_config: number;
 
-  @Column({ type: 'tinyint', nullable: false, default: 0 })
+  @Column({
+    type: 'bit',
+    transformer: { from: (v: Buffer) => !!v.readInt8(0), to: (v) => v },
+    nullable: false,
+    default: 0,
+  })
   dashboard_money: number;
-
-  @Column({ type: 'tinyint', nullable: false, default: 0 })
-  dashboard_hr: number;
 }

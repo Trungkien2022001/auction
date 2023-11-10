@@ -12,6 +12,7 @@ import { MessageDetailEntity } from './message/entities/messageDetail.entity';
 import { UserModule } from './user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { ApiConfigService } from './shared/services/api-config.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ApiConfigService } from './shared/services/api-config.service';
       // },
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

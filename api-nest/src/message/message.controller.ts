@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Logger,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
@@ -15,6 +16,8 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
+  private readonly logger = new Logger(MessageController.name);
+
   @Post()
   create(@Body() createMessageDto: CreateMessageDto) {
     return this.messageService.create(createMessageDto);
@@ -22,6 +25,7 @@ export class MessageController {
 
   @Get()
   findAll() {
+    this.logger.log('Get All!!!');
     return this.messageService.findAll();
   }
 

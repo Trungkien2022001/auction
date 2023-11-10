@@ -27,10 +27,12 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/swagger": "^7.1.15",
     "@nestjs/typeorm": "^10.0.0",
+    "lodash": "^4.17.21",
     "mysql2": "^3.6.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "typeorm-transactional": "^0.5.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

@@ -5,7 +5,7 @@ import { NotificationModule } from './notification/notification.module';
 import { MessageModule } from './message/message.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { DataSource } from 'typeorm';
+import { Connection, DataSource } from 'typeorm';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { MessageEntity } from './message/entities/message.entity';
 import { MessageDetailEntity } from './message/entities/messageDetail.entity';
@@ -13,6 +13,8 @@ import { UserModule } from './user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { AuthModule } from './auth/auth.module';
+import { ActionLoggingInterceptor } from './interceptors/logging.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -51,6 +53,13 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // Connection, 
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ActionLoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}

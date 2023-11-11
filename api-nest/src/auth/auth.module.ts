@@ -6,9 +6,10 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from './jwt.service';
 import { JwtInterceptor } from 'src/interceptors/auth-user-interceptor.service';
-import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { AddFieldFilter } from 'src/filters/test.filter';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
@@ -16,6 +17,10 @@ import { AuthGuard } from 'src/guards/auth.guard';
   providers: [
     AuthService,
     JwtService,
+    {
+      provide: APP_FILTER,
+      useClass: AddFieldFilter,
+    },
     // {
     //   provide: APP_INTERCEPTOR,
     //   useClass: JwtInterceptor,

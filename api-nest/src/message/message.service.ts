@@ -20,8 +20,14 @@ export class MessageService {
     return this.messageRepository.find({ relations: ['messageDetails'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
+  async findOne(id: number) {
+    const message = await this.messageRepository.findOne({
+      where:{
+        id,
+      },
+      relations: ['messageDetails']
+    })
+    return message;
   }
 
   update(id: number, updateMessageDto: UpdateMessageDto) {

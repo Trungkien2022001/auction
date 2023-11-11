@@ -11,6 +11,8 @@ import {
   UseInterceptors,
   UseFilters,
   ForbiddenException,
+  HttpStatus,
+  HttpCode,
   // UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -24,14 +26,24 @@ import { JoiValidationPipe } from 'src/pipes/joi.pipe';
 import { ActionLoggingInterceptor } from 'src/interceptors/logging.interceptor';
 import { Repository } from 'typeorm';
 import { AddFieldFilter } from 'src/filters/test.filter';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('api/v1/auth')
+@ApiTags('Auth')
 @UseInterceptors(ActionLoggingInterceptor)
 // @UseGuards(AuthGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   
   @Post('/login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get Message' })
+  @ApiBody({ required: true, type: LoginDto }) // Your DTO type for request body
+  @ApiResponse({
+    status: 200,
+    description: 'Successful response',
+    type: LoginDto, // DTO cho response
+  })
   @UseFilters(AddFieldFilter)
   // @UsePipes(new ValidatePipe())
   // @UsePipes(

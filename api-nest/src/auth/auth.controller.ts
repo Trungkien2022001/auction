@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Controller,
   Get,
@@ -6,6 +7,7 @@ import {
   Patch,
   Param,
   Delete,
+  UsePipes,
   // UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -13,6 +15,9 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 // import { Roles } from './role.decorator';
 // import { AuthGuard } from 'src/guards/auth.guard';
+import { ValidatePipe } from './../pipes/validate.pipe';
+import * as Joi from 'joi';
+import { JoiValidationPipe } from 'src/pipes/joi.pipe';
 
 @Controller('api/v1/auth')
 // @UseGuards(AuthGuard)
@@ -20,6 +25,15 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
+  // @UsePipes(new ValidatePipe())
+  // @UsePipes(
+  //   new JoiValidationPipe(
+  //     Joi.object({
+  //       username: Joi.string().required(),
+  //       password: Joi.string().required(),
+  //     }),
+  //   ),
+  // )
   // @Roles(['admin1'])
   create(@Body() createAuthDto: LoginDto) {
     return this.authService.login(createAuthDto);

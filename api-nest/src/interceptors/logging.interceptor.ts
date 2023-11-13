@@ -8,7 +8,7 @@ import {
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Connection } from 'typeorm';
-import { ActionLogEntity } from './../global-entity/log.entity';
+import { ActionLogEntity } from '../global/entities/log.entity';
 
 @Injectable()
 export class ActionLoggingInterceptor implements NestInterceptor {

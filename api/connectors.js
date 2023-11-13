@@ -19,6 +19,27 @@ const knex = Knex({
     connection: config.mysqlConnectionUrl
 })
 
+async function checkMySQLConnection() {
+    try {
+      // Thực hiện truy vấn kiểm tra kết nối
+      const result = await knex.raw('select 1 as result');
+      
+      // Kết quả của truy vấn kiểm tra sẽ nằm trong result[0][0].result
+      const connectionResult = result[0][0].result;
+  
+      // In kết quả
+      console.log('MySQL Connection Result:', connectionResult);
+    } catch (error) {
+      console.error('Error checking MySQL connection:', error.message);
+    } finally {
+      // Đóng kết nối
+      await knex.destroy();
+    }
+  }
+  
+  // Gọi hàm kiểm tra kết nối
+  checkMySQLConnection();
+
 function tryParseJson(params) {
     if (params && Array.isArray(params)) {
         return params.map(tryParseJson)

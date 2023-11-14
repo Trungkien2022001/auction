@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Observable } from 'rxjs';
-import { JwtService } from 'src/auth/jwt.service';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { JwtService } from 'src/modules/auth/jwt.service';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
 // import { JwtService } from './jwt.service';
 

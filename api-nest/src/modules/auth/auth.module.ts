@@ -2,7 +2,7 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from './jwt.service';
 import { JwtInterceptor } from 'src/interceptors/auth-user-interceptor.service';

@@ -7,10 +7,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core'; // Thay đổi đường dẫn tới role type của bạn
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { JwtService } from 'src/auth/jwt.service';
+import { JwtService } from 'src/modules/auth/jwt.service';
 import { RoleType } from 'src/constants/role.constants';
 
 @Injectable()

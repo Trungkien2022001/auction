@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { RoleType } from 'src/constants/role.constants';
 
 // import { type RoleType } from '../constants';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
 // import { type UserEntity } from '../modules/user/user.entity';
 
 @Injectable()

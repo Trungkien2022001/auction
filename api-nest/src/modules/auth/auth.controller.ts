@@ -20,7 +20,7 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 // import { Roles } from './role.decorator';
 // import { AuthGuard } from 'src/guards/auth.guard';
-import { ValidatePipe } from './../pipes/validate.pipe';
+import { ValidatePipe } from '../../pipes/validate.pipe';
 import * as Joi from 'joi';
 import { JoiValidationPipe } from 'src/pipes/joi.pipe';
 import { ActionLoggingInterceptor } from 'src/interceptors/logging.interceptor';

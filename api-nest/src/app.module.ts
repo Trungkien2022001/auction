@@ -5,10 +5,6 @@ import { NotificationModule } from './modules/notification/notification.module';
 import { MessageModule } from './modules/message/message.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { Connection, DataSource } from 'typeorm';
-import { addTransactionalDataSource } from 'typeorm-transactional';
-import { MessageEntity } from './modules/message/entities/message.entity';
-import { MessageDetailEntity } from './modules/message/entities/messageDetail.entity';
 import { UserModule } from './modules/user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { ApiConfigService } from './shared/services/api-config.service';
@@ -20,11 +16,15 @@ import { LogModule } from './modules/log/log.module';
 import { SystemModule } from './modules/system/system.module';
 import { AuctionModule } from './modules/auction/auction.module';
 import { FinancialModule } from './modules/financial/financial.module';
+import { CacheModule } from './cache/cache.module';
+import { SocketModule } from './socket/socket.module';
 
 @Module({
   imports: [
     NotificationModule,
     MessageModule,
+    CacheModule,
+    SocketModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -65,7 +65,7 @@ import { FinancialModule } from './modules/financial/financial.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // Connection, 
+    // Connection,
     {
       provide: APP_INTERCEPTOR,
       useClass: ActionLoggingInterceptor,

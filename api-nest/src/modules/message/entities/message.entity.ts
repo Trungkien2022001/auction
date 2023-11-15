@@ -2,22 +2,20 @@
 
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
   OneToMany,
   //   ManyToOne,
   //   JoinColumn,
 } from 'typeorm';
 import { MessageDetailEntity } from './messageDetail.entity';
+import { AbstractEntity } from 'src/common/abstract.entity';
+import { MessageDto } from '../dto/message.dto';
+import { UseDto } from 'src/decorators/use-dto.decorator';
 //   import { User } from '../users/user.entity';
 
 @Entity('chat')
-export class MessageEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+@UseDto(MessageDto)
+export class MessageEntity extends AbstractEntity<MessageDto> {
   @Column({ name: 'user1', unsigned: true })
   user1: number;
 
@@ -37,12 +35,6 @@ export class MessageEntity {
 
   @Column({ name: 'is_read', default: 0 })
   isRead: number;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
 
   @OneToMany(
     () => MessageDetailEntity,

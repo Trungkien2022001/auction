@@ -43,7 +43,7 @@ export class MessageController {
     description: 'Successful response',
     type: MessageDto,
   })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<MessageDto> {
     return this.messageService.findOne(+id);
   }
 

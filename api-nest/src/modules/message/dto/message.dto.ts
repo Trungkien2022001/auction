@@ -4,14 +4,16 @@ import {
   IsBoolean,
   IsDate,
   ValidateNested,
-  ArrayNotEmpty,
   IsArray,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { MessageDetailDto } from './message-detail.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { MessageEntity } from '../entities/message.entity';
+import { AbstractDto } from 'src/common/dto/abstract.dto';
+import { toBoolean } from 'src/common/utils';
+import { MessageDetailEntity } from '../entities/messageDetail.entity';
 
-export class MessageDto {
+export class MessageDto extends AbstractDto {
   @IsNumber()
   @ApiProperty()
   id: number;
@@ -45,9 +47,19 @@ export class MessageDto {
   updatedAt: Date;
 
   @IsArray()
-  @ApiProperty()
-  @ArrayNotEmpty()
+  @ApiProperty({ type: MessageDetailDto, isArray: true })
   @ValidateNested({ each: true })
-  @Type(() => MessageDetailDto)
-  messageDetails: MessageDetailDto;
+  messageDetails: MessageDetailDto[];
+
+  constructor(message: MessageEntity) {
+    super(message);
+    this.user1 = message.user1;
+    this.user2 = message.user2;
+    this.lastMsg = message.lastMsg;
+    this.lastMessageBy = message.lastMessageBy;
+    this.isRead = toBoolean(message.isRead);
+    this.messageDetails = message.messageDetails.map(
+      (messageDetail: MessageDetailEntity) => messageDetail.toDto(),
+    );
+  }
 }

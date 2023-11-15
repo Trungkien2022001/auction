@@ -4,6 +4,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessageEntity } from './entities/message.entity';
 import { Repository } from 'typeorm';
+import { MessageDto } from './dto/message.dto';
 
 @Injectable()
 export class MessageService {
@@ -20,14 +21,14 @@ export class MessageService {
     return this.messageRepository.find({ relations: ['messageDetails'] });
   }
 
-  async findOne(id: number) {
-    const message = await this.messageRepository.findOne({
-      where:{
+  async findOne(id: number): Promise<MessageDto> {
+    const message: MessageEntity = await this.messageRepository.findOne({
+      where: {
         id,
       },
-      relations: ['messageDetails']
-    })
-    return message;
+      relations: ['messageDetails'],
+    });
+    return message.toDto();
   }
 
   update(id: number, updateMessageDto: UpdateMessageDto) {

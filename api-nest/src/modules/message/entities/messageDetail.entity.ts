@@ -2,21 +2,19 @@
 
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { MessageEntity } from './message.entity';
+import { AbstractEntity } from 'src/common/abstract.entity';
+import { MessageDetailDto } from '../dto/message-detail.dto';
+import { UseDto } from 'src/decorators/use-dto.decorator';
 
 @Entity('chat_history')
-export class MessageDetailEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+@UseDto(MessageDetailDto)
+export class MessageDetailEntity extends AbstractEntity<MessageDetailDto> {
   @Column({ name: 'chat_id' })
   chatId: number;
 
@@ -28,12 +26,6 @@ export class MessageDetailEntity {
 
   @Column({ name: 'content', type: 'text', nullable: true })
   content: string;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
 
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;

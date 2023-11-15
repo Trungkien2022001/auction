@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as _ from 'lodash';
-import { RoleType } from 'src/constants/role.constants';
+import { RoleType } from 'src/constants/role.constant';
 
 // import { type RoleType } from '../constants';
 import { UserEntity } from 'src/modules/user/entities/user.entity';

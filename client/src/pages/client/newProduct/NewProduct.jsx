@@ -42,7 +42,7 @@ export const NewProduct = ({ socket }) => {
     })
     useEffect(() => {
         async function getData() {
-            const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+            const result = await get(`/auction-helper`, currentUser)
             if (checkApiResponse(result)) {
                 setAuctionTime(result.data.auction_time)
                 setProductCategory(result.data.product_category)
@@ -63,7 +63,7 @@ export const NewProduct = ({ socket }) => {
             return
         }
 
-        let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/new-auction`, {
+        let result = await post(`/new-auction`, {
             auction,
             product: { ...product, images: imageList }
         }, currentUser)

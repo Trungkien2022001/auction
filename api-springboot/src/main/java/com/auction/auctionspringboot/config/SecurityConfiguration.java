@@ -41,13 +41,14 @@ public class SecurityConfiguration {
                         "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",
-                        // "/api/v1/**",
+                        "/api/v1/auction/**",
                         "/swagger-resources",
                         "/swagger-resources/**",
                         "/configuration/ui",
                         "/configuration/security",
                         "/swagger-ui/**",
-                        // "/**",
+                        "/public/**",
+                        "/**",
                         "/webjars/**",
                         "/swagger-ui.html" 
                 };
@@ -78,7 +79,8 @@ public class SecurityConfiguration {
                                                 )
                                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                                 .authenticationProvider(authenticationProvider)
-                                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                                .cors(cors -> cors.disable());;
                                 // .logout(logout -> logout.logoutUrl("/api/v1/auth/logout")
                                 //                 .addLogoutHandler(logoutHandler)
                                 //                 .logoutSuccessHandler((request, response,

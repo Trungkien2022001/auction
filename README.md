@@ -111,6 +111,9 @@ To run this project, you will need to add the following environment variables to
 | `SECRET`                   |    Your JWT secret key                       |
 | `MAX_RATE_LIMIT`           | 100                                                    |
 | `REACT_APP_API_ENDPOINT`   | http://localhost:3030                                  |
+| `REACT_APP_API_NODE_ENDPOINT`   | http://localhost:3030                             |
+| `REACT_APP_API_SPRINGBOOT_ENDPOINT`   | http://localhost:8080                       |
+| `REACT_APP_API_NEST_ENDPOINT`   | http://localhost:5050                             |
 | `REACT_APP_SOCKET_ENDPOINT` | http://localhost:3031                                 |
 | `PRODUCTS_WAIT_TIME`       | 3000                                                   |
 | `PRODUCT_WAIT_TIME`        | 3000                                                   |

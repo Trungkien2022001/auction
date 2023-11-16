@@ -5,13 +5,12 @@ import './Overview.scss'
 import { get } from '../../../utils/customRequest'
 import moment from 'moment'
 import { checkApiResponse } from '../../../utils/checkApiResponse'
-const api_endpoint = process.env.REACT_APP_API_ENDPOINT
 export const Overview = ({ currentUser, id }) => {
   const [data, setData] = useState({})
 
   useEffect(() => {
     async function getData() {
-      let result = await get(`${api_endpoint}/user/${id}`, currentUser)
+      let result = await get(`/user/${id}`, currentUser)
       if (checkApiResponse(result)) {
         setData(result.data.data)
       }

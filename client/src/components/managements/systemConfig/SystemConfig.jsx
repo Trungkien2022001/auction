@@ -21,7 +21,7 @@ export const SystemConfig = ({ socket }) => {
         window.location.href = `/management/dashboard`
     }
     async function getData() {
-        const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/system/all`, currentUser)
+        const result = await get(`/system/all`, currentUser)
         if (checkApiResponse(result)) {
             setListVersion(result.data.body)
             setField(result.data.body[0])
@@ -125,7 +125,7 @@ export const SystemConfig = ({ socket }) => {
             cancelButtonText: 'Không'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const r = await post(`${process.env.REACT_APP_API_ENDPOINT}/system/update`, toInsert, currentUser)
+                const r = await post(`/system/update`, toInsert, currentUser)
                 if (r.data.success) {
                     Swal.fire({
                         icon: 'success',

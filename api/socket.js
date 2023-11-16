@@ -87,7 +87,7 @@ socketIO.on('connection', socket => {
             .to(createRoomName(data.auction.product.id))
             .emit('updateUI', {})
         const seller = listOnlineUser.find(
-            i => i.user_id === data.auction.seller_info.id
+            i => i.user_id === data.auction.seller.id
         )
         if (seller) {
             socketIO.to(seller.socket).emit('notif-to-seller', {

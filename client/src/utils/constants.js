@@ -331,3 +331,9 @@ exports.PRODUCT_CATEGORY = {
   20: 'hobby', 
   21: 'other'
 };
+exports.SERVICES = {
+  NODEJS: 'NODE',
+  SPRINGBOOT: 'SPRINGBOOT',
+  NEST: 'NEST',
+}
+

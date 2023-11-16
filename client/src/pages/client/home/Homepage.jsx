@@ -52,7 +52,7 @@ export const Homepage = ({ socket }) => {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-overview`, currentUser)
+      const result = await get(`/auction-overview`, currentUser)
       if (checkApiResponse(result)) {
         setData(result.data.data)
       }
@@ -75,7 +75,7 @@ export const Homepage = ({ socket }) => {
         moment().diff(moment(tmp_product_category.created_at), 'days') > 1 ||
         moment().diff(moment(tmp_banner_image.created_at), 'days') > 1
       ) {
-        let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+        let result = await get(`/auction-helper`, currentUser)
         if (checkApiResponse(result)) {
           setProductCategory(result.data.product_category || [])
           setSytemConfig(result.data.system_config || {})
@@ -89,7 +89,7 @@ export const Homepage = ({ socket }) => {
       }
       setPreLoadingMeta(true)
       if (currentUser.id) {
-        let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${currentUser.id}`, currentUser)
+        let result = await get(`/message?user_id=${currentUser.id}`, currentUser)
         if (checkApiResponse(result)) {
           setMess(result.data.body)
         }

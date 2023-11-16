@@ -252,7 +252,6 @@ function EnhancedTableToolbar(props) {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-const api_endpoint = process.env.REACT_APP_API_ENDPOINT
 export const SaleHistory = ({ currentUser, socket }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
@@ -264,7 +263,7 @@ export const SaleHistory = ({ currentUser, socket }) => {
   const [currentAuctionId, setCurrentAuctionId] = useState()
 
   async function getData() {
-    let result = await get(`${api_endpoint}/auction-sell-history?user_id=${currentUser.id}`, currentUser)
+    let result = await get(`/auction-sell-history?user_id=${currentUser.id}`, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.result)
     }

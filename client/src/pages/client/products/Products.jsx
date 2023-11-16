@@ -67,7 +67,7 @@ export const Products = ({ socket }) => {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      const result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auctions?type=${filter.type}&sort=${filter.sort}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${unidecode(filter.name)}&page=${filter.page}&limit=${filter.limit}`, {},currentUser)
+      const result = await post(`/auctions?type=${filter.type}&sort=${filter.sort}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${unidecode(filter.name)}&page=${filter.page}&limit=${filter.limit}`, {},currentUser)
       if (checkApiResponse(result)) {
         setPreLoading(true)
         setCnt(result.data.data.count.total)
@@ -80,7 +80,7 @@ export const Products = ({ socket }) => {
   }
 
   async function getMetaData() {
-    const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-helper`, currentUser)
+    const result = await get(`/auction-helper`, currentUser)
     if (checkApiResponse(result)) {
       setProductCategory(result.data.product_category)
     }

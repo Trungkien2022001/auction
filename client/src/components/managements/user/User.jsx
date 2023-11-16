@@ -225,8 +225,6 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const api_endpoint = process.env.REACT_APP_API_ENDPOINT
-
 export const User = ({ currentUser, socket }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
@@ -244,13 +242,13 @@ export const User = ({ currentUser, socket }) => {
   }
 
   async function getData() {
-    let result = await get(`${api_endpoint}/users`, currentUser)
+    let result = await get(`/users`, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.users)
     }
   }
   async function getAuctionDetail() {
-    let result = await get(`${api_endpoint}/user/${currentUserId}`, currentUser)
+    let result = await get(`/user/${currentUserId}`, currentUser)
     if (checkApiResponse(result)) {
       setCurrentUserInfo(result.data.data)
     }
@@ -285,7 +283,7 @@ export const User = ({ currentUser, socket }) => {
       cancelButtonText: 'Không'
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const r = await post(`${process.env.REACT_APP_API_ENDPOINT}/user/block`, {
+        const r = await post(`/user/block`, {
           user_id: currentUserId,
           type: status,
         }, currentUser)

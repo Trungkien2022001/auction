@@ -221,8 +221,6 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const api_endpoint = process.env.REACT_APP_API_ENDPOINT
-
 export const Auction = ({ currentUser, socket }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
@@ -243,7 +241,7 @@ export const Auction = ({ currentUser, socket }) => {
   }
 
   async function getData() {
-    let result = await post(`${api_endpoint}/auctions?type=dashboard`, {}, currentUser)
+    let result = await post(`/auctions?type=dashboard`, {}, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.data.products)
       setInitialData(result.data.data.products)
@@ -264,11 +262,11 @@ export const Auction = ({ currentUser, socket }) => {
     // setData(dataList)
   }
   async function getAuctionDetail() {
-    let result = await post(`${api_endpoint}/auction?id=${currentAuctionId}`, {}, currentUser)
+    let result = await post(`public/auction?id=${currentAuctionId}`, {}, currentUser)
     if (checkApiResponse(result)) {
       setCurrentAuction(result.data.data.product)
     }
-    result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${currentAuctionId}`, currentUser)
+    result = await get(`/auction-history?auction_id=${currentAuctionId}`, currentUser)
     if (checkApiResponse(result)) {
       setAuctionHistoryData(result.data.data)
     }

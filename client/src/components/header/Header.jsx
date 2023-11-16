@@ -137,7 +137,7 @@ export const Header = ({ socket, systemConfig }) => {
   }, [socket])
 
   async function getData(id) {
-    let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/notification/${id}`, currentUser)
+    let result = await get(`/notification/${id}`, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.notification)
     }

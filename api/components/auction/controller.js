@@ -115,13 +115,10 @@ exports.getAuctionHistory = async id => {
 exports.getAuctionDetail = async params => {
     const product = await auctionModel.getProductAuction(params.id)
     if (!product) return {}
-    const seller_info = await userModel.fetchUserByID(
-        product.seller_id,
-        'seller_info'
-    )
+    const seller = await userModel.fetchUserByID(product.seller_id, 'seller')
 
     return {
         product,
-        seller_info
+        seller
     }
 }

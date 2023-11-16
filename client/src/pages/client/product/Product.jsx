@@ -21,7 +21,7 @@ import { authenticate } from "../../../utils/authenticate";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
-import { AUCTION_STATUS, AUCTION_TIMES } from "../../../utils/constants";
+import { AUCTION_STATUS, AUCTION_TIMES, SERVICES } from "../../../utils/constants";
 const _ = require('lodash')
 
 
@@ -45,12 +45,12 @@ export const Product = ({ socket }) => {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction?id=${id}`, {}, currentUser)
+      let result = await post(`/api/v1/auction/1`, {}, currentUser, SERVICES.SPRINGBOOT)
       if (checkApiResponse(result)) {
         setData(result.data.data)
         setPreLoading(true)
       }
-      result = await get(`${process.env.REACT_APP_API_ENDPOINT}/auction-history?auction_id=${id}`, currentUser)
+      result = await get(`/auction-history?auction_id=${id}`, currentUser)
       if (checkApiResponse(result)) {
         setAuctionHistoryData(result.data.data)
       }
@@ -106,7 +106,7 @@ export const Product = ({ socket }) => {
       )
       return
     }
-    // if(currentUser.id === data.seller_info.id){
+    // if(currentUser.id === data.seller.id){
     //   Swal.fire(
     //     'Bạn không thể đấu giá sản phẩm của chính bạn?',
     //     '',
@@ -115,7 +115,7 @@ export const Product = ({ socket }) => {
     //   return 
     // }
 
-    let result = await post(`${process.env.REACT_APP_API_ENDPOINT}/auction/raise?auction_id=${id}`, {
+    let result = await post(`/auction/raise?auction_id=${id}`, {
       price: auctionBet,
       time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
     }, currentUser)
@@ -305,10 +305,10 @@ export const Product = ({ socket }) => {
                         <Button onClick={() => handleClickOpenAuctionHistoryDialog()} style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Lịch sử</Button>
                       </div>
                       <div className="action-button-log">
-                        <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined" disabled={data.product.auction_status !== 2 || currentUser.id === data.seller_info.id}>Theo dõi</Button>
+                        <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined" disabled={data.product.auction_status !== 2 || currentUser.id === data.seller.id}>Theo dõi</Button>
                       </div>
                       <div className="action-button">
-                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} disabled={data.product.auction_status !== 2 || currentUser.id === data.seller_info.id} variant="contained">Đấu giá</Button>
+                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} disabled={data.product.auction_status !== 2 || currentUser.id === data.seller.id} variant="contained">Đấu giá</Button>
                       </div>
                     </div>
                   </div>
@@ -326,34 +326,34 @@ export const Product = ({ socket }) => {
             </div> */}
                 <div className="product-seller-info">
                   <div className="seller-info__avatar">
-                    <Avatar style={{ height: '60px', width: '60px' }} alt="Seller Avatar" src={data.seller_info.avatar} />
+                    <Avatar style={{ height: '60px', width: '60px' }} alt="Seller Avatar" src={data.seller.avatar} />
                   </div>
                   <div className="seller-info">
-                    <Link style={{ textDecoration: 'none', color: "black" }} to={`/user/${data.seller_info.id}`}>
-                      <div className="seller-info__name">{data.seller_info.username || data.seller_info.name}</div>
+                    <Link style={{ textDecoration: 'none', color: "black" }} to={`/user/${data.seller.id}`}>
+                      <div className="seller-info__name">{data.seller.username || data.seller.name}</div>
                     </Link>
                     <div className="seller-info__vote">0 Đánh giá</div>
                   </div>
                 </div>
                 <div className="seller-address">
                   <div className="seller-address__icon"><HomeIcon /></div>
-                  <div className="seller-address__content">{data.seller_info.address}</div>
+                  <div className="seller-address__content">{data.seller.address}</div>
                 </div>
                 <div className="seller-history">
                   <div className="history history__all">
-                    <div className="history-count">{data.seller_info.auction_sale_all_count || 100}</div>
+                    <div className="history-count">{data.seller.auction_sale_all_count || 100}</div>
                     <div className="history-title ">Đã bán</div>
                   </div>
                   <div className="history  history__success">
-                    <div className="history-count">{data.seller_info.auction_sale_success_count || 5}</div>
+                    <div className="history-count">{data.seller.auction_sale_success_count || 5}</div>
                     <div className="history-title">Thành công</div>
                   </div>
                   <div className="history  history__failed">
-                    <div className="history-count">{data.seller_info.auction_sale_failed_count || 95}</div>
+                    <div className="history-count">{data.seller.auction_sale_failed_count || 95}</div>
                     <div className="history-title">Thất bại</div>
                   </div>
                 </div>
-                {data.seller_info.prestige === 1
+                {data.seller.prestige === 1
                   ?
                   <>
                     <div className="seller-rate seller-rate__medium">
@@ -368,7 +368,7 @@ export const Product = ({ socket }) => {
                   :
                   <></>
                 }
-                {data.seller_info.prestige === 2
+                {data.seller.prestige === 2
                   ?
                   <>
                     <div className="seller-rate seller-rate__hight">
@@ -383,7 +383,7 @@ export const Product = ({ socket }) => {
                   :
                   <></>
                 }
-                {data.seller_info.prestige === 0
+                {data.seller.prestige === 0
                   ?
                   <>
                     <div className="seller-rate seller-rate__low">

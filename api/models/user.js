@@ -81,7 +81,7 @@ async function fetchUserByID(id, type = 'user') {
                     user.role = role
                 }
                 break
-            case 'seller_info': {
+            case 'seller': {
                 delete user.role
                 delete user.password_hash
                 delete user.amount
@@ -142,7 +142,7 @@ async function addUser(user) {
 async function getAllInfoSeller(id) {
     debug('MODEL/user getAllInfoSeller')
     try {
-        const user_info = await fetchUserByID(id, 'seller_info')
+        const user_info = await fetchUserByID(id, 'seller')
         const profit = await auctionModels.auctionProfitSum(id)
         const spent = await auctionModels.auctionSpentSum(id)
 

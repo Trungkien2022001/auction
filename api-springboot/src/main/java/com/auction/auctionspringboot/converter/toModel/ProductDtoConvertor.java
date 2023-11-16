@@ -14,7 +14,7 @@ public class ProductDtoConvertor {
         product.setTitle(req.getProduct().getTitle());
         product.setDescription(req.getProduct().getDescription());
         product.setKey_word(req.getProduct().getKey_word());
-        product.setStart_price(Integer.parseInt(req.getProduct().getStart_price()));
+        product.setStart_price(Long.parseLong(req.getProduct().getStart_price()));
         product.setCategory_id(req.getProduct().getCategory_id());
         product.setImage(req.getProduct().getImages().getFirst());
         product.setSeller_id(user.getId());

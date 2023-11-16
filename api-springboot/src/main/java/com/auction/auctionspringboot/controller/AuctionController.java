@@ -56,7 +56,7 @@ public class AuctionController {
         return new ResponseEntity<>(lstAuctions, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/{auctionId}")
+    @PostMapping("/{auctionId}")
     @Operation(summary = "Get Auction", tags = { "Auction" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {

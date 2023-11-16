@@ -212,8 +212,6 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
-const api_endpoint = process.env.REACT_APP_API_ENDPOINT
-
 export const ActionLog = ({ currentUser, socket }) => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
@@ -228,7 +226,7 @@ export const ActionLog = ({ currentUser, socket }) => {
   }
 
   async function getData() {
-    let result = await get(`${api_endpoint}/logs`, currentUser)
+    let result = await get(`/logs`, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.body)
       setInitialData(result.data.body)

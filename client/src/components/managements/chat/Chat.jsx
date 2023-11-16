@@ -21,14 +21,14 @@ export const Chat = ({ socket }) => {
 
     async function getData() {
         if (clientId) {
-            const result = await get(`${process.env.REACT_APP_API_ENDPOINT}/message?user_id=${clientId}`, currentUser)
+            const result = await get(`/message?user_id=${clientId}`, currentUser)
             if (checkApiResponse(result)) {
                 setData(result.data.body)
             }
         }
     }
     async function getAllLastMsg() {
-        let result = await get(`${process.env.REACT_APP_API_ENDPOINT}/messages`, currentUser)
+        let result = await get(`/messages`, currentUser)
         if (checkApiResponse(result)) {
             setLstMsg(result.data.body)
         }

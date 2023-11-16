@@ -35,8 +35,8 @@ public class Chat {
     @Column(name = "last_message_by", nullable = false, columnDefinition = "TEXT")
     private String lastMessageBy;
 
-    @Column(name = "is_read", nullable = false)
-    private boolean isRead;
+    @Column(name = "is_read", nullable = false, columnDefinition = "tinyint default 0")
+    private int isRead;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime createdAt;

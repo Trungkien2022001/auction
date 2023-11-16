@@ -29,15 +29,14 @@ public class ChatHistory {
     @Column(name = "user_id", nullable = false)
     private int userId;
 
-    @Column(name = "is_admin", nullable = false)
-    private boolean isAdmin;
+    @Column(name = "is_admin", nullable = false, columnDefinition = "tinyint default 0")
+    private int isAdmin;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime createdAt;
-
 
     @Column(name = "updated_at", nullable = false, columnDefinition = "datetime default current_timestamp ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updatedAt;

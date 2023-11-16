@@ -27,7 +27,7 @@ public class Banner {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, columnDefinition = "varchar(1000) default ''")
     private String description;
 
     @Column(name = "created_by", nullable = false)

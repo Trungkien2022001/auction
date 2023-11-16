@@ -21,7 +21,7 @@ public class AuctionDtoConvertor {
         auction.setIsFinishedSoon(req.getAuction().getIs_finished_soon());
         auction.setSellerId(user.getId());
         auction.setSeller(user);
-        int price = Integer.parseInt(req.getProduct().getStart_price());
+        Long price = Long.parseLong(req.getProduct().getStart_price());
         auction.setStartPrice(price);
         auction.setSellPrice(price);
 

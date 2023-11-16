@@ -10,9 +10,26 @@ async function get(n) {
     for (let i = 0; i < s; i += 1) {
         arr.push(i)
     }
-    const url = s1
-        ? 'http://localhost:3030/auction?id=1'
-        : 'http://localhost:3030/health'
+    let url
+    switch (s1) {
+        case 0:
+            url = 'http://localhost:3030/health'
+            break;
+        case 1:
+            url = 'http://localhost:3030/auction?id=1'
+            break;
+        case 2:
+            url = 'http://localhost:8080/health'
+            break;
+        case 3:
+            url = 'http://localhost:8080/auction?id=1'
+            break;
+    
+        default:
+            url = 'http://localhost:8080/health'
+            break;
+    }
+    console.log(url, s)
     while (true) {
         await Promise.all(
             arr.map(async () => {

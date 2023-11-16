@@ -22,34 +22,34 @@ public class Role {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "admin")
-    private boolean admin;
+    @Column(name = "admin", columnDefinition = "tinyint default 0")
+    private int admin;
 
-    @Column(name = "user")
-    private boolean user;
+    @Column(name = "user", columnDefinition = "tinyint default 1")
+    private int user;
 
-    @Column(name = "auction")
-    private boolean auction;
+    @Column(name = "auction", columnDefinition = "tinyint default 0")
+    private int auction;
 
-    @Column(name = "homepage")
-    private boolean homepage;
+    @Column(name = "homepage", columnDefinition = "tinyint default 0")
+    private int homepage;
 
-    @Column(name = "dashboard_auction")
-    private boolean dashboard_auction;
+    @Column(name = "dashboard_auction", columnDefinition = "tinyint default 0")
+    private int dashboard_auction;
 
-    @Column(name = "dashboard_user")
-    private boolean dashboard_user;
+    @Column(name = "dashboard_user", columnDefinition = "tinyint default 0")
+    private int dashboard_user;
 
-    @Column(name = "dashboard_chat")
-    private boolean dashboard_chat;
+    @Column(name = "dashboard_chat", columnDefinition = "tinyint default 0")
+    private int dashboard_chat;
 
-    @Column(name = "dashboard_action_log")
-    private boolean dashboard_action_log;
+    @Column(name = "dashboard_action_log", columnDefinition = "tinyint default 0")
+    private int dashboard_action_log;
 
-    @Column(name = "dashboard_config")
-    private boolean dashboard_config;
+    @Column(name = "dashboard_config", columnDefinition = "tinyint default 0")
+    private int dashboard_config;
 
-    @Column(name = "dashboard_money")
-    private boolean dashboard_money;
+    @Column(name = "dashboard_money", columnDefinition = "tinyint default 0")
+    private int dashboard_money;
 
 }

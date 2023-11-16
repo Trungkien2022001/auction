@@ -32,7 +32,7 @@ public class BannerImage {
     @JsonIgnore
     private Banner banner;
 
-    @Column(name = "url", nullable = false)
+    @Column(name = "url", nullable = false, columnDefinition = "varchar(500) default '")
     private String url;
 
 }

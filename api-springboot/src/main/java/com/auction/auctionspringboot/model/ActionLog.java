@@ -32,7 +32,7 @@ public class ActionLog {
     @Column(name = "client_ip", length = 50, nullable = true)
     private String clientIp;
 
-    @Column(name = "server_port", length = 6)
+    @Column(name = "server_port", length = 6, columnDefinition = "varchar(10) default 8080")
     private String serverPort;
 
     @Column(name = "user", length = 200, nullable = false)
@@ -41,7 +41,7 @@ public class ActionLog {
     @Column(name = "method", length = 10, nullable = false)
     private String method;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, columnDefinition = "int default 200")
     private Integer status;
 
     @Lob
@@ -53,7 +53,7 @@ public class ActionLog {
     private String response;
 
     @Lob
-    @Column(name = "error", columnDefinition = "LONGTEXT")
+    @Column(name = "error", nullable = true, columnDefinition = "LONGTEXT")
     private String error;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")

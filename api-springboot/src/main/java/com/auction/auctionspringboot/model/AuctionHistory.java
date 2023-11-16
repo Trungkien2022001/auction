@@ -32,12 +32,12 @@ public class AuctionHistory {
     private LocalDateTime betTime;
 
     @Column(name = "bet_amount", nullable = false)
-    private Integer betAmount;
+    private Long betAmount;
 
-    @Column(name = "is_success", nullable = false)
-    private Boolean isSuccess;
+    @Column(name = "is_success", nullable = false, columnDefinition = "tinyint default 0")
+    private int isSuccess;
 
-    @Column(name = "is_blocked", nullable = false)
+    @Column(name = "is_blocked", nullable = false, columnDefinition = "tinyint default 0")
     private Integer isBlocked;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")

@@ -453,7 +453,7 @@ export const Product = ({ socket }) => {
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Tình trạng phiên đấu giá</div>
-                  <div className="product-info-detail">{AUCTION_STATUS.find(i=>i.value ==data.product.auction_status)?.title}</div>
+                  <div className="product-info-detail">{AUCTION_STATUS.find(i=>i.value === data.product.auction_status)?.title}</div>
                 </div>
               </div>
             </div>

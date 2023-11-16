@@ -44,10 +44,10 @@ public class Auction {
     private int productId;
 
     @Column(name = "start_price", nullable = false)
-    private int startPrice;
+    private Long startPrice;
 
     @Column(name = "sell_price")
-    private Integer sellPrice;
+    private Long sellPrice;
 
     @Column(name = "seller_id", nullable = false)
     private int sellerId;
@@ -62,10 +62,10 @@ public class Auction {
     @JsonIgnore
     private int status;
 
-    @Column(name = "is_returned", nullable = false)
+    @Column(name = "is_returned", nullable = false, columnDefinition = "tinyint default 0")
     private int isReturned;
 
-    @Column(name = "is_finished_soon", nullable = false)
+    @Column(name = "is_finished_soon", nullable = false, columnDefinition = "tinyint default 0")
     private int isFinishedSoon;
 
     @Column(name = "seller_confirm_time")

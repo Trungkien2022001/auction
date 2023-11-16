@@ -17,8 +17,8 @@ public class GetAuctionResponseDto {
     private LocalDateTime start_time;
     private LocalDateTime end_time;
     private int auction_time;
-    private int start_price;
-    private int sell_price;
+    private Long start_price;
+    private Long sell_price;
     private int seller_id;
     private int auction_count;
     private Integer auctioneer_win;

@@ -32,8 +32,8 @@ public class Comment {
     @Column(name = "title", nullable = false, columnDefinition = "VARCHAR(1000)")
     private String title;
 
-    @Column(name = "is_image", nullable = false)
-    private boolean isImage;
+    @Column(name = "is_image", nullable = false, columnDefinition = "tinyint default 0")
+    private int isImage;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")
     private LocalDateTime createdAt;

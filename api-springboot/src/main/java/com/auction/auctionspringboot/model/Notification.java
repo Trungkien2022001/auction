@@ -32,7 +32,7 @@ public class Notification {
     @Column(name = "action_user_id", nullable = false)
     private int actionUserId;
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, columnDefinition = "tinyint default 0")
     private int type;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")

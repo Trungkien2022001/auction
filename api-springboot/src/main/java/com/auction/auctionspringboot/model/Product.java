@@ -40,7 +40,7 @@ public class Product {
     @Column(name = "branch", length = 100)
     private String branch;
 
-    @Column(name = "image", length = 5000, nullable = false, columnDefinition = "varchar(5000) default '0'")
+    @Column(name = "image", length = 5000, nullable = false, columnDefinition = "varchar(1000) default '0'")
     private String image;
 
     @Column(name = "category_id", nullable = false, columnDefinition = "int default 0")
@@ -50,9 +50,9 @@ public class Product {
     private String title;
 
     @Column(name = "start_price", nullable = false, columnDefinition = "int default 0")
-    private int start_price;
+    private Long start_price;
 
-    @Column(name = "key_word", length = 1000, nullable = false, columnDefinition = "varchar(1000) default '0'")
+    @Column(name = "key_word", length = 1000, nullable = false, columnDefinition = "varchar(200) default '0'")
     private String key_word;
 
     @Column(name = "status", length = 200, nullable = false, columnDefinition = "varchar(200) character set utf8mb4 collate utf8mb4_0900_ai_ci not null default 'Còn mới'")

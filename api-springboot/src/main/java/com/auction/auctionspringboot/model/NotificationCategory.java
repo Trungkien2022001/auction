@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class NotificationCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "tinyint default 0")
     private int id;
 
     @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(100)")

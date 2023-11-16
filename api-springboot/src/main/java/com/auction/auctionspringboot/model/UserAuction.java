@@ -29,7 +29,7 @@ public class UserAuction {
     @Column(name = "auction_id", nullable = false)
     private int auctionId;
 
-    @Column(name = "is_success", nullable = false)
+    @Column(name = "is_success", nullable = false, columnDefinition = "tinyint default 0")
     private int isSuccess;
 
     @Column(name = "created_at", nullable = false, columnDefinition = "datetime default current_timestamp")

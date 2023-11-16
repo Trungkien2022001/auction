@@ -1,6 +1,7 @@
 package com.auction.auctionspringboot.model;
 
 import java.sql.Time;
+// import java.time.LocalTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +29,7 @@ public class AuctionTime {
     @Column(name = "time", nullable = false)
     private int time;
 
-    @Column(name = "time_full", nullable = false)
-    private Time timeFull;
+    // @Column(name = "time_full", nullable = false)
+    // private LocalTime timeFull;
 
 }

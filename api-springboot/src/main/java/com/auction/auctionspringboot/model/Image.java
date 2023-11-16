@@ -43,7 +43,7 @@ public class Image {
 
     @ManyToOne()
     @JoinColumn(name = "product_id")
-    // @JsonIgnore
+    @JsonIgnore
     private Product product; 
 
 }

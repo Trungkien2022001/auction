@@ -8,6 +8,7 @@ export async function get(url, currentUser, service){
             'ngrok-skip-browser-warning': 69420,
             'x-key': currentUser.email,
             'x-access-token': currentUser.token,
+            'Access-Control-Allow-Origin':'*'
         }
     })
     return result
@@ -20,6 +21,7 @@ export async function post(url, data, currentUser, service){
             'ngrok-skip-browser-warning': 69420,
             'x-key': currentUser.email,
             'x-access-token': currentUser.token,
+            'Access-Control-Allow-Origin':'http://localhost:3000'
         }
     })
     return result

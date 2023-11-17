@@ -31,7 +31,10 @@ async function log(ctx, next) {
                     body: ctx.request.body
                 },
                 response: error || ctx.body,
-                error: ctx.body.success === false ? ctx.body.message : null,
+                error:
+                    ctx.body && ctx.body.success === false
+                        ? ctx.body.message
+                        : null,
                 server_port: config.port
             })
             requestLog.createLog()

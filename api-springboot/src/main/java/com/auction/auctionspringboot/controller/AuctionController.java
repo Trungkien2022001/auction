@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import com.auction.auctionspringboot.converter.dto.auction.NewAuctionDto;
 import com.auction.auctionspringboot.model.Auction;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.AuctionService;
+import com.auction.auctionspringboot.utils.Log;
 import com.auction.auctionspringboot.utils.ValidationUtil;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,6 +35,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "Auction", description = "Auction management APIs")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/v1/auction")
 public class AuctionController {
     @Autowired
@@ -64,6 +67,7 @@ public class AuctionController {
             }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
     public ResponseEntity<?> find(@PathVariable int auctionId) throws Exception {
+        Log.info("Get auction");
         ResponseDto<GetAuctionResponseDto> resp;
         try {
 

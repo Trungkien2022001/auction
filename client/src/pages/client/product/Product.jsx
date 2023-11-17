@@ -45,7 +45,7 @@ export const Product = ({ socket }) => {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      let result = await post(`/api/v1/auction/1`, {}, currentUser, SERVICES.SPRINGBOOT)
+      let result = await post(`/api/v1/auction/${id}`, {}, currentUser)
       if (checkApiResponse(result)) {
         setData(result.data.data)
         setPreLoading(true)

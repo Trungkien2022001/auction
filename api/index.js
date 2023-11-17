@@ -1,6 +1,7 @@
 require('dotenv').config({ path: '.localenv' })
 
 const Koa = require('koa')
+// const swagger = require('swagger-koa');
 const cors = require('koa2-cors')
 const bodyParser = require('koa-bodyparser')
 const ratelimit = require('koa-ratelimit')
@@ -26,6 +27,20 @@ const rateLimitMiddleware = ratelimit({
 if (config.allowRateLimit) {
     app.use(rateLimitMiddleware)
 }
+
+// app.use(swagger.init({
+//   apiVersion: '1.0',
+//   swaggerVersion: '1.0',
+//   swaggerURL: '/swagger',
+//   swaggerJSON: '/api-docs.json',
+//   swaggerUI: './public/swagger/',
+//   basePath: 'http://localhost:3000',
+//   info: {
+//     title: 'swagger-koa sample app',
+//     description: 'Swagger + Koa = {swagger-koa}'
+//   },
+//   apis: ['./api.js', './api.yml']
+// }));
 app.use(async (ctx, next) => {
     requestCount += 1
     await next()

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auction.auctionspringboot.annotation.SaveLog;
 import com.auction.auctionspringboot.converter.dto.ResponseDto;
 import com.auction.auctionspringboot.converter.dto.auth.LoginRequestDto;
 import com.auction.auctionspringboot.converter.dto.auth.LoginResponseDto;
@@ -34,6 +35,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
+    @SaveLog
     @Operation(summary = "Login", tags = { "Auth" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {

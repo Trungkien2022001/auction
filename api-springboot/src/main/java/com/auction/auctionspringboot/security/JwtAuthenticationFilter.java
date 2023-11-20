@@ -36,6 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       Pattern.compile("/configuration/security.*"),
       Pattern.compile("/swagger-ui/.*"),
       Pattern.compile("/public/.*"),
+      Pattern.compile("/actuator/.*"),
       Pattern.compile("/webjars.*"),
       Pattern.compile("/swagger-ui.html.*"));
 

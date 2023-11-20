@@ -47,7 +47,7 @@ public class UserService {
 
             }
         }
-        if (userId != userRq.getId() || !userRq.getRole().isDashboard_user() || !userRq.getRole().isAdmin()) {
+        if (userId != userRq.getId() || userRq.getRole().getDashboard_user() == 0 || userRq.getRole().getAdmin() == 0) {
             user.setPassword_hash("");
             user.setCustom_config(null);
             user.setRefresh_token(null);
@@ -58,7 +58,7 @@ public class UserService {
     }
 
     public User update(int userId, UpdateUserRequestDto userDto, User userRq) throws Exception {
-        if (userId == userRq.getId() || userRq.getRole().isDashboard_user() || userRq.getRole().isAdmin()) {
+         if (userId != userRq.getId() || userRq.getRole().getDashboard_user() == 0 || userRq.getRole().getAdmin() == 0) {
             User user = userRepository.findById(userId).orElse(null);
             if (user == null) {
                 throw new EntityNotFoundException("User not found");

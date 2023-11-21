@@ -118,7 +118,7 @@ exports.getAuctionDetail = async params => {
     const seller = await userModel.fetchUserByID(product.seller_id, 'seller')
 
     return {
-        product,
+        ...product,
         seller
     }
 }

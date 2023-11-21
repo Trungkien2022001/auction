@@ -45,7 +45,7 @@ export const Product = ({ socket }) => {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      let result = await post(`/api/v1/auction/${id}`, {}, currentUser)
+      let result = await post(`/api/v1/auction/${id}`, {}, currentUser, SERVICES.NODEJS)
       if (checkApiResponse(result)) {
         setData(result.data.data)
         setPreLoading(true)
@@ -98,10 +98,10 @@ export const Product = ({ socket }) => {
     if(authenticate(currentUser)){
       return
     }
-    if (data.product.sell_price > auctionBet) {
+    if (data.sell_price > auctionBet) {
       Swal.fire(
         'Vui lòng đặt mức đấu giá lớn hơn?',
-        `Mức đấu giá tối thiểu cho sản phẩm này là ${data.product.sell_price + 1} VND`,
+        `Mức đấu giá tối thiểu cho sản phẩm này là ${data.sell_price + 1} VND`,
         'error'
       )
       return
@@ -137,8 +137,8 @@ export const Product = ({ socket }) => {
         showConfirmButton: true,
         timer: 4000
       }).then(() => {
-        data.product.sell_price = auctionBet
-        data.product.auction_count = data.product.auction_count + 1
+        data.sell_price = auctionBet
+        data.auction_count = data.auction_count + 1
         auctionHistoryData.unshift({
           id: auctionHistoryData.length.id + 1,
           bet_time: new Date(),
@@ -158,7 +158,7 @@ export const Product = ({ socket }) => {
   };
 
   useEffect(() => {
-    let length = data?.product.images.length
+    let length = data?.images.length
     let timeId = setInterval(() => {
       setBigImageIndex(bigImageIndex + 1 < length ? bigImageIndex + 1 : 0)
     }, 4000)
@@ -214,7 +214,7 @@ export const Product = ({ socket }) => {
         <div className="product-header">
         </div>
         {
-          preLoading && data && data.product.images ? data.product.images.map((item, index) =>
+          preLoading && data && data.images ? data.images.map((item, index) =>
             <div key={index}>
               <img style={{ display: 'none' }} rel="prefetch" src={item.url} alt="Product_Image" />
             </div>
@@ -232,7 +232,7 @@ export const Product = ({ socket }) => {
                           <Skeleton width={350} height={350} />
                         </div>
                         :
-                        <img src={data.product.images.length ? data.product.images[bigImageIndex].url : 'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227724992-stock-illustration-image-available-icon-flat-vector.jpg'} alt="" />
+                        <img src={data.images.length ? data.images[bigImageIndex].url : 'https://st4.depositphotos.com/14953852/22772/v/450/depositphotos_227724992-stock-illustration-image-available-icon-flat-vector.jpg'} alt="" />
 
                       }
                     </div>
@@ -244,7 +244,7 @@ export const Product = ({ socket }) => {
                       </div>
                     ) :
                       <>
-                        {data && data.product.images && data.product.images.map((item, index) => (
+                        {data && data.images && data.images.map((item, index) => (
                           <div className="product-sub-image__wrapper" key={index} onClick={() => setBigImageIndex(index)}>
                             <img src={item.url} alt="" />
                           </div>
@@ -254,8 +254,8 @@ export const Product = ({ socket }) => {
                   </div>
                 </div>
                 <div className='product__right'>
-                  <div className="product-name">{data.product.name}</div>
-                  <div className="product-title">{data.product.title}</div>
+                  <div className="product-name">{data.name}</div>
+                  <div className="product-title">{data.title}</div>
                   <div className="product-auction">
                     <div className="product-time">
                       <div className='product-time-icon'>
@@ -270,14 +270,14 @@ export const Product = ({ socket }) => {
                           <Countdown
                             onComplete={() => handleStop()}
                             // onStop={()=>handleStop()}
-                            // date={moment(data.product.start_time).add(data.product.time, 'minutes')}
-                            date={Date.now() + moment(data.product.start_time).add(data.product.time, 'minutes').diff(moment(new Date()))}
+                            // date={moment(data.start_time).add(data.time, 'minutes')}
+                            date={Date.now() + moment(data.start_time).add(data.time, 'minutes').diff(moment(new Date()))}
                             renderer={renderer}
                           />
                         </div>
                       }
                     </div>
-                    <div className="product-vote">{data.product.auction_count} Lượt đấu giá</div>
+                    <div className="product-vote">{data.auction_count} Lượt đấu giá</div>
                   </div>
                   <div className="product-price-and-action">
                     <div className="product-price-wrap">
@@ -287,7 +287,7 @@ export const Product = ({ socket }) => {
                           <PaidIcon />
                         </div>
                         <div className="product-price-title">
-                          {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(data.product.start_price)}
+                          {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(data.start_price)}
                         </div>
                       </div>
                       <div className="product-price-title">Giá hiện tại</div>
@@ -296,7 +296,7 @@ export const Product = ({ socket }) => {
                           <SellIcon />
                         </div>
                         <div className="product-price-title">
-                          {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(data.product.sell_price)}
+                          {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(data.sell_price)}
                         </div>
                       </div>
                     </div>
@@ -305,10 +305,10 @@ export const Product = ({ socket }) => {
                         <Button onClick={() => handleClickOpenAuctionHistoryDialog()} style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Lịch sử</Button>
                       </div>
                       <div className="action-button-log">
-                        <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined" disabled={data.product.auction_status !== 2 || currentUser.id === data.seller.id}>Theo dõi</Button>
+                        <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined" disabled={data.auction_status !== 2 || currentUser.id === data.seller.id}>Theo dõi</Button>
                       </div>
                       <div className="action-button">
-                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} disabled={data.product.auction_status !== 2 || currentUser.id === data.seller.id} variant="contained">Đấu giá</Button>
+                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} disabled={data.auction_status !== 2 || currentUser.id === data.seller.id} variant="contained">Đấu giá</Button>
                       </div>
                     </div>
                   </div>
@@ -409,23 +409,23 @@ export const Product = ({ socket }) => {
               <div className="product-info-wrap">
                 <div className="product-info">
                   <div className="product-info-title">ID</div>
-                  <div className="product-info-detail">{data.product.id}</div>
+                  <div className="product-info-detail">{data.id}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Danh mục</div>
-                  <div className="product-info-detail">{data.product.product_category}</div>
+                  <div className="product-info-detail">{data.product_category}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Nhãn hiệu</div>
-                  <div className="product-info-detail">{data.product.branch}</div>
+                  <div className="product-info-detail">{data.branch}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Tình trạng sản phẩm</div>
-                  <div className="product-info-detail">{data.product.status}</div>
+                  <div className="product-info-detail">{data.status}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Keyword</div>
-                  <div className="product-info-detail">{data.product.key_word}</div>
+                  <div className="product-info-detail">{data.key_word}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Số lượng</div>
@@ -433,27 +433,27 @@ export const Product = ({ socket }) => {
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Hoàn trả</div>
-                  <div className="product-info-detail">{data.product.is_returned ? 'Có' : 'Không'}</div>
+                  <div className="product-info-detail">{data.is_returned ? 'Có' : 'Không'}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Thời gian đấu giá</div>
-                  <div className="product-info-detail">{AUCTION_TIMES[data.product.time]}</div>
+                  <div className="product-info-detail">{AUCTION_TIMES[data.time]}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Thời gian bắt đầu</div>
-                  <div className="product-info-detail">{moment(data.product.start_time).format('DD-MM-YYYY HH:mm:ss')}</div>
+                  <div className="product-info-detail">{moment(data.start_time).format('DD-MM-YYYY HH:mm:ss')}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Thời gian kết thúc</div>
-                  <div className="product-info-detail">{moment(data.product.start_time).add(data.product.time, 'minutes').format('DD-MM-YYYY HH:mm:ss')}</div>
+                  <div className="product-info-detail">{moment(data.start_time).add(data.time, 'minutes').format('DD-MM-YYYY HH:mm:ss')}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Kết thúc sớm</div>
-                  <div className="product-info-detail">{data.product.is_finished_soon ? "Có" : "Không"}</div>
+                  <div className="product-info-detail">{data.is_finished_soon ? "Có" : "Không"}</div>
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Tình trạng phiên đấu giá</div>
-                  <div className="product-info-detail">{AUCTION_STATUS.find(i=>i.value === data.product.auction_status)?.title}</div>
+                  <div className="product-info-detail">{AUCTION_STATUS.find(i=>i.value === data.auction_status)?.title}</div>
                 </div>
               </div>
             </div>
@@ -463,7 +463,7 @@ export const Product = ({ socket }) => {
                 <h2>Mô tả sản phẩm</h2>
                 <b></b>
               </div>
-              <div className="product-description__detail" dangerouslySetInnerHTML={customDescription(data.product.description)}>
+              <div className="product-description__detail" dangerouslySetInnerHTML={customDescription(data.description)}>
               </div>
             </div>
           </>

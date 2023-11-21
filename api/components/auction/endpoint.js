@@ -98,7 +98,8 @@ router.post('/api/v1/auction/:auction_id', validate(getDetail), async ctx => {
     debug('POST / get auction detail')
     try {
         const auctionId = parseInt(ctx.params.auction_id)
-        if (!Number.isNaN(auctionId)) {
+        console.log(auctionId)
+        if (Number.isNaN(auctionId)) {
             throw new Error('Invalid Auction Id!')
         }
         const data = await auctionController.getAuctionDetail({ id: auctionId })

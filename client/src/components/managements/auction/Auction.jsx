@@ -264,7 +264,7 @@ export const Auction = ({ currentUser, socket }) => {
   async function getAuctionDetail() {
     let result = await post(`/api/v1/auction/${currentAuctionId}`, {}, currentUser)
     if (checkApiResponse(result)) {
-      setCurrentAuction(result.data.data.product)
+      setCurrentAuction(result.data.data)
     }
     result = await get(`/auction-history?auction_id=${currentAuctionId}`, currentUser)
     if (checkApiResponse(result)) {

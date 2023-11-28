@@ -20,6 +20,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.auction.auctionspringboot.converter.dto.ResponseDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -46,7 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       HttpServletRequest request,
       HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
-    
+
     String requestUri = request.getRequestURI();
     if (whitelistPatterns.stream().anyMatch(pattern -> pattern.matcher(requestUri).matches())) {
       response.addHeader("Access-Control-Allow-Origin", "*");
@@ -89,8 +92,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       response.setHeader("Access-Control-Allow-Headers", "*");
       filterChain.doFilter(request, response);
     } catch (Exception e) {
+      int statusCode = HttpServletResponse.SC_UNAUTHORIZED;
+      String message = "Invalid token!";
+      ResponseDto<Object> errorResponse = new ResponseDto<>(false, statusCode, message, null);
+      
+      // Convert the error response to JSON
+      ObjectMapper objectMapper = new ObjectMapper();
+      String jsonResponse = objectMapper.writeValueAsString(errorResponse);
+      response.setContentType("application/json");
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      response.getWriter().write("Invalid token," + e.getMessage());
+      response.getWriter().write(jsonResponse);
     }
   }
 }

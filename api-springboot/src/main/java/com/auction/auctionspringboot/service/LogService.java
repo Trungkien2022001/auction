@@ -1,6 +1,5 @@
 package com.auction.auctionspringboot.service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +15,7 @@ public class LogService {
     @Autowired
     private LogRepository logRepository;
 
-    public Page<ActionLog> findAll() throws Exception{
+    public Page<ActionLog> findAll(Integer page, Integer limit, Integer userId, String path, Integer status, String content) throws Exception{
         PageRequest pageRequest = PageRequest.of(1, 20);
         Page<ActionLog> pageLogs= logRepository.findAll(pageRequest);
         // List<ActionLog> logs = pageLogs.getContent();

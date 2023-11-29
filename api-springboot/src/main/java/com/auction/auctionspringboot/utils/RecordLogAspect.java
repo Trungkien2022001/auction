@@ -9,8 +9,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.auction.auctionspringboot.model.ActionLog;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -33,7 +31,7 @@ public class RecordLogAspect {
         // Ghi log request, response, error, status, v.v.
         // Đoạn mã để ghi log request và response có thể sử dụng ObjectMapper để chuyển
         // đổi thành JSON
-        ObjectMapper objectMapper = new ObjectMapper();
+        // ObjectMapper objectMapper = new ObjectMapper();
         // try {
         //     // actionLog.setRequest(objectMapper.writeValueAsString(getRequest()));
         //     // actionLog.setResponse(objectMapper.writeValueAsString(result));
@@ -57,7 +55,7 @@ public class RecordLogAspect {
         return "Test";
     }
 
-    private HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-    }
+    // private HttpServletRequest getRequest() {
+    //     return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    // }
 }

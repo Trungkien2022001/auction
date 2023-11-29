@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.repository;
+package com.auction.auctionspringboot.repository.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 

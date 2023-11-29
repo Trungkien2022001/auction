@@ -16,9 +16,9 @@ import com.auction.auctionspringboot.model.Image;
 import com.auction.auctionspringboot.model.Product;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.repository.AuctionRepository;
-import com.auction.auctionspringboot.repository.AuctionSpecifications;
 import com.auction.auctionspringboot.repository.ImageRepository;
 import com.auction.auctionspringboot.repository.ProductRepository;
+import com.auction.auctionspringboot.repository.specification.AuctionSpecifications;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service

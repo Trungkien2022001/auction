@@ -1,6 +1,5 @@
 package com.auction.auctionspringboot.model;
 
-import java.sql.Time;
 // import java.time.LocalTime;
 
 import jakarta.persistence.Column;

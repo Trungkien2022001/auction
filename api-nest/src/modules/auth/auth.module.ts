@@ -5,7 +5,7 @@ import { AuthController } from './auth.controller';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtService } from './jwt.service';
-import { JwtInterceptor } from 'src/interceptors/auth-user-interceptor.service';
+import { JwtInterceptor } from 'src/interceptors/auth-user.interceptor.service';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RolesGuard } from 'src/guards/roles.guard';
 import { AuthGuard } from 'src/guards/auth.guard';

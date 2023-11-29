@@ -13,7 +13,6 @@ import java.util.Optional;
 public class ApplicationAuditAware implements AuditorAware<Integer> {
     @Override
     public Optional<Integer> getCurrentAuditor() {
-        Log.info("Init getCurrentAuditor");
         Authentication authentication =
                 SecurityContextHolder
                         .getContext()

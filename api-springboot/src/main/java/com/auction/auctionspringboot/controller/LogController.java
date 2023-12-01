@@ -44,13 +44,14 @@ public class LogController {
         @RequestParam(name = "page", required = false) Integer page,
         @RequestParam(name = "limit", required = false) Integer limit,
         @RequestParam(name = "user_id", required = false) Integer userId,
+        @RequestParam(name = "user_email", required = false) String userEmail,
         @RequestParam(name = "path", required = false) String path,
         @RequestParam(name = "status", required = false) Integer status,
         @RequestParam(name = "content", required = false) String content
     ){
         ResponseWithPaginationDto<List<ActionLog>> resp;
         try {
-            Page<ActionLog> logsPages = logService.findAll(page, limit, userId, path, status, content);
+            Page<ActionLog> logsPages = logService.findAll(page, limit, userId, userEmail, path, status, content);
             List<ActionLog> logs = logsPages.getContent();
             PaginationDto paging = PagingHelper.buildPaging(logsPages);
             resp = new ResponseWithPaginationDto<List<ActionLog>>(logs, paging);

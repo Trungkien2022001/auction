@@ -134,7 +134,7 @@ export const Header = ({ socket, systemConfig }) => {
         await getData(currentUser.id)
       })
     }
-  }, [socket])
+  }, [])
 
   async function getData(id) {
     let result = await get(`/notification/${id}`, currentUser)

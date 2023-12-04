@@ -15,7 +15,6 @@ import com.auction.auctionspringboot.service.LogService;
 import com.auction.auctionspringboot.utils.PagingHelper;
 import com.auction.auctionspringboot.converter.dto.PaginationDto;
 import com.auction.auctionspringboot.converter.dto.ResponseWithPaginationDto;
-import com.auction.auctionspringboot.converter.dto.log.GetLogResponseDto;
 import com.auction.auctionspringboot.model.ActionLog;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,10 +33,10 @@ public class LogController {
     private LogService logService;
 
     @GetMapping()
-    @Operation(summary = "Get All Logs", tags = {"Auction"})
+    @Operation(summary = "Get All Logs", tags = {"Log"})
      @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
-                    @Content(schema = @Schema(implementation = GetLogResponseDto.class), mediaType = "application/json")
+                    @Content(schema = @Schema(implementation = ActionLog.class), mediaType = "application/json")
             }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
     public ResponseEntity<?> getAll(

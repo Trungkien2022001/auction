@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.auction.auctionspringboot.annotation.SaveLog;
 import com.auction.auctionspringboot.converter.dto.ResponseDto;
 import com.auction.auctionspringboot.converter.dto.auction.GetAuctionResponseConvertor;
 import com.auction.auctionspringboot.converter.dto.auction.GetAuctionResponseDto;
@@ -42,6 +43,12 @@ public class AuctionController {
     private AuctionService auctionService;
 
     @GetMapping()
+    @Operation(summary = "Get All Auction", tags = { "Auction" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = {
+                    @Content(schema = @Schema(implementation = GetAuctionResponseDto.class), mediaType = "application/json")
+            }),
+            @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
     public ResponseEntity<?> findAll(
             @RequestParam("sort") String sort,
             @RequestParam("limit") int limit,
@@ -59,8 +66,9 @@ public class AuctionController {
         return new ResponseEntity<>(lstAuctions, HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/{auctionId}")
+    @GetMapping("/{auctionId}")
     @Operation(summary = "Get Auction", tags = { "Auction" })
+    @SaveLog
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {
                     @Content(schema = @Schema(implementation = GetAuctionResponseDto.class), mediaType = "application/json")
@@ -98,9 +106,8 @@ public class AuctionController {
             }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
     public ResponseEntity<?> create(
-        @RequestBody
-        NewAuctionDto request
-        
+            @RequestBody NewAuctionDto request
+
     ) throws Exception {
         ResponseDto<Auction> resp;
         try {
@@ -109,13 +116,14 @@ public class AuctionController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Object obj = authentication.getPrincipal();
             User actionUser;
-            if(obj instanceof User){
+            if (obj instanceof User) {
                 actionUser = (User) authentication.getPrincipal();
             } else {
                 throw new Exception("Not authorize!");
             }
             Auction auction = auctionService.create(request, actionUser);
-            // AuctionResponseDto auctionResponseDto = AuctionResponseConvertor.convert(auction);
+            // AuctionResponseDto auctionResponseDto =
+            // AuctionResponseConvertor.convert(auction);
             resp = new ResponseDto<Auction>(
                     true,
                     400,
@@ -129,5 +137,10 @@ public class AuctionController {
                     e.getMessage());
             return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/auction-history/{auctionId}")
+    public ResponseEntity<?> getAuctionHistory(){
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

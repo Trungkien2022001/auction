@@ -12,7 +12,7 @@
   "description": "offer worker rewritten from scratch",
   "main": "index.js",
   "scripts": {
-    "test": "jest --no-color 2>./__test__/output.log test",
+    "test": "jest",
     "start": "nodemon index.js",
     "worker": "DEBUG=auction:* nodemon ./worker.js",
     "lint": "eslint --fix"

@@ -14,20 +14,20 @@ async function get(n) {
     switch (s1) {
         case 0:
             url = 'http://localhost:3030/health'
-            break;
+            break
         case 1:
             url = 'http://localhost:3030/auction?id=1'
-            break;
+            break
         case 2:
             url = 'http://localhost:8080/health'
-            break;
+            break
         case 3:
             url = 'http://localhost:8080/auction?id=1'
-            break;
-    
+            break
+
         default:
             url = 'http://localhost:8080/health'
-            break;
+            break
     }
     console.log(url, s)
     while (true) {

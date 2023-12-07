@@ -64,7 +64,7 @@ logTracer.info = realLogger.info.bind(realLogger)
 logTracer.debug = realLogger.debug.bind(realLogger)
 logTracer.fatal = realLogger.fatal.bind(realLogger)
 
-tracer.trace('logger-trace', () => {
-    logTracer.info('log trace')
-})
+// tracer.trace('logger-trace', () => {
+//     logTracer.info('log trace')
+// })
 module.exports = logTracer

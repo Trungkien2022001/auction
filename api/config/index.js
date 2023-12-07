@@ -16,7 +16,9 @@ const defaults = {
     auctionTime,
     mysqlConnectionUrl: 'mysql://root@localhost/auction',
     messageLimit: 200,
-    maxRateLimt: 100
+    maxRateLimt: 100,
+    nodeMailerEmail: 'example@gmail.com',
+    nodeMailerPassword: 'example'
 }
 const custom = {
     production:
@@ -32,7 +34,9 @@ const custom = {
     redisPrefix: process.env.REDIS_PREFIX,
     mysqlConnectionUrl: process.env.MYSQL_CONNECTION_URL,
     messageLimit: process.env.MESSAGE_LIMIT,
-    maxRateLimt: process.env.MAX_RATE_LIMIT
+    maxRateLimt: process.env.MAX_RATE_LIMIT,
+    nodeMailerEmail: process.env.NODE_MAILER_EMAIL,
+    nodeMailerPassword: process.env.NODE_MAILER_PASSWORD
 }
 
 const config = Hoek.applyToDefaults(defaults, custom)

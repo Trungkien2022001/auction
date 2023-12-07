@@ -1,10 +1,12 @@
-require('dotenv').config({ path: '.localenv' })
+require('dotenv').config({ path: '.env' })
 
 const Koa = require('koa')
 // const swagger = require('swagger-koa');
 const cors = require('koa2-cors')
 const bodyParser = require('koa-bodyparser')
 const ratelimit = require('koa-ratelimit')
+
+const { logger } = require('./utils/winston')
 const config = require('./config')
 const router = require('./routes')
 const { log } = require('./middleware/log')
@@ -54,6 +56,7 @@ setInterval(() => {
 app.use(router.routes())
 if (!module.parent)
     app.listen(process.argv[2] || config.port, () => {
+        logger.error('Running app!')
         // eslint-disable-next-line no-console
 
         // eslint-disable-next-line no-console

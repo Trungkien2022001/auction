@@ -1,0 +1,24 @@
+{
+  "name": "api-fastify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fastify": "nodemon fastify.js",
+    "express": "nodemon express.js",
+    "hapi": "nodemon hapi.js",
+    "koa": "nodemon koa.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^21.3.2",
+    "bluebird": "^3.7.2",
+    "express": "^4.18.2",
+    "fastify": "^4.24.3",
+    "koa": "^2.14.2",
+    "koa-router": "^12.0.1",
+    "request": "^2.88.2"
+  }
+}

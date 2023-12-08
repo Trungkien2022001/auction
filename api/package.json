@@ -79,6 +79,7 @@
     "string-similarity": "^4.0.4",
     "swagger-koa": "^2.1.0",
     "uuid": "3.4.0",
+    "winston": "^3.11.0",
     "xlsx": "^0.17.5",
     "xmlbuilder": "13.0.2"
   },

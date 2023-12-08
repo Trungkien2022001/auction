@@ -68,7 +68,7 @@ async function deleteDocument(indexName, documentId) {
 }
 
 async function insertData() {
-    const indexName = 'your_index_name' // Thay thế bằng tên index của bạn
+    const indexName = 'test' // Thay thế bằng tên index của bạn
     const recordsCount = 1000
 
     for (let i = 1; i <= recordsCount; i += 1) {

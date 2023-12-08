@@ -16,6 +16,13 @@ admin role authorization
 
 11/04/2023: dashboard auction part 1
 
+## Require: 
+- Kafka
+- Elasticsearch
+- Kibana
+- Erlang
+- Zookeeper
+
 ## Command
 
 ### Elasticsearch cmd:
@@ -45,3 +52,23 @@ admin role authorization
     .\bin\kibana.bat
 ```
 - port: 5601
+
+### Kafka cmd
+- setup
+- run
+```bash
+    .\bin\windows\kafka-server-start.bat .\config\server.properties
+
+```
+- create Topic
+```bash
+    kafka-topics.bat --create --bootstrap-server localhost:9092 --topic test
+```
+- port: 9092
+### Zookeeper cmd
+- setup
+- run
+```bash
+    .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+
+```

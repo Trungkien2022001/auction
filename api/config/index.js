@@ -18,7 +18,10 @@ const defaults = {
     messageLimit: 200,
     maxRateLimt: 100,
     nodeMailerEmail: 'example@gmail.com',
-    nodeMailerPassword: 'example'
+    nodeMailerPassword: 'example',
+    kafkaHost: 'localhost:9092',
+    rabbitMQHost: 'amqp://localhost',
+    topicName: 'test-topic'
 }
 const custom = {
     production:
@@ -36,7 +39,10 @@ const custom = {
     messageLimit: process.env.MESSAGE_LIMIT,
     maxRateLimt: process.env.MAX_RATE_LIMIT,
     nodeMailerEmail: process.env.NODE_MAILER_EMAIL,
-    nodeMailerPassword: process.env.NODE_MAILER_PASSWORD
+    nodeMailerPassword: process.env.NODE_MAILER_PASSWORD,
+    kafkaHost: process.env.KAFKA_HOST,
+    rabbitMQHost: process.env.RABBITMQ_HOST,
+    topicName: process.env.KAFKA_TOPIC
 }
 
 const config = Hoek.applyToDefaults(defaults, custom)

@@ -1,33 +1,41 @@
-const kafka = require('kafka-node');
-const Producer = kafka.Producer;
-const client = new kafka.KafkaClient({ kafkaHost: 'localhost:9092' });
-const producer = new Producer(client);
+const kafka = require('kafka-node')
+const { logger } = require('../../utils/winston')
+const config = require('../../config')
 
-const topic = 'test-topic';
+const { Producer } = kafka
+const client = new kafka.KafkaClient({ kafkaHost: config.kafkaHost })
+client.setMaxListeners(20)
+const producer = new Producer(client)
 
 producer.on('ready', () => {
-  console.log('Producer is ready');
+    logger.info('Kafka Producer is ready!')
+})
 
-  // Gửi tin nhắn đến topic
-  const payloads = [
-    {
-      topic: topic,
-      messages: 'Hello, Kafka!'
-    }
-  ];
+producer.on('error', err => {
+    logger.error(`Error connecting to Kafka:${err}`)
+})
 
-  producer.send(payloads, (err, data) => {
-    if (err) {
-      console.error('Error sending message:', err);
-    } else {
-      console.log('Message sent:', data);
-    }
+async function sendToQueue(data, action, topicName = config.topicName) {
+    producer.send(
+        [
+            {
+                topic: topicName,
+                messages: JSON.stringify({
+                    data,
+                    action
+                })
+            }
+        ],
+        err => {
+            if (err) {
+                logger.error('Error sending message:', err)
+            }
 
-    // Đóng producer sau khi gửi tin nhắn
-    producer.close();
-  });
-});
+            // producer.close();
+        }
+    )
+}
 
-producer.on('error', (err) => {
-  console.error('Error connecting to Kafka:', err);
-});
+module.exports = {
+    sendToQueue
+}

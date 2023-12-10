@@ -9,7 +9,7 @@ exports.logger = winston.createLogger({
         winston.format.timestamp({
             format: 'YYYY-MM-DD HH:mm:ss'
         }),
-        // winston.format.colorize(),
+        winston.format.colorize(),
         winston.format.printf(log => {
             if (log.stack)
                 return `[${log.timestamp}] [${log.level}] ${log.stack}`

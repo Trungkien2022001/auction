@@ -72,3 +72,12 @@ admin role authorization
     .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
 
 ```
+### RabbitMQ cmd
+- setup
+```bash
+set ENV system
+```
+- run
+```bash
+    rabbitmq-server 
+```

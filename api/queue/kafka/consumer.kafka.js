@@ -1,19 +1,27 @@
-const kafka = require('kafka-node');
-const Consumer = kafka.Consumer;
-const client = new kafka.KafkaClient({ kafkaHost: 'localhost:9092' });
-const consumer = new Consumer(client, [{ topic: 'test-topic', partition: 0 }], { autoCommit: false });
+const kafka = require('kafka-node')
+const { logger } = require('../../utils/winston')
+const config = require('../../config')
+const { handleJob } = require('../handleJob')
 
-consumer.on('message', (message) => {
-  console.log('Received message:', message.value);
+const { Consumer } = kafka
+const client = new kafka.KafkaClient({ kafkaHost: config.kafkaHost })
+client.setMaxListeners(20)
+const consumer = new Consumer(
+    client,
+    [{ topic: config.topicName, partition: 0 }],
+    { autoCommit: true }
+)
 
-  // Xác nhận rằng tin nhắn đã được xử lý (nếu không sẽ được xử lý lại khi consumer khởi động lại)
-  consumer.commit(true);
-});
+consumer.on('message', async message => {
+    await handleJob(message)
 
-consumer.on('error', (err) => {
-  console.error('Error connecting to Kafka:', err);
-});
+    consumer.commit(() => {})
+})
 
-consumer.on('offsetOutOfRange', (err) => {
-  console.error('Offset out of range:', err);
-});
+consumer.on('error', err => {
+    logger.error('Error connecting to Kafka:', err)
+})
+
+consumer.on('offsetOutOfRange', err => {
+    logger.error('Offset out of range:', err)
+})

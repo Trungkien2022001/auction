@@ -56,9 +56,5 @@ setInterval(() => {
 app.use(router.routes())
 if (!module.parent)
     app.listen(process.argv[2] || config.port, () => {
-        logger.error('Running app!')
-        // eslint-disable-next-line no-console
-
-        // eslint-disable-next-line no-console
-        console.info(`App is running on port ${config.port}`)
+        logger.info(`App is running on port ${config.port}`)
     })

@@ -1,25 +1,31 @@
 const amqp = require('amqplib')
+const config = require('../../config')
+const { logger } = require('../../utils/winston')
 
-async function sendMessage() {
-    // Tạo kết nối tới RabbitMQ
-    const connection = await amqp.connect('amqp://localhost')
-    const channel = await connection.createChannel()
+async function sendMessage(message, action, queueName = config.topicName) {
+    try {
+        const connection = await amqp.connect(config.rabbitMQHost)
+        const channel = await connection.createChannel()
 
-    // Khai báo một queue có tên 'hello'
-    const queueName = 'hello'
-    await channel.assertQueue(queueName, { durable: false })
+        await channel.assertQueue(queueName, { durable: false })
+        channel.sendToQueue(
+            queueName,
+            Buffer.from(
+                JSON.stringify({
+                    action,
+                    data: message
+                })
+            )
+        )
 
-    // Gửi tin nhắn đến queue 'hello'
-    const message = 'Hello, RabbitMQ!'
-    channel.sendToQueue(queueName, Buffer.from(message))
-
-    console.log(`[x] Sent: ${message}`)
-
-    // Đóng kết nối sau khi gửi tin nhắn
-    setTimeout(() => {
-        connection.close()
-        process.exit(0)
-    }, 500)
+        logger.info(`[x] Sent! Action: ${action}, Message: ${message}`)
+    } catch (error) {
+        logger.error('Error sending message:', error)
+    }
 }
 
-sendMessage()
+// Sử dụng hàm sendMessage với một message cụ thể
+// sendMessage('Hello, RabbitMQ!');
+module.exports = {
+    sendMessage
+}

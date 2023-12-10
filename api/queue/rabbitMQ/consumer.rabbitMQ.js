@@ -1,22 +1,24 @@
 const amqp = require('amqplib')
+const config = require('../../config')
+const { logger } = require('../../utils/winston')
+const { handleJob } = require('../handleJob')
 
 async function receiveMessage() {
     // Tạo kết nối tới RabbitMQ
-    const connection = await amqp.connect('amqp://localhost')
+    const connection = await amqp.connect(config.rabbitMQHost)
     const channel = await connection.createChannel()
 
     // Khai báo một queue có tên 'hello'
-    const queueName = 'hello'
+    const queueName = config.topicName
     await channel.assertQueue(queueName, { durable: false })
 
-    console.log(`[*] Waiting for messages. To exit, press CTRL+C`)
+    logger.info(`[*] Waiting for messages. To exit, press CTRL+C`)
 
-    // Nhận tin nhắn từ queue 'hello'
     channel.consume(
         queueName,
-        msg => {
+        async msg => {
             const message = msg.content.toString()
-            console.log(`[x] Received: ${message}`)
+            await handleJob(message)
         },
         { noAck: true }
     )

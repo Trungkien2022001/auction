@@ -1,4 +1,4 @@
-const tracer = require('dd-trace')
+// const tracer = require('dd-trace')
 
 function chunkSubstr(str, size) {
     const numChunks = Math.ceil(str.length / size)
@@ -24,10 +24,10 @@ const logTracer = {
     fatal: () => {}
 }
 
-tracer.init({
-    logInjection: true,
-    logger: logTracer
-})
+// tracer.init({
+//     logInjection: true,
+//     logger: logTracer
+// })
 
 const pino = require('pino')
 

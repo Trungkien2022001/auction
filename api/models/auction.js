@@ -166,7 +166,7 @@ exports.getLatestAuction = async () => {
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
             .where('a.status', 2)
             .whereNull('a.deleted_at')
-            .orderBy('a.updated_at', 'desc')
+            .orderBy('a.start_time', 'desc')
             .limit(6)
             .offset(0)
 

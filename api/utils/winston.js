@@ -2,7 +2,6 @@ const winston = require('winston')
 const path = require('path')
 
 const parentDir = path.resolve(__dirname, '..')
-
 exports.logger = winston.createLogger({
     format: winston.format.combine(
         winston.format.splat(),
@@ -30,7 +29,7 @@ exports.logger = winston.createLogger({
         new winston.transports.File({
             level: 'info',
             filename: path.join(parentDir, 'log', 'info.log'),
-            silent: true
+            // silent: true
         })
     ]
 })

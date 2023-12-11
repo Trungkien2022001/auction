@@ -3,7 +3,9 @@ const moment = require('moment')
 const commonModel = require('../../models/common')
 const productModel = require('../../models/product')
 const auctionModel = require('../../models/auction')
+const elasticModel = require('../../models/elastic')
 const userModel = require('../../models/user')
+const config = require('../../config')
 
 exports.createAuction = async params => {
     const { body, user } = params
@@ -85,11 +87,12 @@ exports.createAuctionRaise = async params => {
 }
 
 exports.getAuctionOverview = async params => {
-    const latest = await auctionModel.getLatestAuction(params)
-    const featured = await auctionModel.getFeaturedAuction(params)
-    const cheap = await auctionModel.getCheapAuction(params)
-    const expensive = await auctionModel.getExpensiveAuction(params)
-    const incoming = await auctionModel.getIncomingAuction(params)
+    const model = config.isUseElasticSearch ? elasticModel : auctionModel
+    const latest = await model.getLatestAuction(params)
+    const featured = await model.getFeaturedAuction(params)
+    const cheap = await model.getCheapAuction(params)
+    const expensive = await model.getExpensiveAuction(params)
+    const incoming = await model.getIncomingAuction(params)
 
     return {
         latest,

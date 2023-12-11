@@ -4,6 +4,10 @@ const ms = require('ms')
 const Knex = require('knex')
 const _ = require('lodash')
 const config = require('./config')
+const { Client } = require('@elastic/elasticsearch')
+
+const elasticUrl = config.elasticHost
+const esClient = new Client({ node: elasticUrl })
 
 // const sqs = new AWS.SQS()
 
@@ -187,6 +191,7 @@ redis.defineCommand('flushpattern', {
 
 module.exports = {
     redis,
-    knex
+    knex,
+    esClient
     // sqs
 }

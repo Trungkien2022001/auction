@@ -20,8 +20,11 @@ const defaults = {
     nodeMailerEmail: 'example@gmail.com',
     nodeMailerPassword: 'example',
     kafkaHost: 'localhost:9092',
+    elasticHost: 'http://admin:123456@localhost:9200',
     rabbitMQHost: 'amqp://localhost',
-    topicName: 'test-topic'
+    topicName: 'test-topic',
+    esAuctionIdx: 'auction_idx',
+    isUseElasticSearch: true
 }
 const custom = {
     production:
@@ -42,7 +45,10 @@ const custom = {
     nodeMailerPassword: process.env.NODE_MAILER_PASSWORD,
     kafkaHost: process.env.KAFKA_HOST,
     rabbitMQHost: process.env.RABBITMQ_HOST,
-    topicName: process.env.KAFKA_TOPIC
+    topicName: process.env.KAFKA_TOPIC,
+    elasticHost: process.env.ELASTIC_HOST,
+    es_auction_ids: process.env.ELASTIC_AUCTION_IDX,
+    isUseElasticSearch: process.env.IS_USE_ELASTICSEARCH
 }
 
 const config = Hoek.applyToDefaults(defaults, custom)

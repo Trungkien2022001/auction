@@ -81,3 +81,7 @@ set ENV system
 ```bash
     rabbitmq-server 
 ```
+## Logstash cmd
+```bash
+    C:\logstash\bin\logstash.bat -f .\api\migration\elasticsearch\logstash.conf
+    

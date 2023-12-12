@@ -5,6 +5,7 @@ const Knex = require('knex')
 const _ = require('lodash')
 const config = require('./config')
 const { Client } = require('@elastic/elasticsearch')
+const { logger } = require('./utils/winston')
 
 const elasticUrl = config.elasticHost
 const esClient = new Client({ node: elasticUrl })
@@ -188,6 +189,23 @@ redis.defineCommand('flushpattern', {
         return keys
     `
 })
+
+async function healthCheck(){
+    try {
+        await redis.ping();
+        await knex.raw('SELECT 1+1 as result');
+        logger.info("MySQL connected!")
+    } catch (error) {
+        logger.info("Cannot connect to MySQL", error)
+    }
+    try {
+        await redis.ping();
+        logger.info("Redis connected!")
+    } catch (error) {
+        logger.info("Cannot connect to Redis", error)
+    }
+}
+healthCheck()
 
 module.exports = {
     redis,

@@ -84,4 +84,9 @@ set ENV system
 ## Logstash cmd
 ```bash
     C:\logstash\bin\logstash.bat -f .\api\migration\elasticsearch\logstash.conf
+```
+## Docker-compose 
+```bash
+    docker-compose -p auction-app up
+```
     

@@ -105,7 +105,7 @@ exports.getAuctionOverview = async params => {
 
 exports.getAuctions = async params => {
     const model = config.isUseElasticSearch ? elasticModel : auctionModel
-    const auctions = await model.updateAuction(params)
+    const auctions = await model.getAuctions(params)
 
     return auctions
 }

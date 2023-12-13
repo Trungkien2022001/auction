@@ -1,6 +1,13 @@
 version: '3'
 services:
 
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/nginx.conf
+
   mysql:
     image: mysql:latest
     ports:
@@ -59,6 +66,7 @@ services:
       MYSQL_DATABASE: auction
       MYSQL_USER: root
       MYSQL_ALLOW_EMPTY_PASSWORD: oke
+      ELASTIC_HOST: http://localhost:9200
 
   reactjs:
     build:
@@ -76,6 +84,14 @@ services:
     environment:
       - xpack.security.enabled=false
       - "discovery.type=single-node"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.3
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
 
   kafka:
     image: wurstmeister/kafka:latest

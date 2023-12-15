@@ -24,7 +24,7 @@ const defaults = {
     rabbitMQHost: 'amqp://localhost',
     topicName: 'test-topic',
     esAuctionIdx: 'auction_idx',
-    isUseElasticSearch: true
+    isUseElasticSearch: false
 }
 const custom = {
     production:

@@ -204,6 +204,12 @@ async function healthCheck(){
     } catch (error) {
         logger.info("Cannot connect to Redis", error)
     }
+    try {
+        await esClient.ping();
+        logger.info("Elasticsearch connected!")
+    } catch (error) {
+        logger.info("Cannot connect to Elasticsearch", error)
+    }
 }
 healthCheck()
 

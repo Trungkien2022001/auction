@@ -60,7 +60,7 @@ async function migrateAuction() {
         .innerJoin('product as p', 'a.product_id', 'p.id')
         .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
         .innerJoin('auction_status as ast', 'a.status', 'ast.id')
-        .whereIn('a.status', [1])
+        .whereIn('a.status', [1,2])
     // .limit(1)
     // .offset(0)
 

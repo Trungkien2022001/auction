@@ -1,3 +1,4 @@
+require('dotenv').config({ path: '.env' })
 const kafka = require('kafka-node')
 const { logger } = require('../../utils/winston')
 const config = require('../../config')

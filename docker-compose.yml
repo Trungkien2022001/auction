@@ -59,7 +59,7 @@ services:
       - redis
       - mysql
     environment:
-      REDIS_HOST: "${REDIS_HOST:-redis}"
+      REDIS_HOST: "${REDIS_HOST:-host.docker.internal}"
       REDIS_PORT: "${REDIS_PORT:-6379}"
       MYSQL_HOST: "${MYSQL_HOST:-mysql}"
       MYSQL_PORT: "${MYSQL_PORT:-3306}"
@@ -68,6 +68,28 @@ services:
       MYSQL_PASSWORD: "${MYSQL_PASSWORD:-oke}"
       MYSQL_CONNECTION_URL: "${MYSQL_CONNECTION_URL}"
       ELASTIC_HOST: "${ELASTIC_HOST:-http://host.docker.internal:9200}"
+
+  # consumer-kafka:
+  #   build:
+  #     context: ./api
+  #     dockerfile: Dockerfile-kafka-consumer
+  #   volumes:
+  #     - ./api:/app
+  #   # ports:
+  #   #   - "${SOCKETJS_PORT:-3031}:3031"
+  #   depends_on:
+  #     - redis
+  #     - mysql
+  #   environment:
+  #     REDIS_HOST: "${REDIS_HOST:-redis}"
+  #     REDIS_PORT: "${REDIS_PORT:-6379}"
+  #     MYSQL_HOST: "${MYSQL_HOST:-mysql}"
+  #     MYSQL_PORT: "${MYSQL_PORT:-3306}"
+  #     MYSQL_DATABASE: "${MYSQL_DATABASE:-auction}"
+  #     MYSQL_USER: "${MYSQL_USER:-root}"
+  #     MYSQL_PASSWORD: "${MYSQL_PASSWORD:-oke}"
+  #     MYSQL_CONNECTION_URL: "${MYSQL_CONNECTION_URL}"
+  #     ELASTIC_HOST: "${ELASTIC_HOST:-http://host.docker.internal:9200}"
 
   reactjs:
     build:

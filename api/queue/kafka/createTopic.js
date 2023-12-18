@@ -11,7 +11,6 @@ const topicToCheck = 'test'; // Thay thế 'your_topic_name' bằng tên topic b
 
 function checkAndCreateTopic() {
     admin.listTopics((err, topics) => {
-        console.log(topics)
         if (err) {
             logger.error('Error checking topics:', err);
             return;

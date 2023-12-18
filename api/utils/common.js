@@ -78,11 +78,33 @@ function decode(encoded) {
 
     return JSON.parse(decoded)
 }
+function tryParseJson(params) {
+    if (params && Array.isArray(params)) {
+        return params.map(tryParseJson)
+    }
+    if (params && typeof params === 'object') {
+        Object.keys(params).forEach(key => {
+            params[key] = tryParseJson(params[key])
+        })
+
+        return params
+    }
+
+    let tempVal
+    try {
+        tempVal = JSON.parse(params)
+    } catch (error) {
+        tempVal = params
+    }
+
+    return tempVal
+}
 
 module.exports = {
     decode,
     encode,
     logRequest,
     makeCacheKey,
-    markRequestComplete
+    markRequestComplete,
+    tryParseJson
 }

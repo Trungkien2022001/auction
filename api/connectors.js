@@ -6,6 +6,7 @@ const _ = require('lodash')
 const config = require('./config')
 const { Client } = require('@elastic/elasticsearch')
 const { logger } = require('./utils/winston')
+const { tryParseJson } = require('./utils/common')
 
 const elasticUrl = config.elasticHost
 const esClient = new Client({ node: elasticUrl })
@@ -24,27 +25,6 @@ const knex = Knex({
     connection: config.mysqlConnectionUrl
 })
 
-function tryParseJson(params) {
-    if (params && Array.isArray(params)) {
-        return params.map(tryParseJson)
-    }
-    if (params && typeof params === 'object') {
-        Object.keys(params).forEach(key => {
-            params[key] = tryParseJson(params[key])
-        })
-
-        return params
-    }
-
-    let tempVal
-    try {
-        tempVal = JSON.parse(params)
-    } catch (error) {
-        tempVal = params
-    }
-
-    return tempVal
-}
 redis.bulkSetCache = async function bulkSetCache(
     obj,
     prefix,

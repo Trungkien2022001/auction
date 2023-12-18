@@ -24,7 +24,7 @@ const defaults = {
     rabbitMQHost: 'amqp://localhost',
     topicName: 'test-topic',
     esAuctionIdx: 'auction_idx',
-    isUseElasticSearch: false
+    isUseElasticSearch: true
 }
 const custom = {
     production:
@@ -47,7 +47,7 @@ const custom = {
     rabbitMQHost: process.env.RABBITMQ_HOST,
     topicName: process.env.KAFKA_TOPIC,
     elasticHost: process.env.ELASTIC_HOST,
-    es_auction_ids: process.env.ELASTIC_AUCTION_IDX,
+    esAuctionIdx: process.env.ELASTIC_AUCTION_IDX,
     isUseElasticSearch: process.env.IS_USE_ELASTICSEARCH
 }
 

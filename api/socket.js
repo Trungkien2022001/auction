@@ -24,6 +24,8 @@ const messageModel = require('./models/message')
 const notificationModel = require('./models/notification')
 const { insertMessage } = require('./models/message')
 const { redis } = require('./connectors')
+const { sendToQueue } = require('./queue/kafka/producer.kafka')
+const { QUEUE_ACTION } = require('./config/constant/queueActionConstant')
 
 let auctions = []
 const listOnlineUser = []
@@ -216,6 +218,10 @@ async function initAuctionTime() {
                     const seller = listOnlineUser.find(
                         i => i.user_id === sellerId
                     )
+                    sendToQueue({
+                        auction_id: item.auctionId,
+                        status:2
+                    },QUEUE_ACTION.UPDATE_AUCTION)
                     if (seller) {
                         socketIO
                             .to(seller.socket)

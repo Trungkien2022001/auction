@@ -1,8 +1,6 @@
 package com.auction.auctionspringboot.utils;
 
-import java.io.CharArrayWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 

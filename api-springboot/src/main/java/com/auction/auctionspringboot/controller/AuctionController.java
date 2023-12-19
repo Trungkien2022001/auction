@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.auction.auctionspringboot.annotation.SaveLog;
-import com.auction.auctionspringboot.converter.dto.ResponseDto;
-import com.auction.auctionspringboot.converter.dto.auction.GetAuctionResponseConvertor;
-import com.auction.auctionspringboot.converter.dto.auction.GetAuctionResponseDto;
-import com.auction.auctionspringboot.converter.dto.auction.NewAuctionDto;
+import com.auction.auctionspringboot.converter.toDto.ResponseDto;
+import com.auction.auctionspringboot.converter.toDto.auction.GetAuctionResponseConvertor;
+import com.auction.auctionspringboot.converter.toDto.auction.GetAuctionResponseDto;
+import com.auction.auctionspringboot.converter.toDto.auction.NewAuctionDto;
 import com.auction.auctionspringboot.model.Auction;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.AuctionService;

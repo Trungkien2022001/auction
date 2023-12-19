@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.converter.dto.log;
+package com.auction.auctionspringboot.converter.toDto.log;
 
 
 import lombok.AllArgsConstructor;

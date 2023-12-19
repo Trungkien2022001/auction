@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.converter.dto.auction;
+package com.auction.auctionspringboot.converter.toDto.auction;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.auction.auctionspringboot.converter.dto.ResponseDto;
+import com.auction.auctionspringboot.converter.toDto.ResponseDto;
+import com.auction.auctionspringboot.converter.toDto.auctionElasticsearch.GetAuctionElasticsearchResponseDto;
 import com.auction.auctionspringboot.model.AuctionElasticsearch;
 import com.auction.auctionspringboot.service.AuctionElasticsearchService;
 
@@ -34,18 +35,18 @@ public class AuctionElasticsearchController {
             }),
             @ApiResponse(responseCode = "400", content = { @Content(schema = @Schema()) }) })
     public ResponseEntity<?> find() {
-        ResponseDto<AuctionElasticsearch> resp;
+        ResponseDto<GetAuctionElasticsearchResponseDto> resp;
         // return new ResponseEntity<>(resp, HttpStatus.OK);
          try {
 
             // ValidationUtil.validate(registerRequestDto);
             // User user = UserDtoConvertor.toCreateModel(registerRequestDto);
-            AuctionElasticsearch auctionElasticsearch = auctionElasticsearchService.find("mzrWe4wBnEhuuj4tft7Z");
-            resp = new ResponseDto<AuctionElasticsearch>(
+            GetAuctionElasticsearchResponseDto response = auctionElasticsearchService.find("7Wt3V4wBNwa_lydW4yJ8");
+            resp = new ResponseDto<GetAuctionElasticsearchResponseDto>(
                     true,
                     400,
                     "Get Auction Success",
-                    auctionElasticsearch);
+                    response);
             return new ResponseEntity<>(resp, HttpStatus.OK);
         } catch (Exception e) {
             resp = new ResponseDto<>(

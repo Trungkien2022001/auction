@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.converter.dto.auth;
+package com.auction.auctionspringboot.converter.toDto.auth;
 
 import java.sql.Date;
 

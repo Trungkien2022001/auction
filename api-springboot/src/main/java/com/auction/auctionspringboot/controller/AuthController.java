@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.auction.auctionspringboot.annotation.SaveLog;
-import com.auction.auctionspringboot.converter.dto.ResponseDto;
-import com.auction.auctionspringboot.converter.dto.auth.LoginRequestDto;
-import com.auction.auctionspringboot.converter.dto.auth.LoginResponseDto;
-import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
+import com.auction.auctionspringboot.converter.toDto.ResponseDto;
+import com.auction.auctionspringboot.converter.toDto.auth.LoginRequestDto;
+import com.auction.auctionspringboot.converter.toDto.auth.LoginResponseDto;
+import com.auction.auctionspringboot.converter.toDto.auth.RegisterRequestDto;
 import com.auction.auctionspringboot.converter.toModel.UserDtoConvertor;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.service.AuthService;

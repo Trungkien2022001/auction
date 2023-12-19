@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.auction.auctionspringboot.converter.dto.user.UpdateUserRequestDto;
+import com.auction.auctionspringboot.converter.toDto.user.UpdateUserRequestDto;
 import com.auction.auctionspringboot.converter.toModel.UserDtoConvertor;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.repository.UserRepository;

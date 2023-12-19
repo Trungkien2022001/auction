@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.converter.dto.auction;
+package com.auction.auctionspringboot.converter.toDto.auth;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewAuctionDto {
+public class LoginRequestDto {
+    @NotNull
+    private String username;
 
     @NotNull
-    public NewAuction auction;
-
-    @NotNull
-    public NewProduct product;
+    private String password;
 }

@@ -1,4 +1,4 @@
-package com.auction.auctionspringboot.converter.dto;
+package com.auction.auctionspringboot.converter.toDto;
 
 public class ResponseDto<T> {
     private boolean success;

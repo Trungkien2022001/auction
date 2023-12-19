@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auction.auctionspringboot.service.LogService;
 import com.auction.auctionspringboot.utils.PagingHelper;
-import com.auction.auctionspringboot.converter.dto.PaginationDto;
-import com.auction.auctionspringboot.converter.dto.ResponseWithPaginationDto;
+import com.auction.auctionspringboot.converter.toDto.PaginationDto;
+import com.auction.auctionspringboot.converter.toDto.ResponseWithPaginationDto;
 import com.auction.auctionspringboot.model.ActionLog;
 
 import io.swagger.v3.oas.annotations.Operation;

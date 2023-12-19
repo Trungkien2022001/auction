@@ -2,7 +2,7 @@ package com.auction.auctionspringboot.utils;
 
 import org.springframework.data.domain.Page;
 
-import com.auction.auctionspringboot.converter.dto.PaginationDto;
+import com.auction.auctionspringboot.converter.toDto.PaginationDto;
 
 public class PagingHelper {
     public static <T> PaginationDto buildPaging(Page<T> data){

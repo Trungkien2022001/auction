@@ -1,7 +1,7 @@
 package com.auction.auctionspringboot.converter.toModel;
 
-import com.auction.auctionspringboot.converter.dto.auth.RegisterRequestDto;
-import com.auction.auctionspringboot.converter.dto.user.UpdateUserRequestDto;
+import com.auction.auctionspringboot.converter.toDto.auth.RegisterRequestDto;
+import com.auction.auctionspringboot.converter.toDto.user.UpdateUserRequestDto;
 import com.auction.auctionspringboot.model.User;
 import com.auction.auctionspringboot.utils.BCryptEncoder;
 

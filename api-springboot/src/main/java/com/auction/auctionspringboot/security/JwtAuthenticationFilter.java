@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.auction.auctionspringboot.converter.dto.ResponseDto;
+import com.auction.auctionspringboot.converter.toDto.ResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component

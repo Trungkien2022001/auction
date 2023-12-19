@@ -3,7 +3,7 @@ package com.auction.auctionspringboot.converter.toModel;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.auction.auctionspringboot.converter.dto.auction.NewAuctionDto;
+import com.auction.auctionspringboot.converter.toDto.auction.NewAuctionDto;
 import com.auction.auctionspringboot.model.Auction;
 import com.auction.auctionspringboot.model.Product;
 import com.auction.auctionspringboot.model.User;

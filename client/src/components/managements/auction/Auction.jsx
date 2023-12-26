@@ -33,6 +33,7 @@ import { Link } from 'react-router-dom';
 import { AUCTION_STATUS, AUCTION_TIMES } from '../../../utils/constants';
 import { filterTable } from '../../../utils/filterTable';
 import { checkApiResponse } from '../../../utils/checkApiResponse';
+import { Loading } from '../../loading/Loading';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -235,17 +236,20 @@ export const Auction = ({ currentUser, socket }) => {
   const [currentAuction, setCurrentAuction] = useState({})
   const [openAuctionHistoryDialog, setOpenAuctionHistoryDialog] = useState(false);
   const [auctionHistoryData, setAuctionHistoryData] = useState([]);
+  const [loading, setLoading] = useState(true)
 
-  if(!currentUser.role.dashboard_auction){
+  if (!currentUser.role.dashboard_auction) {
     window.location.href = `/management/dashboard`
   }
 
   async function getData() {
+    setLoading(true)
     let result = await post(`/auctions?type=dashboard`, {}, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.data.products)
       setInitialData(result.data.data.products)
     }
+    setLoading(false)
   }
   const handleSearch = (event) => {
     const dataList = filterTable(event.target.value, initialData, headCells)
@@ -256,7 +260,7 @@ export const Auction = ({ currentUser, socket }) => {
     if (option === -1) {
       setData(initialData)
     } else {
-      setData(initialData.filter(i => i.status === AUCTION_STATUS.find(s => s.value === option).title))
+      setData(initialData.filter(i => i.status === option))
     }
     // const dataList = filterTable(event.target.value, initialData, headCells)
     // setData(dataList)
@@ -342,84 +346,88 @@ export const Auction = ({ currentUser, socket }) => {
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar fn={handleSearch} fn1={handleFilterByStatus} />
-            <TableContainer>
-              <Table
-                stickyHeader
-                sx={{ minWidth: 750, maxHeight: 1000 }}
-                aria-labelledby="tableTitle"
-                size={dense ? 'small' : 'medium'}
-              >
-                <EnhancedTableHead
-                  order={order}
-                  orderBy={orderBy}
-                  onRequestSort={handleRequestSort}
-                  rowCount={data ? data.length : 0}
-                />
-                <TableBody>
-                  {data && data.length && stableSort(data, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      const labelId = `enhanced-table-checkbox-${index}`;
+            {
+              !loading ?
+                <TableContainer>
+                  <Table
+                    stickyHeader
+                    sx={{ minWidth: 750, maxHeight: 1000 }}
+                    aria-labelledby="tableTitle"
+                    size={dense ? 'small' : 'medium'}
+                  >
+                    <EnhancedTableHead
+                      order={order}
+                      orderBy={orderBy}
+                      onRequestSort={handleRequestSort}
+                      rowCount={data ? data.length : 0}
+                    />
+                    <TableBody>
+                      {Array.isArray(data) && stableSort(data, getComparator(order, orderBy))
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row, index) => {
+                          const labelId = `enhanced-table-checkbox-${index}`;
 
-                      return (
-                        <TableRow className='sell-table-row'
-                          hover
-                          role="checkbox"
-                          tabIndex={-1}
-                          key={row.id}
+                          return (
+                            <TableRow className='sell-table-row'
+                              hover
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={row.id}
+                            >
+                              <TableCell
+                                component="th"
+                                id={labelId}
+                                align='center'
+                                scope="row"
+                                padding="none"
+                              >
+                                {row.id}
+                              </TableCell>
+                              <TableCell align="center" className='product-history-name'>{row.product_name}</TableCell>
+                              <TableCell align="center">{row.start_price.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'VND',
+                              })}</TableCell>
+                              <TableCell align="center">{row.sell_price.toLocaleString('en-US', {
+                                style: 'currency',
+                                currency: 'VND',
+                              })}</TableCell>
+                              <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY HH:mm:ss')}</TableCell>
+                              <TableCell align="center">{row.auction_time}</TableCell>
+                              <TableCell align="center">{row.auction_count}</TableCell>
+                              <TableCell align="center">{row.seller_id}</TableCell>
+                              <TableCell align="center">{row.auctioneer_win}</TableCell>
+                              <TableCell align="center">{row.status}</TableCell>
+                              <TableCell align="center">
+                                <InfoIcon style={{ color: "blue", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></InfoIcon>
+                                <ChangeCircleIcon style={{ color: "red", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></ChangeCircleIcon>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      {emptyRows > 0 && (
+                        <TableRow
+                          style={{
+                            height: (dense ? 33 : 53) * emptyRows,
+                          }}
                         >
-                          <TableCell
-                            component="th"
-                            id={labelId}
-                            align='center'
-                            scope="row"
-                            padding="none"
-                          >
-                            {row.id}
-                          </TableCell>
-                          <TableCell align="center" className='product-history-name'>{row.product_name}</TableCell>
-                          <TableCell align="center">{row.start_price.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: 'VND',
-                          })}</TableCell>
-                          <TableCell align="center">{row.sell_price.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: 'VND',
-                          })}</TableCell>
-                          <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY HH:mm:ss')}</TableCell>
-                          <TableCell align="center">{row.auction_time}</TableCell>
-                          <TableCell align="center">{row.auction_count}</TableCell>
-                          <TableCell align="center">{row.seller_id}</TableCell>
-                          <TableCell align="center">{row.auctioneer_win}</TableCell>
-                          <TableCell align="center">{row.status}</TableCell>
-                          <TableCell align="center">
-                            <InfoIcon style={{ color: "blue", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></InfoIcon>
-                            <ChangeCircleIcon style={{ color: "red", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></ChangeCircleIcon>
-                          </TableCell>
+                          <TableCell colSpan={6} />
                         </TableRow>
-                      );
-                    })}
-                  {emptyRows > 0 && (
-                    <TableRow
-                      style={{
-                        height: (dense ? 33 : 53) * emptyRows,
-                      }}
-                    >
-                      <TableCell colSpan={6} />
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[7, 15, 25, 500]}
-              component="div"
-              count={data ? data.length : 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+                      )}
+                    </TableBody>
+                  </Table>
+                  <TablePagination
+                    rowsPerPageOptions={[7, 15, 25, 500]}
+                    component="div"
+                    count={data ? data.length : 0}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </TableContainer>
+                : <Loading></Loading>
+            }
           </Paper>
           <FormControlLabel
             control={<Switch checked={dense} onChange={handleChangeDense} />}

@@ -7,10 +7,13 @@ AuctionHub is a cutting-edge online auction platform featuring an extensive cata
 
 Our platform offers real-time notifications, allowing users to stay informed about upcoming auctions in their areas of interest. This empowers bidders to strategize effectively and maximize their chances of winning in the auctions. Furthermore, our dedicated 24/7 admin team plays a vital role in verifying auction sessions and ensuring the security of every transaction. They are also readily available for users to report any suspicious activities or disruptive behavior, creating a safe and enjoyable auction environment for all.
 
-AuctionHub's robust system has been rigorously tested, capable of handling a massive inventory of 100,000 products and accommodating a community of 6,000 users. Discover the thrill of bidding and securing unique treasures at AuctionHub.
+AuctionHub's robust system has been rigorously tested, capable of handling a massive inventory of 2200,000 auctions and accommodating a community of 6,000 users. Discover the thrill of bidding and securing unique treasures at AuctionHub.
 
-Feel free to modify and adapt this title according to your project's branding and description. If you need more assistance or have specific requests, please let me know.
+If you are interested, why not cooperate with us?
 
+
+## Figma Design
+https://www.figma.com/file/pJxRNe7BWlrAb47VcAvvVQ/Auction?type=design&node-id=3-2&mode=design&t=2AZ15t2L2OZo3W79-0
 
 ## Main API Reference
 
@@ -40,6 +43,9 @@ Feel free to modify and adapt this title according to your project's branding an
 | :-------- | :------- | :-------------------------------- |
 | `id`      | `string` | **Required**. Id of item to fetch |
 
+## Demo
+
+https://kiennguyen.vercel.app/
 
 ## Auction Solution Architect
 <img src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1702613741/upload/n98lv0zedoaojj3gwd24.png" width="800px" height="auto" style="margin-left: 50px;">
@@ -67,16 +73,11 @@ Feel free to modify and adapt this title according to your project's branding an
 <img src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1699243459/upload/rdomipt3j7fud4n6ecyx.png" width="800px" height="auto" style="margin-left: 50px;">
 
 
-## Demo
-
-https://kiennguyen.vercel.app/
-
-
 ## Tech Stack
 
 **Client:** React, Redux, Scss, ReduxToolkit, Socket.io-client, MaterialUI
 
-**Server:** Node, Express, Springboot, Socket, Redis, MySQL, Apache Kafka, Apache Zookeeper, Elasticsearch, RabbitMQ...
+**Server:** Node, Express, NestJS, Springboot, Socket, Redis, MySQL, Apache Kafka, Apache Zookeeper, Elasticsearch, RabbitMQ, Flask...
 
 
 ## Authors

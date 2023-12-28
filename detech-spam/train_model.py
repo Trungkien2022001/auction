@@ -22,7 +22,7 @@ def train_model(classifier, X_data, y_data, X_test, y_test, input_data, is_neura
             pickle.dump(classifier, file)
     else:
         classifier.fit(X_train, y_train)
-        train_predictions = classifier.predict(X_train)
+        # train_predictions = classifier.predict(X_train)
         val_predictions = classifier.predict(X_val)
         test_predictions = classifier.predict(X_test)
         filename = 'MultinomialNB.pkl'
@@ -30,7 +30,7 @@ def train_model(classifier, X_data, y_data, X_test, y_test, input_data, is_neura
         # with open(filename, 'wb') as file:
         #     pickle.dump(classifier, file)
 
-        #     result_array = []
+        result_array = []
 
         for i in range(len(input_data)):
             result_dict = {

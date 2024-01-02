@@ -24,7 +24,13 @@ const defaults = {
     rabbitMQHost: 'amqp://localhost',
     topicName: 'test-topic',
     esAuctionIdx: 'auction_idx',
-    isUseElasticSearch: false
+    isUseElasticSearch: false,
+    vnpUrl: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
+    vnpApi: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
+    vnpReturnUrl: 'http://localhost:8888/order/vnpay_return',
+    vnpTmnCode: '4DXY784V',
+    vnpHashSecret:
+        '6da7e6ad1270bc7674f2b436f4301fa8/1/010e018cc9347967-fe6be0c1-681e-4b66-a646-540c4a556160-000000/R46ByIKy1LoJUAYTo4juNdBE6pQ=139'
 }
 const custom = {
     production:
@@ -48,7 +54,9 @@ const custom = {
     topicName: process.env.KAFKA_TOPIC,
     elasticHost: process.env.ELASTIC_HOST,
     esAuctionIdx: process.env.ELASTIC_AUCTION_IDX,
-    isUseElasticSearch: process.env.IS_USE_ELASTICSEARCH
+    isUseElasticSearch: process.env.IS_USE_ELASTICSEARCH,
+    vnpTmnCode: process.env.VNP_TMN_CODE,
+    vnpHashSecret: process.env.VNP_HASH_SECRET
 }
 
 const config = Hoek.applyToDefaults(defaults, custom)

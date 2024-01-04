@@ -6,6 +6,7 @@ const auctionModel = require('./models/auction')
 const notificationModel = require('./models/notification')
 const auctionController = require('./components/auction/controller')
 const { redis, knex } = require('./connectors')
+const { logger } = require('./utils/winston')
 
 async function handleRaise(params) {
     const { userId, auctionId } = params
@@ -27,10 +28,8 @@ async function get() {
         .where('status', 2)
         .map(i => i.id)
     const auction_l = auction.length
-    // console.log(user)
     const count = 1000
     for (let i = 0; i < count; i += 1) {
-        console.log(i)
         const auctionId = auction[Math.floor(Math.random() * auction_l)]
         const cnt = Math.floor(Math.random() * 20) + 1
         for (let j = 0; j < cnt; j += 1) {
@@ -50,7 +49,7 @@ async function get() {
                 })
                 await handleRaise({ auctionId, userId: user.id })
             } catch (error) {
-                console.log(error)
+                logger.error(error)
             }
         }
     }

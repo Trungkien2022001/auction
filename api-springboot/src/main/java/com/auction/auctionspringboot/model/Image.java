@@ -33,9 +33,9 @@ public class Image {
     // @Column(name = "product_id", nullable = false)
     // private int productId;
 
-    @Column(name = "isSuccess", nullable = false)
-    @JsonIgnore
-    private int isSuccess = 1;
+    // @Column(name = "is_success", nullable = false)
+    // @JsonIgnore
+    // private int isSuccess = 1;
 
     @Column(name = "deleted_at")
     @JsonIgnore

@@ -22,6 +22,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
 import { AUCTION_STATUS, AUCTION_TIMES, SERVICES } from "../../../utils/constants";
+import config from "../../../config";
 const _ = require('lodash')
 
 
@@ -55,7 +56,7 @@ export const Product = ({ socket }) => {
         setAuctionHistoryData(result.data.data)
       }
     }
-    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.PRODUCT_WAIT_TIME || 1500));
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, config.productWaitTime));
     await Promise.all([f(), delayPromise])
     setLoading(false)
   }

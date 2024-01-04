@@ -31,9 +31,8 @@
       padding-bottom: 10px;
       .product {
         // background-color: #E6FFFD;
-        border-radius: 10px;
-        box-shadow: 8px 5px 8px #ccc;
-        border: 1px solid #f0e9e9;
+        // border-radius: 10px;
+        box-shadow:  1px 0.5px 1px 0.5px #ccc;
         cursor: pointer;
         align-items: center;
         width: 10.5vw;
@@ -43,7 +42,7 @@
         margin: 20px 15px 0 15px;
         .productImg {
           img {
-            border-radius: 10px;
+            // border-radius: 10px;
             width: 100%;
             height: 200px;
           }
@@ -54,35 +53,36 @@
           justify-content: center;
           .product-icon {
             transform: scale(0.8);
+            opacity: 0.8;;
           }
           .product-content {
             flex: 1;
           }
         }
         .product-name {
-          height: 37px;
-          font-weight: 550;
-          font-size: 1.1rem;
+          height: 53px;
+          // font-weight: 550;
+          font-size: 17px;
           font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
           text-align: center;
           padding: 0 5px;
           display: -webkit-box;
-          -webkit-line-clamp: 2;
+          -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
-          overflow: hidden;
           text-overflow: ellipsis;
+          overflow: hidden;
         }
         .product-price {
           text-align: center;
           font-weight: bold;
-          font-family: "Courier New", Courier, monospace;
+          // font-family: "Courier New", Courier, monospace;
         }
       }
       .last-item {
         margin-right: auto;
       }
       .product:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
       }
     }
   }

@@ -22,6 +22,7 @@ import moment from "moment";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
+import config from "../../../config";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
@@ -74,7 +75,7 @@ export const Products = ({ socket }) => {
         setData(result.data.data.products)
       }
     }
-    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.PRODUCTS_WAIT_TIME || 2000));
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, config.productWaitTime));
     await Promise.all([f(), delayPromise])
     setLoading(false)
   }

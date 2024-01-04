@@ -532,7 +532,7 @@ export const Header = ({ socket, systemConfig }) => {
 
   return (
     <Box className='app-header' sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
-      <AppBar position="static">
+      <AppBar position="static" className='app-header-wrapper'>
         <Toolbar>
           <IconButton
             size="large"
@@ -565,12 +565,13 @@ export const Header = ({ socket, systemConfig }) => {
             noWrap
             component="div"
           >
-            <Link to={'/'} style={{ textDecoration: 'none', color: '#fff' }}>
+            <Link to={'/'} style={{ textDecoration: 'none', color: '#28CB8B' }}>
               {systemConfig.app_name || 'TIKA'}
             </Link>
           </Typography>
           <Search
             sx={{ display: { xs: 'none', sm: 'block' } }}
+            className='search-header'
           >
             <SearchIconWrapper>
               <SearchIcon

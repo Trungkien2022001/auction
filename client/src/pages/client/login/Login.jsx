@@ -18,6 +18,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
+import config from "../../../config";
 
 
 export const Login = ({socket}) => {
@@ -34,7 +35,7 @@ export const Login = ({socket}) => {
   
   const handleLogin = () => {
     axios
-      .post(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
+      .post(`${config.apiHost}/login`, {
         email: username,
         password,
       })

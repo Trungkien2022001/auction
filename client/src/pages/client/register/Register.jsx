@@ -12,6 +12,7 @@ import { Button, TextField } from '@mui/material'
 import { registerValidate } from "../../../utils/validateFormInput";
 import Swal from "sweetalert2";
 import { Footer } from "../../../components/footer/Footer";
+import config from "../../../config";
 
 
 export const Register = ({socket}) => {
@@ -75,7 +76,7 @@ export const Register = ({socket}) => {
     }
     delete user_register.rePassword
     axios
-      .post(`${process.env.REACT_APP_API_ENDPOINT}/signup`, user_register)
+      .post(`${config.apiHost}/signup`, user_register)
       .then((res) => {
         if (res.data.success) {
           Swal.fire({
@@ -85,7 +86,7 @@ export const Register = ({socket}) => {
             timer: 1500
           }).then(res => {
               axios
-                .post(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
+                .post(`${config.apiHost}/login`, {
                   email,
                   password,
                 })

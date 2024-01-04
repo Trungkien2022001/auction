@@ -1,4 +1,5 @@
 import axios from 'axios'
+import config from '../config'
 
 export async function get(url, currentUser, service){
     const service_url = buildUrl(url, service)
@@ -31,15 +32,15 @@ function buildUrl(url, service){
     let host
     switch (service) {
         case 'NODE':
-            host=process.env.REACT_APP_API_NODE_ENDPOINT
+            host=config.apiNodeHost
             break;
 
         case 'SPRINGBOOT':
-            host=process.env.REACT_APP_API_SPRINGBOOT_ENDPOINT
+            host=config.apiSpringbootHost
             break;
     
         default:
-            host=process.env.REACT_APP_API_NODE_ENDPOINT
+            host=config.apiNodeHost
             break;
     }
 

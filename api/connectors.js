@@ -3,8 +3,8 @@ const ms = require('ms')
 // const AWS = require('aws-sdk')
 const Knex = require('knex')
 const _ = require('lodash')
-const config = require('./config')
 const { Client } = require('@elastic/elasticsearch')
+const config = require('./config')
 const { logger } = require('./utils/winston')
 const { tryParseJson } = require('./utils/common')
 
@@ -170,25 +170,27 @@ redis.defineCommand('flushpattern', {
     `
 })
 
-async function healthCheck(){
+async function healthCheck() {
     try {
-        await redis.ping();
-        await knex.raw('SELECT 1+1 as result');
-        logger.info("MySQL connected!")
+        await redis.ping()
+        await knex.raw('SELECT 1+1 as result')
+        logger.info('MySQL connected!')
     } catch (error) {
-        logger.info("Cannot connect to MySQL", error)
+        logger.info('Cannot connect to MySQL', error)
     }
     try {
-        await redis.ping();
-        logger.info("Redis connected!")
+        await redis.ping()
+        logger.info('Redis connected!')
     } catch (error) {
-        logger.info("Cannot connect to Redis", error)
+        logger.info('Cannot connect to Redis', error)
     }
-    try {
-        await esClient.ping();
-        logger.info("Elasticsearch connected!")
-    } catch (error) {
-        logger.info("Cannot connect to Elasticsearch", error)
+    if (config.isUseElasticSearch) {
+        try {
+            await esClient.ping()
+            logger.info('Elasticsearch connected!')
+        } catch (error) {
+            logger.info('Cannot connect to Elasticsearch', error)
+        }
     }
 }
 healthCheck()

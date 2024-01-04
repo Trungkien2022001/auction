@@ -91,11 +91,11 @@ export const ProductComponent = ({ data, title, loading, keyword }) => {
                                                     </div>
                                                 </div>
                                                 <div className="product-name">{item.name}</div>
-                                                <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
+                                                {/* <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
                                                     <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                                                </div>
+                                                </div> */}
                                                 <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                                                    <SellIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                                                    <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                                                 </div>
                                             </div>
                                         </Link>

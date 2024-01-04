@@ -20,6 +20,9 @@ import { ProductComponent } from "../../../components/product/ProductComponent";
 import Skeleton from "react-loading-skeleton";
 import { checkApiResponse } from "../../../utils/checkApiResponse";
 import { checkIsBlockedUser, tryParseJson } from "../../../utils/common";
+import config from "../../../config";
+
+const isUseLazyLoading = config.isUseLazyLoading
 
 
 export const Homepage = ({ socket }) => {
@@ -58,7 +61,7 @@ export const Homepage = ({ socket }) => {
       }
       setPreLoading(true)
     }
-    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_WAIT_TIME || 3500));
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, config.homepageWaitTime));
     await Promise.all([f(), delayPromise])
     setLoading(false)
   }
@@ -95,7 +98,7 @@ export const Homepage = ({ socket }) => {
         }
       }
     }
-    const delayPromise = new Promise((resolve) => setTimeout(resolve, process.env.HOMEPAGE_METADATA_WAIT_TIME || 2500));
+    const delayPromise = new Promise((resolve) => setTimeout(resolve, config.homepageMetadataWaitTime));
     await Promise.all([f(), delayPromise])
     setLoadingMeta(false)
   }
@@ -164,7 +167,7 @@ export const Homepage = ({ socket }) => {
       <CustomSlider loading={loadingMeta} images={sytemConfig.banner_image} />
       <div className="padding__main homepage-container">
         {
-          loadingMeta ?
+          loadingMeta && isUseLazyLoading ?
             <div className="product-category">
               <div className="product-category-header">
                 <Skeleton width={250} height={30} />
@@ -292,14 +295,14 @@ export const Homepage = ({ socket }) => {
       </div>
       <div className="tmp">
         {
-          preLoading && data ? _.flatten(Object.keys(data).map((item) => data[item].map(p => p.image))).map((item, index) =>
+          preLoading && isUseLazyLoading && data ? _.flatten(Object.keys(data).map((item) => data[item].map(p => p.image))).map((item, index) =>
             <div key={index}>
               <img style={{ display: 'none' }} rel="prefetch" src={item} alt="Product_Image" />
             </div>
           ) : <></>
         }
         {
-          preLoadingMeta && productCategory && productCategory.length ? productCategory.map((item, index) =>
+          preLoadingMeta && isUseLazyLoading && productCategory && productCategory.length ? productCategory.map((item, index) =>
             <div key={index}>
               <img style={{ display: 'none' }} rel="prefetch" src={item.image} alt="Product_Image" />
             </div>

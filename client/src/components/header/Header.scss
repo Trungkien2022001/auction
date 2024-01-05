@@ -13,6 +13,20 @@
         background-color: #f9f9f9;
         border: 1px solid #ccc;
     }
+    .header-component{
+        display: flex;
+        font-size: 22px;
+        justify-content: end;
+        .item{
+            margin: 0px 3%;
+            cursor: pointer;
+        }
+    }
+    @media screen and (max-width: 900px) {
+        .header-component{
+            display: none;
+        }
+    }
 }
 .notification-container{
     width: 350px;

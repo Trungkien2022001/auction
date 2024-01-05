@@ -22,7 +22,7 @@ import { checkApiResponse } from "../../../utils/checkApiResponse";
 import { checkIsBlockedUser, tryParseJson } from "../../../utils/common";
 import config from "../../../config";
 
-const isUseLazyLoading = config.isUseLazyLoading
+// const isUseLazyLoading = config.isUseLazyLoading
 
 
 export const Homepage = ({ socket }) => {
@@ -167,7 +167,7 @@ export const Homepage = ({ socket }) => {
       <CustomSlider loading={loadingMeta} images={sytemConfig.banner_image} />
       <div className="padding__main homepage-container">
         {
-          loadingMeta && isUseLazyLoading ?
+          loadingMeta ?
             <div className="product-category">
               <div className="product-category-header">
                 <Skeleton width={250} height={30} />
@@ -188,7 +188,7 @@ export const Homepage = ({ socket }) => {
                     <div className="group-category" key={index}>
                       <div className="product-category-item" onClick={() => handleChangePage(item[0].id)}>
                         <div className="product-category-image">
-                          <Avatar sx={{ width: 70, height: 70 }} alt="" src={item[0].image} />
+                          <Avatar sx={{ width: 60, height: 60 }} alt="" src={item[0].image} />
                         </div>
                         <div className="product-category-title">
                           {item[0].name}
@@ -197,7 +197,7 @@ export const Homepage = ({ socket }) => {
                       {item[1] ?
                         <div className="product-category-item">
                           <div className="product-category-image">
-                            <Avatar sx={{ width: 70, height: 70 }} alt="" src={item[1].image} onClick={() => handleChangePage(item[1].id)} />
+                            <Avatar sx={{ width: 60, height: 60 }} alt="" src={item[1].image} onClick={() => handleChangePage(item[1].id)} />
                           </div>
                           <div className="product-category-title">
                             {item[1].name}
@@ -295,14 +295,14 @@ export const Homepage = ({ socket }) => {
       </div>
       <div className="tmp">
         {
-          preLoading && isUseLazyLoading && data ? _.flatten(Object.keys(data).map((item) => data[item].map(p => p.image))).map((item, index) =>
+          preLoading && data ? _.flatten(Object.keys(data).map((item) => data[item].map(p => p.image))).map((item, index) =>
             <div key={index}>
               <img style={{ display: 'none' }} rel="prefetch" src={item} alt="Product_Image" />
             </div>
           ) : <></>
         }
         {
-          preLoadingMeta && isUseLazyLoading && productCategory && productCategory.length ? productCategory.map((item, index) =>
+          preLoadingMeta && productCategory && productCategory.length ? productCategory.map((item, index) =>
             <div key={index}>
               <img style={{ display: 'none' }} rel="prefetch" src={item.image} alt="Product_Image" />
             </div>

@@ -565,7 +565,7 @@ export const Header = ({ socket, systemConfig }) => {
             noWrap
             component="div"
           >
-            <Link to={'/'} style={{ textDecoration: 'none', color: '#28CB8B' }}>
+            <Link to={'/'} style={{ textDecoration: 'none', color: '#28CB8B', fontSize: "30px", fontWeight: '500' }}>
               {systemConfig.app_name || 'TIKA'}
             </Link>
           </Typography>
@@ -587,10 +587,23 @@ export const Header = ({ socket, systemConfig }) => {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }}>
-            <TargetTextWrapper style={{ fontSize: "22px" }}>
-              {/* trang này không tồn tại, trang này không tồn tại trang này không tồn tại, trang này không tồn tại, trang này không tồn tại, trang này không tồn */}
+            {/* <TargetTextWrapper style={{ fontSize: "22px" }}>
               {systemConfig.slogan}
-            </TargetTextWrapper>
+            </TargetTextWrapper> */}
+            <div className="header-component">
+              <div className="item">
+                Home
+              </div>
+              <div className="item">
+                Auctions
+              </div>
+              <div className="item">
+                Blogs
+              </div>
+              <div className="item">
+                About
+              </div>
+            </div>
           </Box>
           <Box sx={{ display: "flex" }}>
             <IconButton

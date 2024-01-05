@@ -108,7 +108,7 @@
   width: calc(100% - 20px);
   max-width: 100%;
   background-color: #fff;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 10px;
   .product-category-header {
     color: #d0011b;
@@ -129,7 +129,7 @@
       .product-category-item {
         // border: 1px solid red;
         cursor: pointer;
-        height: 130px;
+        height: 100px;
         padding: 5px;
         .product-category-image {
           display: flex;
@@ -143,16 +143,17 @@
         }
         .product-category-title {
           padding-top: 5px;
-          width: 100%;
+          padding-left: 10%;
+          width: 80%;
           text-align: center;
           max-width: 110px;
           word-wrap: break-word;
-          font-size: 15px;
+          font-size: 14px;
         }
       }
       .product-category-item:hover {
-        border-radius: 15px;
-        background-color: #ebe6e6;
+        border-radius: 5px;
+        background-color: #f3f3f3;
       }
     }
   }

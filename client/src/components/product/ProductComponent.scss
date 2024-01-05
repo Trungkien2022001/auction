@@ -31,7 +31,6 @@
       padding-bottom: 10px;
       .product {
         // background-color: #E6FFFD;
-        // border-radius: 10px;
         box-shadow:  1px 0.5px 1px 0.5px #ccc;
         cursor: pointer;
         align-items: center;
@@ -40,6 +39,7 @@
         height: 310px;
         position: relative;
         margin: 20px 15px 0 15px;
+        border-radius: 5px;
         .productImg {
           img {
             // border-radius: 10px;
@@ -53,7 +53,7 @@
           justify-content: center;
           .product-icon {
             transform: scale(0.8);
-            opacity: 0.8;;
+            opacity: 0.8;
           }
           .product-content {
             flex: 1;

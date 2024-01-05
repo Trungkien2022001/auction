@@ -36,18 +36,18 @@ exports.createAuction = async params => {
 exports.createAuctionRaise = async params => {
     const { body, user, auctionId } = params
     const auction = await exports.getAuctionDetail({ id: auctionId })
-    if (body.price <= auction.product.sell_price) {
+    if (body.price <= auction.sell_price) {
         return {
             success: false,
-            message: `Auction raise error : price must be > ${auction.product.sell_price}`
+            message: `Auction raise error : price must be > ${auction.sell_price}`
         }
     }
 
     if (
-        moment(body.time).isBefore(moment(auction.product.start_time)) ||
+        moment(body.time).isBefore(moment(auction.start_time)) ||
         moment(body.time).isAfter(
-            moment(auction.product.start_time).add(
-                auction.product.time,
+            moment(auction.start_time).add(
+                auction.time,
                 'minutes'
             )
         )
@@ -73,7 +73,7 @@ exports.createAuctionRaise = async params => {
     }
     const toAuctionUpdate = {
         sell_price: body.price,
-        auction_count: auction.product.auction_count + 1
+        auction_count: auction.auction_count + 1
     }
     await auctionModel.updateAuction(toAuctionUpdate, auctionId)
     await auctionModel.createAuctionLogHistory(
@@ -117,7 +117,7 @@ exports.getAuctionHistory = async id => {
 }
 
 exports.getAuctionDetail = async params => {
-    const product = await auctionModel.getProductAuction(params.id)
+    const product = await auctionModel.getProductAuction(params.id || params.auctionId)
     if (!product) return {}
     const seller = await userModel.fetchUserByID(product.seller_id, 'seller')
 

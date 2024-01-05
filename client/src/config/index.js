@@ -29,6 +29,5 @@ const custom = {
 }
 
 const config = _.merge({}, defaults, custom);
-console.log(custom)
 
 module.exports = config

@@ -53,8 +53,7 @@
             transition:opacity 2s linear;
             .product {
                 // background-color: #E6FFFD;
-                box-shadow: 10px 5px 10px #999;
-                border-radius: 10px;
+                box-shadow:  1px 0.5px 1px 0.5px #ccc;
                 cursor: pointer;
                 align-items: center;
                 width: 9.8vw;
@@ -62,6 +61,7 @@
                 height: 320px;
                 position: relative;
                 margin: 20px 15px;
+                border-radius: 3px;
                 .productImg {
                   img {
                     width: 100%;
@@ -80,14 +80,15 @@
                   }
                 }
                 .product-name{
-                  height: 37px;
+                  height: 47px;
                   font-weight: 550;
-                  font-size: 1.1rem;
-                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                  font-size: 16px;
+                  font-weight: normal;
+                //   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                   text-align: center;
                   padding: 0 5px;
                   display: -webkit-box;
-                  -webkit-line-clamp: 2;
+                  -webkit-line-clamp: 3;
                   -webkit-box-orient: vertical;
                   overflow: hidden;
                   text-overflow: ellipsis;

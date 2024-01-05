@@ -4,7 +4,6 @@ import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import SellIcon from '@mui/icons-material/Sell';
 import Countdown, { zeroPad } from 'react-countdown'
 import moment from "moment";
 import Skeleton from 'react-loading-skeleton';
@@ -16,7 +15,7 @@ const renderer = ({ days, hours, minutes, seconds }) => (
     </span>
 );;
 
-export const ProductComponent = ({ data, title, loading, keyword }) => {
+export const ProductComponent = ({ data, title, loading, keyword, showMore = true }) => {
 
     return (
         <div>
@@ -26,7 +25,7 @@ export const ProductComponent = ({ data, title, loading, keyword }) => {
                         <div className="product-part-wrapper">
                             <div className="title-header">
                                 <div className="title">
-                                <Skeleton width={225} height={30} />
+                                    <Skeleton width={225} height={30} />
                                 </div>
 
                                 <div className="title-btn">
@@ -48,16 +47,20 @@ export const ProductComponent = ({ data, title, loading, keyword }) => {
                                 <div className="title">
                                     {title}
                                 </div>
-                                <Link to={`/products?type=${keyword}`} style={{ color: '#d0011b', textDecoration: 'none' }}>
-                                    <div className="title-btn">
-                                        <div className="content">
-                                            Xem tất cả
+                                {showMore ?
+                                    <Link to={`/products?type=${keyword}`} style={{ color: '#d0011b', textDecoration: 'none' }}>
+                                        <div className="title-btn">
+                                            <div className="content">
+                                                Xem tất cả
+                                            </div>
+                                            <div className="icon">
+                                                <ArrowForwardIosIcon style={{ fontSize: "14px" }} />
+                                            </div>
                                         </div>
-                                        <div className="icon">
-                                            <ArrowForwardIosIcon style={{ fontSize: "14px" }} />
-                                        </div>
-                                    </div>
-                                </Link>
+                                    </Link>
+                                    :
+                                    <></>}
+
                             </div>
                             <div className="product-wrapper">
                                 {
@@ -65,7 +68,7 @@ export const ProductComponent = ({ data, title, loading, keyword }) => {
                                         <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
                                             <div className="product">
                                                 <div className="productImg">
-                                                    <img src={item.image} alt="Product_Image" />
+                                                    <img src={item.image} alt="Product_Image" style={{width: "100%", height: "200px"}}/>
                                                 </div>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
                                                     <div className="product-time product-item">

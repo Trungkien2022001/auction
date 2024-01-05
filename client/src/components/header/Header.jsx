@@ -53,17 +53,17 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
 }));
-const TargetTextWrapper = styled('div')(({ theme }) => ({
-  width: '1000px',
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  textAlign: 'center',
-  textOverflow: 'ellipsis',
+// const TargetTextWrapper = styled('div')(({ theme }) => ({
+//   width: '1000px',
+//   overflow: 'hidden',
+//   whiteSpace: 'nowrap',
+//   textAlign: 'center',
+//   textOverflow: 'ellipsis',
 
-  [theme.breakpoints.down('xl')]: {
-    display: 'none'
-  },
-}));
+//   [theme.breakpoints.down('xl')]: {
+//     display: 'none'
+//   },
+// }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
@@ -595,13 +595,19 @@ export const Header = ({ socket, systemConfig }) => {
                 Home
               </div>
               <div className="item">
-                Auctions
+                <Link to={"/products"} style={{ textDecoration: 'none', color: '#28CB8B' }}>
+                  Auctions
+                </Link>
               </div>
               <div className="item">
-                Blogs
+                <Link to={"/tutorial"} style={{ textDecoration: 'none', color: '#28CB8B' }}>
+                  Blogs
+                </Link>
               </div>
               <div className="item">
-                About
+                <Link to={"/tutorial"} style={{ textDecoration: 'none', color: '#28CB8B' }}>
+                  About Us
+                </Link>
               </div>
             </div>
           </Box>

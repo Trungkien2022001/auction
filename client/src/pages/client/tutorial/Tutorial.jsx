@@ -16,7 +16,7 @@ export const Tutorial = ({socket}) => {
           <div className="content">
             TIKA là hệ thống đấu giá trực tuyến hàng đầu việt nam. Nói phét thôi hehehe.
             Hiện tại thì việt nam có rất ít những trang web đấu giá trực tuyến. 
-            Nên hiện tại trang web với hi vọng sau này trở thành trang web được nhiều người biết đến, mang lại doanh thu hàng tỉ đồng mỗi ngày
+            Nên hiện tại trang web với hi vọng sau này trở thành trang web được nhiều người biết đến
             <span>Hehehehehehe</span> 
           </div>
           <Divider/>

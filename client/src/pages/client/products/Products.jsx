@@ -11,7 +11,6 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl,
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import SellIcon from '@mui/icons-material/Sell';
 import Countdown, { zeroPad } from 'react-countdown'
 import { useEffect } from "react";
 import { get, post } from "../../../utils/customRequest";
@@ -198,10 +197,7 @@ export const Products = ({ socket }) => {
                         </div>
                         <div className="product-name">{item.name}</div>
                         <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                          <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "18px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
-                        </div>
-                        <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                          <SellIcon style={{ marginBottom: '-5px', fontSize: "18px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
+                          <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "18px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
                         </div>
                       </div>
                     </Link>

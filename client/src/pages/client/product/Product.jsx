@@ -99,6 +99,14 @@ export const Product = ({ socket }) => {
     if(authenticate(currentUser)){
       return
     }
+    if(auctionBet > config.maxPrice){
+      Swal.fire(
+        'Vui lòng đặt mức đấu giá hợp lí?',
+        `Mức đấu giá tối đa cho sản phẩm là ${config.maxPrice} VND`,
+        'error'
+      )
+      return
+    }
     if (data.sell_price > auctionBet) {
       Swal.fire(
         'Vui lòng đặt mức đấu giá lớn hơn?',

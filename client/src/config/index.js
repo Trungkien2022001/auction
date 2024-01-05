@@ -10,6 +10,7 @@ const defaults = {
     productWaitTime: 1500,
     homepageMetadataWaitTime: 2500,
     isUseLazyLoading: false,
+    timeout: 10000
 
 }
 const custom = {
@@ -24,6 +25,7 @@ const custom = {
     homepageMetadataWaitTime: process.env.REACT_APP_HOMEPAGE_METADATA_WAIT_TIME,
     productWaitTime: process.env.REACT_APP_PRODUCT_WAIT_TIME,
     isUseLazyLoading: process.env.REACT_APP_IS_USE_LAZY_LOADING,
+    timeout: process.env.REACT_APP_TIMEOUT,
 }
 
 const config = _.merge({}, defaults, custom);

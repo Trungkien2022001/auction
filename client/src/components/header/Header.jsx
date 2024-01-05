@@ -98,12 +98,12 @@ export const Header = ({ socket, systemConfig }) => {
   const isMenuOpen = Boolean(anchorEl);
   const isNotificationOpen = Boolean(anchorE3);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  if(!systemConfig){
+  if (!systemConfig) {
     systemConfig = tryParseJson(localStorage.getItem('sytem_config'))?.data || {}
-}
+  }
 
   const handleSearch = () => {
-    if(text !== ''){
+    if (text !== '') {
       window.location.href = (`/products?sort=featured&category=all&name=${text}`)
     }
   }
@@ -123,9 +123,7 @@ export const Header = ({ socket, systemConfig }) => {
   };
 
   useEffect(() => {
-    if (currentUser.id) {
-      getData(currentUser.id)
-    }
+    getData(currentUser.id)
   }, [currentUser.id])
 
   useEffect(() => {
@@ -137,9 +135,11 @@ export const Header = ({ socket, systemConfig }) => {
   }, [])
 
   async function getData(id) {
-    let result = await get(`/notification/${id}`, currentUser)
-    if (checkApiResponse(result)) {
-      setData(result.data.notification)
+    if (id) {
+      let result = await get(`/notification/${id}`, currentUser)
+      if (checkApiResponse(result)) {
+        setData(result.data.notification)
+      }
     }
 
   }

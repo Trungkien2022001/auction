@@ -1,34 +1,31 @@
 import React from 'react'
 import 'react-loading-skeleton/dist/skeleton.css'
 import './Adventisement.scss'
-import { Link } from "react-router-dom";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 export const Adventisement = ({ data, loading, showMore = true }) => {
 
     return (
         <div>
-            <div className="product-component-container">
+            <div className="product-component-container adventisement-container">
                 {
                     loading ?
-                      <></>
+                        <></>
                         :
                         <div className="product-part-wrapper">
                             <div className="title-header">
-                                <div className="title" style={{color: "black"}}>
+                                <div className="title" style={{ color: "black" }}>
                                     {data.title}
                                 </div>
                                 {showMore ?
-                                    <Link to={data.shop_link} style={{ color: '#d0011b', textDecoration: 'none' }}>
-                                        <div className="title-btn">
-                                            <div className="content">
-                                                Chi tiết
-                                            </div>
-                                            <div className="icon">
-                                                <ArrowForwardIosIcon style={{ fontSize: "14px" }} />
-                                            </div>
+                                    <div className="title-btn" onClick={() => window.location.href = `${data.shop_link}`}>
+                                        <div className="content">
+                                            Chi tiết
                                         </div>
-                                    </Link>
+                                        <div className="icon">
+                                            <ArrowForwardIosIcon style={{ fontSize: "14px" }} />
+                                        </div>
+                                    </div>
                                     :
                                     <></>}
                             </div>
@@ -45,7 +42,7 @@ export const Adventisement = ({ data, loading, showMore = true }) => {
                                 </div>
                             </div>
                         </div>
-}
+                }
             </div>
         </div >
     );

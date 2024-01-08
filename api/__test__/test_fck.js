@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-
-const folderPathName = 'E:\\Code\\Project\\auction'
+const { logger } = require('../utils/winston')
 let str = ''
 function countLines(filePath) {
     const content = fs.readFileSync(filePath, 'utf8')
@@ -12,8 +11,9 @@ function countLines(filePath) {
 }
 
 let all = 0
+let  arr = []
 function processFilesInFolder(folderPath) {
-    const fileExtensions = ['.js', '.json', '.jsx', '.scss', '.css']
+    const fileExtensions = ['.js', '.json', '.jsx', '.scss', '.css', '.java', '.ts', '.py']
 
     fs.readdirSync(folderPath).forEach(file => {
         const filePath = path.join(folderPath, file)
@@ -23,15 +23,18 @@ function processFilesInFolder(folderPath) {
             processFilesInFolder(filePath) // Đệ quy vào thư mục con
         } else if (
             fileExtensions.includes(fileExt) &&
+            !filePath.includes('package') &&
+            !filePath.includes('spec.ts') &&
             !filePath.includes('node_modules')
         ) {
             const lineCount = countLines(filePath)
             all += lineCount
-            console.log(all)
-            console.log(`File ${file} có ${lineCount} dòng.`)
+            arr.push({
+                c: lineCount,
+                name: file
+            })
         }
     })
-    console.log(str)
 }
-
 processFilesInFolder(folderPathName)
+logger.info(JSON.stringify(arr.sort((a, b)=>a.c > b.c ? -1 : 1)))

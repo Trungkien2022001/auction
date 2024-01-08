@@ -19,7 +19,7 @@ export const CustomSlider = ({ loading, images }) => {
       {
         loading ?
           <div className="loading" style={{width: "100%"}}>
-            <Skeleton width={"100%"} height={250} />
+            <Skeleton width={"100%"} height={500} />
           </div>
           :
           <Slider {...settings}>

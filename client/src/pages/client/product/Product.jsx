@@ -290,7 +290,7 @@ export const Product = ({ socket }) => {
                   </div>
                   <div className="product-price-and-action">
                     <div className="product-price-wrap">
-                      <div className="product-price-title">Giá khởi điểm</div>
+                      <div className="product-price-title">Giá khởi điểm:</div>
                       <div className='product-price'>
                         <div className='product-price-icon'>
                           <PaidIcon />

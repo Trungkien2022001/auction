@@ -21,6 +21,7 @@ import Skeleton from "react-loading-skeleton";
 import { checkApiResponse } from "../../../utils/checkApiResponse";
 import { checkIsBlockedUser, tryParseJson } from "../../../utils/common";
 import config from "../../../config";
+import { Adventisement } from "../../../components/adventisement/Adventisement";
 
 // const isUseLazyLoading = config.isUseLazyLoading
 
@@ -82,6 +83,7 @@ export const Homepage = ({ socket }) => {
         if (checkApiResponse(result)) {
           setProductCategory(result.data.product_category || [])
           setSytemConfig(result.data.system_config || {})
+          console.log(result.data.system_config )
           localStorage.setItem('product_category', JSON.stringify({ data: result.data.product_category, created_at: moment().format() }));
           localStorage.setItem('system_config', JSON.stringify({ data: result.data.system_config, created_at: moment().format() }));
         }
@@ -163,7 +165,7 @@ export const Homepage = ({ socket }) => {
 
   return (
     <div>
-      <Header socket={socket} systemConfig={sytemConfig}/>
+      <Header socket={socket} systemConfig={sytemConfig} />
       <CustomSlider loading={loadingMeta} images={sytemConfig.banner_image} />
       <div className="padding__main homepage-container">
         {
@@ -213,11 +215,20 @@ export const Homepage = ({ socket }) => {
               </div>
             </div>
         }
-
         <ProductComponent data={data.featured} title={'Sản phẩm nổi bật'} loading={loading} keyword={'featured'} />
-        <ProductComponent data={data.latest} title={'Sản phẩm mới nhất'} loading={loading} keyword={'latest'} />
+        {
+          sytemConfig.adventisements && sytemConfig.adventisements[0] ?
+            <Adventisement data={sytemConfig.adventisements[0]} loading={loading} />
+            : <></>
+        }
+        {/* <ProductComponent data={data.latest} title={'Sản phẩm mới nhất'} loading={loading} keyword={'latest'} /> */}
         <ProductComponent data={data.cheap} title={'Sản phẩm siêu rẻ'} loading={loading} keyword={'cheapest'} />
         <ProductComponent data={data.expensive} title={'Sản phẩm cao cấp'} loading={loading} keyword={'expensive'} />
+        {
+          sytemConfig.adventisements && sytemConfig.adventisements[1] ?
+            <Adventisement data={sytemConfig.adventisements[1]} loading={loading} />
+            : <></>
+        }
         <ProductComponent data={data.incoming} title={'Sản phẩm sắp đấu giá'} loading={loading} keyword={'incoming'} />
         <div className="chat">
           {check ?
@@ -309,7 +320,7 @@ export const Homepage = ({ socket }) => {
           ) : <></>
         }
       </div>
-      <Footer systemConfig={sytemConfig}/>
+      <Footer systemConfig={sytemConfig} />
     </div >
   );
 };

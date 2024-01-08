@@ -565,7 +565,7 @@ export const Header = ({ socket, systemConfig }) => {
             noWrap
             component="div"
           >
-            <Link to={'/'} style={{ textDecoration: 'none', color: '#28CB8B', fontSize: "30px", fontWeight: '500' }}>
+            <Link to={'/'} style={{ textDecoration: 'none', color: '#d0011b', fontSize: "30px", fontWeight: '500' }}>
               {systemConfig.app_name || 'TIKA'}
             </Link>
           </Typography>
@@ -595,17 +595,17 @@ export const Header = ({ socket, systemConfig }) => {
                 Home
               </div>
               <div className="item">
-                <Link to={"/products"} style={{ textDecoration: 'none', color: '#28CB8B' }}>
+                <Link to={"/products"} style={{ textDecoration: 'none', color: '#d0011b' }}>
                   Auctions
                 </Link>
               </div>
               <div className="item">
-                <Link to={"/tutorial"} style={{ textDecoration: 'none', color: '#28CB8B' }}>
+                <Link to={"/tutorial"} style={{ textDecoration: 'none', color: '#d0011b' }}>
                   Blogs
                 </Link>
               </div>
               <div className="item">
-                <Link to={"/tutorial"} style={{ textDecoration: 'none', color: '#28CB8B' }}>
+                <Link to={"/tutorial"} style={{ textDecoration: 'none', color: '#d0011b' }}>
                   About Us
                 </Link>
               </div>

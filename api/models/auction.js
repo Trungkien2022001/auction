@@ -521,6 +521,8 @@ exports.getAuctionPurchaseHistory = async userId => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
             .where('a.auctioneer_win', userId)
+            .limit(24)
+            .offset(1)
 
         return result
     } catch (err) {
@@ -547,6 +549,8 @@ exports.getAuctionSellHistory = async userId => {
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             .where('a.seller_id', userId)
             .orderBy('a.created_at', 'desc')
+            .limit(24)
+            .offset(1)
 
         return result
     } catch (err) {

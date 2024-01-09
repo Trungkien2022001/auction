@@ -15,14 +15,14 @@
     }
     .header-component{
         display: flex;
-        font-size: 22px;
+        font-size: 20px;
         justify-content: flex-end;
         .item{
-            margin: 0px 3%;
+            margin: 0px 2%;
             cursor: pointer;
         }
     }
-    @media screen and (max-width: 900px) {
+    @media screen and (max-width: 1080px) {
         .header-component{
             display: none;
         }

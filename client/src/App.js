@@ -96,7 +96,7 @@ function App() {
           <Route path='/new-auction' element = {<NewProduct socket = {socket}/>}/>
           <Route path='/login' element = {<Login socket = {socket}/>}/>
           <Route path='/register' element = {<Register socket = {socket}/>}/>
-          <Route path='/tutorial' element = {<Tutorial socket = {socket}/>}/>
+          <Route path='/introduce' element = {<Tutorial socket = {socket}/>}/>
           <Route path='/*' element = {<NotFound socket = {socket}/>}/>
         </Routes>
       </BrowserRouter>

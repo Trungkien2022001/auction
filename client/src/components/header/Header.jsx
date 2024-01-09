@@ -565,7 +565,7 @@ export const Header = ({ socket, systemConfig }) => {
             noWrap
             component="div"
           >
-            <Link to={'/'} style={{ textDecoration: 'none', color: '#d0011b', fontSize: "30px", fontWeight: '500' }}>
+            <Link to={'/'} style={{ textDecoration: 'none', color: '#d0011b', fontSize: "28px", fontWeight: '550' }}>
               {systemConfig.app_name || 'TIKA'}
             </Link>
           </Typography>
@@ -591,6 +591,13 @@ export const Header = ({ socket, systemConfig }) => {
               {systemConfig.slogan}
             </TargetTextWrapper> */}
             <div className="header-component">
+              {currentUser && currentUser.role && currentUser.role.admin ?
+                <div className="item">
+                  <Link to={"/management"} style={{ textDecoration: 'none', color: '#d0011b' }}>
+                    Management
+                  </Link>
+                </div>
+                : <></>}
               <div className="item">
                 Home
               </div>
@@ -600,12 +607,12 @@ export const Header = ({ socket, systemConfig }) => {
                 </Link>
               </div>
               <div className="item">
-                <Link to={"/tutorial"} style={{ textDecoration: 'none', color: '#d0011b' }}>
+                <Link to={"/introduce"} style={{ textDecoration: 'none', color: '#d0011b' }}>
                   Blogs
                 </Link>
               </div>
               <div className="item">
-                <Link to={"/tutorial"} style={{ textDecoration: 'none', color: '#d0011b' }}>
+                <Link to={"/introduce"} style={{ textDecoration: 'none', color: '#d0011b' }}>
                   About Us
                 </Link>
               </div>

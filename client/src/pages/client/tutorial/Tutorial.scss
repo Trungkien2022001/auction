@@ -1,16 +1,34 @@
-.tutorial{
-    .header{
-        font-size: 30px;
-        margin: 20px;
+.tutorial {
+  .item {
+    margin-bottom: 20px;
+    .header {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 10px;
     }
-    .content{
-        font-size: 20px;
-        padding: 5px 20px;
-        img{
-            margin-left: 20%;
-            width: 50vw;
-            height: auto;
-        }
-
+    .content {
+      font-size: 18px;
+      padding: 2px 30px;
+      img {
+        margin-left: 20%;
+        width: 50vw;
+        height: auto;
+      }
     }
+    .wrap-content {
+      padding: 2px 30px;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+.demo-image {
+  display: flex;
+  flex-wrap: wrap;
+  img {
+    margin: 10px 20px;
+    height: 500px;
+    width: auto;
+    max-width: 100vw;
+  }
 }

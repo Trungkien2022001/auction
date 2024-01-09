@@ -41,7 +41,7 @@ exports.popupError = err => {
     cancelButtonText: 'Ok'
   }).then(result=> {
     if (result.isConfirmed) {
-      window.location.href = '/tutorial'
+      window.location.href = '/introduce'
     }
   })
   // throw new Error(err.message)

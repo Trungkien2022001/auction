@@ -200,6 +200,8 @@ exports.getMoney = async type => {
     const data = await knex('auction')
         .select('created_at', 'sell_price')
         .orderBy('created_at', 'asc')
+        .limit(100)
+        .offset(0)
     switch (type) {
         case 'month':
             result = _(data)
@@ -296,10 +298,14 @@ exports.summary = async () => {
     const chat = await knex('chat')
         .count()
         .then(result => result[0]['count(*)'])
-    const money = await knex('auction')
-        .sum('sell_price')
-        .then(result => result[0]['sum(`sell_price`)'])
-    const revenue = Math.floor(money * 0.1 * Math.random())
+    const successAuctions = await knex('auction')
+        .where("auction_count", ">", 0)
+        // .where("status", 5)
+        .whereIn("status", [3,4,5])
+    // .sum('sell_price')
+    // .then(result => result[0]['sum(`sell_price`)'])
+    const money = _.sum(successAuctions.map(auction => auction.sell_price))
+    const revenue = _.sum(successAuctions.map(auction => auction.sell_price - auction.start_price))
 
     return {
         user,

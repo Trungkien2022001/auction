@@ -25,6 +25,7 @@ const defaults = {
     topicName: 'test-topic',
     esAuctionIdx: 'auction_idx',
     isUseElasticSearch: false,
+    isUseKafka: false,
     vnpUrl: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
     vnpApi: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
     vnpReturnUrl: 'http://localhost:8888/order/vnpay_return',
@@ -55,6 +56,7 @@ const custom = {
     elasticHost: process.env.ELASTIC_HOST,
     esAuctionIdx: process.env.ELASTIC_AUCTION_IDX,
     isUseElasticSearch: process.env.IS_USE_ELASTICSEARCH,
+    isUseKafka: process.env.IS_USE_KAFKA,
     vnpTmnCode: process.env.VNP_TMN_CODE,
     vnpHashSecret: process.env.VNP_HASH_SECRET
 }

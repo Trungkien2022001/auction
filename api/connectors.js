@@ -193,11 +193,11 @@ async function healthCheck() {
         }
     }
 }
-healthCheck()
 
 module.exports = {
     redis,
     knex,
-    esClient
+    esClient,
+    healthCheck
     // sqs
 }

@@ -63,9 +63,9 @@ function gen() {
     return {
         auction: {
             start_time: moment(Date.now())
-                .add(Math.floor(Math.random() * 500000), 'minute')
+                .add(Math.floor(Math.random() * 50000), 'minute')
                 .format('YYYY-MM-DD HH:mm:ss'),
-            auction_time: randomRange(10, 20),
+            auction_time: randomRange(5, 20),
             is_returned: randomRange(0, 1),
             is_finished_soon: randomRange(0, 1)
         },
@@ -78,7 +78,7 @@ function gen() {
 }
 
 async function createMockAuction() {
-    const total = randomRange(1, 5)
+    const total = randomRange(1, 10)
     await Promise.all(
         Array(total)
             .fill(0)

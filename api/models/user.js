@@ -24,7 +24,6 @@ async function fetchUsers() {
 }
 
 async function fetchUserByEmail(email) {
-    debug('MODEL/user fetchUserByEmail')
     const fetchUser = async () => {
         const user = await knex
             .first()

@@ -1,4 +1,4 @@
-const debug = require('debug')('auction:route:user')
+// const debug = require('debug')('auction:route:user')
 // const _ = require('lodash')
 const Router = require('@koa/router')
 const Dashboard = require('../../models/dashboard')
@@ -14,7 +14,6 @@ router.get(
     genericSecure,
     checkPermission('admin'),
     async ctx => {
-        debug('GET / dashboard-auction-raise')
         try {
             const { type } = ctx.request.query
             ctx.body = {
@@ -36,7 +35,6 @@ router.get(
     genericSecure,
     checkPermission('admin'),
     async ctx => {
-        debug('GET / dashboard-auction')
         try {
             const { type } = ctx.request.query
             ctx.body = {
@@ -58,7 +56,6 @@ router.get(
     genericSecure,
     checkPermission('admin'),
     async ctx => {
-        debug('GET / dashboard-user')
         try {
             const { type } = ctx.request.query
             ctx.body = {
@@ -80,7 +77,6 @@ router.get(
     genericSecure,
     checkPermission('admin'),
     async ctx => {
-        debug('GET / dashboard-money')
         try {
             const { type } = ctx.request.query
             ctx.body = {
@@ -102,7 +98,6 @@ router.get(
     genericSecure,
     checkPermission('admin'),
     async ctx => {
-        debug('GET / dashboard-summary')
         try {
             ctx.body = {
                 success: true,
@@ -124,7 +119,6 @@ router.get(
     genericSecure,
     checkPermission('admin'),
     async ctx => {
-        debug('GET / dashboard-summary')
         try {
             const { limit } = ctx.request.query
             ctx.body = {

@@ -70,7 +70,8 @@ exports.getAuctions = async params => {
         name,
         seller_id,
         price_from,
-        price_to
+        price_to,
+        status = -1
     } = params
     const sorted = type === 'homepage' ? sort || 'featured' : sort
     try {
@@ -84,7 +85,7 @@ exports.getAuctions = async params => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             .innerJoin('auction_status as ast', 'a.status', 'ast.id')
-            .where(function() {
+            .where(function () {
                 if (type === 'homepage') {
                     this.whereNull('a.deleted_at')
                 }
@@ -108,18 +109,22 @@ exports.getAuctions = async params => {
                 if (price_to) {
                     this.where('a.sell_price', '<=', price_to)
                 }
-                switch (sorted) {
-                    case 'featured':
-                    case 'cheapest':
-                    case 'latest':
-                    case 'expensive':
-                        this.where('a.status', 2)
-                        break
-                    case 'incoming':
-                        this.where('a.status', 1)
-                        break
-                    default:
-                        break
+                if (status != -1) {
+                    this.where('a.status', status)
+                } else {
+                    switch (sorted) {
+                        case 'featured':
+                        case 'cheapest':
+                        case 'latest':
+                        case 'expensive':
+                            this.where('a.status', 2)
+                            break
+                        case 'incoming':
+                            this.where('a.status', 1)
+                            break
+                        default:
+                            break
+                    }
                 }
             })
 
@@ -742,7 +747,7 @@ exports.checkingAllAuction = async () => {
             item.seller_confirm_time === null
         ) {
             await knex('auction')
-                .update('status', 7)
+                .update('status', 4)
                 .where('id', item.id)
         } else if (
             item.status === 4 &&
@@ -751,7 +756,7 @@ exports.checkingAllAuction = async () => {
             )
         ) {
             await knex('auction')
-                .update('status', 8)
+                .update('status', 5)
                 .where('id', item.id)
         } else if (
             item.status === 1 &&
@@ -827,8 +832,10 @@ exports.finishedAuction = async id => {
         .where('id', id)
     await knex('auction')
         .update(
-            'auctioneer_win',
-            win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1
+            {
+            auctioneer_win: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
+            status: 3
+            }
         )
         .where('id', id)
     await knex('notification').insert([

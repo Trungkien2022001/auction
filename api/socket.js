@@ -24,9 +24,12 @@ const messageModel = require('./models/message')
 const notificationModel = require('./models/notification')
 const { insertMessage } = require('./models/message')
 const { redis } = require('./connectors')
-const { sendToQueue } = require('./queue/kafka/producer.kafka')
+if(config.isUseKafka){
+    const { sendToQueue } = require('./queue/kafka/producer.kafka')
+}
 const { QUEUE_ACTION } = require('./config/constant/queueActionConstant')
 const { createMockAuction } = require('./mock/mockDataV2')
+const { runMockRaise } = require('./mock/mockRaise')
 
 let auctions = []
 const listOnlineUser = []
@@ -51,7 +54,11 @@ cron.schedule('* * * * *', async () => {
     console.log('')
     console.log(`----------Refreshing after 1 minute ----------------`)
     await initAuctionTime()
-    await createMockAuction()
+    if(!config.production){
+        // Mock data
+        await createMockAuction()
+        await runMockRaise()
+    }
 })
 
 cron.schedule('*/5 * * * *', async () => {
@@ -220,13 +227,15 @@ async function initAuctionTime() {
                     const seller = listOnlineUser.find(
                         i => i.user_id === sellerId
                     )
-                    sendToQueue(
-                        {
-                            auction_id: item.auctionId,
-                            status: 2
-                        },
-                        QUEUE_ACTION.UPDATE_AUCTION
-                    )
+                    if(config.isUseKafka){
+                        sendToQueue(
+                            {
+                                auction_id: item.auctionId,
+                                status: 2
+                            },
+                            QUEUE_ACTION.UPDATE_AUCTION
+                        )
+                    }
                     if (seller) {
                         socketIO
                             .to(seller.socket)

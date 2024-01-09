@@ -129,7 +129,7 @@ export const Header = ({ socket, systemConfig }) => {
   useEffect(() => {
     if (socket && socket.current) {
       socket.current.on('updateUI', async () => {
-        await getData(currentUser.id)
+        // await getData(currentUser.id)
       })
     }
   }, [])

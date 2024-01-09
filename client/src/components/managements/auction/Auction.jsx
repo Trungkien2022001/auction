@@ -232,6 +232,7 @@ export const Auction = ({ currentUser, socket }) => {
   const [data, setData] = useState([])
   // const [cnt, setCnt] = useState([])
   const [initialData, setInitialData] = useState([])
+  const [status, setStatus] = useState(-1)
   const [currentAuctionId, setCurrentAuctionId] = useState()
   const [currentAuction, setCurrentAuction] = useState({})
   const [openAuctionHistoryDialog, setOpenAuctionHistoryDialog] = useState(false);
@@ -242,9 +243,9 @@ export const Auction = ({ currentUser, socket }) => {
     window.location.href = `/management/dashboard`
   }
 
-  async function getData() {
+  async function getData(stt) {
     setLoading(true)
-    let result = await post(`/auctions?type=dashboard`, {}, currentUser)
+    let result = await post(`/auctions?type=dashboard&status=${stt}&limit=100`, {}, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.data.products)
       setInitialData(result.data.data.products)
@@ -257,11 +258,12 @@ export const Auction = ({ currentUser, socket }) => {
   }
   const handleFilterByStatus = (event) => {
     const option = event.target.value
-    if (option === -1) {
-      setData(initialData)
-    } else {
-      setData(initialData.filter(i => i.status === option))
-    }
+    setStatus(option)
+    // if (option === -1) {
+    //   setData(initialData)
+    // } else {
+    //   setData(initialData.filter(i => i.status === option))
+    // }
     // const dataList = filterTable(event.target.value, initialData, headCells)
     // setData(dataList)
   }
@@ -284,8 +286,8 @@ export const Auction = ({ currentUser, socket }) => {
   }, [currentAuctionId])
   useEffect(() => {
 
-    getData()
-  }, [])
+    getData(status)
+  }, [status])
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', () => {

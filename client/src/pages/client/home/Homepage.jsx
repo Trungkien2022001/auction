@@ -39,7 +39,7 @@ export const Homepage = ({ socket }) => {
   const [loadingMeta, setLoadingMeta] = useState(true)
   const [preLoading, setPreLoading] = useState(false)
   const [preLoadingMeta, setPreLoadingMeta] = useState(false)
-  const [isFirstVisited, setIsFirstVisited] = useState(false)
+  const [isFirstVisited, setIsFirstVisited] = useState(true)
 
   useEffect(() => {
     if (socket.current) {
@@ -81,7 +81,7 @@ export const Homepage = ({ socket }) => {
     setPreLoadingMeta(false)
     const f = async () => {
       let tmp_product_category = tryParseJson(localStorage.getItem('product_category'))
-      let tmp_banner_image = tryParseJson(localStorage.getItem('sytem_config'))
+      let tmp_banner_image = tryParseJson(localStorage.getItem('system_config'))
       if (
         !tmp_product_category ||
         !tmp_banner_image ||
@@ -350,24 +350,32 @@ export const Homepage = ({ socket }) => {
         }
       </div>
       <Footer systemConfig={sytemConfig} />
-      <Dialog open={isFirstVisited} onClose={handleCloseDialog} maxWidth="lg">
+      <Dialog open={isFirstVisited} onClose={handleCloseDialog} maxWidth="xs">
 
-        <Paper style={{ backgroundImage: 'url(http://res.cloudinary.com/trungkien2022001/image/upload/v1704776611/upload/m5gmhzauxtthtxjf0p1p.png)', backgroundSize: 'fill', backgroundPosition: 'center', width: '100%', height: '100%', color: "#fff" }}>
-          <DialogTitle style={{ textAlign: "center", fontSize: "25px", fontWeight: "bold" }}>Chào mừng bạn đến với TIKA Auction - Trang web đấu giá hàng đầu Việt Nam</DialogTitle>
-          <DialogContent style={{ height: "200px" }}>
-            <DialogContentText style={{ fontSize: "20px", color: "#fff" }}>
-              First Time? Bạn có thể truy cập trang giới thiệu của chúng tôi để biết thêm thông tin về trang web và cách sử dụng
-            </DialogContentText>
-            <DialogContentText style={{ fontSize: "20px", color: "#fff" }}>
+        <Paper className="first-time-popup" style={{ backgroundImage: 'url(http://res.cloudinary.com/trungkien2022001/image/upload/v1704776611/upload/m5gmhzauxtthtxjf0p1p.png)', backgroundSize: 'fill', backgroundPosition: 'center', width: '100%', height: '100%', color: "#fff" }}>
+          <DialogTitle style={{ textAlign: "center", fontSize: "22px", fontWeight: "bold" }}>😘Welcome to Tika Auction 😘</DialogTitle>
+          <DialogContent >
+            <div className="wrapper">
+
+              <DialogContentText style={{ fontSize: "17px", color: "#fff"}}>
+                <div className="first-time-meme">
+                  <img src="http://res.cloudinary.com/trungkien2022001/image/upload/v1704786220/upload/pg5v2p8bmi9i9kts9mr1.png" alt="" />
+                </div>
+              </DialogContentText>
+              <DialogContentText style={{ fontSize: "17px", color: "#fff" ,padding: "5px 30px 0 30px", textAlign: "center" }}>
+                Want more infor  ?, click About Us or Login.
+              </DialogContentText>
+            </div>
+            {/* <DialogContentText style={{ fontSize: "20px", color: "#fff" }}>
               Đăng nhập ngay để có thể sử dụng tất cả những tính năng của chúng tôi
-            </DialogContentText>
+            </DialogContentText> */}
           </DialogContent>
           <DialogActions>
             {/* <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
           <Button onClick={handleSubmitAuction} >Xác nhận</Button> */}
-            <Button style={{ fontWeight: "bold", backgroundColor: "#fff" }} onClick={() => handleChange(0)}>Giới thiệu</Button>
-            <Button style={{ fontWeight: "bold", backgroundColor: "#fff" }} onClick={() => handleChange(1)}>Đăng nhập ngay</Button>
-            <Button style={{ fontWeight: "bold", backgroundColor: "#fff" }} onClick={() => handleChange()}>Oke</Button>
+            <Button style={{ backgroundColor: "#fff" }} onClick={() => handleChange(0)}>About Us</Button>
+            <Button style={{ backgroundColor: "#fff" }} onClick={() => handleChange(1)}>Login</Button>
+            <Button style={{ backgroundColor: "#fff" }} onClick={() => handleChange()}>No, thanks</Button>
           </DialogActions>
         </Paper>
       </Dialog>

@@ -190,6 +190,20 @@
 img {
   object-fit: cover;
 }
-.first-time{
-  width: 100%;
+.first-time-popup{
+  // position: relative;
+  .wrapper{
+    // display: flex;
+    // flex-wrap: wrap;
+    .first-time-meme{
+      // position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img{
+        width: 320px;
+        height: auto;
+      }
+    }
+  }
 }

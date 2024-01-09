@@ -113,12 +113,6 @@ const headCells = [
     disablePadding: false,
     label: 'Giá mua',
   },
-  // {
-  //   id: 'a',
-  //   numeric: true,
-  //   disablePadding: false,
-  //   label: 'Người bán',
-  // },
   {
     id: 'b',
     numeric: true,

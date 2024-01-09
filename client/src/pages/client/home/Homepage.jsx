@@ -23,9 +23,6 @@ import { checkIsBlockedUser, tryParseJson } from "../../../utils/common";
 import config from "../../../config";
 import { Adventisement } from "../../../components/adventisement/Adventisement";
 
-// const isUseLazyLoading = config.isUseLazyLoading
-
-
 export const Homepage = ({ socket }) => {
   const messageRef = useRef();
   const currentUser = useSelector(state => state.user)
@@ -39,7 +36,7 @@ export const Homepage = ({ socket }) => {
   const [loadingMeta, setLoadingMeta] = useState(true)
   const [preLoading, setPreLoading] = useState(false)
   const [preLoadingMeta, setPreLoadingMeta] = useState(false)
-  const [isFirstVisited, setIsFirstVisited] = useState(true)
+  const [isFirstVisited, setIsFirstVisited] = useState(false)
 
   useEffect(() => {
     if (socket.current) {
@@ -47,7 +44,6 @@ export const Homepage = ({ socket }) => {
         // await getData()
       })
       socket.current.on('receive-admin-msg', params => {
-        // setMess(prev=>[...prev, {...params, updated_at: moment(new Date()).format()}])
         setMess(prev => [...prev, { ...params }])
       })
     }
@@ -366,13 +362,8 @@ export const Homepage = ({ socket }) => {
                 Want more infor  ?, click About Us or Login.
               </DialogContentText>
             </div>
-            {/* <DialogContentText style={{ fontSize: "20px", color: "#fff" }}>
-              Đăng nhập ngay để có thể sử dụng tất cả những tính năng của chúng tôi
-            </DialogContentText> */}
           </DialogContent>
           <DialogActions>
-            {/* <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
-          <Button onClick={handleSubmitAuction} >Xác nhận</Button> */}
             <Button style={{ backgroundColor: "#fff" }} onClick={() => handleChange(0)}>About Us</Button>
             <Button style={{ backgroundColor: "#fff" }} onClick={() => handleChange(1)}>Login</Button>
             <Button style={{ backgroundColor: "#fff" }} onClick={() => handleChange()}>No, thanks</Button>

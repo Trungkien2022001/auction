@@ -21,8 +21,6 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import FilterListIcon from '@mui/icons-material/FilterList';
-// import InfoIcon from '@mui/icons-material/Info';
-// import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 
 import { visuallyHidden } from '@mui/utils';
 import { MenuItem, Select, TextField } from '@mui/material';
@@ -30,7 +28,6 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment';
-// import { Link } from 'react-router-dom';
 import { AUCTION_STATUS } from '../../../utils/constants';
 import { filterTable } from '../../../utils/filterTable';
 import { checkApiResponse } from '../../../utils/checkApiResponse';

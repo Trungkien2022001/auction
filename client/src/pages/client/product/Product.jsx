@@ -86,14 +86,6 @@ export const Product = ({ socket }) => {
     setOpenAuctionDialog(false);
   };
 
-  // const onEnterWork = (e) => {
-  //   if (e.keyCode === 13 && e.shiftKey === false) {
-  //     Promise.resolve(setOpenAuctionDialog(true)).then(
-  //       handleSubmitAuction()
-  //     );
-  //   }
-  // }
-
   const handleSubmitAuction = async () => {
     setOpenAuctionDialog(false)
     if(authenticate(currentUser)){

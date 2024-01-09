@@ -53,18 +53,6 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
 }));
-// const TargetTextWrapper = styled('div')(({ theme }) => ({
-//   width: '1000px',
-//   overflow: 'hidden',
-//   whiteSpace: 'nowrap',
-//   textAlign: 'center',
-//   textOverflow: 'ellipsis',
-
-//   [theme.breakpoints.down('xl')]: {
-//     display: 'none'
-//   },
-// }));
-
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {

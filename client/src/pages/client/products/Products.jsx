@@ -263,20 +263,6 @@ export const Products = ({ socket }) => {
               </Select>
             </FormControl>
           </div>
-          {/* <div className="filter-dialog-item">
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">Khoảng giá</InputLabel>
-              <Slider
-                getAriaLabel={() => 'Temperature range'}
-                // value={value}
-                // onChange={handleChange}
-                valueLabelDisplay="auto"
-                min={50}
-                max={50000}
-                // getAriaValueText={valuetext}
-              />
-            </FormControl>
-          </div> */}
           <div className="filter-dialog-item">
             <TextField
               id="outlined-basic"

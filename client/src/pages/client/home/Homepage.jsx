@@ -6,7 +6,7 @@ import { Header } from "../../../components/header/Header";
 import "./Homepage.scss";
 import { Link } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
-import { Avatar, Button } from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper } from "@mui/material";
 import { useEffect } from "react";
 import { get } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
@@ -39,6 +39,7 @@ export const Homepage = ({ socket }) => {
   const [loadingMeta, setLoadingMeta] = useState(true)
   const [preLoading, setPreLoading] = useState(false)
   const [preLoadingMeta, setPreLoadingMeta] = useState(false)
+  const [isFirstVisited, setIsFirstVisited] = useState(false)
 
   useEffect(() => {
     if (socket.current) {
@@ -65,6 +66,14 @@ export const Homepage = ({ socket }) => {
     const delayPromise = new Promise((resolve) => setTimeout(resolve, config.homepageWaitTime));
     await Promise.all([f(), delayPromise])
     setLoading(false)
+    setTimeout(() => {
+      const isFirstTime = localStorage.getItem('isFirstVisited')
+      if (!isFirstTime) {
+
+        localStorage.setItem('isFirstVisited', true)
+        setIsFirstVisited(true)
+      }
+    }, 1000)
   }
 
   async function getMetaData() {
@@ -83,7 +92,6 @@ export const Homepage = ({ socket }) => {
         if (checkApiResponse(result)) {
           setProductCategory(result.data.product_category || [])
           setSytemConfig(result.data.system_config || {})
-          console.log(result.data.system_config )
           localStorage.setItem('product_category', JSON.stringify({ data: result.data.product_category, created_at: moment().format() }));
           localStorage.setItem('system_config', JSON.stringify({ data: result.data.system_config, created_at: moment().format() }));
         }
@@ -115,6 +123,23 @@ export const Homepage = ({ socket }) => {
 
   const handleChangePage = id => {
     window.location.href = (`/products?sort=featured&category=${PRODUCT_CATEGORY[id]}`)
+  }
+  const handleChange = id => {
+    switch (id) {
+      case 0:
+        setIsFirstVisited(false)
+        window.location.href = (`/introduce`)
+        break;
+
+      case 1:
+        setIsFirstVisited(false)
+        window.location.href = (`/login`)
+        break;
+
+      default:
+        setIsFirstVisited(false)
+        break;
+    }
   }
 
   async function sendMessage() {
@@ -162,6 +187,10 @@ export const Homepage = ({ socket }) => {
       sendMessage();
     }
   };
+
+  const handleCloseDialog = () => {
+    setIsFirstVisited(false)
+  }
 
   return (
     <div>
@@ -321,6 +350,27 @@ export const Homepage = ({ socket }) => {
         }
       </div>
       <Footer systemConfig={sytemConfig} />
+      <Dialog open={isFirstVisited} onClose={handleCloseDialog} maxWidth="lg">
+
+        <Paper style={{ backgroundImage: 'url(http://res.cloudinary.com/trungkien2022001/image/upload/v1704776611/upload/m5gmhzauxtthtxjf0p1p.png)', backgroundSize: 'fill', backgroundPosition: 'center', width: '100%', height: '100%', color: "#fff" }}>
+          <DialogTitle style={{ textAlign: "center", fontSize: "25px", fontWeight: "bold" }}>Chào mừng bạn đến với TIKA Auction - Trang web đấu giá hàng đầu Việt Nam</DialogTitle>
+          <DialogContent style={{ height: "200px" }}>
+            <DialogContentText style={{ fontSize: "20px", color: "#fff" }}>
+              First Time? Bạn có thể truy cập trang giới thiệu của chúng tôi để biết thêm thông tin về trang web và cách sử dụng
+            </DialogContentText>
+            <DialogContentText style={{ fontSize: "20px", color: "#fff" }}>
+              Đăng nhập ngay để có thể sử dụng tất cả những tính năng của chúng tôi
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            {/* <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
+          <Button onClick={handleSubmitAuction} >Xác nhận</Button> */}
+            <Button style={{ fontWeight: "bold", backgroundColor: "#fff" }} onClick={() => handleChange(0)}>Giới thiệu</Button>
+            <Button style={{ fontWeight: "bold", backgroundColor: "#fff" }} onClick={() => handleChange(1)}>Đăng nhập ngay</Button>
+            <Button style={{ fontWeight: "bold", backgroundColor: "#fff" }} onClick={() => handleChange()}>Oke</Button>
+          </DialogActions>
+        </Paper>
+      </Dialog>
     </div >
   );
 };

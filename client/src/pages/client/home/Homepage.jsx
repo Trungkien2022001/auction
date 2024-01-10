@@ -345,21 +345,25 @@ export const Homepage = ({ socket }) => {
           ) : <></>
         }
       </div>
+      <div className="loading" style={{display: "none"}}>
+        <img src="http://res.cloudinary.com/trungkien2022001/image/upload/v1704786220/upload/pg5v2p8bmi9i9kts9mr1.png" alt="" />
+        <img src="http://res.cloudinary.com/trungkien2022001/image/upload/v1704776611/upload/m5gmhzauxtthtxjf0p1p.png" alt="" />
+      </div>
       <Footer systemConfig={sytemConfig} />
       <Dialog open={isFirstVisited} onClose={handleCloseDialog} maxWidth="xs">
 
         <Paper className="first-time-popup" style={{ backgroundImage: 'url(http://res.cloudinary.com/trungkien2022001/image/upload/v1704776611/upload/m5gmhzauxtthtxjf0p1p.png)', backgroundSize: 'fill', backgroundPosition: 'center', width: '100%', height: '100%', color: "#fff" }}>
-          <DialogTitle style={{ textAlign: "center", fontSize: "22px", fontWeight: "bold" }}>😘Welcome to Tika Auction 😘</DialogTitle>
+          <DialogTitle style={{ textAlign: "center", fontSize: "20px", fontWeight: "bold" }}>Welcome to Tika Auction 😘</DialogTitle>
           <DialogContent >
             <div className="wrapper">
 
-              <DialogContentText style={{ fontSize: "17px", color: "#fff"}}>
+              <DialogContentText style={{ fontSize: "17px", color: "#fff" }}>
                 <div className="first-time-meme">
                   <img src="http://res.cloudinary.com/trungkien2022001/image/upload/v1704786220/upload/pg5v2p8bmi9i9kts9mr1.png" alt="" />
                 </div>
               </DialogContentText>
-              <DialogContentText style={{ fontSize: "17px", color: "#fff" ,padding: "5px 30px 0 30px", textAlign: "center" }}>
-                Want more infor  ?, click About Us or Login.
+              <DialogContentText style={{ fontSize: "17px", color: "#fff", padding: "5px 30px 0 30px", textAlign: "center" }}>
+                Want more infor? Click About Us or Login.
               </DialogContentText>
             </div>
           </DialogContent>

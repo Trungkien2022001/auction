@@ -113,8 +113,8 @@ export const Login = ({socket}) => {
           </Link>
         </div>
         <div>
-        <div style={{marginTop: "30px"}}>
-              Tài khoản demo: 1@gmail.com 123456
+        <div style={{marginTop: "30px", fontWeight: "bold"}}>
+              Tài khoản admin demo: 1@gmail.com 123456
             </div>
         </div>
 

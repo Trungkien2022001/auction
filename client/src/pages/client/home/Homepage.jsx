@@ -40,9 +40,12 @@ export const Homepage = ({ socket }) => {
 
   useEffect(() => {
     if (socket.current) {
-      socket.current.on('updateUI', async () => {
-        // await getData()
+      socket.current.on('updateFirstMessUI', async () => {
+        await getMessage()
       })
+      // socket.current.on('updateClientMessUI', async () => {
+      //   await getMessage()
+      // })
       socket.current.on('receive-admin-msg', params => {
         setMess(prev => [...prev, { ...params }])
       })
@@ -76,6 +79,15 @@ export const Homepage = ({ socket }) => {
     }, 1000)
   }
 
+  async function getMessage() {
+    if (currentUser.id) {
+      let result = await get(`/message?user_id=${currentUser.id}`, currentUser)
+      if (checkApiResponse(result)) {
+        setMess(result.data.body)
+      }
+    }
+  }
+
   async function getMetaData() {
     setLoadingMeta(true)
     setPreLoadingMeta(false)
@@ -101,12 +113,7 @@ export const Homepage = ({ socket }) => {
         setSytemConfig(tmp_banner_image.data)
       }
       setPreLoadingMeta(true)
-      if (currentUser.id) {
-        let result = await get(`/message?user_id=${currentUser.id}`, currentUser)
-        if (checkApiResponse(result)) {
-          setMess(result.data.body)
-        }
-      }
+      await getMessage()
     }
     const delayPromise = new Promise((resolve) => setTimeout(resolve, config.homepageMetadataWaitTime));
     await Promise.all([f(), delayPromise])
@@ -151,26 +158,26 @@ export const Homepage = ({ socket }) => {
           content: message,
           user: currentUser.name,
           user_id: currentUser.id,
-          isUpdatedLastMsg: true
         }
+        // Mock First Message
         setMess([{
-          chat_id: 1,
-          user_id: currentUser.id,
-          is_admin: 0,
-          content: message,
-          updated_at: new Date()
-        }])
+            chat_id: 0,
+            user_id: currentUser.id,
+            is_admin: 0,
+            content: message,
+            updated_at: new Date()
+          }])
       } else {
         msg = {
           is_admin: 0,
           content: message,
           user: currentUser.name,
           user_id: currentUser.id,
-          chat_id: mess[0].chat_id
+          chat_id: mess[mess.length-1].chat_id
         }
         setMess(prev =>
           [...prev, {
-            chat_id: mess[0].chat_id,
+            chat_id: mess[mess.length-1].chat_id,
             user_id: currentUser.id,
             is_admin: 0,
             content: message,

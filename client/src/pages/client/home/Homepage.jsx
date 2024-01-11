@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper } from "@mui/material";
 import { useEffect } from "react";
-import { get } from "../../../utils/customRequest";
+import { get, post } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
 import moment from "moment";
@@ -62,13 +62,17 @@ export const Homepage = ({ socket }) => {
     const delayPromise = new Promise((resolve) => setTimeout(resolve, config.homepageWaitTime));
     await Promise.all([f(), delayPromise])
     setLoading(false)
-    setTimeout(() => {
-      const isFirstTime = localStorage.getItem('isFirstVisited')
-      if (!isFirstTime) {
-
-        localStorage.setItem('isFirstVisited', true)
+    setTimeout(async () => {
+      const tracking = tryParseJson(localStorage.getItem('tracking')) || {}
+      console.log(tracking)
+      if (!tracking.is_visited) {
+        tracking.is_visited = true
         setIsFirstVisited(true)
       }
+      if (!tracking.last_visited_time || moment().diff(moment(tracking.last_visited_time), 'hours') > 1) {
+        await post(`/api/v1/tracking/homepage`, {}, currentUser)
+      }
+      localStorage.setItem('tracking', JSON.stringify({ ...tracking, last_visited_time: moment().format("DD-MM-YYYY HH:mm:ss") }))
     }, 1000)
   }
 
@@ -345,7 +349,7 @@ export const Homepage = ({ socket }) => {
           ) : <></>
         }
       </div>
-      <div className="loading" style={{display: "none"}}>
+      <div className="loading" style={{ display: "none" }}>
         <img src="http://res.cloudinary.com/trungkien2022001/image/upload/v1704786220/upload/pg5v2p8bmi9i9kts9mr1.png" alt="" />
         <img src="http://res.cloudinary.com/trungkien2022001/image/upload/v1704776611/upload/m5gmhzauxtthtxjf0p1p.png" alt="" />
       </div>

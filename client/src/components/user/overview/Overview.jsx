@@ -81,47 +81,47 @@ export const Overview = ({ currentUser, id }) => {
               <div className='overview-part'>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Số phiên</div>
-                  <div className='overview-item__content'>{data.auction_history_count}</div>
+                  <div className='overview-item__content'>{data.auction_history_count || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Số lần đấu giá</div>
-                  <div className='overview-item__content'>{data.all_auction_history_count}</div>
+                  <div className='overview-item__content'>{data.all_auction_history_count || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Thắng cược</div>
-                  <div className='overview-item__content'>{data.auction_won_count}</div>
+                  <div className='overview-item__content'>{data.auction_won_count || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Thành công</div>
-                  <div className='overview-item__content'>{data.auction_success}</div>
+                  <div className='overview-item__content'>{data.auction_success || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Đã bán</div>
-                  <div className='overview-item__content'>{data.auction_sale_all_count}</div>
+                  <div className='overview-item__content'>{data.auction_sale_all_count || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Thành công</div>
-                  <div className='overview-item__content'>{data.auction_sale_success_count}</div>
+                  <div className='overview-item__content'>{data.sell_success_count || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Đã giao hàng</div>
-                  <div className='overview-item__content'>{data.auction_sale_delivered_count}</div>
+                  <div className='overview-item__content'>{data.sell_success_count || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Thất bại</div>
-                  <div className='overview-item__content'>{data.auction_sale_failed_count}</div>
+                  <div className='overview-item__content'>{data.sell_failed_count_by_auctioneer || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Số dư</div>
-                  <div className='overview-item__content'>{data.amount}</div>
+                  <div className='overview-item__content'>{data.amount || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Lợi nhuận</div>
-                  <div className='overview-item__content'>{data.spent}</div>
+                  <div className='overview-item__content'>{data.spent || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Đã chi</div>
-                  <div className='overview-item__content'>{data.spent}</div>
+                  <div className='overview-item__content'>{data.spent || 0}</div>
                 </div>
               </div>
               {data.prestige === 2 ?

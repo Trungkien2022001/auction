@@ -118,14 +118,14 @@ socketIO.on('connection', socket => {
                 i => i.user_id === data.user_id
             )
             if (index !== -1) {
-                listOnlineUser[index].chatRoom = `chat:${chatId}`
+                listOnlineUser[index].chatRoom.push(`chat:${chatId}`)
                 socket.join([`chat:${chatId}`])
                 const lstAdmin = listOnlineUser.filter(i => i.is_admin)
                 for (const ad of lstAdmin) {
                     socket.to(ad.chatRoom).emit('new-user-join-chat', chatId)
                 }
             }
-            socket.to(`chat:${chatId}`).emit('updateUI')
+            socket.to(`chat:${chatId}`).emit('updateFirstMessUI')
         } else {
             chatId = data.chat_id
         }
@@ -134,8 +134,9 @@ socketIO.on('connection', socket => {
             .emit('receive-client-msg', { ...data, chat_id: chatId })
     })
     socket.on('admin-send-msg', data => {
-        insertMessage(data)
-        socket.to(`chat:${data.chat_id}`).emit('receive-admin-msg', data)
+        const chatID = insertMessage(data)
+
+        socket.to(`chat:${data.chat_id || chatID}`).emit('receive-admin-msg', {...data, chat_id: data.chat_id || chatID})
     })
     socket.on('admin-update-lst-user', params => {
         const ad = listOnlineUser.find(i => i.user === params.admin_id)

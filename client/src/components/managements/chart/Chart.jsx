@@ -214,9 +214,9 @@ export const Chart = ({ currentUser, socket }) => {
             </Select>
           </div>
         </div>
-        <ResponsiveContainer className="" height={500}>
+        <ResponsiveContainer className="" height={400}>
           <LineChart
-            height={500}
+            height={400}
             data={requestCount}
             margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
           >
@@ -248,9 +248,9 @@ export const Chart = ({ currentUser, socket }) => {
             </Select>
           </div>
         </div>
-        <ResponsiveContainer className="" height={500}>
+        <ResponsiveContainer className="" height={400}>
           <LineChart
-            height={500}
+            height={400}
             data={money}
             transform={'none'}
             margin={{ top: 5, right: 30, left: 75, bottom: 5 }}
@@ -285,9 +285,9 @@ export const Chart = ({ currentUser, socket }) => {
             </Select>
           </div>
         </div>
-        <ResponsiveContainer className="" height={500}>
+        <ResponsiveContainer className="" height={400}>
           <LineChart
-            height={500}
+            height={400}
             data={user}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
@@ -320,9 +320,9 @@ export const Chart = ({ currentUser, socket }) => {
             </Select>
           </div>
         </div>
-        <ResponsiveContainer className="" height={500}>
+        <ResponsiveContainer className="" height={400}>
           <LineChart
-            height={500}
+            height={400}
             data={auctionRaise}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
@@ -354,9 +354,9 @@ export const Chart = ({ currentUser, socket }) => {
             </Select>
           </div>
         </div>
-        <ResponsiveContainer className="" height={500}>
+        <ResponsiveContainer className="" height={400}>
           <LineChart
-            height={500}
+            height={400}
             data={auction}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >

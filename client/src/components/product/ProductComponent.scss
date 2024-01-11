@@ -10,7 +10,7 @@
         color: #d0011b;
         align-items: center;
         .title{
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             flex: 1;
         }
@@ -65,7 +65,10 @@
           // font-size: 17px;
           // font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
           text-align: center;
-          padding: 0 5px;
+          font-weight: bold;
+          font-size: 16px;
+          padding: 5px 5px 0px;
+          color:#d0011b;
           display: -webkit-box;
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;

@@ -12,8 +12,11 @@ import HomeIcon from '@mui/icons-material/Home';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookIcon from '@mui/icons-material/Book';
-
+import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import Box from '@mui/material/Box';
+import AppSettingsAltOutlinedIcon from '@mui/icons-material/AppSettingsAltOutlined';
+import MarkUnreadChatAltOutlinedIcon from '@mui/icons-material/MarkUnreadChatAltOutlined';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
@@ -191,7 +194,7 @@ export const Management = ({ socket }) => {
             sx={type === 'user' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
           >
             <ListItemIcon>
-              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+              <AccountCircleOutlinedIcon sx={{ color: `${selectedTheme.textColor}` }} />
             </ListItemIcon>
             <ListItemText primary="User" />
           </ListItemButton>
@@ -203,7 +206,7 @@ export const Management = ({ socket }) => {
             sx={type === 'chat' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
           >
             <ListItemIcon>
-              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+              <MarkUnreadChatAltOutlinedIcon sx={{ color: `${selectedTheme.textColor}` }} />
             </ListItemIcon>
             <ListItemText primary="Chat" />
           </ListItemButton>
@@ -215,7 +218,7 @@ export const Management = ({ socket }) => {
             sx={type === 'action-log' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
           >
             <ListItemIcon>
-              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+              <AnalyticsOutlinedIcon sx={{ color: `${selectedTheme.textColor}` }} />
             </ListItemIcon>
             <ListItemText primary="Action Log" />
           </ListItemButton>
@@ -227,7 +230,7 @@ export const Management = ({ socket }) => {
             sx={currentPage === 6 ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
           >
             <ListItemIcon>
-              <HourglassTopIcon sx={{ color: `${selectedTheme.textColor}` }} />
+              <AppSettingsAltOutlinedIcon sx={{ color: `${selectedTheme.textColor}` }} />
             </ListItemIcon>
             <ListItemText primary="System config" />
           </ListItemButton>

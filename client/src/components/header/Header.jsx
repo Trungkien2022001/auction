@@ -554,7 +554,10 @@ export const Header = ({ socket, systemConfig }) => {
             component="div"
           >
             <Link to={'/'} style={{ textDecoration: 'none', color: '#d0011b', fontSize: "28px", fontWeight: '550' }}>
-              {systemConfig.app_name || 'TIKA'}
+              {/* {systemConfig.app_name || 'TIKA'} */}
+              <div className="logo">
+                <img src="/logo.png" alt="" />
+              </div>
             </Link>
           </Typography>
           <Search

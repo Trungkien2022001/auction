@@ -327,7 +327,7 @@ export const Product = ({ socket }) => {
             </div> */}
                 <div className="product-seller-info">
                   <div className="seller-info__avatar">
-                    <Avatar style={{ height: '60px', width: '60px' }} alt="Seller Avatar" src={data.seller.avatar} />
+                    <Avatar style={{ height: '45px', width: '45px' }} alt="Seller Avatar" src={data.seller.avatar} />
                   </div>
                   <div className="seller-info">
                     <Link style={{ textDecoration: 'none', color: "black" }} to={`/user/${data.seller.id}`}>
@@ -404,7 +404,7 @@ export const Product = ({ socket }) => {
             <div className="product-info">
               <div className="product-info__header">
                 <b></b>
-                <h2>Thông tin chi tiết sản phẩm</h2>
+                <h3 style={{color:"#d0011b"}}>Thông tin chi tiết sản phẩm</h3>
                 <b></b>
               </div>
               <div className="product-info-wrap">
@@ -461,7 +461,7 @@ export const Product = ({ socket }) => {
             <div className="product-description">
               <div className="product-description__header">
                 <b></b>
-                <h2>Mô tả sản phẩm</h2>
+                <h3 style={{color:"#d0011b"}}>Mô tả sản phẩm</h3>
                 <b></b>
               </div>
               <div className="product-description__detail" dangerouslySetInnerHTML={customDescription(data.description)}>

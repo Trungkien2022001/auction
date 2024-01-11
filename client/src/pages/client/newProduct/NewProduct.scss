@@ -1,28 +1,28 @@
 .new-container{
 
     width: 50%;
-    padding: 0px 20px;
-    background-color: aliceblue;
-    margin: 65px auto;
+    padding: 10px 20px 60px;
+    background-color: #fff;
+    margin: 65px auto 0;
    
     .new-container-header{
         text-align: center;
         font-weight: 550;
         padding: 10px 0;
-        font-size: 22px; 
+        font-size: 20px; 
     }
     .new-product-part{
         display: flex;
         justify-content: space-around;
         .new-product-item{
-            height: 95px;
+            height: 90px;
             flex: 1;
         }
     }
     .new-product-image{
         margin-top: 15px;
         .new-product-image-header{
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 550;
             margin-bottom: 10px;
         }
@@ -86,10 +86,10 @@
     .submit{
         padding: 15px 0px 2px;
         button{
-            margin-left: calc(50% - 75px);
-            width: 150px;
-            height: 50px;
-            font-size: 20px;
+            margin-left: calc(50% - 60px);
+            width: 120px;
+            height: 45px;
+            font-size: 18px;
         }
     }
 }

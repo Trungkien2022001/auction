@@ -64,6 +64,7 @@
         .product-name {
           font-size: 20px;
           font-weight: bold;
+          color: #d0011b;
           text-align: left;
           height: 67px;
           line-height: 30px;
@@ -81,6 +82,7 @@
           -webkit-box-orient: vertical;
         }
         .product-auction {
+          color: #d0011b;
           display: flex;
           // height: 60px;
           justify-content: space-between;
@@ -119,6 +121,7 @@
               .product-price-title {
                 font-size: 18px;
                 font-weight: bold;
+                color: #d0011b;
               }
             }
           }
@@ -151,7 +154,7 @@
           padding-left: 10px;
           text-align: center;
           .seller-info__name {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
           }
         }
@@ -173,7 +176,7 @@
         .history {
           .history-count {
             font-weight: bold;
-            font-size: 20px;
+            font-size:18px;
           }
         }
         .history__success {
@@ -185,7 +188,7 @@
       }
       .seller-rate {
         .seller-rate__content {
-          font-size: 25px;
+          font-size: 20px;
           text-align: center;
         }
       }

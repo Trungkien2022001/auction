@@ -120,10 +120,7 @@ export const Register = ({socket}) => {
       <Header socket = {socket}/>
       <div className="register-container">
         <div className="register-container-back">
-          <Link to={'../'} style={{ color: "black" }}>Quay lại trang chủ</Link>
-        </div>
-        <div className="register-container-header">
-          Thêm một tài khoản mới
+          <Link to={'../'} style={{ color: "#d0011b", fontSize: "18px" }}>Quay lại trang chủ</Link>
         </div>
         <div className='register-product-part'>
           <div className='register-product-item'>
@@ -140,9 +137,9 @@ export const Register = ({socket}) => {
             <TextField
               className='text-input text-input-90'
               id="standard-basic"
-              label="Username"
+              label="Username - Tên hiển thị"
               variant="outlined"
-              helperText='Tên hiển thị'
+              // helperText='Tên hiển thị'
               onChange={e => setUsername(e.target.value)}
             />
           </div>
@@ -248,7 +245,7 @@ export const Register = ({socket}) => {
         </div>
 
         <div className="submit">
-          <Button onClick={() => handleRegister()} variant="contained">Submit</Button>
+          <Button onClick={() => handleRegister()} variant="contained">Đăng ký</Button>
         </div>
         <div>
           <Link to={'/login'} style={{ textDecoration: 'none', color: 'black' }}>

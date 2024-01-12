@@ -542,11 +542,31 @@ export const Header = ({ socket, systemConfig }) => {
             }}
           >
             <MenuItem onClick={handleCloseMenu}>
-              <Link style={{ textDecoration: "none", color: "black" }} to={"/management/dashboard"}>
+              <Link style={{ textDecoration: "none", color: "#d0011b" }} to={"/management/dashboard"}>
                 Management
               </Link>
             </MenuItem>
-            <MenuItem onClick={handleCloseMenu}>Feature under development</MenuItem>
+            <MenuItem onClick={handleCloseMenu}>
+              <Link style={{ textDecoration: "none", color: "#d0011b" }} to={"/auctions"}>
+                Auctions
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleCloseMenu}>
+              <Link style={{ textDecoration: "none", color: "#d0011b" }} to={"/new-auction"}>
+                New Auction
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleCloseMenu}>
+              <Link style={{ textDecoration: "none", color: "#d0011b" }} to={"/introduce"}>
+                Blogs
+              </Link>
+            </MenuItem>
+            <MenuItem onClick={handleCloseMenu}>
+              <Link style={{ textDecoration: "none", color: "#d0011b" }} to={"/introduce"}>
+                About Us
+              </Link>
+            </MenuItem>
+            {/* <MenuItem onClick={handleCloseMenu}>Feature under development</MenuItem> */}
           </Menu>
           <Typography
             variant="h6"

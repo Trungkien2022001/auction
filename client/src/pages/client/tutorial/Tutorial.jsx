@@ -254,7 +254,7 @@ export const Tutorial = ({ socket }) => {
               <CloseOutlinedIcon style={{ color: "red" }} />
             </div>
             <div className="content">
-              Thu phí với mỗi lượt đấu giá, đăng bán theo rank use
+              Thu phí với mỗi lượt đấu giá, đăng bán theo rank user
             </div>
           </div>
           <div className="wrap-content">
@@ -287,13 +287,13 @@ export const Tutorial = ({ socket }) => {
             Kiến trúc hệ thống
           </div>
           <div className="content" style={{ textAlign: "center", fontSize: "25px" }}>
-            <b>Solution Architext</b>
+            <b>Solution Architect</b>
           </div>
           <div className="content">
             <img src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1702613741/upload/n98lv0zedoaojj3gwd24.png" alt="" />
           </div>
           <div className="content" style={{ textAlign: "center", fontSize: "25px" }}>
-            <b>FLow</b>
+            <b>Flow</b>
           </div>
           <div className="content">
             <img src="https://res.cloudinary.com/trungkien2022001/image/upload/v1704612841/upload/eh3cxtexw1ebkyaewlcn.png" alt="" />

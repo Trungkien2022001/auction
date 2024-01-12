@@ -10,7 +10,7 @@
         color: #d0011b;
         align-items: center;
         .title{
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             flex: 1;
         }
@@ -65,8 +65,8 @@
           // font-size: 17px;
           // font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
           text-align: center;
-          font-weight: bold;
-          font-size: 16px;
+          // font-weight: bold;
+          font-size: 15px;
           padding: 5px 5px 0px;
           color:#d0011b;
           display: -webkit-box;
@@ -78,6 +78,8 @@
         .product-price {
           text-align: center;
           font-weight: bold;
+          color: #d0011b;
+          font-size: 15px;
           // font-family: "Courier New", Courier, monospace;
         }
       }

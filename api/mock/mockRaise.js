@@ -22,7 +22,7 @@ async function getRandomActiveAuction(userId) {
 
     return getSample(
         auctions,
-        _.random(10, auctions.length < 20 ? auctions.length : 20)
+        _.random(1, auctions.length < 5 ? auctions.length : 5)
     )
 }
 
@@ -75,7 +75,7 @@ async function runMockRaise() {
     logger.info(`Mocking ${auctions.length} raise!`)
     for (let i = 0; i < auctions.length; i += 1) {
         const auction = auctions[i]
-        const priceRaise = auction.sell_price + _.random(10, 5000) * 10000
+        const priceRaise = auction.sell_price + _.random(1, 50) * 100000
         await raise(user.id, auction.id, priceRaise)
         logger.info(
             `Fake raise success, auction_id: ${auction.id}, user_id: ${user.id}, raise_price: ${priceRaise}`

@@ -63,22 +63,22 @@ function gen() {
     return {
         auction: {
             start_time: moment(Date.now())
-                .add(Math.floor(Math.random() * 50000), 'minute')
+                .add(Math.floor(Math.random() * 10), 'minute')
                 .format('YYYY-MM-DD HH:mm:ss'),
-            auction_time: randomRange(5, 20),
+            auction_time: randomRange(1, 20),
             is_returned: randomRange(0, 1),
             is_finished_soon: randomRange(0, 1)
         },
         product: {
             category_id: categoryId,
-            start_price: randomRange(1, 50000) * 10000,
+            start_price: randomRange(1, 10000) * 10000,
             ...buildProduct(categoryId)
         }
     }
 }
 
 async function createMockAuction() {
-    const total = randomRange(1, 10)
+    const total = randomRange(1, 2)
     await Promise.all(
         Array(total)
             .fill(0)

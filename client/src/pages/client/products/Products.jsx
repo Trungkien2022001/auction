@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import { useState } from "react";
-import unidecode from 'unidecode'; 
+import unidecode from 'unidecode';
 import { Header } from "../../../components/header/Header";
 import "./Products.scss";
 // import axios from "axios";
@@ -22,6 +22,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
 import config from "../../../config";
+import { ProductComponent } from "../../../components/product/ProductComponent";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
   <span>
@@ -67,7 +68,7 @@ export const Products = ({ socket }) => {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      const result = await post(`/auctions?type=${filter.type}&sort=${filter.sort}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${unidecode(filter.name)}&page=${filter.page}&limit=${filter.limit}`, {},currentUser)
+      const result = await post(`/auctions?type=${filter.type}&sort=${filter.sort}&category=${filter.category}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${unidecode(filter.name)}&page=${filter.page}&limit=${filter.limit}`, {}, currentUser)
       if (checkApiResponse(result)) {
         setPreLoading(true)
         setCnt(result.data.data.count.total)
@@ -90,8 +91,6 @@ export const Products = ({ socket }) => {
     getData(filter)
     getMetaData()
   }, [])
-  const handleStop = () => {
-  }
 
   const buildParamURL = () => {
     return `/products?type=${filter.type}&category=${filter.category}&sort=${filter.sort}&price_from=${filter.price_from}&price_to=${filter.price_to}&name=${filter.name}&page=${filter.page}&limit=${filter.limit}`
@@ -116,97 +115,26 @@ export const Products = ({ socket }) => {
     setFilter(prev => {
       return { ...prev, page: value }
     });
-    getData({...filter, page: value})
+    getData({ ...filter, page: value })
   };
   return (
     <div>
       <Header socket={socket} />
-      <div className="padding__products product-container">
-        <div className="chat">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/512px-Facebook_Messenger_logo_2020.svg.png?20220118041828"
-            alt=""
-          />
-        </div>
-        <div className="new-auction-btn">
-          <Link to={'/new-auction'}>
-            <img
-              src="https://banner2.cleanpng.com/20180315/sdw/kisspng-plus-and-minus-signs-computer-icons-clip-art-plus-sign-5aaad8632b3888.9799936515211459551771.jpg"
-              alt=""
-            />
-          </Link>
-        </div>
-
-        {/* Sản phẩm nổi bật */}
-        <div className="product-part-wrapper">
-          <div className="title-header">
-            <b></b>
-            <h2>Danh sách sản phẩm</h2>
-            <b></b>
-          </div>
-          <div className='products-search'>
-            {
-              !loading ? <div className="products-search-item">
-                Có {cnt} kết quả được tìm thấy
-              </div> :
-                <div className="products-search-item">
-                  <Skeleton width={220} height={30} />
-                </div>
-            }
-            <div className="products-search-item">
-              <Button onClick={() => handleClickOpenAuctionDialog()} variant="contained"><FilterAltIcon /></Button>
-            </div>
-          </div>
-          <div className="product-wrapper">
-            {loading ? Array(6).fill(1).map((item, index) =>
-              <div key={index} className="loading" style={{ margin: '20px' }}>
-                <Skeleton width={178} height={200} />
-                <Skeleton width={178} height={45} count={2} style={{ marginTop: "10px" }} />
+      <div className="padding__main products-container" >
+        <div className='products-search'>
+          {
+            !loading ? <div className="products-search-item">
+              Có {cnt} kết quả được tìm thấy
+            </div> :
+              <div className="products-search-item">
+                <Skeleton width={220} height={30} />
               </div>
-            ) :
-              <>
-                {
-                  data && data.length ? data.map(item => (
-                    <Link key={item.id} to={`/auction/${item.id}`} style={{ textDecoration: 'none', color: 'black' }}>
-                      <div className="product">
-                        <div className="productImg">
-                          <img rel="prefetch" src={item.image} alt="Product_Image" />
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 5px' }}>
-                          <div className="product-time product-item">
-                            <div className="product-icon">
-                              <AccessTimeIcon />
-                            </div>
-                            <div className="product-content" style={{ fontSize: "0.8rem", opacity: 0.9 }}>
-                              <Countdown
-                                onComplete={() => handleStop()}
-                                // onStop={()=>handleStop()}
-                                date={moment(item.start_time).add(item.time, 'minutes').format('YYYY-MM-DD[T]HH:mm:ss')}
-                                renderer={renderer}
-                              />
-                            </div>
-                          </div>
-                          <div className="product-vote product-item">
-                            <div className="product-icon">
-                              <EmojiPeopleIcon />
-                            </div>
-                            <div className="product-content" style={{ fontSize: "1.2rem" }}>
-                              {item.auction_count}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="product-name">{item.name}</div>
-                        <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
-                          <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "18px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.sell_price)}
-                        </div>
-                      </div>
-                    </Link>
-                  )) : <div className="none-content" style={{ height: "280px", textAlign: "center" }}></div>
-                }
-              </>}
+          }
+          <div className="products-search-item">
+            <Button onClick={() => handleClickOpenAuctionDialog()} variant="contained"><FilterAltIcon /></Button>
           </div>
-
         </div>
+        <ProductComponent data={data} title={'Danh sách sản phẩm'} loading={loading} showMore={false} />
         <div className="products-pagination">
           <Pagination spacing={2}
             count={cnt % limit === 0 ? cnt / limit : parseInt(cnt / limit + 1)}

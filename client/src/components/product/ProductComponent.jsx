@@ -8,6 +8,7 @@ import Countdown, { zeroPad } from 'react-countdown'
 import moment from "moment";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import { displayText } from "../../utils/common";
 
 const renderer = ({ days, hours, minutes, seconds }) => (
     <span>
@@ -34,9 +35,9 @@ export const ProductComponent = ({ data, title, loading, keyword, showMore = tru
                             </div>
                             <div className="product-wrapper">
                                 {Array(6).fill(1).map((item, index) =>
-                                    <div key={index} className="loading" style={{ margin: '20px' }}>
-                                        <Skeleton width={170} height={200} />
-                                        <Skeleton width={170} height={45} count={2} style={{ marginTop: "10px" }} />
+                                    <div key={index} className="loading" style={{ margin: '10px' }}>
+                                        <Skeleton width={180} height={200} />
+                                        <Skeleton width={180} height={45} count={2} style={{ marginTop: "10px" }} />
                                     </div>
                                 )}
                             </div>
@@ -93,7 +94,7 @@ export const ProductComponent = ({ data, title, loading, keyword, showMore = tru
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="product-name">{item.name}</div>
+                                                <div className="product-name">{displayText(item.name, 70)}</div>
                                                 {/* <div className="product-price" style={{ marginTop: "5px", height: "12px" }}>
                                                     <AttachMoneyIcon style={{ marginBottom: '-5px', fontSize: "20px" }} />{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(item.start_price)}
                                                 </div> */}

@@ -1,4 +1,5 @@
 .product-container {
+  min-height: calc(100vh - 300px);
   margin-top: 75px;
   .product-header {
     font-size: 20px;
@@ -75,11 +76,12 @@
           padding: 0;
           margin-bottom: 10px;
           font-size: 17px;
-          height: 41px;
+          height: 40px;
           // text-align: center;
-          overflow: hidden;
+          -webkit-line-clamp: 2;
           text-overflow: ellipsis;
           -webkit-box-orient: vertical;
+          overflow: scroll;
         }
         .product-auction {
           color: #d0011b;

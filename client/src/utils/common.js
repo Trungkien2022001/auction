@@ -39,10 +39,14 @@ exports.popupError = err => {
     showCancelButton: true,
     confirmButtonText: 'About Us',
     cancelButtonText: 'Ok'
-  }).then(result=> {
+  }).then(result => {
     if (result.isConfirmed) {
       window.location.href = '/introduce'
     }
   })
   // throw new Error(err.message)
+}
+
+exports.displayText = (str, maxLength) => {
+  return str.length < maxLength ? str : str.slice(0, maxLength) + '...'
 }

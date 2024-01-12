@@ -7,7 +7,8 @@ exports.getAuctionRaise = async type => {
     let result = []
     const data = await knex('auction_history')
         .select('created_at')
-        .orderBy('created_at', 'asc')
+        .orderBy('created_at', 'desc')
+        .limit(1000)
     switch (type) {
         case 'month':
             result = _(data)
@@ -71,7 +72,8 @@ exports.getAuction = async type => {
     let result = []
     const data = await knex('auction')
         .select('created_at')
-        .orderBy('created_at', 'asc')
+        .orderBy('created_at', 'desc')
+        .limit(1000)
     switch (type) {
         case 'month':
             result = _(data)
@@ -135,7 +137,7 @@ exports.getUser = async type => {
     let result = []
     const data = await knex('user')
         .select('created_at')
-        .orderBy('created_at', 'asc')
+        .orderBy('created_at', 'desc')
     switch (type) {
         case 'month':
             result = _(data)
@@ -199,8 +201,8 @@ exports.getMoney = async type => {
     let result = []
     const data = await knex('auction')
         .select('created_at', 'sell_price')
-        .orderBy('created_at', 'asc')
-        .limit(100)
+        .orderBy('created_at', 'desc')
+        .limit(1000)
         .offset(0)
     switch (type) {
         case 'month':

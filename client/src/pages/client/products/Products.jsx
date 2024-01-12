@@ -6,29 +6,19 @@ import unidecode from 'unidecode';
 import { Header } from "../../../components/header/Header";
 import "./Products.scss";
 // import axios from "axios";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Pagination, Select, TextField } from "@mui/material";
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import Countdown, { zeroPad } from 'react-countdown'
 import { useEffect } from "react";
 import { get, post } from "../../../utils/customRequest";
 import { useSelector } from "react-redux";
 import { Footer } from "../../../components/footer/Footer";
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import moment from "moment";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
 import config from "../../../config";
 import { ProductComponent } from "../../../components/product/ProductComponent";
 
-const renderer = ({ days, hours, minutes, seconds }) => (
-  <span>
-    {days} day {zeroPad(hours)}h:{zeroPad(minutes)}':{zeroPad(seconds)}s
-  </span>
-);;
 
 export const Products = ({ socket }) => {
   const location = useLocation();

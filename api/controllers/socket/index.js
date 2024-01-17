@@ -1,4 +1,5 @@
 const debug = require('debug')('auction:socket')
+const config = require('../../config')
 const { QUEUE_ACTION } = require('../../config/constant/queueActionConstant')
 const auctionModel = require('../../models/auction')
 const messageModel = require('../../models/message')
@@ -43,14 +44,16 @@ async function raise(data, socket, listOnlineUser, socketIO) {
     const seller = listOnlineUser.find(
         i => i.user_id === data.auction.seller_id
     )
-    sendToQueue(
-        {
-            auction_id: data.auction.id,
-            auction_count: data.auction.auction_count + 1,
-            sell_price: Math.parseInt(data.bet.bet_price)
-        },
-        QUEUE_ACTION.UPDATE_AUCTION
-    )
+    if (config.isUseElasticSearch) {
+        sendToQueue(
+            {
+                auction_id: data.auction.id,
+                auction_count: data.auction.auction_count + 1,
+                sell_price: Math.parseInt(data.bet.bet_price)
+            },
+            QUEUE_ACTION.UPDATE_AUCTION
+        )
+    }
     if (seller) {
         socketIO.to(seller.socket).emit('notif-to-seller', {
             auction_id: data.auction.product.id

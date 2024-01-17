@@ -6,6 +6,11 @@ const auctionModel = require('../../models/auction')
 const elasticModel = require('../../models/elastic')
 const userModel = require('../../models/user')
 const config = require('../../config')
+const {
+    AUCTION_STATUS
+} = require('../../config/constant/auctionStatusConstant')
+const { QUEUE_ACTION } = require('../../config/constant/queueActionConstant')
+const { sendToQueue } = require('../../queue/kafka/producer.kafka')
 
 exports.createAuction = async params => {
     const { body, user } = params
@@ -26,7 +31,17 @@ exports.createAuction = async params => {
     const [productId] = await productModel.addProduct(product)
     auction.product_id = productId
     await commonModel.saveImage(images, productId)
-    await auctionModel.saveAuction(auction)
+    const result = await auctionModel.saveAuction(auction)
+    if (config.isUseElasticSearch) {
+        sendToQueue(
+            {
+                auction_id: result[0],
+                status: 1,
+                auction_status: AUCTION_STATUS[1]
+            },
+            QUEUE_ACTION.INSERT_AUCTION
+        )
+    }
 
     return {
         err: false
@@ -46,10 +61,7 @@ exports.createAuctionRaise = async params => {
     if (
         moment(body.time).isBefore(moment(auction.start_time)) ||
         moment(body.time).isAfter(
-            moment(auction.start_time).add(
-                auction.time,
-                'minutes'
-            )
+            moment(auction.start_time).add(auction.time, 'minutes')
         )
     ) {
         throw new Error(`Auction raise error: invalid auction time`)
@@ -117,7 +129,9 @@ exports.getAuctionHistory = async id => {
 }
 
 exports.getAuctionDetail = async params => {
-    const product = await auctionModel.getProductAuction(params.id || params.auctionId)
+    const product = await auctionModel.getProductAuction(
+        params.id || params.auctionId
+    )
     if (!product) return {}
     const seller = await userModel.fetchUserByID(product.seller_id, 'seller')
 

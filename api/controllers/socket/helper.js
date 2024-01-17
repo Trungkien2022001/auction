@@ -3,6 +3,7 @@
 const moment = require('moment')
 const auctionModel = require('../../models/auction')
 const { logger } = require('../../utils/winston')
+const config = require('../../config')
 
 async function startAuction(id, socketIO) {
     socketIO.emit('updateUI')
@@ -50,7 +51,7 @@ async function initAuctionTime(socketIO) {
                     const seller = listOnlineUser.find(
                         i => i.user_id === sellerId
                     )
-                    if (config.isUseKafka) {
+                    if (config.isUseKafka && config.isUseElasticSearch) {
                         logger.info(
                             `Update auction status, auction_id: ${item.auctionId}, status: 2`
                         )

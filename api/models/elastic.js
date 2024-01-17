@@ -391,8 +391,13 @@ exports.updateAuction = async (auctionId, updatedFields) => {
         const documentId = _.get(searchResponse, 'hits.hits[0]._id')
         if (!documentId) {
             throw new Error(
-                `Auction with id: ${auctionId}not found in Elasticsearch`
+                `Auction with id: ${auctionId} not found in Elasticsearch`
             )
+        }
+        if (updatedFields.sell_price && !updatedFields.auction_count) {
+            updatedFields.auction_count =
+                _.get(searchResponse, 'hits.hits[0]._source.auction_count', 0) +
+                1
         }
         const updateResponse = await esClient.update({
             index: auctionElasticIndex,
@@ -406,7 +411,7 @@ exports.updateAuction = async (auctionId, updatedFields) => {
     } catch (error) {
         logger.error(`Error updating auction in ES!`, error)
         throw new Error(
-            `Unable to update auction with auction_id: ${auctionId}in Elasticsearch`,
+            `Unable to update auction with auction_id: ${auctionId} in Elasticsearch`,
             error
         )
     }
@@ -425,7 +430,7 @@ exports.deleteAuction = async auctionId => {
         const documentId = _.get(searchResponse, 'hits.hits[0]._id')
         if (!documentId) {
             throw new Error(
-                `Auction with id: ${auctionId}not found in Elasticsearch`
+                `Auction with id: ${auctionId} not found in Elasticsearch`
             )
         }
         const deleteResponse = await esClient.delete({
@@ -454,9 +459,9 @@ exports.insertAuction = async auctionId => {
         })
 
         const documentId = _.get(searchResponse, 'hits.hits[0]._id')
-        if (!documentId) {
+        if (documentId) {
             throw new Error(
-                `Auction with id: ${auctionId} doesn't existed in Elasticsearch`
+                `Auction with id: ${auctionId} existed in Elasticsearch`
             )
         }
 

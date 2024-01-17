@@ -6,6 +6,8 @@ const { knex } = require('../connectors')
 const { logger } = require('../utils/winston')
 const auctionModel = require('../models/auction')
 const notificationModel = require('../models/notification')
+const { sendToQueue } = require('../queue/kafka/producer.kafka')
+const { QUEUE_ACTION } = require('../config/constant/queueActionConstant')
 
 function getSample(arr, count) {
     const shuffledArr = _.shuffle(arr)
@@ -63,6 +65,13 @@ async function raise(userId, auctionId, price) {
             userId,
             auctionId,
             userIds
+        )
+        sendToQueue(
+            {
+                auction_id: auctionId,
+                sell_price: price
+            },
+            QUEUE_ACTION.UPDATE_AUCTION
         )
     } catch (error) {
         logger.error(error)

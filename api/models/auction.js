@@ -1,3 +1,5 @@
+/* eslint-disable radix */
+/* eslint-disable func-names */
 /* eslint no-use-before-define: "error" */
 /* eslint no-return-await: "error" */
 /* eslint-disable camelcase */
@@ -11,6 +13,7 @@ const { PRODUCT_CATEGORY } = require('../config/constant')
 const { QUEUE_ACTION } = require('../config/constant/queueActionConstant')
 const { AUCTION_STATUS } = require('../config/constant/auctionStatusConstant')
 const { sendToQueue } = require('../queue/kafka/producer.kafka')
+const config = require('../config')
 
 attachPaginate()
 const collationVietnamese = 'utf8mb4_unicode_ci'
@@ -88,7 +91,7 @@ exports.getAuctions = async params => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             .innerJoin('auction_status as ast', 'a.status', 'ast.id')
-            .where(function () {
+            .where(function() {
                 if (type === 'homepage') {
                     this.whereNull('a.deleted_at')
                 }
@@ -112,7 +115,7 @@ exports.getAuctions = async params => {
                 if (price_to) {
                     this.where('a.sell_price', '<=', price_to)
                 }
-                if (status != -1) {
+                if (status !== -1) {
                     this.where('a.status', status)
                 } else {
                     switch (sorted) {
@@ -585,6 +588,7 @@ exports.getAllAuction = async () => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
+            .where('')
             .whereNull('a.deleted_at')
             .orderBy('a.updated_at', 'desc')
 
@@ -631,7 +635,7 @@ exports.getUserAuction = async (userId, auctionId) => {
 exports.createUserAuction = async (userId, auctionId) => {
     debug('MODEL/auction createUserAuction')
     try {
-        const exist = await exports.getAllAuction(userId, auctionId)
+        const exist = await exports.getAllAuctionOfUser(userId)
         if (!exist.length) {
             await knex('user_auction').insert({
                 user_id: userId,
@@ -727,14 +731,16 @@ exports.checkingAllAuction = async () => {
             moment(item.start_time)
                 .add(auctionTime.AUCTION_TIME[item.auction_time], 'minutes')
                 .isBefore(moment(new Date())) &&
-            item.auction_count == 0
+            item.auction_count === 0
         ) {
-            sendToQueue(
-                {
-                    auction_id: item.id,
-                },
-                QUEUE_ACTION.DELETE_AUCTION
-            )
+            if (config.isUseElasticSearch) {
+                sendToQueue(
+                    {
+                        auction_id: item.id
+                    },
+                    QUEUE_ACTION.DELETE_AUCTION
+                )
+            }
             await knex('auction')
                 .update('status', 6)
                 .where('id', item.id)
@@ -745,12 +751,14 @@ exports.checkingAllAuction = async () => {
                 .isBefore(moment(new Date())) &&
             item.auction_count > 0
         ) {
-            sendToQueue(
-                {
-                    auction_id: item.id,
-                },
-                QUEUE_ACTION.DELETE_AUCTION
-            )
+            if (config.isUseElasticSearch) {
+                sendToQueue(
+                    {
+                        auction_id: item.id
+                    },
+                    QUEUE_ACTION.DELETE_AUCTION
+                )
+            }
             await knex('auction')
                 .update('status', 3)
                 .where('id', item.id)
@@ -777,14 +785,16 @@ exports.checkingAllAuction = async () => {
             item.status === 1 &&
             moment(item.start_time).isBefore(moment(new Date()))
         ) {
-            sendToQueue(
-                {
-                    auction_id: item.id,
-                    status: 2,
-                    auction_status: AUCTION_STATUS[2]
-                },
-                QUEUE_ACTION.INSERT_AUCTION
-            )
+            if (config.isUseElasticSearch) {
+                sendToQueue(
+                    {
+                        auction_id: item.id,
+                        status: 2,
+                        auction_status: AUCTION_STATUS[2]
+                    },
+                    QUEUE_ACTION.UPDATE_AUCTION
+                )
+            }
             await knex('auction')
                 .update('status', 2)
                 .where('id', item.id)
@@ -854,12 +864,12 @@ exports.finishedAuction = async id => {
         .select()
         .where('id', id)
     await knex('auction')
-        .update(
-            {
-                auctioneer_win: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
-                status: 3
-            }
-        )
+        .update({
+            auctioneer_win: win_auctioneer[0]
+                ? win_auctioneer[0].auctioneer_id
+                : 1,
+            status: 3
+        })
         .where('id', id)
     await knex('notification').insert([
         {
@@ -954,6 +964,6 @@ exports.getAuctionToInsertElasticsearch = async auctionId => {
         .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
         .innerJoin('auction_status as ast', 'a.status', 'ast.id')
         .where('a.id', auctionId)
-    
+
     return auction
 }

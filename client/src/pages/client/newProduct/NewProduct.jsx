@@ -13,6 +13,7 @@ import { newAuctionValidate } from '../../../utils/validateFormInput'
 import Swal from 'sweetalert2'
 import moment from 'moment'
 import { checkApiResponse } from '../../../utils/checkApiResponse';
+import { AUCTION_TIMES } from '../../../utils/constants';
 
 
 export const NewProduct = ({ socket }) => {
@@ -21,7 +22,6 @@ export const NewProduct = ({ socket }) => {
     const inputRef = useRef()
 
     const [productCategory, setProductCategory] = useState([])
-    const [auctionTime, setAuctionTime] = useState([])
     const [imageList, setImageList] = useState([])
     const [product, setProduct] = useState({
         name: '',
@@ -43,8 +43,8 @@ export const NewProduct = ({ socket }) => {
     useEffect(() => {
         async function getData() {
             const result = await get(`/auction-helper`, currentUser)
+            console.log(result)
             if (checkApiResponse(result)) {
-                setAuctionTime(result.data.auction_time)
                 setProductCategory(result.data.product_category)
             }
         }
@@ -263,10 +263,9 @@ export const NewProduct = ({ socket }) => {
                         // onKeyDown={onEnterWork}
                         >
                             {
-                                auctionTime && auctionTime.length && auctionTime.map((item) => (
-                                    <MenuItem key={item.id} value={item.id}>{item.title}</MenuItem>
-                                )) || <></>
-
+                                Object.keys(AUCTION_TIMES).map((key, index) => (
+                                    <MenuItem key={key} value={index}>{AUCTION_TIMES[key]}</MenuItem>
+                                ))
                             }
                         </TextField>
                     </div>

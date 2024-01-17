@@ -16,6 +16,7 @@ producer.on('error', err => {
 })
 
 async function sendToQueue(data, action, topicName = config.topicName) {
+    logger.info(`Send job........., action: ${action}, data: ${JSON.stringify(data)}`)
     producer.send(
         [
             {

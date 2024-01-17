@@ -1,13 +1,8 @@
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-console */
-/* eslint-disable no-use-before-define */
+/* eslint-disable global-require */
 require('dotenv').config({ path: '.env' })
-const debug = require('debug')('auction:socket')
 const Koa = require('koa')
 const cors = require('@koa/cors')
 const bodyParser = require('koa-bodyparser')
-const moment = require('moment')
 const cron = require('node-cron')
 
 const app = new Koa()
@@ -20,41 +15,94 @@ const socketIO = require('socket.io')(server, {
 })
 const config = require('./config')
 const auctionModel = require('./models/auction')
-const messageModel = require('./models/message')
-const notificationModel = require('./models/notification')
-const { insertMessage } = require('./models/message')
-const { redis } = require('./connectors')
-if(config.isUseKafka){
-    const { sendToQueue } = require('./queue/kafka/producer.kafka')
-}
-const { QUEUE_ACTION } = require('./config/constant/queueActionConstant')
 const { createMockAuction } = require('./mock/mockDataV2')
 const { runMockRaise } = require('./mock/mockRaise')
+const { logger } = require('./utils/winston')
+const { initAuctionTime } = require('./controllers/socket/helper')
+const {
+    startChecking,
+    authenticate,
+    raise,
+    clientSendMsg,
+    adminSendMsg,
+    updateAdminReadMsg,
+    sellerConfirm,
+    auctioneerConfirm,
+    disconnect
+} = require('./controllers/socket')
+const { addToNewRoom } = require('./controllers/socket/auctionRoom')
+const { handleJob } = require('./queue/handleJob')
 
-let auctions = []
 const listOnlineUser = []
 
 app.use(async (ctx, next) => {
     try {
         await next()
     } catch (err) {
+        logger.error('Socket Error', err)
         ctx.app.emit('error', err, ctx)
     }
 })
 
 app.use(config.corsOrigin ? cors({ origin: config.corsOrigin }) : cors())
-
 app.use(bodyParser())
+socketIO.on('connection', socket => {
+    socket.on('authenticate', user => {
+        // logger.info(`⚡⚡⚡: User ${user.username} with socketID ${socket.id} just connected!`)
+        authenticate(user, socket, listOnlineUser)
+    })
 
-checkingAllUpdate().then(() => {
-    initAuctionTime()
+    socket.on('ping', () => {
+        logger.info('PING PONG PING PONG')
+    })
+
+    socket.on('raise', async data => {
+        await raise(data, socket, listOnlineUser, socketIO)
+    })
+
+    socket.on('add-to-new-room', (auctionId, userId) => {
+        addToNewRoom(userId, socket.id, auctionId)
+    })
+
+    socket.on('client-send-msg', async data => {
+        await clientSendMsg(data, listOnlineUser)
+    })
+
+    socket.on('admin-send-msg', async data => {
+        await adminSendMsg(data, socket)
+    })
+
+    socket.on('admin-update-lst-user', params => {
+        // FIXME
+        const ad = listOnlineUser.find(i => i.user === params.admin_id)
+        if (ad) {
+            ad.chatRoom.push(`chat:${params.chat_id}`)
+        }
+    })
+
+    socket.on('udpate-admin-read-msg', async item => {
+        await updateAdminReadMsg(item)
+    })
+
+    socket.on('auctioneer_confirm', async data => {
+        await auctioneerConfirm(data, listOnlineUser, socket)
+    })
+
+    socket.on('seller_confirm', async data => {
+        await sellerConfirm(data, listOnlineUser, socket)
+    })
+
+    socket.on('disconnect', () => {
+        disconnect(listOnlineUser, socket)
+    })
 })
 
+startChecking()
+
 cron.schedule('* * * * *', async () => {
-    console.log('')
-    console.log(`----------Refreshing after 1 minute ----------------`)
-    await initAuctionTime()
-    if(!config.production){
+    logger.info(`Refreshing after 1 minute`)
+    await initAuctionTime(socketIO)
+    if (!config.production) {
         // Mock data
         await createMockAuction()
         await runMockRaise()
@@ -62,376 +110,42 @@ cron.schedule('* * * * *', async () => {
 })
 
 cron.schedule('*/5 * * * *', async () => {
-    console.log('')
-    console.log(
-        `----------Checking all auction after 5 minute ----------------`
-    )
+    logger.info(`Checking all auction after 5 minute`)
     await auctionModel.checkingAllAuction()
 })
 
-socketIO.on('connection', socket => {
-    socket.on('authenticate', user => {
-        // console.log(`⚡⚡⚡: User ${user.username} with socketID ${socket.id} just connected!`)
-        if (user.id !== null) {
-            addToRoom(user.id, socket.id, user.role_id === 'admin').then(
-                async id => {
-                    debug('authenticate', user.id, socket.id)
-                    socket.join([
-                        ...listOnlineUser[id].auctionRooms,
-                        ...listOnlineUser[id].chatRoom
-                    ])
-                }
-            )
-        }
-    })
-    socket.on('ping', () => {
-        console.log('PING PONG PING PONG')
+if (config.isUseKafka && config.isUseKafkaOnSocketServer) {
+    logger.info('Using Kafka On Socket Server')
+    const kafka = require('kafka-node')
+
+    const { Consumer } = kafka
+    const client = new kafka.KafkaClient({ kafkaHost: config.kafkaHost })
+    client.setMaxListeners(config.maxListeners)
+    const consumer = new Consumer(
+        client,
+        [{ topic: config.topicName, partition: 0 }],
+        { autoCommit: true }
+    )
+
+    consumer.on('message', async message => {
+        await handleJob(message)
+
+        consumer.commit(() => {})
     })
 
-    socket.on('raise', async data => {
-        await handleRaise(data)
-        checkHasExistRoom(data.user.id, data.auction.product.id, socket)
-        await socketIO
-            .to(createRoomName(data.auction.product.id))
-            .emit('raise-reply', data)
-        await socketIO
-            .to(createRoomName(data.auction.product.id))
-            .emit('updateUI', {})
-        const seller = listOnlineUser.find(
-            i => i.user_id === data.auction.seller.id
-        )
-        if (seller) {
-            socketIO.to(seller.socket).emit('notif-to-seller', {
-                auction_id: data.auction.product.id
-            })
-        }
-        socketIO.to(seller.socket).emit('updateUI')
+    consumer.on('error', err => {
+        logger.error('Error connecting to Kafka:', err)
     })
 
-    socket.on('add-to-new-room', (auctionId, userId) => {
-        addToNewRoom(userId, socket.id, auctionId)
+    consumer.on('offsetOutOfRange', err => {
+        logger.error('Offset out of range:', err)
     })
-    socket.on('client-send-msg', async data => {
-        let chatId = await insertMessage(data)
-        if (!data.chat_id) {
-            const index = listOnlineUser.findIndex(
-                i => i.user_id === data.user_id
-            )
-            if (index !== -1) {
-                listOnlineUser[index].chatRoom.push(`chat:${chatId}`)
-                socket.join([`chat:${chatId}`])
-                const lstAdmin = listOnlineUser.filter(i => i.is_admin)
-                for (const ad of lstAdmin) {
-                    socket.to(ad.chatRoom).emit('new-user-join-chat', chatId)
-                }
-            }
-            socket.to(`chat:${chatId}`).emit('updateFirstMessUI')
-        } else {
-            chatId = data.chat_id
-        }
-        socket
-            .to(`chat:${chatId}`)
-            .emit('receive-client-msg', { ...data, chat_id: chatId })
-    })
-    socket.on('admin-send-msg', data => {
-        const chatID = insertMessage(data)
-
-        socket.to(`chat:${data.chat_id || chatID}`).emit('receive-admin-msg', {...data, chat_id: data.chat_id || chatID})
-    })
-    socket.on('admin-update-lst-user', params => {
-        const ad = listOnlineUser.find(i => i.user === params.admin_id)
-        if (ad) {
-            ad.chatRoom.push(`chat:${params.chat_id}`)
-        }
-    })
-    socket.on('udpate-admin-read-msg', item => {
-        messageModel.updateIsRead(item.user_id).then(() => {
-            socket.to(`chat:${item.chat_id}`).emit('updateUI')
-        })
-    })
-
-    socket.on('auctioneer_confirm', ({ userId, auctionId, status }) => {
-        auctionModel.auctioneerConfirm(userId, auctionId, status).then(id => {
-            const seller = listOnlineUser.find(i => i.user_id === id)
-            if (seller) {
-                socket
-                    .to(seller.socket)
-                    .emit('auctioneer_confirm_server', { status, auctionId })
-            }
-        })
-    })
-    socket.on('seller_confirm', ({ userId, auctionId, status }) => {
-        auctionModel.sellerConfirm(userId, auctionId, status).then(id => {
-            const auctioneer = listOnlineUser.find(i => i.user_id === id)
-            if (auctioneer) {
-                socket
-                    .to(auctioneer.socket)
-                    .emit('seller_confirm_server', { status, auctionId })
-            }
-        })
-    })
-
-    socket.on('disconnect', () => {
-        const index = listOnlineUser.findIndex(item =>
-            item.socket.includes(socket.id)
-        )
-        if (index !== -1) {
-            socket.leave(listOnlineUser[index].auctionRooms)
-            leaveRoom(socket.id, index)
-        }
-    })
-})
+}
 
 if (!module.parent) {
     server.listen(config.socket_port, () => {
-        // eslint-disable-next-line no-console
-
-        // eslint-disable-next-line no-console
-        console.info(
+        logger.info(
             `⚡⚡⚡⚡⚡⚡ Socket is running on port ${config.socket_port}`
         )
     })
-}
-
-async function checkingAllUpdate() {
-    await auctionModel.checkingAllAuction()
-}
-
-async function initAuctionTime() {
-    const times = await auctionModel.getAllAuctionTime()
-    auctions = times.map(item => {
-        return {
-            auctionId: item.id,
-            timeToStart:
-                moment(item.start_time).diff(moment(new Date())) > 0
-                    ? moment(item.start_time).diff(moment(new Date()))
-                    : 0,
-            timeAuction:
-                moment(item.start_time)
-                    .add(item.time, 'minutes')
-                    .diff(moment(new Date())) > 0
-                    ? moment(item.start_time)
-                          .add(item.time, 'minutes')
-                          .diff(moment(new Date()))
-                    : 0,
-            auctionStatus: item.status
-        }
-    })
-
-    for (const item of auctions) {
-        if (item.timeToStart > 0 && item.timeToStart < 1000000) {
-            const timeout = setTimeout(() => {
-                console.log(
-                    `-----------Starting for auction id: ${item.auctionId}`
-                )
-                startAuction(item.auctionId).then(sellerId => {
-                    const seller = listOnlineUser.find(
-                        i => i.user_id === sellerId
-                    )
-                    if(config.isUseKafka){
-                        sendToQueue(
-                            {
-                                auction_id: item.auctionId,
-                                status: 2
-                            },
-                            QUEUE_ACTION.UPDATE_AUCTION
-                        )
-                    }
-                    if (seller) {
-                        socketIO
-                            .to(seller.socket)
-                            .emit('startingAuctionSeller', {
-                                auction_id: item.id
-                            })
-                    }
-                    clearTimeout(timeout)
-                })
-            }, item.timeToStart)
-        } else if (item.timeAuction > 0 && item.timeAuction < 120000) {
-            const timeout = setTimeout(() => {
-                finishAuction(item).then(result => {
-                    const auctioneer = listOnlineUser.find(
-                        i => i.user_id === result.auctioneer
-                    )
-                    const seller = listOnlineUser.find(
-                        i => i.user_id === result.seller
-                    )
-                    if (auctioneer) {
-                        socketIO
-                            .to(auctioneer.socket)
-                            .emit('finishedAuctionAuctioneer', {
-                                auction_id: item.id
-                            })
-                    }
-                    if (seller) {
-                        socketIO
-                            .to(seller.socket)
-                            .emit('finishedAuctionSeller', {
-                                auction_id: item.id
-                            })
-                    }
-                    console.log(
-                        `---------Finished auction id: ${item.auctionId}. Waiting for seller response`
-                    )
-                    clearTimeout(timeout)
-                })
-            }, item.timeAuction)
-        }
-    }
-
-    console.log(
-        `Auction Pending: ${auctions.filter(i => i.auctionStatus === 1).length}`
-    )
-    console.log(
-        `Auction Processing: ${
-            auctions.filter(i => i.auctionStatus === 2).length
-        }`
-    )
-    console.log(
-        `Auction Waiting for seller response: ${
-            auctions.filter(i => i.auctionStatus === 3).length
-        }`
-    )
-    console.log(
-        `Auction Waiting for auctioneer response: ${
-            auctions.filter(i => i.auctionStatus === 4).length
-        }`
-    )
-}
-
-async function handleRaise(data) {
-    const { user, auction } = data
-    // const maxRaise = await auctionModel.getHighestBet(auction.id)
-    // if(bet <= maxRaise) {
-    //     return {
-    //         success: false,
-    //         highestBet: maxRaise
-    //     }
-    // } else {
-    await redis.del(`auction:auction:${auction.product.id}`)
-    await auctionModel.insertUserAuction(user.id, auction.product.id)
-    const userIds = await auctionModel.getAllAuctioneerOfAuction(
-        auction.product.id
-    )
-    const index = userIds.findIndex(i => i === user.id)
-    userIds.splice(index, 1)
-    await notificationModel.createNotification(
-        4,
-        user.id,
-        auction.product.id,
-        userIds
-    )
-    await notificationModel.createNotification(
-        9,
-        user.id,
-        auction.product.id,
-        userIds
-    )
-}
-
-async function addToRoom(userId, socketId, isAdmin) {
-    const index = listOnlineUser.findIndex(item => item.user_id === userId)
-    if (index !== -1) {
-        listOnlineUser[index].socket.push(socketId)
-
-        // return index
-    }
-    const auctionIds = await auctionModel.getAllAuctionOfUser(userId)
-    let chatRoom
-    let chatIds
-    if (isAdmin) {
-        chatIds = await await messageModel.getChatIdOfAdmin(userId)
-        chatRoom = chatIds.map(id => `chat:${id}`)
-    } else {
-        chatIds = await await messageModel.getChatIdOfUser(userId)
-        if (chatIds) {
-            chatRoom = [`chat:${chatIds}`]
-        }
-    }
-    const auctionRooms = createRoomsName(auctionIds)
-    listOnlineUser.push({
-        user_id: userId,
-        is_admin: isAdmin,
-        socket: [socketId],
-        auctionRooms,
-        chatRoom: chatRoom || null
-    })
-
-    return index === -1 ? listOnlineUser.length - 1 : index
-}
-
-function checkHasExistRoom(userId, auctionId, socket) {
-    if (userId === null) return
-    const index = listOnlineUser.findIndex(item => item.user_id === userId)
-    if (index !== -1) {
-        const newRoomName = createRoomName(auctionId)
-        const roomIndex = listOnlineUser[index].auctionRooms.findIndex(
-            i => i === newRoomName
-        )
-        if (roomIndex === -1) {
-            listOnlineUser[index].auctionRooms.push(newRoomName)
-            socket.join(listOnlineUser[index].auctionRooms)
-        }
-    }
-}
-
-async function addToNewRoom(userId, auctionId) {
-    if (userId === null) return
-    const index = listOnlineUser.findIndex(item => item.user_id === userId)
-    const newRoomName = createRoomName(auctionId)
-    if (index !== -1) {
-        listOnlineUser[index].auctionRooms.push(newRoomName)
-    }
-}
-
-function leaveRoom(socketId, index) {
-    if (listOnlineUser[index].socket.length !== 1) {
-        const socketIndex = listOnlineUser[index].socket.findIndex(
-            i => i === socketId
-        )
-        listOnlineUser[index].socket.splice(socketIndex, 1)
-    } else {
-        listOnlineUser.splice(index, 1)
-    }
-}
-
-// async function removeAuctionRoom(auctionId) {
-//     await auctionModel.updateUserAuction(auctionId)
-
-//     const auctionRoomName = createRoomsName(auctionId)
-//     for (const i in listOnlineUser) {
-//         const item = listOnlineUser[i]
-//         const index = item.auctionRooms.findIndex(
-//             name => name === auctionRoomName
-//         )
-//         if (index !== -1) {
-//             listOnlineUser[i].auctionRooms.splice(index, 1)
-//         }
-//     }
-// }
-
-async function startAuction(id) {
-    socketIO.emit('updateUI')
-    const userId = await auctionModel.updateAuction({ status: 2 }, id)
-
-    return userId
-}
-
-function createRoomsName(auctionArr) {
-    if (auctionArr.length === 0) return []
-
-    return auctionArr.map(i => {
-        return `auction:${i.auction_id}`
-    })
-}
-
-function createRoomName(id) {
-    return `auction:${id}`
-}
-
-async function finishAuction(item) {
-    socketIO.emit('updateUI')
-    const result = await auctionModel.finishedAuction(item.auctionId)
-
-    return result
 }

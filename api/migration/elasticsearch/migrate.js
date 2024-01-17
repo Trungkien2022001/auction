@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-unused-vars */
+const _ = require('lodash')
 const { knex, esClient } = require('../../connectors')
 const { logger } = require('../../utils/winston')
 
@@ -60,24 +61,30 @@ async function migrateAuction() {
         .innerJoin('product as p', 'a.product_id', 'p.id')
         .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
         .innerJoin('auction_status as ast', 'a.status', 'ast.id')
-        .whereIn('a.status', [1,2])
+        .whereIn('a.status', [1, 2])
     // .limit(1)
     // .offset(0)
 
     const tableName = 'auction'
     const indexName = 'auction_idx'
     logger.info(`Table: ${tableName}, numOfRows: ${list.length}`)
-    for (let i = 0; i < list.length; i += 1) {
-        const document = list[i]
-
-        try {
-            await esClient.index({
-                index: indexName,
-                body: document
+    const chunkList = _.chunk(list, 50)
+    // console.log(chunkList.length)
+    for (let i = 0; i < chunkList.length; i += 1) {
+        const documents = chunkList[i]
+        await Promise.all(
+            documents.map(async document => {
+                try {
+                    await esClient.index({
+                        index: indexName,
+                        body: document
+                    })
+                } catch (error) {
+                    logger.error(`Error adding document ${i}:`, error)
+                }
             })
-        } catch (error) {
-            logger.error(`Error adding document ${i}:`, error)
-        }
+        )
+        logger.info(`Migrate ${documents.length} records successfully!`)
     }
     logger.info(`Migrate Table: ${tableName} successfully!`)
 }

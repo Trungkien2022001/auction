@@ -7,6 +7,7 @@ const config = require('../config')
 const { AUCTION_TIME, PRODUCT_CATEGORY } = require('../config/constant')
 const { esClient } = require('../connectors')
 const { logger } = require('../utils/winston')
+const auctionModel = require('./auction')
 
 const auctionElasticIndex = config.esAuctionIdx
 
@@ -441,7 +442,7 @@ exports.deleteAuction = async auctionId => {
         )
     }
 }
-exports.createAuction = async (auctionId, data) => {
+exports.insertAuction = async auctionId => {
     try {
         const searchResponse = await esClient.search({
             index: auctionElasticIndex,
@@ -453,14 +454,19 @@ exports.createAuction = async (auctionId, data) => {
         })
 
         const documentId = _.get(searchResponse, 'hits.hits[0]._id')
-        if (documentId) {
+        if (!documentId) {
             throw new Error(
-                `Auction with id: ${auctionId} existed in Elasticsearch`
+                `Auction with id: ${auctionId} doesn't existed in Elasticsearch`
             )
         }
+
+        const auctionDB = await auctionModel.getAuctionToInsertElasticsearch(
+            auctionId
+        )
+
         const response = await esClient.index({
             index: auctionElasticIndex,
-            body: data
+            body: auctionDB
         })
 
         return response

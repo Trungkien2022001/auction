@@ -8,6 +8,9 @@ const { knex } = require('../connectors')
 const { auctionTime } = require('../config')
 const commonModel = require('../models/common')
 const { PRODUCT_CATEGORY } = require('../config/constant')
+const { QUEUE_ACTION } = require('../config/constant/queueActionConstant')
+const { AUCTION_STATUS } = require('../config/constant/auctionStatusConstant')
+const { sendToQueue } = require('../queue/kafka/producer.kafka')
 
 attachPaginate()
 const collationVietnamese = 'utf8mb4_unicode_ci'
@@ -726,6 +729,12 @@ exports.checkingAllAuction = async () => {
                 .isBefore(moment(new Date())) &&
             item.auction_count == 0
         ) {
+            sendToQueue(
+                {
+                    auction_id: item.id,
+                },
+                QUEUE_ACTION.DELETE_AUCTION
+            )
             await knex('auction')
                 .update('status', 6)
                 .where('id', item.id)
@@ -736,6 +745,12 @@ exports.checkingAllAuction = async () => {
                 .isBefore(moment(new Date())) &&
             item.auction_count > 0
         ) {
+            sendToQueue(
+                {
+                    auction_id: item.id,
+                },
+                QUEUE_ACTION.DELETE_AUCTION
+            )
             await knex('auction')
                 .update('status', 3)
                 .where('id', item.id)
@@ -762,6 +777,14 @@ exports.checkingAllAuction = async () => {
             item.status === 1 &&
             moment(item.start_time).isBefore(moment(new Date()))
         ) {
+            sendToQueue(
+                {
+                    auction_id: item.id,
+                    status: 2,
+                    auction_status: AUCTION_STATUS[2]
+                },
+                QUEUE_ACTION.INSERT_AUCTION
+            )
             await knex('auction')
                 .update('status', 2)
                 .where('id', item.id)
@@ -833,8 +856,8 @@ exports.finishedAuction = async id => {
     await knex('auction')
         .update(
             {
-            auctioneer_win: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
-            status: 3
+                auctioneer_win: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
+                status: 3
             }
         )
         .where('id', id)
@@ -897,4 +920,40 @@ exports.auctioneerConfirm = async (userId, auctionId, confirm) => {
     })
 
     return seller[0].id
+}
+
+exports.getAuctionToInsertElasticsearch = async auctionId => {
+    const auction = await knex
+        .first(
+            'a.id',
+            'a.start_time',
+            'a.end_time',
+            'a.auction_time',
+            'a.product_id',
+            'a.start_price',
+            'a.sell_price',
+            'a.seller_id',
+            'a.auction_count',
+            'a.status',
+            'ast.name as auction_status',
+            'a.is_returned',
+            'a.is_finished_soon',
+            'a.created_at',
+            'a.updated_at',
+            'p.name',
+            'p.description',
+            'p.branch',
+            'p.image',
+            'p.category_id',
+            'p.title',
+            'p.key_word',
+            'p.status as product_status'
+        )
+        .from('auction as a')
+        .innerJoin('product as p', 'a.product_id', 'p.id')
+        .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
+        .innerJoin('auction_status as ast', 'a.status', 'ast.id')
+        .where('a.id', auctionId)
+    
+    return auction
 }

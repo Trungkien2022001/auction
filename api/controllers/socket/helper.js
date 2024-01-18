@@ -6,6 +6,7 @@ const { logger } = require('../../utils/winston')
 const config = require('../../config')
 
 async function startAuction(id, socketIO) {
+    console.log(socketIO)
     socketIO.emit('updateUI')
     const userId = await auctionModel.updateAuction({ status: 2 }, id)
 
@@ -13,13 +14,14 @@ async function startAuction(id, socketIO) {
 }
 
 async function finishAuction(item, socketIO) {
+    console.log(socketIO)
     socketIO.emit('updateUI')
     const result = await auctionModel.finishedAuction(item.auctionId)
 
     return result
 }
 
-async function initAuctionTime(socketIO) {
+async function initAuctionTime(socketIO, listOnlineUser) {
     const times = await auctionModel.getAllAuctionTime()
     const auctions = times.map(item => {
         return {

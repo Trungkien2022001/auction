@@ -101,7 +101,7 @@ startChecking()
 
 cron.schedule('* * * * *', async () => {
     logger.info(`Refreshing after 1 minute`)
-    await initAuctionTime(socketIO)
+    await initAuctionTime(socketIO, listOnlineUser)
     if (!config.production) {
         // Mock data
         await createMockAuction()

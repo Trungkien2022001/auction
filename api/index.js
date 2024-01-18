@@ -49,7 +49,7 @@ app.use(async (ctx, next) => {
 })
 setInterval(() => {
     if (requestCount) {
-        insertRequestCount(requestCount)
+        insertRequestCount(requestCount, config.port)
     }
     requestCount = 0
 }, 1000)

@@ -303,7 +303,7 @@ exports.summary = async () => {
     const successAuctions = await knex('auction')
         .where("auction_count", ">", 0)
         // .where("status", 5)
-        .whereIn("status", [3,4,5])
+        .whereIn("status", [3, 4, 5])
     // .sum('sell_price')
     // .then(result => result[0]['sum(`sell_price`)'])
     const money = _.sum(successAuctions.map(auction => auction.sell_price))
@@ -318,18 +318,24 @@ exports.summary = async () => {
         chat
     }
 }
-exports.insertRequestCount = async count => {
-    await knex('request').insert({ count })
+exports.insertRequestCount = async (count, port) => {
+    await knex('request').insert({ count, port })
 }
 exports.getRequestCount = async limit => {
     const data = await knex('request')
-        .select()
-        .limit(limit || 100)
+        .select('time')
+        .sum('count as total_count')
+        .groupBy('time')
         .orderBy('time', 'desc')
+        .limit(limit || 100);
+    // const data = await knex('request')
+    //     .select()
+    //     .limit(limit || 100)
+    //     .orderBy('time', 'desc')
 
     return data.map(i => {
         return {
-            count: i.count,
+            count: i.total_count,
             created_at: moment(i.time).format('HH:mm:ss')
         }
     })

@@ -16,7 +16,7 @@ const { initAuctionTime } = require('./helper')
 
 async function startChecking(socketIO) {
     await auctionModel.checkingAllAuction()
-    await initAuctionTime(socketIO)
+    await initAuctionTime(socketIO, listOnlineUser)
 }
 
 async function authenticate(user, socket, listOnlineUser) {

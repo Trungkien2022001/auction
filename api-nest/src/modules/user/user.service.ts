@@ -27,7 +27,6 @@ export class UserService {
       relations: ['role'],
     });
 
-    console.log(user)
     return user;
   }
 

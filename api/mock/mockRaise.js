@@ -80,7 +80,6 @@ async function raise(userId, auctionId, price) {
 async function runMockRaise() {
     const user = await getRandomUser()
     const auctions = await getRandomActiveAuction(user.id)
-    // console.log(auctions)
     logger.info(`Mocking ${auctions.length} raise!`)
     for (let i = 0; i < auctions.length; i += 1) {
         const auction = auctions[i]

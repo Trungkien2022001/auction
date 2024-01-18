@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 const Promise = require('bluebird')
+const { logger } = require('../api/utils/winston')
 const request = Promise.promisifyAll(require('request'))
 
 const count = process.argv.slice(2)
@@ -24,7 +25,7 @@ async function get(n) {
                 await request.getAsync(url, options)
             })
         ).catch(e => {
-            console.log(e)
+            logger.err(e)
         })
         console.log(`success ${s} request`)
     }

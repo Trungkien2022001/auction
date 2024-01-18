@@ -9,6 +9,7 @@ const request = Promise.promisifyAll(require('request'))
 const faker = fakerVI
 const moment = require('moment')
 const { createAuction } = require('./components/auction/controller')
+const { logger } = require('../utils/winston')
 
 function mock() {
     const data = {
@@ -66,10 +67,8 @@ async function run() {
             json: true
         }
         const result = await request.postAsync(url, options)
-        console.log('\n------------------------------------------\n')
-        console.log(result.body)
     } catch (error) {
-        console.log(error)
+        logger.error(error)
     }
 }
 run()
@@ -86,12 +85,9 @@ const main = async () => {
                 // )
             }
             const result = await createAuction(body)
-            console.log(result)
         } catch (error) {
-            console.log(error)
+            logger.error(error)
         }
     }
 }
 main()
-// console.log()
-// console.log(faker.commerce.productName(10))

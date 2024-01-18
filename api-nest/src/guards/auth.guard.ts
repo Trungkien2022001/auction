@@ -64,7 +64,6 @@ export class AuthGuard implements CanActivate {
         }
       } catch (error) {
         // Xử lý lỗi khi giải mã token hoặc các lỗi khác
-        console.error(error.message);
         throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED); // Ngăn chặn với lỗi 401 Unauthorized
       }
     }
@@ -82,7 +81,6 @@ export class AuthGuard implements CanActivate {
 
     //     return false; // Người dùng không có quyền yêu cầu
     //   } catch (error) {
-    //     console.error(error.message);
     //     return false; // Lỗi khi xác thực token, từ chối truy cập
     //   }
     // }

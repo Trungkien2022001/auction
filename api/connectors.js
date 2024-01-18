@@ -70,7 +70,7 @@ redis.mutipleExecutedCache = async function mutipleExecutedCache(
             )
             .catch(e => {
                 // eslint-disable-next-line no-console
-                console.error(e.message)
+                logger.error(e.message)
 
                 return []
             })

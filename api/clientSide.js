@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const { logger } = require('./utils/winston')
 
 const app = express()
 const port = process.env.CLIENT_PORT || 3000
@@ -13,5 +14,5 @@ app.get('*', (req, res) => {
 })
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+    logger.info(`Server is running on port ${port}`)
 })

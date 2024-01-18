@@ -58,7 +58,6 @@ export class JwtInterceptor implements NestInterceptor {
         }
       } catch (error) {
         // Xử lý lỗi khi giải mã token hoặc các lỗi khác
-        console.error(error.message);
         throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED); // Ngăn chặn với lỗi 401 Unauthorized
       }
     } else {

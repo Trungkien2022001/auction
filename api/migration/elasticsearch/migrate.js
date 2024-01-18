@@ -69,7 +69,6 @@ async function migrateAuction() {
     const indexName = 'auction_idx'
     logger.info(`Table: ${tableName}, numOfRows: ${list.length}`)
     const chunkList = _.chunk(list, 50)
-    // console.log(chunkList.length)
     for (let i = 0; i < chunkList.length; i += 1) {
         const documents = chunkList[i]
         await Promise.all(

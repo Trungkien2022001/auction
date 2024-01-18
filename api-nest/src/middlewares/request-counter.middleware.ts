@@ -11,9 +11,6 @@ export class RequestCounterMiddleware implements NestMiddleware {
     this.requestsPerMinute++;
 
     // Log thông tin hoặc lưu vào database nếu cần
-    console.log(`Requests per second: ${this.requestsPerSecond}`);
-    console.log(`Requests per minute: ${this.requestsPerMinute}`);
-
     // Reset số lượng requests mỗi giây
     setTimeout(() => {
       this.requestsPerSecond = 0;

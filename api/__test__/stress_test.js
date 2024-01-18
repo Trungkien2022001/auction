@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 const Promise = require('bluebird')
-const { promises } = require('nodemailer/lib/xoauth2')
+const { promises } = require('nodemailer/lib/xoauth2');
+const { logger } = require('../utils/winston');
 const request = Promise.promisifyAll(require('request'))
 
 const count = process.argv.slice(2)
@@ -35,7 +36,6 @@ async function get(n) {
             url = 'http://localhost/health'
             break
     }
-    console.log(url, s, s1)
     while (true) {
         await delay(1000); 
         await Promise.all(
@@ -54,9 +54,9 @@ async function get(n) {
                 await request.getAsync(url, options)
             })
         ).catch(e => {
-            console.log(e)
+            logger.error(e)
         })
-        console.log(`success ${s} request`)
+        logger.info(`success ${s} request`)
     }
 }
 // node "e:\Code\Project\auction\api\test.js" 0 100

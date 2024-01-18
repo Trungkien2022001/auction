@@ -43,7 +43,6 @@ export const NewProduct = ({ socket }) => {
     useEffect(() => {
         async function getData() {
             const result = await get(`/auction-helper`, currentUser)
-            console.log(result)
             if (checkApiResponse(result)) {
                 setProductCategory(result.data.product_category)
             }

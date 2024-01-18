@@ -67,7 +67,6 @@ export const Homepage = ({ socket }) => {
     setLoading(false)
     setTimeout(async () => {
       const tracking = tryParseJson(localStorage.getItem('tracking')) || {}
-      console.log(tracking)
       if (!tracking.is_visited) {
         tracking.is_visited = true
         setIsFirstVisited(true)

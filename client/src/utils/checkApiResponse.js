@@ -4,7 +4,6 @@ exports.checkApiResponse = (res) => {
     return true
   }
   if (!res.data || res.data.code < 200 || res.data.code > 299) {
-    console.log(res.data.code)
     switch (res.data.code) {
       case 502:
 

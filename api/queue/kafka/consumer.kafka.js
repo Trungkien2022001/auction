@@ -4,6 +4,8 @@ const { logger } = require('../../utils/winston')
 const config = require('../../config')
 const { handleJob } = require('../handleJob')
 
+kafka.emitter().setMaxListeners(10)
+
 const { Consumer } = kafka
 const client = new kafka.KafkaClient({ kafkaHost: config.kafkaHost })
 client.setMaxListeners(20)

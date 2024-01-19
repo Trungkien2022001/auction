@@ -10,6 +10,7 @@ const { MOCK } = require('./constant')
 const faker = fakerVI
 const { createAuction } = require('../components/auction/controller')
 const { logger } = require('../utils/winston')
+const { AUCTION_TIME } = require('../config/constant')
 
 function randomRange(a, b) {
     return Math.floor(Math.random() * (b - a + 1)) + a
@@ -59,13 +60,15 @@ const buildProduct = categoryId => {
 
 function gen() {
     const categoryId = randomRange(1, 21)
-
+    const start_time = moment(Date.now())
+        .add(Math.floor(Math.random() * 500000), 'minute')
+        .format('YYYY-MM-DD HH:mm:ss')
+    auction_time = randomRange(10, 20)
     return {
         auction: {
-            start_time: moment(Date.now())
-                .add(Math.floor(Math.random() * 500000), 'minute')
-                .format('YYYY-MM-DD HH:mm:ss'),
-            auction_time: randomRange(10, 20),
+            start_time,
+            auction_time,
+            end_time: moment(start_time).add(AUCTION_TIME[auction_time], 'minutes').format('YYYY-MM-DD HH:mm:ss'),
             is_returned: randomRange(0, 1),
             is_finished_soon: randomRange(0, 1)
         },

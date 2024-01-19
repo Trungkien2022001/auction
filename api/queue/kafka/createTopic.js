@@ -6,7 +6,8 @@ const { Producer } = kafka;
 const client = new kafka.KafkaClient({ kafkaHost: config.kafkaHost });
 
 const admin = new kafka.Admin(client);
-
+client.setMaxListeners(20)
+admin.setMaxListeners(20)
 const topicToCheck = 'test'; // Thay thế 'your_topic_name' bằng tên topic bạn muốn kiểm tra và tạo
 
 function checkAndCreateTopic() {

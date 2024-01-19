@@ -10,6 +10,7 @@ const defaults = {
     productWaitTime: 1500,
     homepageMetadataWaitTime: 2500,
     isUseLazyLoading: false,
+    service: "NODE",
     timeout: 10000,
     maxPrice: 1000000000000
 

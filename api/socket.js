@@ -97,15 +97,17 @@ socketIO.on('connection', socket => {
     })
 })
 
-startChecking()
+startChecking(listOnlineUser)
 
 cron.schedule('* * * * *', async () => {
     logger.info(`Refreshing after 1 minute`)
     await initAuctionTime(socketIO, listOnlineUser)
+    logger.custom(JSON.stringify(listOnlineUser), "list_user")
     if (!config.production) {
         // Mock data
         await createMockAuction()
         await runMockRaise()
+        // logger.info("List: ", JSON.stringify(listOnlineUser))
     }
 })
 
@@ -117,6 +119,7 @@ cron.schedule('*/5 * * * *', async () => {
 if (config.isUseKafka && config.isUseKafkaOnSocketServer) {
     logger.info('Using Kafka On Socket Server')
     const kafka = require('kafka-node')
+
 
     const { Consumer } = kafka
     const client = new kafka.KafkaClient({ kafkaHost: config.kafkaHost })
@@ -149,3 +152,7 @@ if (!module.parent) {
         )
     })
 }
+
+process.on('unhandledRejection', err => {
+    logger.error({name: 'unhandledRejection' }, JSON.stringify(err))
+})

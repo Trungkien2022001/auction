@@ -2,8 +2,8 @@ import axios from 'axios'
 import config from '../config'
 import { popupError } from './common'
 
-export async function get(url, currentUser, service) {
-    const service_url = buildUrl(url, service)
+export async function get(url, currentUser, timeout) {
+    const service_url = buildUrl(url, config.service)
     try {
         const result = await axios.get(service_url, {
             headers: {
@@ -12,7 +12,7 @@ export async function get(url, currentUser, service) {
                 'x-access-token': currentUser.token,
                 'Access-Control-Allow-Origin': '*'
             },
-            timeout: config.timeout || 10000
+            timeout: timeout || config.timeout
         })
         return result
     } catch (error) {
@@ -20,8 +20,8 @@ export async function get(url, currentUser, service) {
     }
 }
 
-export async function post(url, data, currentUser, service) {
-    const service_url = buildUrl(url, service)
+export async function post(url, data, currentUser, timeout) {
+    const service_url = buildUrl(url, config.service)
     try {     
         const result = await axios.post(service_url, data, {
             headers: {
@@ -30,7 +30,7 @@ export async function post(url, data, currentUser, service) {
                 'x-access-token': currentUser.token,
                 'Access-Control-Allow-Origin': 'http://localhost:3000'
             },
-            timeout: config.timeout
+            timeout: timeout || config.timeout
         })
         return result
     } catch (error) {
@@ -38,7 +38,7 @@ export async function post(url, data, currentUser, service) {
     }
 }
 
-function buildUrl(url, service) {
+function buildUrl(url, service = "NODE") {
     let host
     switch (service) {
         case 'NODE':

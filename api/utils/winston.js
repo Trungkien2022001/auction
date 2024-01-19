@@ -2,7 +2,8 @@ const winston = require('winston')
 const path = require('path')
 
 const parentDir = path.resolve(__dirname, '..')
-exports.logger = winston.createLogger({
+
+const logger = winston.createLogger({
     format: winston.format.combine(
         winston.format.splat(),
         winston.format.timestamp({
@@ -33,3 +34,23 @@ exports.logger = winston.createLogger({
         })
     ]
 })
+
+function customLogger(message, type, level="info") {
+    const fileName = type ? `${type}.log` : `${level}.log`;
+    const fileTransport = new winston.transports.File({
+        level: level,
+        filename: path.join(parentDir, 'log', fileName)
+    });
+
+    logger.add(fileTransport);
+    logger.log({
+        level: level,
+        message: message
+    });
+
+    logger.remove(fileTransport);
+}
+
+logger.custom = customLogger
+
+exports.logger = logger

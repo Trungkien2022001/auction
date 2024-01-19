@@ -17,10 +17,10 @@ export const Chart = ({ currentUser, socket }) => {
   const [money, setMoney] = useState([])
   const [summary, setSummary] = useState({})
   const [requestCount, setRequestCount] = useState([])
-  const [requestLimit, setRequestLimit] = useState(50)
-  const [auctionRaiseType, setAuctionRaiseType] = useState('day')
-  const [auctionType, setAuctionType] = useState('day')
-  const [userType, setUserType] = useState('day')
+  const [requestLimit, setRequestLimit] = useState(20)
+  const [auctionRaiseType, setAuctionRaiseType] = useState('hour')
+  const [auctionType, setAuctionType] = useState('hour')
+  const [userType, setUserType] = useState('hour')
   const [moneyType, setMoneyType] = useState('minute')
   const [check, setCheck] = useState(false)
   const [timeUpdate, setTimeUpdate] = useState(3600)
@@ -31,7 +31,7 @@ export const Chart = ({ currentUser, socket }) => {
     }
   }
   async function getSummary() {
-    let result = await get(`/dashboard-summary`, currentUser)
+    let result = await get(`/dashboard-summary`, currentUser, 100000)
     if (checkApiResponse(result)) {
       setSummary(result.data.data)
     }
@@ -44,19 +44,19 @@ export const Chart = ({ currentUser, socket }) => {
     }
   }
   async function getMoney() {
-    let result = await get(`/dashboard-money?type=${moneyType}`, currentUser)
+    let result = await get(`/dashboard-money?type=${moneyType}`, currentUser, 100000)
     if (checkApiResponse(result)) {
       setMoney(result.data.data)
     }
   }
   async function getUser() {
-    let result = await get(`/dashboard-user?type=${userType}`, currentUser)
+    let result = await get(`/dashboard-user?type=${userType}`, currentUser, 100000)
     if (checkApiResponse(result)) {
       setUser(result.data.data)
     }
   }
   async function getAuction() {
-    let result = await get(`/dashboard-auction?type=${auctionType}`, currentUser)
+    let result = await get(`/dashboard-auction?type=${auctionType}`, currentUser, 100000)
     if (checkApiResponse(result)) {
       setAuction(result.data.data)
     }
@@ -244,7 +244,7 @@ export const Chart = ({ currentUser, socket }) => {
               <MenuItem value={'minute'}>Phút</MenuItem>
               <MenuItem value={'hour'}>Giờ</MenuItem>
               <MenuItem value={'day'}>Ngày</MenuItem>
-              <MenuItem value={'month'}>Tháng</MenuItem>
+              {/* <MenuItem value={'month'}>Tháng</MenuItem> */}
             </Select>
           </div>
         </div>
@@ -281,7 +281,7 @@ export const Chart = ({ currentUser, socket }) => {
               <MenuItem value={'minute'}>Phút</MenuItem>
               <MenuItem value={'hour'}>Giờ</MenuItem>
               <MenuItem value={'day'}>Ngày</MenuItem>
-              <MenuItem value={'month'}>Tháng</MenuItem>
+              {/* <MenuItem value={'month'}>Tháng</MenuItem> */}
             </Select>
           </div>
         </div>
@@ -292,7 +292,7 @@ export const Chart = ({ currentUser, socket }) => {
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <XAxis dataKey="created_at" />
-            <YAxis label={{ value: 'Doanh thu', angle: -90, position: 'insideLeft' }} />
+            <YAxis label={{ value: 'Người dùng', angle: -90, position: 'insideLeft' }} />
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
             <Legend />
@@ -316,7 +316,7 @@ export const Chart = ({ currentUser, socket }) => {
               <MenuItem value={'minute'}>Phút</MenuItem>
               <MenuItem value={'hour'}>Giờ</MenuItem>
               <MenuItem value={'day'}>Ngày</MenuItem>
-              <MenuItem value={'month'}>Tháng</MenuItem>
+              {/* <MenuItem value={'month'}>Tháng</MenuItem> */}
             </Select>
           </div>
         </div>
@@ -327,7 +327,7 @@ export const Chart = ({ currentUser, socket }) => {
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <XAxis dataKey="created_at" />
-            <YAxis label={{ value: 'Doanh thu', angle: -90, position: 'insideLeft' }} />
+            <YAxis label={{ value: 'Lượt đấu giá', angle: -90, position: 'insideLeft' }} />
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
             <Legend />
@@ -350,7 +350,7 @@ export const Chart = ({ currentUser, socket }) => {
               <MenuItem value={'minute'}>Phút</MenuItem>
               <MenuItem value={'hour'}>Giờ</MenuItem>
               <MenuItem value={'day'}>Ngày</MenuItem>
-              <MenuItem value={'month'}>Tháng</MenuItem>
+              {/* <MenuItem value={'month'}>Tháng</MenuItem> */}
             </Select>
           </div>
         </div>
@@ -361,7 +361,7 @@ export const Chart = ({ currentUser, socket }) => {
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <XAxis dataKey="created_at" />
-            <YAxis label={{ value: 'Doanh thu', angle: -90, position: 'insideLeft' }} />
+            <YAxis label={{ value: 'Phiên đấu giá', angle: -90, position: 'insideLeft' }} />
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
             <Legend />

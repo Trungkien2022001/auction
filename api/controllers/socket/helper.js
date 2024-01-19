@@ -4,6 +4,8 @@ const moment = require('moment')
 const auctionModel = require('../../models/auction')
 const { logger } = require('../../utils/winston')
 const config = require('../../config')
+const { sendToQueue } = require('../../queue/kafka/producer.kafka')
+const { QUEUE_ACTION } = require('../../config/constant/queueActionConstant')
 
 async function startAuction(id, socketIO) {
     socketIO.emit('updateUI')

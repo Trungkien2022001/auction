@@ -2,7 +2,7 @@ const auctionModel = require('../../models/auction')
 const messageModel = require('../../models/message')
 
 const createRoomsName = ids => {
-    return ids.map(id => `auction:${id}`)
+    return ids.map(id => `auction:${id.auction_id}`)
 }
 
 function createRoomName(id) {
@@ -10,7 +10,7 @@ function createRoomName(id) {
 }
 
 const joinRoom = (auctionId, user, socket) => {
-    socket.join(createRoomsName(auctionId))
+    socket.join(createRoomName(auctionId))
 }
 
 async function addToRoom(userId, socketId, isAdmin, listOnlineUser) {
@@ -82,7 +82,7 @@ function leaveRoom(socketId, index, listOnlineUser) {
 async function removeAuctionRoom(auctionId, listOnlineUser) {
     await auctionModel.updateUserAuction(auctionId)
 
-    const auctionRoomName = createRoomsName(auctionId)
+    const auctionRoomName = createRoomName(auctionId)
     for (let i = 0; i < listOnlineUser.length; i += 1) {
         const item = listOnlineUser[i]
         const index = item.auctionRooms.findIndex(

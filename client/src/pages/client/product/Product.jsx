@@ -46,7 +46,7 @@ export const Product = ({ socket }) => {
     setLoading(true)
     setPreLoading(false)
     const f = async () => {
-      let result = await post(`/api/v1/auction/${id}`, {}, currentUser, SERVICES.NODEJS)
+      let result = await post(`/api/v1/auction/${id}`, {}, currentUser)
       if (checkApiResponse(result)) {
         setData(result.data.data)
         setPreLoading(true)

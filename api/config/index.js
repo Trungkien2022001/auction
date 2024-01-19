@@ -17,7 +17,7 @@ const defaults = {
     mysqlConnectionUrl: 'mysql://root@localhost/auction',
     messageLimit: 200,
     maxRateLimt: 100,
-    maxListeners: 100,
+    maxListeners: 10,
     nodeMailerEmail: 'example@gmail.com',
     nodeMailerPassword: 'example',
     kafkaHost: 'localhost:9092',

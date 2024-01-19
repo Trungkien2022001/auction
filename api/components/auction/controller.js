@@ -11,6 +11,7 @@ const {
 } = require('../../config/constant/auctionStatusConstant')
 const { QUEUE_ACTION } = require('../../config/constant/queueActionConstant')
 const { sendToQueue } = require('../../queue/kafka/producer.kafka')
+const { AUCTION_TIME } = require('../../config/constant')
 
 exports.createAuction = async params => {
     const { body, user } = params
@@ -21,6 +22,7 @@ exports.createAuction = async params => {
     }
     const auction = {
         ...body.auction,
+        end_time: moment(body.auction.start_time).add(AUCTION_TIME[body.auction.auction_time], 'minutes').format('YYYY-MM-DD HH:mm:ss'),
         seller_id: user.id,
         start_price: product.start_price,
         sell_price: product.start_price

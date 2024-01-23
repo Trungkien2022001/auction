@@ -55,7 +55,7 @@ function gen() {
 }
 
 async function createMockUser() {
-    const total = randomRange(1, 10)
+    const total = randomRange(1, 5)
     await Promise.all(
         Array(total)
             .fill(0)

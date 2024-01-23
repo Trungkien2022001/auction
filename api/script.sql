@@ -51,3 +51,12 @@ delete from test where id > 100
 select * from auction where status = 1
 create index idx_auction_status on auction(status)
 ALTER TABLE product ADD FULLTEXT INDEX idx_fulltext_name (name);
+
+
+
+
+delete from auction_history where true
+delete from notification  where true
+delete from user_auction  where true
+delete from image  where true
+delete from auction  where true

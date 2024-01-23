@@ -61,9 +61,9 @@ const buildProduct = categoryId => {
 function gen() {
     const categoryId = randomRange(1, 21)
     const start_time = moment(Date.now())
-        .add(Math.floor(Math.random() * 500000), 'minute')
+        .add(Math.floor(Math.random() * 5), 'minute')
         .format('YYYY-MM-DD HH:mm:ss')
-    auction_time = randomRange(10, 20)
+    auction_time = randomRange(1, 20)
     return {
         auction: {
             start_time,
@@ -89,7 +89,7 @@ async function createMockAuction() {
                 await createAuction({
                     body: gen(),
                     user: {
-                        id: 319
+                        id: randomRange(1, 18)
                     }
                 })
             })

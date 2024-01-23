@@ -227,7 +227,7 @@ exports.getAuctions = async params => {
     const {
         type = 'homepage',
         limit = 24,
-        page = 0,
+        page = 1,
         sort,
         category = 'all',
         name,
@@ -242,7 +242,7 @@ exports.getAuctions = async params => {
         },
         sort: [],
         size: limit,
-        from: page * limit || 0
+        from: (page - 1) * limit
     }
     const mustConditional = []
     if (type === 'homepage') {
@@ -258,8 +258,8 @@ exports.getAuctions = async params => {
     }
     if (name) {
         mustConditional.push({
-            regexp: {
-                'name.keyword': `.*${name}.*`
+            match_phrase: {
+                name
             }
         })
     }

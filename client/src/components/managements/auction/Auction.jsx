@@ -385,7 +385,7 @@ export const Auction = ({ currentUser, socket }) => {
                               >
                                 {row.id}
                               </TableCell>
-                              <TableCell align="center" className='product-history-name'>{row.product_name}</TableCell>
+                              <TableCell align="center" className='product-history-name'>{row.name}</TableCell>
                               <TableCell align="center">{row.start_price.toLocaleString('en-US', {
                                 style: 'currency',
                                 currency: 'VND',
@@ -395,7 +395,7 @@ export const Auction = ({ currentUser, socket }) => {
                                 currency: 'VND',
                               })}</TableCell>
                               <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY HH:mm:ss')}</TableCell>
-                              <TableCell align="center">{row.auction_time}</TableCell>
+                              <TableCell align="center">{AUCTION_TIMES[row.time]}</TableCell>
                               <TableCell align="center">{row.auction_count}</TableCell>
                               <TableCell align="center">{row.seller_id}</TableCell>
                               <TableCell align="center">{row.auctioneer_win}</TableCell>

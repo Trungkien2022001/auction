@@ -32,6 +32,7 @@ const {
 } = require('./controllers/socket')
 const { addToNewRoom } = require('./controllers/socket/auctionRoom')
 const { handleJob } = require('./queue/handleJob')
+const { createMockUser } = require('./mock/mockUser')
 
 const listOnlineUser = []
 
@@ -97,23 +98,31 @@ socketIO.on('connection', socket => {
     })
 })
 
-startChecking(listOnlineUser)
+startChecking(socketIO, listOnlineUser)
 
 cron.schedule('* * * * *', async () => {
-    logger.info(`Refreshing after 1 minute`)
-    await initAuctionTime(socketIO, listOnlineUser)
-    logger.custom(JSON.stringify(listOnlineUser), "list_user")
-    if (!config.production) {
-        // Mock data
+    try {
+        logger.info(`Refreshing after 1 minute`)
         await createMockAuction()
         await runMockRaise()
-        // logger.info("List: ", JSON.stringify(listOnlineUser))
+        await createMockUser()
+        await initAuctionTime(socketIO, listOnlineUser)
+        // if (!config.production) {
+        // Mock data
+        // }
+        
+    } catch (err) {
+        logger.error("CronJob Error!", err)
     }
 })
 
 cron.schedule('*/5 * * * *', async () => {
-    logger.info(`Checking all auction after 5 minute`)
-    await auctionModel.checkingAllAuction()
+    try {
+        logger.info(`Checking all auction after 5 minute`)
+        await auctionModel.checkingAllAuction()
+    } catch (err) {
+        logger.error("CronJob Error!", err)
+    }
 })
 
 if (config.isUseKafka && config.isUseKafkaOnSocketServer) {
@@ -133,7 +142,7 @@ if (config.isUseKafka && config.isUseKafkaOnSocketServer) {
     consumer.on('message', async message => {
         await handleJob(message)
 
-        consumer.commit(() => {})
+        consumer.commit(() => { })
     })
 
     consumer.on('error', err => {
@@ -154,5 +163,5 @@ if (!module.parent) {
 }
 
 process.on('unhandledRejection', err => {
-    logger.error({name: 'unhandledRejection' }, JSON.stringify(err))
+    logger.error({ name: 'unhandledRejection' }, JSON.stringify(err))
 })

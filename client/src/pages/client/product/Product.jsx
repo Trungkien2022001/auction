@@ -21,7 +21,7 @@ import { authenticate } from "../../../utils/authenticate";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
-import { AUCTION_STATUS, AUCTION_TIMES, SERVICES } from "../../../utils/constants";
+import { AUCTION_STATUS, AUCTION_TIMES } from "../../../utils/constants";
 import config from "../../../config";
 const _ = require('lodash')
 

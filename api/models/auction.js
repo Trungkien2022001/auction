@@ -607,8 +607,9 @@ exports.getAllAuctionTime = async () => {
             .innerJoin('product as p', 'a.product_id', 'p.id')
             .innerJoin('auction_time as at', 'a.auction_time', 'at.id')
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
-            .whereNotIn('a.status', ['5', '6'])
+            .whereNotIn('a.status', ['5', '6', '7', '8'])
             .whereNull('a.deleted_at')
+            .andWhere('a.start_time', "<", moment().add(3, 'minutes').format())
             .orderBy('a.updated_at', 'desc')
 
         return result

@@ -12,8 +12,10 @@ import { get, post } from '../../../utils/customRequest'
 import { newAuctionValidate } from '../../../utils/validateFormInput'
 import Swal from 'sweetalert2'
 import moment from 'moment'
+import ReactQuill from 'react-quill';
 import { checkApiResponse } from '../../../utils/checkApiResponse';
 import { AUCTION_TIMES } from '../../../utils/constants';
+import 'react-quill/dist/quill.snow.css';
 
 
 export const NewProduct = ({ socket }) => {
@@ -40,6 +42,25 @@ export const NewProduct = ({ socket }) => {
         is_finished_soon: 0
 
     })
+
+    const modules = {
+        toolbar: [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            // ['link', 'image', 'video'],
+            ['clean'],
+        ],
+    };
+
+    const formats = [
+        'header',
+        'bold', 'italic', 'underline', 'strike', 'blockquote',
+        'list', 'bullet',
+        // 'link', 'image', 'video',
+    ];
+
+
     useEffect(() => {
         async function getData() {
             const result = await get(`/auction-helper`, currentUser)
@@ -146,6 +167,10 @@ export const NewProduct = ({ socket }) => {
             );
         } catch (err) {
         }
+    }
+
+    const handleChangeDescription = e => {
+        setProduct({ ...product, description: e})
     }
 
     const handleRemoveImage = (item) => {
@@ -280,15 +305,18 @@ export const NewProduct = ({ socket }) => {
                             label="Mô tả"
                             variant="outlined"
                             placeholder='Mô tả ngắn gọn về sản phẩm'
-                            helperText='Mô tả một cách ngắn gọn về sản phẩm để có cái nhìn tổng quan về sản phẩm'
+                            helperText='Không quá 100 kí tự'
                             onChange={e => setProduct({ ...product, title: e.target.value })}
                         />
                     </div>
                 </div>
 
                 <div className='new-product-part'>
-                    <div className='new-product-item'>
-                        <TextField
+                    <div className='new-product-item' style={{
+                        height: "200px",
+                        maxWidth: "100%"
+                    }}>
+                        {/* <TextField
                             className='text-input text-input-95'
                             id="standard-basic"
                             multiline
@@ -297,6 +325,14 @@ export const NewProduct = ({ socket }) => {
                             variant="outlined"
                             placeholder='Mô tả chi tiết về sản phẩm'
                             onChange={e => setProduct({ ...product, description: e.target.value })}
+                        /> */}
+                        <ReactQuill
+                            className='quill'
+                            theme="snow"
+                            placeholder= 'Thông tin chi tiết của sản phẩm....'
+                            modules={modules}
+                            formats={formats}
+                            onChange={handleChangeDescription}
                         />
                     </div>
                 </div>

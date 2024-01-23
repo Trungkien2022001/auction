@@ -23,7 +23,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
 import { AUCTION_STATUS, AUCTION_TIMES } from "../../../utils/constants";
 import config from "../../../config";
-const _ = require('lodash')
+// const _ = require('lodash')
 
 
 
@@ -88,10 +88,10 @@ export const Product = ({ socket }) => {
 
   const handleSubmitAuction = async () => {
     setOpenAuctionDialog(false)
-    if(authenticate(currentUser)){
+    if (authenticate(currentUser)) {
       return
     }
-    if(auctionBet > config.maxPrice){
+    if (auctionBet > config.maxPrice) {
       Swal.fire(
         'Vui lòng đặt mức đấu giá hợp lí?',
         `Mức đấu giá tối đa cho sản phẩm là ${config.maxPrice} VND`,
@@ -190,18 +190,7 @@ export const Product = ({ socket }) => {
         return `<div style='opacity:0'>none-content</div>`
       }).join('')
     } else {
-      arr = str.split('. ')
-      if (arr.length > 1) {
-        str.split('. ')
-        customStr = arr.map(i => {
-          if (i.replaceAll(' ', '') !== '') {
-            return `<li>${i}</li>`
-          }
-          return `<li style='opacity:0'>none-content</li>`
-        }).join('')
-      } else {
-        customStr = _.chunk(str.split(' '), 20).map(a => `<li>${a.join(' ')}</li>`).join('')
-      }
+      customStr = str
     }
     return {
       __html: customStr
@@ -404,7 +393,7 @@ export const Product = ({ socket }) => {
             <div className="product-info">
               <div className="product-info__header">
                 <b></b>
-                <h3 style={{color:"#d0011b"}}>Thông tin chi tiết sản phẩm</h3>
+                <h3 style={{ color: "#d0011b" }}>Thông tin chi tiết sản phẩm</h3>
                 <b></b>
               </div>
               <div className="product-info-wrap">
@@ -454,14 +443,14 @@ export const Product = ({ socket }) => {
                 </div>
                 <div className="product-info">
                   <div className="product-info-title">Tình trạng phiên đấu giá</div>
-                  <div className="product-info-detail">{AUCTION_STATUS.find(i=>i.value === data.auction_status)?.title}</div>
+                  <div className="product-info-detail">{AUCTION_STATUS.find(i => i.value === data.auction_status)?.title}</div>
                 </div>
               </div>
             </div>
             <div className="product-description">
               <div className="product-description__header">
                 <b></b>
-                <h3 style={{color:"#d0011b"}}>Mô tả sản phẩm</h3>
+                <h3 style={{ color: "#d0011b" }}>Mô tả sản phẩm</h3>
                 <b></b>
               </div>
               <div className="product-description__detail" dangerouslySetInnerHTML={customDescription(data.description)}>

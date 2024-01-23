@@ -295,8 +295,12 @@
     }
     .product-description__detail {
       padding: 20px;
-      padding-left: 10%;
+      // padding-left: 10%;
       text-align: left;
+      max-width: 100%;
+      word-wrap: break-word;
+      text-overflow:ellipsis;
+      // overflow: scroll;
     }
   }
   .product-part-wrapper {

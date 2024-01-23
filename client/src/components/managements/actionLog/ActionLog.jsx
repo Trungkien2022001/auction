@@ -218,7 +218,7 @@ export const ActionLog = ({ currentUser, socket }) => {
   const [data, setData] = useState([])
   const [initialData, setInitialData] = useState([])
 
-  if(!currentUser.role.dashboard_action_log){
+  if (!currentUser.role.dashboard_action_log) {
     window.location.href = `/management/dashboard`
   }
 
@@ -325,9 +325,21 @@ export const ActionLog = ({ currentUser, socket }) => {
                           <TableCell align="center" className='small-cell'>{row.path}</TableCell>
                           <TableCell align="center" className='small-cell'>{row.user}</TableCell>
                           <TableCell align="center" className='small-cell'>{row.client_ip}</TableCell>
-                          <TableCell align="center" className='big-cell1'>{row.request}</TableCell>
-                          <TableCell align="center" className='big-cell'>{row.response}</TableCell>
-                          <TableCell align="center" className='big-cell1'>{row.error}</TableCell>
+                          <TableCell align="center">
+                            <div className="big-cell">
+                              {row.request}
+                            </div>
+                          </TableCell>
+                          <TableCell align="center">
+                            <div className="big-cell">
+                              {row.response}
+                            </div>
+                          </TableCell>
+                          <TableCell align="center">
+                            <div className="big-cell">
+                              {row.error}
+                            </div>
+                          </TableCell>
                           <TableCell align="center" className='small-cell'>{moment(row.created_at).format('DD-MM-YYYY HH:mm:ss')}</TableCell>
                         </TableRow>
                       );

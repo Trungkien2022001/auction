@@ -21,7 +21,7 @@ const custom = {
         process.env.ENV === 'production',
     socketHost: process.env.REACT_APP_SOCKET_ENDPOINT,
     apiHost: process.env.REACT_APP_API_ENDPOINT,
-    apiNodeHost: process.env.REACT_APP_API_NODE_ENDPOINT,
+    apiNodeHost: process.env.REACT_APP_API_ENDPOINT,
     apiSpringbootHost: process.env.REACT_APP_API_SPRINGBOOT_ENDPOINT,
     homepageWaitTime: process.env.REACT_APP_HOMEPAGE_WAIT_TIME,
     homepageMetadataWaitTime: process.env.REACT_APP_HOMEPAGE_METADATA_WAIT_TIME,

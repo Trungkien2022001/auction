@@ -32,6 +32,7 @@ const defaults = {
     vnpApi: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
     vnpReturnUrl: 'http://localhost:8888/order/vnpay_return',
     vnpTmnCode: '4DXY784V',
+    allowMock: false,
     vnpHashSecret:
         '6da7e6ad1270bc7674f2b436f4301fa8/1/010e018cc9347967-fe6be0c1-681e-4b66-a646-540c4a556160-000000/R46ByIKy1LoJUAYTo4juNdBE6pQ=139'
 }

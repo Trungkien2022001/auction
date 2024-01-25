@@ -49,7 +49,7 @@ async function raise(data, socket, listOnlineUser, socketIO) {
             {
                 auction_id: data.auction.id,
                 auction_count: data.auction.auction_count + 1,
-                sell_price: Math.parseInt(data.bet.bet_price)
+                sell_price: parseInt(data.bet.bet_price)
             },
             QUEUE_ACTION.UPDATE_AUCTION
         )

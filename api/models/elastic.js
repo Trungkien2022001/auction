@@ -390,6 +390,7 @@ exports.updateAuction = async (auctionId, updatedFields) => {
 
         const documentId = _.get(searchResponse, 'hits.hits[0]._id')
         if (!documentId) {
+            await exports.insertAuction(auctionId)
             throw new Error(
                 `Auction with id: ${auctionId} not found in Elasticsearch`
             )

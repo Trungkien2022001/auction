@@ -25,9 +25,9 @@ const defaults = {
     rabbitMQHost: 'amqp://localhost',
     topicName: 'test-topic',
     esAuctionIdx: 'auction_idx',
-    isUseElasticSearch: true,
-    isUseKafka: true,
-    isUseKafkaOnSocketServer: true,
+    isUseElasticSearch: false,
+    isUseKafka: false,
+    isUseKafkaOnSocketServer: false,
     vnpUrl: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
     vnpApi: 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction',
     vnpReturnUrl: 'http://localhost:8888/order/vnpay_return',
@@ -59,8 +59,8 @@ const custom = {
     topicName: process.env.KAFKA_TOPIC,
     elasticHost: process.env.ELASTIC_HOST,
     esAuctionIdx: process.env.ELASTIC_AUCTION_IDX,
-    isUseElasticSearch: process.env.IS_USE_ELASTICSEARCH,
-    isUseKafka: process.env.IS_USE_KAFKA,
+    isUseElasticSearch: !process.env.IS_USE_ELASTICSEARCH === 'false',
+    isUseKafka: !process.env.IS_USE_KAFKA === 'false',
     vnpTmnCode: process.env.VNP_TMN_CODE,
     vnpHashSecret: process.env.VNP_HASH_SECRET
 }

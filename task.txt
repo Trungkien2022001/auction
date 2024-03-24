@@ -1,0 +1,10 @@
+1. Update database
+8. Xóa một lượt đấu giá
+2. Config cho từng category (bước nhảy, trừ tiền)
+3. Ads admin
+4. Phê duyệt phiên đấu giá
+5. Giới hạn số lần đấu giá, tạo đấu giá, thu phí tạo đấu giá
+6. Tích hợp qr pay
+7. auction management (filter theo ngày, hoặc theo id,  hoặc auction_id)
+8. user management (update status, nạp tiền, role và role_detail để check is Admin)
+9. chat

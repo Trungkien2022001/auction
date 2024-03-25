@@ -44,14 +44,17 @@ async function fetchUserByEmail(email) {
         return user
     }
 
-    return redis.cachedExecute(
-        {
-            key: `user:${email}`,
-            ttl: '2 days',
-            json: true
-        },
-        fetchUser
-    )
+    // return redis.cachedExecute(
+    //     {
+    //         key: `user:${email}`,
+    //         ttl: '2 days',
+    //         json: true
+    //     },
+    //     fetchUser
+    // )
+    const user = await fetchUser()
+
+    return user
 }
 
 async function fetchUserByID(id, type = 'user') {

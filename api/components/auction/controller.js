@@ -12,6 +12,8 @@ const {
 const { QUEUE_ACTION } = require('../../config/constant/queueActionConstant')
 const { sendToQueue } = require('../../queue/kafka/producer.kafka')
 const { AUCTION_TIME } = require('../../config/constant')
+const { pay } = require('../payment/controller')
+const { PAYMENT_TYPES } = require('../../config/constant/paymentTypeConstant')
 
 exports.createAuction = async params => {
     const { body, user } = params
@@ -22,7 +24,9 @@ exports.createAuction = async params => {
     }
     const auction = {
         ...body.auction,
-        end_time: moment(body.auction.start_time).add(AUCTION_TIME[body.auction.auction_time], 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+        end_time: moment(body.auction.start_time)
+            .add(AUCTION_TIME[body.auction.auction_time], 'minutes')
+            .format('YYYY-MM-DD HH:mm:ss'),
         seller_id: user.id,
         start_price: product.start_price,
         sell_price: product.start_price
@@ -53,6 +57,17 @@ exports.createAuction = async params => {
 exports.createAuctionRaise = async params => {
     const { body, user, auctionId } = params
     const auction = await exports.getAuctionDetail({ id: auctionId })
+    const productsConfig = await commonModel.getProductCategory()
+    const pConfig = productsConfig.find(
+        i => i.name === auction.product_category
+    )
+    const fee = pConfig.bid_increment
+    if (user.amount < fee) {
+        return {
+            success: false,
+            message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
+        }
+    }
     if (body.price <= auction.sell_price) {
         return {
             success: false,
@@ -94,6 +109,8 @@ exports.createAuctionRaise = async params => {
         toAuctionHistoryInsert,
         auctionId
     )
+
+    await pay(user.id, auction.id, PAYMENT_TYPES.AUCTION_RAISE_FEE, fee)
 
     return {
         success: true

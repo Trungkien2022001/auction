@@ -1,17 +1,35 @@
 const { knex } = require('../../connectors')
 
-async function pay(userId, auctionId, type, amount, currency = 'VND') {
-    if (amount > 0) {
+async function pay(data) {
+    if (data.amount > 0) {
         await knex('payment_history').insert({
-            amount,
-            user_id: userId,
-            auction_id: auctionId,
-            type,
-            currency
+            amount: data.amount,
+            user_id: data.user_id,
+            auction_id: data.auction_id,
+            type: data.type,
+            currency: data.currency || 'VND'
         })
     }
 }
 
+async function updateUserFreeRaiseRemain(user) {
+    await knex('user')
+        .update({
+            free_raise_remain: user.free_raise_remain - 1
+        })
+        .where('id', user.id)
+}
+
+async function updateUserFreeCreateAuctionRemain(user) {
+    await knex('user')
+        .update({
+            create_free_auction_remain: user.create_free_auction_remain - 1
+        })
+        .where('id', user.id)
+}
+
 module.exports = {
-    pay
+    pay,
+    updateUserFreeRaiseRemain,
+    updateUserFreeCreateAuctionRemain
 }

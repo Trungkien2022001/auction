@@ -12,7 +12,11 @@ const {
 const { QUEUE_ACTION } = require('../../config/constant/queueActionConstant')
 const { sendToQueue } = require('../../queue/kafka/producer.kafka')
 const { AUCTION_TIME } = require('../../config/constant')
-const { pay } = require('../payment/controller')
+const {
+    pay,
+    updateUserFreeRaiseRemain,
+    updateUserFreeCreateAuctionRemain
+} = require('../payment/controller')
 const { PAYMENT_TYPES } = require('../../config/constant/paymentTypeConstant')
 
 exports.createAuction = async params => {
@@ -21,6 +25,28 @@ exports.createAuction = async params => {
         ...body.product,
         seller_id: user.id,
         image: body.product.images[0]
+    }
+    const productsConfig = await commonModel.getProductCategory()
+    const pConfig = productsConfig.find(i => i.id === product.category_id)
+    const fee = pConfig.create_fee
+    if (fee) {
+        if (user.amount < fee) {
+            return {
+                success: false,
+                message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
+            }
+        }
+    } else {
+        if (
+            user.create_free_auction_remain &&
+            user.create_free_auction_remain < 1
+        ) {
+            return {
+                success: false,
+                message: `Bạn đã dùng hết số lượt đấu giá miễn phí`
+            }
+        }
+        await updateUserFreeCreateAuctionRemain(user)
     }
     const auction = {
         ...body.auction,
@@ -38,6 +64,12 @@ exports.createAuction = async params => {
     auction.product_id = productId
     await commonModel.saveImage(images, productId)
     const result = await auctionModel.saveAuction(auction)
+    await pay({
+        user_id: user.id,
+        auction_id: result[0],
+        type: PAYMENT_TYPES.AUCTION_CREATE_FEE,
+        amount: fee
+    })
     if (config.isUseElasticSearch) {
         sendToQueue(
             {
@@ -61,14 +93,24 @@ exports.createAuctionRaise = async params => {
     const pConfig = productsConfig.find(
         i => i.name === auction.product_category
     )
-    const fee = pConfig.bid_increment
-    if (user.amount < fee) {
-        return {
-            success: false,
-            message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
+    const { fee } = pConfig
+    if (fee) {
+        if (user.amount < fee) {
+            return {
+                success: false,
+                message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
+            }
         }
+    } else {
+        if (user.free_raise_remain && user.free_raise_remain < 1) {
+            return {
+                success: false,
+                message: `Bạn đã dùng hết số lượt đấu giá miễn phí`
+            }
+        }
+        await updateUserFreeRaiseRemain(user)
     }
-    if (body.price <= auction.sell_price) {
+    if (pConfig.bid_increment > body.price - auction.sell_price) {
         return {
             success: false,
             message: `Auction raise error : price must be > ${auction.sell_price}`
@@ -111,6 +153,12 @@ exports.createAuctionRaise = async params => {
     )
 
     await pay(user.id, auction.id, PAYMENT_TYPES.AUCTION_RAISE_FEE, fee)
+    await pay({
+        user,
+        auction_id: auction.id,
+        type: PAYMENT_TYPES.AUCTION_RAISE_FEE,
+        amount: fee
+    })
 
     return {
         success: true

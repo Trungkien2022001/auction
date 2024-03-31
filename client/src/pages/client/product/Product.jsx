@@ -23,6 +23,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { checkApiResponse } from "../../../utils/checkApiResponse";
 import { AUCTION_STATUS, AUCTION_TIMES } from "../../../utils/constants";
 import config from "../../../config";
+import { tryParseJson } from "../../../utils/common";
 // const _ = require('lodash')
 
 
@@ -41,6 +42,10 @@ export const Product = ({ socket }) => {
   const [bigImageIndex, setBigImageIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [preLoading, setPreLoading] = useState(false)
+  const [productConfig, setProductConfig] = useState({})
+  const productCategoriesConfig = tryParseJson(localStorage.getItem('product_category')) || {
+    data: []
+  };
 
   async function getData() {
     setLoading(true)
@@ -49,6 +54,9 @@ export const Product = ({ socket }) => {
       let result = await post(`/api/v1/auction/${id}`, {}, currentUser)
       if (checkApiResponse(result)) {
         setData(result.data.data)
+        const newConfig = productCategoriesConfig.data.find(i=>i.name === result.data.data.product_category) || {}
+        setProductConfig(newConfig)
+        setAuctionBet(result.data.data.sell_price + (newConfig.bid_increment || 50000))
         setPreLoading(true)
       }
       result = await get(`/auction-history?auction_id=${id}`, currentUser)
@@ -146,6 +154,7 @@ export const Product = ({ socket }) => {
           bet_amount: auctionBet,
           auctioneer_name: currentUser.name
         })
+        setAuctionBet( parseInt(auctionBet) + productConfig.bid_increment || 50000)
         setReload(!reload)
       })
     } else {
@@ -294,12 +303,25 @@ export const Product = ({ socket }) => {
                       <div className="action-button-log">
                         <Button onClick={() => handleClickOpenAuctionHistoryDialog()} style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined">Lịch sử</Button>
                       </div>
-                      <div className="action-button-log">
+                      {/* <div className="action-button-log">
                         <Button style={{ width: '100%', height: '35px', overflow: 'hidden' }} variant="outlined" disabled={data.auction_status !== 2 || currentUser.id === data.seller.id}>Theo dõi</Button>
-                      </div>
+                      </div> */}
                       <div className="action-button">
-                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '50px', overflow: 'hidden' }} disabled={data.auction_status !== 2 || currentUser.id === data.seller.id} variant="contained">Đấu giá</Button>
+                        <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '40px', overflow: 'hidden' }} disabled={data.auction_status !== 2 || currentUser.id === data.seller.id} variant="contained">Đấu giá</Button>
                       </div>
+                      <div className="action-button product-price-title" style={{color: "#d0011b", textAlign: "center", paddingTop: "10px", fontWeight: "bold"}}>
+                        Bước nhảy: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(productConfig.bid_increment || 50000)}
+                      </div>
+                      <div className="action-button product-price-title" style={{color: "#d0011b", textAlign: "center", paddingTop: "10px", fontWeight: "bold"}}>
+                        {
+                          productConfig.fee ? 
+                          <>
+                            Phụ thu: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(productConfig.fee || 0)}
+                          </> : 
+                          <></>
+                        }
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -473,6 +495,7 @@ export const Product = ({ socket }) => {
             type="number"
             fullWidth
             variant="standard"
+            defaultValue={auctionBet}
             onChange={e => setAuctionBet(e.target.value)}
           // onKeyDown={onEnterWork}
           />

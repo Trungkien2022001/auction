@@ -61,14 +61,17 @@ const buildProduct = categoryId => {
 function gen() {
     const categoryId = randomRange(1, 21)
     const start_time = moment(Date.now())
-        .add(Math.floor(Math.random() * 50000), 'minute')
+        .add(Math.floor(Math.random() * 5000), 'minute')
         .format('YYYY-MM-DD HH:mm:ss')
-    auction_time = randomRange(1, 20)
+    const auction_time = randomRange(1, 20)
+
     return {
         auction: {
             start_time,
             auction_time,
-            end_time: moment(start_time).add(AUCTION_TIME[auction_time], 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+            end_time: moment(start_time)
+                .add(AUCTION_TIME[auction_time], 'minutes')
+                .format('YYYY-MM-DD HH:mm:ss'),
             is_returned: randomRange(0, 1),
             is_finished_soon: randomRange(0, 1)
         },
@@ -81,7 +84,7 @@ function gen() {
 }
 
 async function createMockAuction() {
-    const total = randomRange(10, 100)
+    const total = randomRange(5, 10)
     await Promise.all(
         Array(total)
             .fill(0)
@@ -89,7 +92,9 @@ async function createMockAuction() {
                 await createAuction({
                     body: gen(),
                     user: {
-                        id: randomRange(1, 18)
+                        id: randomRange(1, 18),
+                        create_free_auction_remain: 10,
+                        amount: 1000000000
                     }
                 })
             })
@@ -109,7 +114,7 @@ async function run() {
         )
     }
 }
-// run()
+run()
 
 module.exports = {
     run,

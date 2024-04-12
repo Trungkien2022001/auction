@@ -1,14 +1,14 @@
 /* eslint-disable no-await-in-loop */
 const Promise = require('bluebird')
-const { promises } = require('nodemailer/lib/xoauth2');
-const { logger } = require('../utils/winston');
+// const { promises } = require('nodemailer/lib/xoauth2');
 const request = Promise.promisifyAll(require('request'))
+const { logger } = require('../utils/winston')
 
 const count = process.argv.slice(2)
 
 async function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
 async function get(n) {
     const s = parseInt(n[1], 10) || 100
     const s1 = parseInt(n[0], 10) || 0
@@ -19,14 +19,14 @@ async function get(n) {
     let url
     switch (s1) {
         case 0:
-            url = 'http://localhost/health'
+            url = 'http://localhost:3030/health'
             break
         case 1:
             // url = 'http://localhost:3030/auction?id=1'
             url = 'http://localhost:3030/health'
             break
         case 2:
-            url = 'http://localhost/health'
+            url = 'http://localhost:3030/health'
             break
         case 3:
             url = 'http://localhost/auction?id=1'
@@ -37,7 +37,7 @@ async function get(n) {
             break
     }
     while (true) {
-        await delay(1000); 
+        await delay(1000)
         await Promise.all(
             arr.map(async () => {
                 const options = {

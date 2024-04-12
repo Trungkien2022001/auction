@@ -36,6 +36,7 @@ import { SaleHistory } from '../../../components/user/sale-history/SaleHistory';
 import { BuyHistory } from '../../../components/user/buy-history/BuyHistory';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
+import { UserTransaction } from '../../../components/user/transaction/UserTransaction';
 
 const drawerWidth = 250;
 
@@ -174,7 +175,7 @@ export const User = ({ socket }) => {
                     <ListItemIcon>
                       <MessageIcon sx={{ color: `${selectedTheme.textColor}` }} />
                     </ListItemIcon>
-                    <ListItemText primary="Tin nhắn" />
+                    <ListItemText primary="Payment" />
                   </ListItemButton>
                   <ListItemButton
                     onClick={() => setCurrentPage(20)}
@@ -265,7 +266,7 @@ export const User = ({ socket }) => {
                     <ListItemIcon>
                       <MessageIcon sx={{ color: `${selectedTheme.textColor}` }} />
                     </ListItemIcon>
-                    <ListItemText primary="Tin nhắn" />
+                    <ListItemText primary="Payment" />
                   </ListItemButton>
                   <ListItemButton
                     onClick={() => setCurrentPage(20)}
@@ -308,6 +309,7 @@ export const User = ({ socket }) => {
           {currentPage === 1 ? <Overview currentUser={currentUser} id = {id} socket={socket} /> : <></>}
           {currentPage === 2 ? <BuyHistory currentUser={currentUser} socket={socket} /> : <></>}
           {currentPage === 3 ? <SaleHistory currentUser={currentUser} socket={socket} /> : <></>}
+          {currentPage === 4 ? <UserTransaction currentUser={currentUser} socket={socket} /> : <></>}
         </div>
       </div>
       <SimpleDialog

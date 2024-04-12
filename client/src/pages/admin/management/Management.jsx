@@ -32,6 +32,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 
 import { THEME } from '../../../utils/constants'
 
@@ -45,6 +46,7 @@ import { Chat } from '../../../components/managements/chat/Chat';
 import { Chart } from '../../../components/managements/chart/Chart';
 import { useLocation } from 'react-router-dom';
 import { SystemConfig } from '../../../components/managements/systemConfig/SystemConfig';
+import { Payment } from '../../../components/managements/payment/Payment';
 
 const drawerWidth = 250;
 
@@ -89,6 +91,10 @@ export const Management = ({ socket }) => {
         break;
       case 'system-config':
         window.location.href = `/management/system-config`
+        break;
+        
+      case 'payment':
+        window.location.href = `/management/payment`
         break;
 
       default:
@@ -209,6 +215,18 @@ export const Management = ({ socket }) => {
               <MarkUnreadChatAltOutlinedIcon sx={{ color: `${selectedTheme.textColor}` }} />
             </ListItemIcon>
             <ListItemText primary="Chat" />
+          </ListItemButton>
+          : <></>
+        }
+        {currentUser.role.dashboard_money ?
+          <ListItemButton
+            onClick={() => handleChangePage('payment')}
+            sx={type === 'payment' ? { bgcolor: `${selectedTheme.selectedItemColor}` } : {}}
+          >
+            <ListItemIcon>
+              <PaidOutlinedIcon sx={{ color: `${selectedTheme.textColor}` }} />
+            </ListItemIcon>
+            <ListItemText primary="Payment" />
           </ListItemButton>
           : <></>
         }
@@ -363,6 +381,7 @@ export const Management = ({ socket }) => {
           {type === 'action-log' ? <ActionLog currentUser={currentUser} socket={socket} /> : <></>}
           {type === 'chat' ? <Chat currentUser={currentUser} socket={socket} /> : <></>}
           {type === 'system-config' ? <SystemConfig currentUser={currentUser} socket={socket} /> : <></>}
+          {type === 'payment' ? <Payment currentUser={currentUser} socket={socket} /> : <></>}
         </div>
       </Box>
       <SimpleDialog

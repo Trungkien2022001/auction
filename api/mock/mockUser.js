@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-unused-vars */
 require('dotenv').config({ path: '.env' })
@@ -19,43 +20,46 @@ function getRandomValue(arr) {
 }
 
 function buildUsernameFromName(str) {
-    str = str.toLowerCase();
-    str = str.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a');
-    str = str.replace(/[èéẹẻẽêềếệểễ]/g, 'e');
-    str = str.replace(/[ìíịỉĩ]/g, 'i');
-    str = str.replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, 'o');
-    str = str.replace(/[ùúụủũưừứựửữ]/g, 'u');
-    str = str.replace(/[ỳýỵỷỹ]/g, 'y');
-    str = str.replace(/đ/g, 'd');
+    str = str.toLowerCase()
+    str = str.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a')
+    str = str.replace(/[èéẹẻẽêềếệểễ]/g, 'e')
+    str = str.replace(/[ìíịỉĩ]/g, 'i')
+    str = str.replace(/[òóọỏõôồốộổỗơờớợởỡ]/g, 'o')
+    str = str.replace(/[ùúụủũưừứựửữ]/g, 'u')
+    str = str.replace(/[ỳýỵỷỹ]/g, 'y')
+    str = str.replace(/đ/g, 'd')
 
-    str = str.replace(/\s/g, '');
+    str = str.replace(/\s/g, '')
 
-    return str + randomRange(100,1000);
+    return str + randomRange(100, 1000)
 }
-
 
 function gen() {
     const gender = randomRange(0, 1)
     const firstName = getRandomValue(MOCK.user.lastName)
-    const lastName = getRandomValue(gender ? MOCK.user.femaleNames : MOCK.user.maleNames)
+    const lastName = getRandomValue(
+        gender ? MOCK.user.femaleNames : MOCK.user.maleNames
+    )
     const middleName = MOCK.user.middleNames[gender]
     const name = `${firstName} ${middleName} ${lastName}`
     const username = buildUsernameFromName(name)
-    let userInfo = {
+    const userInfo = {
         name,
         username,
         email: `${username}@gmail.com`,
         phone: `0${randomRange(1e8, 1e9)}`,
         password: '123456',
-        birthday:  "2001-02-20",
-        address: "279 Đội Cấn, Ba Đình, Hà Nội",
-        avatar: "http://res.cloudinary.com/trungkien2022001/image/upload/v1705892226/upload/eg4p8y19vy4siosvgizt.png"
+        birthday: '2001-02-20',
+        address: '279 Đội Cấn, Ba Đình, Hà Nội',
+        avatar:
+            'http://res.cloudinary.com/trungkien2022001/image/upload/v1705892226/upload/eg4p8y19vy4siosvgizt.png'
     }
+
     return userInfo
 }
 
 async function createMockUser() {
-    const total = randomRange(1, 5)
+    const total = randomRange(1, 10)
     await Promise.all(
         Array(total)
             .fill(0)

@@ -152,7 +152,6 @@ exports.createAuctionRaise = async params => {
         auctionId
     )
 
-    await pay(user.id, auction.id, PAYMENT_TYPES.AUCTION_RAISE_FEE, fee)
     await pay({
         user,
         auction_id: auction.id,

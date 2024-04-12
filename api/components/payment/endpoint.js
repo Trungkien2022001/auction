@@ -13,6 +13,8 @@ const Promise = require('bluebird')
 const request = Promise.promisifyAll(require('request'))
 const config = require('../../config')
 
+const paymentModel = require('../../models/payment')
+
 const router = new Router()
 
 function sortObject(obj) {
@@ -270,5 +272,29 @@ router.post('/refund', async ctx => {
 
     // Rest of the code...
 })
+
+router.get(
+    '/payment/admin',
+    // genericSecure,
+    // validate(schema.get),
+    async ctx => {
+        debug('GET /payment admin')
+
+        try {
+            const transactions = await paymentModel.getPaymentHistoryAdmin()
+
+            ctx.body = {
+                success: true,
+                data: transactions
+            }
+        } catch (error) {
+            ctx.status = 500
+            ctx.body = {
+                success: false,
+                message: error.message || JSON.stringify(error)
+            }
+        }
+    }
+)
 
 module.exports = router

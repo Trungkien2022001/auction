@@ -274,13 +274,13 @@ router.post('/refund', async ctx => {
     // Rest of the code...
 })
 
-router.get(
+router.post(
     '/payment/admin',
     genericSecure,
     checkPermission('admin'),
-    // validate(schema.get),
+    // validate(schema.post),
     async ctx => {
-        debug('GET /payment admin')
+        debug('post /payment admin')
         const { body } = ctx.request
         try {
             const transactions = await paymentModel.getPaymentHistoryAdmin(body)
@@ -299,12 +299,12 @@ router.get(
     }
 )
 
-router.get(
+router.post(
     '/payment',
     genericSecure,
-    // validate(schema.get),
+    // validate(schema.post),
     async ctx => {
-        debug('GET /payment user')
+        debug('post /payment user')
         const { body } = ctx.request
         try {
             const transactions = await paymentModel.getPaymentHistory({

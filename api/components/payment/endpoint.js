@@ -14,6 +14,7 @@ const request = Promise.promisifyAll(require('request'))
 const config = require('../../config')
 
 const paymentModel = require('../../models/payment')
+const { genericSecure, checkPermission } = require('../../middleware/security')
 
 const router = new Router()
 
@@ -275,13 +276,41 @@ router.post('/refund', async ctx => {
 
 router.get(
     '/payment/admin',
-    // genericSecure,
+    genericSecure,
+    checkPermission('admin'),
     // validate(schema.get),
     async ctx => {
         debug('GET /payment admin')
-
+        const { body } = ctx.request
         try {
-            const transactions = await paymentModel.getPaymentHistoryAdmin()
+            const transactions = await paymentModel.getPaymentHistoryAdmin(body)
+
+            ctx.body = {
+                success: true,
+                data: transactions
+            }
+        } catch (error) {
+            ctx.status = 500
+            ctx.body = {
+                success: false,
+                message: error.message || JSON.stringify(error)
+            }
+        }
+    }
+)
+
+router.get(
+    '/payment',
+    genericSecure,
+    // validate(schema.get),
+    async ctx => {
+        debug('GET /payment user')
+        const { body } = ctx.request
+        try {
+            const transactions = await paymentModel.getPaymentHistory({
+                ...body,
+                user_id: ctx.User.id
+            })
 
             ctx.body = {
                 success: true,

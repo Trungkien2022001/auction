@@ -45,6 +45,7 @@ const baseFields = {
         'p.category_id',
         'a.auction_count',
         'a.auctioneer_win',
+        'a.created_at',
         'ast.name as auction_status',
         'p.name as product_name',
         'at.title as auction_time'
@@ -77,6 +78,8 @@ exports.getAuctions = async params => {
         seller_id,
         price_from,
         price_to,
+        created_date,
+        auction_id,
         status = -1
     } = params
     const sorted = type === 'homepage' ? sort || 'featured' : sort
@@ -115,7 +118,14 @@ exports.getAuctions = async params => {
                 if (price_to) {
                     this.where('a.sell_price', '<=', price_to)
                 }
-                if (status !== -1) {
+                if (auction_id) {
+                    this.where('a.id', auction_id)
+                } else if (created_date) {
+                    this.whereRaw("DATE_FORMAT(a.created_at, '%Y%m%d') = ?", [
+                        created_date
+                    ])
+                }
+                if (status !== '-1') {
                     this.where('a.status', status)
                 } else {
                     switch (sorted) {
@@ -349,6 +359,7 @@ exports.getAuctionHistory = async id => {
             .from('auction_history as ah')
             .innerJoin('user as u', 'ah.auctioneer_id', 'u.id')
             .where('ah.auction_id', id)
+            .andWhere('ah.is_blocked', 0)
             .orderBy('ah.id', 'desc')
 
         return result
@@ -364,6 +375,7 @@ exports.countAuctionRaiseByUser = async (userId, auctionId) => {
             .select('ah.id')
             .from('auction_history as ah')
             .where('ah.auction_id', auctionId)
+            .andWhere('ah.is_blocked', 0)
             .andWhere('ah.auctioneer_id', userId)
 
         return result.length
@@ -378,6 +390,7 @@ exports.auctionHistoryCount = async userId => {
         const result = await knex
             .countDistinct('auction_id as cnt')
             .from('auction_history')
+            .andWhere('is_blocked', 0)
             .where('auctioneer_id', userId)
 
         return result[0]
@@ -392,6 +405,7 @@ exports.allAuctionHistoryCount = async userId => {
         const result = await knex
             .count('auctioneer_id as cnt')
             .from('auction_history')
+            .andWhere('is_blocked', 0)
             .where('auctioneer_id', userId)
 
         return result[0]
@@ -609,7 +623,13 @@ exports.getAllAuctionTime = async () => {
             // .leftJoin('auction_history as ah', 'a.id', 'ah.auction_id')
             .whereNotIn('a.status', ['5', '6', '7', '8'])
             .whereNull('a.deleted_at')
-            .andWhere('a.start_time', "<", moment().add(3, 'minutes').format())
+            .andWhere(
+                'a.start_time',
+                '<',
+                moment()
+                    .add(3, 'minutes')
+                    .format()
+            )
             .orderBy('a.updated_at', 'desc')
 
         return result
@@ -694,6 +714,7 @@ exports.getAllAuctioneerOfAuction = async auctionId => {
         const result = await knex('auction_history')
             .distinct('auctioneer_id')
             .where('auction_id', auctionId)
+            .andWhere('is_blocked', 0)
 
         return result.map(i => {
             return i.auctioneer_id
@@ -724,7 +745,13 @@ exports.insertUserAuction = async (userId, auctionId) => {
 }
 
 exports.checkingAllAuction = async () => {
-    const activeAuction = await knex('auction').whereIn('status', [1, 2, 3, 4])
+    const activeAuction = await knex('auction').whereIn('status', [
+        0,
+        1,
+        2,
+        3,
+        4
+    ])
     // Promise.all(
     activeAuction.map(async item => {
         if (
@@ -799,6 +826,30 @@ exports.checkingAllAuction = async () => {
             await knex('auction')
                 .update('status', 2)
                 .where('id', item.id)
+        } else if (item.status === 0) {
+            if (
+                moment(item.created_at)
+                    .add('1', 'days')
+                    .isBefore(moment(new Date()).subtract(1, 'days'))
+            ) {
+                if (moment(item.start_time).isAfter(moment(new Date()))) {
+                    await knex('auction')
+                        .update('status', 9)
+                        .where('id', item.id)
+                } else if (config.isUseElasticSearch) {
+                    sendToQueue(
+                        {
+                            auction_id: item.id,
+                            status: 2,
+                            auction_status: AUCTION_STATUS[2]
+                        },
+                        QUEUE_ACTION.UPDATE_AUCTION
+                    )
+                }
+                await knex('auction')
+                    .update('status', 2)
+                    .where('id', item.id)
+            }
         }
     })
     // )
@@ -858,6 +909,7 @@ exports.finishedAuction = async id => {
     const win_auctioneer = await knex('auction_history')
         .select()
         .where('auction_id', id)
+        .andWhere('ah.is_blocked', 0)
         .limit(1)
         .offset(0)
         .orderBy('id', 'desc')
@@ -904,14 +956,21 @@ exports.sellerConfirm = async (sellerId, auctionId, confirm) => {
     const win_auctioneer = await knex('auction_history')
         .select()
         .where('auction_id', auctionId)
+        .andWhere('ah.is_blocked', 0)
+        .limit(1)
+        .offset(0)
+        .orderBy('id', 'desc')
+    const winAuctioneerId = win_auctioneer[0]
+        ? win_auctioneer[0].auctioneer_id
+        : 1
     await knex('notification').insert({
         action_user_id: sellerId,
-        user_id: win_auctioneer.auctioneer_id,
+        user_id: winAuctioneerId,
         auction_id: auctionId,
         type: status ? 7 : 4
     })
 
-    return win_auctioneer.auctioneer_id
+    return winAuctioneerId
 }
 
 exports.auctioneerConfirm = async (userId, auctionId, confirm) => {
@@ -967,4 +1026,36 @@ exports.getAuctionToInsertElasticsearch = async auctionId => {
         .where('a.id', auctionId)
 
     return auction
+}
+
+exports.updateAuctionStatus = async (auctionId, status) => {
+    await knex('auction')
+        .update('status', status)
+        .where('id', auctionId)
+}
+exports.blockAuctionRaise = async raiseID => {
+    await knex('auction_history')
+        .update('is_blocked', 1)
+        .where('id', raiseID)
+}
+
+exports.getRaiseWin = async auctionId => {
+    const win_auctioneer = await knex('auction_history')
+        .select()
+        .where('auction_id', auctionId)
+        .andWhere('ah.is_blocked', 0)
+        .limit(1)
+        .offset(0)
+        .orderBy('id', 'desc')
+
+    return win_auctioneer[0]
+}
+
+exports.updateAuctionSellPrice = async (auctionId, sellPrice, auctionCount) => {
+    await knex('auction')
+        .update({
+            sell_price: sellPrice,
+            auction_count: auctionCount - 1
+        })
+        .where('id', auctionId)
 }

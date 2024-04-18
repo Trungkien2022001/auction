@@ -94,6 +94,66 @@ router.post('/auctions', validate(gets), async ctx => {
     }
 })
 
+router.put(
+    '/auction/:auction_id',
+    // validate(update),
+    genericSecure,
+    checkPermission('dashboard_auction'),
+    async ctx => {
+        debug('POST / get auctions')
+        const { body } = ctx.request
+        const auctionId = parseInt(ctx.params.auction_id)
+        try {
+            const data = await auctionController.updateAuctionStatusAdmin(
+                auctionId,
+                body.status
+            )
+            ctx.body = {
+                success: true,
+                data
+            }
+        } catch (error) {
+            ctx.status = 200
+            ctx.body = {
+                code: error.code || 500,
+                success: false,
+                message: error.message || JSON.stringify(error)
+            }
+        }
+    }
+)
+
+router.put(
+    '/auction/block/:auction_id/:raise_id',
+    // validate(update),
+    genericSecure,
+    // checkPermission('dashboard_auction'),
+    async ctx => {
+        debug('POST / block auction raise')
+        // const { body } = ctx.request
+        const auctionId = parseInt(ctx.params.auction_id)
+        const raiseID = parseInt(ctx.params.raise_id)
+        try {
+            const data = await auctionController.blockAuctionRaise(
+                auctionId,
+                raiseID,
+                ctx.User
+            )
+            ctx.body = {
+                success: true,
+                data
+            }
+        } catch (error) {
+            ctx.status = 200
+            ctx.body = {
+                code: error.code || 500,
+                success: false,
+                message: error.message || JSON.stringify(error)
+            }
+        }
+    }
+)
+
 router.post('/api/v1/auction/:auction_id', validate(getDetail), async ctx => {
     debug('POST / get auction detail')
     try {

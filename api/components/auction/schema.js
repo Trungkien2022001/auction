@@ -64,6 +64,14 @@ const gets = Joi.object().keys({
         .min(0)
         .optional()
 })
+const update = Joi.object().keys({
+    // page: Joi.number()
+    //     .min(0)
+    //     .required(),
+    status: Joi.string()
+        .valid(['confirm, block'])
+        .optional()
+})
 
 module.exports = {
     create: {
@@ -74,5 +82,8 @@ module.exports = {
     },
     gets: {
         header: gets
+    },
+    update: {
+        body: update
     }
 }

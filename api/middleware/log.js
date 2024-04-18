@@ -23,7 +23,7 @@ async function log(ctx, next) {
                 client_ip:
                     ctx.req.headers['x-forwarded-for'] ||
                     ctx.req.socket.remoteAddress ||
-                    null,
+                    '127.0.0.1',
                 status: ctx.status,
                 request: {
                     query: ctx.query,

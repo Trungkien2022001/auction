@@ -55,7 +55,8 @@ exports.createAuction = async params => {
             .format('YYYY-MM-DD HH:mm:ss'),
         seller_id: user.id,
         start_price: product.start_price,
-        sell_price: product.start_price
+        sell_price: product.start_price,
+        status: user.prestige === 2 ? 1 : 0
     }
     const { images } = product
     delete product.images
@@ -181,11 +182,45 @@ exports.getAuctionOverview = async params => {
     }
 }
 
-exports.getAuctions = async params => {
-    const model = config.isUseElasticSearch ? elasticModel : auctionModel
-    const auctions = await model.getAuctions(params)
+exports.updateAuctionStatusAdmin = async (auctionId, status) => {
+    const auctionDetail = await auctionModel.getProductAuction(auctionId)
+    if (auctionDetail.auction_status !== 0) {
+        throw new Error('Cannot update auction status')
+    } else {
+        await auctionModel.updateAuctionStatus(
+            auctionId,
+            status === 'block' ? 9 : 1
+        )
+    }
 
-    return auctions
+    return {
+        success: true
+    }
+}
+
+exports.updateAuctionStatusAdmin = async (auctionId, raiseId, actionUser) => {
+    const auctionDetail = await auctionModel.getProductAuction(auctionId)
+    if (
+        auctionDetail.seller_id !== actionUser.id ||
+        !actionUser.role.dashboard_auction
+    ) {
+        throw new Error(
+            'You cannot have permission to block this auction raise'
+        )
+    } else {
+        await auctionModel.blockAuctionRaise(raiseId)
+        const currentAuctionRaiseWin = await auctionModel.getRaiseWin(auctionId)
+        await auctionModel.updateAuctionSellPrice(
+            raiseId,
+            currentAuctionRaiseWin.bet_amount,
+            auctionDetail.auction_count
+        )
+        // TODO: update elasticsearch
+    }
+
+    return {
+        success: true
+    }
 }
 
 exports.getAuctionHistory = async id => {

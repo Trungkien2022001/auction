@@ -177,7 +177,7 @@ EnhancedTableHead.propTypes = {
 };
 
 function EnhancedTableToolbar(props) {
-  const { fn, fn1 } = props;
+  const { fn, fn1, fn2, fn3 } = props;
 
   return (
     <Toolbar
@@ -194,6 +194,27 @@ function EnhancedTableToolbar(props) {
       >
         Lịch sử giao dịch
       </Typography>
+      <TextField
+        className='text-input text-input-90'
+        id="datetime-local"
+        label="Ngày tạo"
+        type="date"
+        style={{width: "260px"}}
+        InputLabelProps={{
+            shrink: true,
+        }}
+        // onChange={e => setCreatedDate(moment(e.target.value).format('YYYY-MM-DD HH:mm:ss'))}
+        onChange={fn2}
+
+    />
+    <TextField
+        style={{width: "220px"}}
+        className='text-input text-input-90'
+        id="standard-basic"
+        label="Auction ID"
+        variant="outlined"
+        onChange={fn3}
+    />
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
@@ -230,6 +251,8 @@ export const Auction = ({ currentUser, socket }) => {
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [data, setData] = useState([])
+  const [auctionId, setAuctionId] = useState('')
+  const [createdDate, setCreatedDate] = useState(moment().format('YYYYMMDD'))
   // const [cnt, setCnt] = useState([])
   const [initialData, setInitialData] = useState([])
   const [status, setStatus] = useState(-1)
@@ -245,7 +268,7 @@ export const Auction = ({ currentUser, socket }) => {
 
   async function getData(stt) {
     setLoading(true)
-    let result = await post(`/auctions?type=dashboard&status=${stt}&limit=100`, {}, currentUser)
+    let result = await post(`/auctions?type=dashboard&status=${stt}&created_date=${createdDate}&auction_id=${auctionId}&limit=100`, {}, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.data.products)
       setInitialData(result.data.data.products)
@@ -287,7 +310,7 @@ export const Auction = ({ currentUser, socket }) => {
   useEffect(() => {
 
     getData(status)
-  }, [status])
+  }, [status, createdDate, auctionId])
   useEffect(() => {
     if (socket.current) {
       socket.current.on('updateUI', () => {
@@ -338,6 +361,14 @@ export const Auction = ({ currentUser, socket }) => {
     setDense(event.target.checked);
   };
 
+  const handleChangeCreatedDate = (event) => {
+    setCreatedDate(moment(event.target.value).format('YYYYMMDD'));
+  };
+
+  const handleChangeAuctionID = (e) => {
+    setAuctionId(e.target.value);
+  };
+
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
@@ -347,7 +378,7 @@ export const Auction = ({ currentUser, socket }) => {
       <div>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar fn={handleSearch} fn1={handleFilterByStatus} />
+            <EnhancedTableToolbar fn={handleSearch} fn1={handleFilterByStatus} fn2={handleChangeCreatedDate} fn3={handleChangeAuctionID}/>
             {
               !loading ?
                 <TableContainer>
@@ -385,7 +416,7 @@ export const Auction = ({ currentUser, socket }) => {
                               >
                                 {row.id}
                               </TableCell>
-                              <TableCell align="center" className='product-history-name'>{row.name}</TableCell>
+                              <TableCell align="center" className='product-history-name'>{row.product_name}</TableCell>
                               <TableCell align="center">{row.start_price.toLocaleString('en-US', {
                                 style: 'currency',
                                 currency: 'VND',
@@ -395,7 +426,7 @@ export const Auction = ({ currentUser, socket }) => {
                                 currency: 'VND',
                               })}</TableCell>
                               <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY HH:mm:ss')}</TableCell>
-                              <TableCell align="center">{AUCTION_TIMES[row.time]}</TableCell>
+                              <TableCell align="center">{row.auction_time}</TableCell>
                               <TableCell align="center">{row.auction_count}</TableCell>
                               <TableCell align="center">{row.seller_id}</TableCell>
                               <TableCell align="center">{row.auctioneer_win}</TableCell>

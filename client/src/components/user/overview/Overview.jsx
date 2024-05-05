@@ -17,7 +17,7 @@ import { userSlice } from '../../../redux/userSlice';
 export const Overview = ({ currentUser, id }) => {
 
   const [data, setData] = useState({})
-  const [openAuctionDialog, setOpenAuctionDialog] = useState(true);
+  const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [imageList, setImageList] = useState([])
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");

@@ -123,7 +123,7 @@ router.put(
     }
 )
 
-router.put(
+router.post(
     '/auction/block/:auction_id/:raise_id',
     // validate(update),
     genericSecure,
@@ -134,7 +134,7 @@ router.put(
         const auctionId = parseInt(ctx.params.auction_id)
         const raiseID = parseInt(ctx.params.raise_id)
         try {
-            const data = await auctionController.blockAuctionRaise(
+            const data = await auctionController.updateAuctionStatusAdmin(
                 auctionId,
                 raiseID,
                 ctx.User

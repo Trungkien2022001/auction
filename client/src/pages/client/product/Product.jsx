@@ -54,7 +54,7 @@ export const Product = ({ socket }) => {
       let result = await post(`/api/v1/auction/${id}`, {}, currentUser)
       if (checkApiResponse(result)) {
         setData(result.data.data)
-        const newConfig = productCategoriesConfig.data.find(i=>i.name === result.data.data.product_category) || {}
+        const newConfig = productCategoriesConfig.data.find(i => i.name === result.data.data.product_category) || {}
         setProductConfig(newConfig)
         setAuctionBet(result.data.data.sell_price + (newConfig.bid_increment || 50000))
         setPreLoading(true)
@@ -154,7 +154,7 @@ export const Product = ({ socket }) => {
           bet_amount: auctionBet,
           auctioneer_name: currentUser.name
         })
-        setAuctionBet( parseInt(auctionBet) + productConfig.bid_increment || 50000)
+        setAuctionBet(parseInt(auctionBet) + productConfig.bid_increment || 50000)
         setReload(!reload)
       })
     } else {
@@ -166,6 +166,44 @@ export const Product = ({ socket }) => {
       })
     }
   };
+
+  async function handleBlockAuctionRaise(item) {
+    setOpenAuctionHistoryDialog(false);
+    Swal.fire({
+      icon: 'question',
+      title: 'Bạn có chắc chắn muốn block lượt đấu giá này ?',
+      showCancelButton: true,
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // if(auctionHistoryData.length === 1){
+        //   setAuctionHistoryData([])
+        // } else {
+        //   console.log(auctionHistoryData.filter(i=>i !== item.id).sort((a, b)=> a.bet_amount > b.bet_amount ? 1 : -1)[0])
+        //   setData({...data, sell_price: auctionHistoryData.filter(i=>i !== item.id).sort((a, b)=> a.bet_amount > b.bet_amount ? 1 : -1)[0].bet_amount})
+        // }
+        const r = await post(`/auction/block/${data.id}/${item.id}`, {}, currentUser)
+        if (r.data.success) {
+          await getData()
+          Swal.fire({
+            icon: 'success',
+            title: 'Block lượt đấu giá thành công',
+            showConfirmButton: true,
+            timer: 10000
+          })
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Đã xảy ra lỗi',
+            text: result.data.message,
+            showConfirmButton: true,
+          })
+        }
+
+      }
+    });
+  }
 
   useEffect(() => {
     let length = data?.images.length
@@ -309,16 +347,16 @@ export const Product = ({ socket }) => {
                       <div className="action-button">
                         <Button onClick={() => handleClickOpenAuctionDialog()} style={{ width: '100%', fontSize: '18px', height: '40px', overflow: 'hidden' }} disabled={data.auction_status !== 2 || currentUser.id === data.seller.id} variant="contained">Đấu giá</Button>
                       </div>
-                      <div className="action-button product-price-title" style={{color: "#d0011b", textAlign: "center", paddingTop: "10px", fontWeight: "bold"}}>
+                      <div className="action-button product-price-title" style={{ color: "#d0011b", textAlign: "center", paddingTop: "10px", fontWeight: "bold" }}>
                         Bước nhảy: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(productConfig.bid_increment || 50000)}
                       </div>
-                      <div className="action-button product-price-title" style={{color: "#d0011b", textAlign: "center", paddingTop: "10px", fontWeight: "bold"}}>
+                      <div className="action-button product-price-title" style={{ color: "#d0011b", textAlign: "center", paddingTop: "10px", fontWeight: "bold" }}>
                         {
-                          productConfig.fee ? 
-                          <>
-                            Phụ thu: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(productConfig.fee || 0)}
-                          </> : 
-                          <></>
+                          productConfig.fee ?
+                            <>
+                              Phụ thu: {new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(productConfig.fee || 0)}
+                            </> :
+                            <></>
                         }
                       </div>
 
@@ -521,6 +559,9 @@ export const Product = ({ socket }) => {
                 <div className="history-dialog-user">{item.auctioneer_name}</div>
                 <div className="history-dialog-amount">{new Intl.NumberFormat('VIE', { style: 'currency', currency: 'VND' }).format(parseInt(item.bet_amount))}</div>
                 <div className="history-dialog-time">{moment(item.bet_time).format('DD-MM-YYYY HH:mm:ss')}</div>
+                <div >
+                  <Button variant="outlined" onClick={() => handleBlockAuctionRaise(item)}>Block</Button>
+                </div>
               </div>
             ))}
           </div>

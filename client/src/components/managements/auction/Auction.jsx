@@ -22,6 +22,8 @@ import Switch from '@mui/material/Switch';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import InfoIcon from '@mui/icons-material/Info';
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+import BlockIcon from '@mui/icons-material/Block';
+import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 
 import { visuallyHidden } from '@mui/utils';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField } from '@mui/material';
@@ -199,22 +201,22 @@ function EnhancedTableToolbar(props) {
         id="datetime-local"
         label="Ngày tạo"
         type="date"
-        style={{width: "260px"}}
+        style={{ width: "260px" }}
         InputLabelProps={{
-            shrink: true,
+          shrink: true,
         }}
         // onChange={e => setCreatedDate(moment(e.target.value).format('YYYY-MM-DD HH:mm:ss'))}
         onChange={fn2}
 
-    />
-    <TextField
-        style={{width: "220px"}}
+      />
+      <TextField
+        style={{ width: "220px" }}
         className='text-input text-input-90'
         id="standard-basic"
         label="Auction ID"
         variant="outlined"
         onChange={fn3}
-    />
+      />
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
@@ -378,7 +380,7 @@ export const Auction = ({ currentUser, socket }) => {
       <div>
         <Box sx={{ width: '100%' }}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar fn={handleSearch} fn1={handleFilterByStatus} fn2={handleChangeCreatedDate} fn3={handleChangeAuctionID}/>
+            <EnhancedTableToolbar fn={handleSearch} fn1={handleFilterByStatus} fn2={handleChangeCreatedDate} fn3={handleChangeAuctionID} />
             {
               !loading ?
                 <TableContainer>
@@ -433,7 +435,14 @@ export const Auction = ({ currentUser, socket }) => {
                               <TableCell align="center">{row.status}</TableCell>
                               <TableCell align="center">
                                 <InfoIcon style={{ color: "blue", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></InfoIcon>
-                                <ChangeCircleIcon style={{ color: "red", fontSize: "35px" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></ChangeCircleIcon>
+                                {
+                                  row.status === 0 ?
+                                    <>
+                                      <DoneOutlineIcon style={{ color: "red", fontSize: "35px", cursor: "pointer" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></DoneOutlineIcon>
+                                      <BlockIcon style={{ color: "red", fontSize: "35px", cursor: "pointer" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></BlockIcon>
+                                    </>
+                                    : <></>
+                                }
                               </TableCell>
                             </TableRow>
                           );

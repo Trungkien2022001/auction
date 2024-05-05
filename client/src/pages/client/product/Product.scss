@@ -367,7 +367,7 @@
 }
 .auction-history-dialog {
   padding: 10px;
-  width: 440px;
+  width: 540px;
   .history-dialog-header {
     text-align: center;
     font-weight: bold;
@@ -376,10 +376,11 @@
   }
   .history-dialog-wrapper {
     .history-dialog-item {
-      margin-bottom: 10px;
       border-bottom: 1px solid #ccc;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      padding: 5px 0px;
       .history-dialog-stt {
         text-align: center;
         padding-right: 15px;

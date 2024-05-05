@@ -19,6 +19,13 @@ const {
 } = require('../payment/controller')
 const { PAYMENT_TYPES } = require('../../config/constant/paymentTypeConstant')
 
+exports.getAuctions = async params => {
+    const model = config.isUseElasticSearch ? elasticModel : auctionModel
+    const auctions = await model.getAuctions(params)
+
+    return auctions
+}
+
 exports.createAuction = async params => {
     const { body, user } = params
     const product = {
@@ -204,14 +211,12 @@ exports.updateAuctionStatusAdmin = async (auctionId, raiseId, actionUser) => {
         auctionDetail.seller_id !== actionUser.id ||
         !actionUser.role.dashboard_auction
     ) {
-        throw new Error(
-            'You cannot have permission to block this auction raise'
-        )
+        throw new Error(`You don't have permission to block this auction raise`)
     } else {
         await auctionModel.blockAuctionRaise(raiseId)
         const currentAuctionRaiseWin = await auctionModel.getRaiseWin(auctionId)
         await auctionModel.updateAuctionSellPrice(
-            raiseId,
+            auctionId,
             currentAuctionRaiseWin.bet_amount,
             auctionDetail.auction_count
         )

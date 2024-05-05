@@ -1043,7 +1043,7 @@ exports.getRaiseWin = async auctionId => {
     const win_auctioneer = await knex('auction_history')
         .select()
         .where('auction_id', auctionId)
-        .andWhere('ah.is_blocked', 0)
+        .andWhere('is_blocked', 0)
         .limit(1)
         .offset(0)
         .orderBy('id', 'desc')

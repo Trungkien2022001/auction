@@ -125,6 +125,7 @@ async function updateUser(userId, updateCondition) {
             .update(updateCondition)
 
         await redis.del('users')
+        await redis.del(`user:${userId}`)
     } catch (error) {
         throw new Error(`unable to update user`)
     }

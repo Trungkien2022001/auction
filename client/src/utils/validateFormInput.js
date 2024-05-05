@@ -69,6 +69,53 @@ export const registerValidate = (data) => {
     }
 }
 
+export const updateUserInfoValidate = (data) => {
+    if (data.name && (data.name.length < 2 || data.name.length > 40)) {
+        return {
+            err: true,
+            message: 'Họ tên không được để trống, quá ngắn hoặc quá dài'
+        }
+    }
+
+    if (data.phone && (isNaN(data.phone) || data.phone.length !== 10)) {
+        return {
+            err: true,
+            message: 'Số điện thoại không đúng'
+        }
+    }
+
+    if (data.password && data.password !== data.rePassword) {
+        return {
+            err: true,
+            message: 'Mật khấu không trùng khớp'
+        }
+    }
+    if (data.password && data.password.length < 4) {
+        return {
+            err: true,
+            message: 'Mật khẩu không được để trống hoặc quá ngắn'
+        }
+    }
+    if (data.birthday && moment()
+        .subtract(15, 'years')
+        .format('YYYY-MM-DD') < data.birthday) {
+        return {
+            err: true,
+            message: 'Tuổi của bạn phải lớn hơn 15 tuổi'
+        }
+    }
+    if (data.address && data.address < 4) {
+        return {
+            err: true,
+            message: 'Địa chỉ không được quá ngắn'
+        }
+    }
+
+    return {
+        err: false
+    }
+}
+
 export const newAuctionValidate = (data) => {
 
     if(!data.name){

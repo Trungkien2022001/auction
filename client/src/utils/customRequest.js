@@ -37,6 +37,23 @@ export async function post(url, data, currentUser, timeout) {
         popupError(error)
     }
 }
+export async function put(url, data, currentUser, timeout) {
+    const service_url = buildUrl(url, config.service)
+    try {     
+        const result = await axios.put(service_url, data, {
+            headers: {
+                'ngrok-skip-browser-warning': 69420,
+                'x-key': currentUser.email,
+                'x-access-token': currentUser.token,
+                'Access-Control-Allow-Origin': 'http://localhost:3000'
+            },
+            timeout: timeout || config.timeout
+        })
+        return result
+    } catch (error) {
+        popupError(error)
+    }
+}
 
 function buildUrl(url, service = "NODE") {
     let host

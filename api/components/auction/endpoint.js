@@ -134,7 +134,7 @@ router.post(
         const auctionId = parseInt(ctx.params.auction_id)
         const raiseID = parseInt(ctx.params.raise_id)
         try {
-            const data = await auctionController.updateAuctionStatusAdmin(
+            const data = await auctionController.updateAuctionRaiseStatusAdmin(
                 auctionId,
                 raiseID,
                 ctx.User

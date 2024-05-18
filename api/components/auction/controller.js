@@ -4,6 +4,7 @@ const commonModel = require('../../models/common')
 const productModel = require('../../models/product')
 const auctionModel = require('../../models/auction')
 const elasticModel = require('../../models/elastic')
+const notificationModel = require('../../models/notification')
 const userModel = require('../../models/user')
 const config = require('../../config')
 const {
@@ -78,6 +79,11 @@ exports.createAuction = async params => {
         type: PAYMENT_TYPES.AUCTION_CREATE_FEE,
         amount: fee
     })
+    if (user.prestige !== 2) {
+        await notificationModel.createNotification(10, 319, result[0], [
+            user.id
+        ])
+    }
     if (config.isUseElasticSearch) {
         sendToQueue(
             {
@@ -198,6 +204,13 @@ exports.updateAuctionStatusAdmin = async (auctionId, status) => {
             auctionId,
             status === 'block' ? 9 : 1
         )
+        const notificationStatus = status === 'block' ? 12 : 11
+        await notificationModel.createNotification(
+            notificationStatus,
+            319,
+            auctionId,
+            [auctionDetail.seller_id]
+        )
     }
 
     return {
@@ -205,7 +218,11 @@ exports.updateAuctionStatusAdmin = async (auctionId, status) => {
     }
 }
 
-exports.updateAuctionStatusAdmin = async (auctionId, raiseId, actionUser) => {
+exports.updateAuctionRaiseStatusAdmin = async (
+    auctionId,
+    raiseId,
+    actionUser
+) => {
     const auctionDetail = await auctionModel.getProductAuction(auctionId)
     if (
         auctionDetail.seller_id !== actionUser.id ||

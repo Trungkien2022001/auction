@@ -76,6 +76,33 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                 }
                 break
 
+            case 10:
+                await knex('notification').insert({
+                    user_id: userIDs[0],
+                    auction_id: auctionId,
+                    action_user_id: 319,
+                    type: 10
+                })
+                break
+
+            case 11:
+                await knex('notification').insert({
+                    user_id: userIDs[0],
+                    auction_id: auctionId,
+                    action_user_id: 319,
+                    type: 11
+                })
+                break
+
+            case 12:
+                await knex('notification').insert({
+                    user_id: userIDs[0],
+                    auction_id: auctionId,
+                    action_user_id: 319,
+                    type: 12
+                })
+                break
+
             default:
                 break
         }

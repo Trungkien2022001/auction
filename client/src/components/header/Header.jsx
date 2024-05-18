@@ -449,6 +449,78 @@ export const Header = ({ socket, systemConfig }) => {
                       </div>
                     )
                     break;
+                  case 10:
+                    return (
+                      <div key={item.id} className='notification-item' onClick={() => handleGotoAuction(item.auction_id)}>
+                        <div className='notification-item-avatar'>
+                        <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://www.citypng.com/public/uploads/preview/png-info-information-round-red-icon-symbol-11640517577hdkfkc5pnj.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                        <span style={{ fontWeight: 'bold' }}>From Admin: </span>Phiên đấu giá của bạn sẽ được đội ngũ admin phê duyệt và đưa vào đấsu giá
+                        </div>
+                      </div>
+                    )
+                    break;
+                  case 11:
+                    return (
+                      <div key={item.id} className='notification-item' onClick={() => handleGotoAuction(item.auction_id)}>
+                        <div className='notification-item-avatar'>
+                        <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://www.citypng.com/public/uploads/preview/png-info-information-round-red-icon-symbol-11640517577hdkfkc5pnj.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                        <span style={{ fontWeight: 'bold' }}>From Admin: </span>Sản phẩm của bạn đã được quản trị viên xét duyệt
+                        </div>
+                      </div>
+                    )
+                    break;
+                  case 12:
+                    return (
+                      <div key={item.id} className='notification-item' onClick={() => handleGotoAuction(item.auction_id)}>
+                        <div className='notification-item-avatar'>
+                        <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <SmallAvatar alt="Avatar" src="https://www.citypng.com/public/uploads/preview/png-info-information-round-red-icon-symbol-11640517577hdkfkc5pnj.png" />
+                            }
+                          >
+                            <Avatar
+                              sx={{ width: 55, height: 55 }}
+                              alt="Action"
+                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                            />
+                          </Badge>
+                        </div>
+                        <div className='notification-item-content'>
+                        <span style={{ fontWeight: 'bold' }}>From Admin: </span> Sản phẩm của bạn đã bị đội ngũ quản trị viên từ chối đưa vào đấu giá. Nếu có thắc mắc thì hay nhắn tin cho hệ thống!
+                        </div>
+                      </div>
+                    )
+                    break;
 
                   default:
                     break;

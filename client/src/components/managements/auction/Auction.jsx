@@ -29,13 +29,14 @@ import { visuallyHidden } from '@mui/utils';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { get, post } from '../../../utils/customRequest';
+import { get, post, put } from '../../../utils/customRequest';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { AUCTION_STATUS, AUCTION_TIMES } from '../../../utils/constants';
 import { filterTable } from '../../../utils/filterTable';
 import { checkApiResponse } from '../../../utils/checkApiResponse';
 import { Loading } from '../../loading/Loading';
+import Swal from 'sweetalert2';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -325,6 +326,75 @@ export const Auction = ({ currentUser, socket }) => {
     setCurrentAuctionId(id)
     setOpenAuctionDialog(true);
   }
+
+  const handleAcceptAuction = async (id) => {
+    setCurrentAuctionId(id)
+    Swal.fire({
+      icon: 'question',
+      title: 'Bạn có chắc chắn muốn cho phép phiên đấu giá với ID = ' + id + ' vào hệ thống đấu giá?',
+      showCancelButton: true,
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const r = await put(`/auction/${id}`,
+          {
+            "status": "allowed"
+          }
+          , currentUser)
+        if (r.data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Cập nhật trạng thái phiên đấu giá thành công',
+            showConfirmButton: true,
+            timer: 10000
+          })
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Đã xảy ra lỗi',
+            text: result.data.message,
+            showConfirmButton: true,
+          })
+        }
+
+      }
+    });
+  }
+  const handleRejectAuction = async (id) => {
+    setCurrentAuctionId(id)
+    Swal.fire({
+      icon: 'question',
+      title: 'Bạn có chắc chắn muốn hủy bỏ phiên dấu giá với ID = ' + id + '?',
+      showCancelButton: true,
+      confirmButtonText: 'Có',
+      cancelButtonText: 'Không'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const r = await put(`/auction/${id}`,
+          {
+            "status": "block"
+          }
+          , currentUser)
+        if (r.data.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Cập nhật trạng thái phiên đấu giá thành công',
+            showConfirmButton: true,
+            timer: 10000
+          })
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Đã xảy ra lỗi',
+            text: result.data.message,
+            showConfirmButton: true,
+          })
+        }
+
+      }
+    });
+  }
   const handleClickOpenAuctionHistoryDialog = () => {
     setOpenAuctionHistoryDialog(true);
   };
@@ -438,8 +508,8 @@ export const Auction = ({ currentUser, socket }) => {
                                 {
                                   row.status === 0 ?
                                     <>
-                                      <DoneOutlineIcon style={{ color: "red", fontSize: "35px", cursor: "pointer" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></DoneOutlineIcon>
-                                      <BlockIcon style={{ color: "red", fontSize: "35px", cursor: "pointer" }} onClick={() => handleClickOpenAuctionDialog(row.id)}></BlockIcon>
+                                      <DoneOutlineIcon style={{ color: "red", fontSize: "35px", cursor: "pointer" }} onClick={() => handleAcceptAuction(row.id)}></DoneOutlineIcon>
+                                      <BlockIcon style={{ color: "red", fontSize: "35px", cursor: "pointer" }} onClick={() => handleRejectAuction(row.id)}></BlockIcon>
                                     </>
                                     : <></>
                                 }

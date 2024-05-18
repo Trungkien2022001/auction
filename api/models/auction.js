@@ -354,6 +354,7 @@ exports.getAuctionHistory = async id => {
                 'ah.bet_time',
                 'ah.bet_amount',
                 'ah.is_blocked',
+                'ah.auctioneer_id',
                 'u.name as auctioneer_name'
             )
             .from('auction_history as ah')

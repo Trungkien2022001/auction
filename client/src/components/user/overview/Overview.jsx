@@ -197,7 +197,7 @@ export const Overview = ({ currentUser, id }) => {
               </div>
               <div className='overview-item'>
                 <div className='overview-item__title'>Hoạt động</div>
-                <div className='overview-item__content'>{data.is_blocked ? 'Bị khóa' : 'Hoạt động'}</div>
+                <div className='overview-item__content'>{!data.is_blocked ? 'Bị khóa' : 'Hoạt động'}</div>
               </div>
               <div className='overview-user-address overview-item'>
                 <div className='overview-item__title'>Địa chỉ</div>
@@ -281,10 +281,10 @@ export const Overview = ({ currentUser, id }) => {
         </div>
       </div>
       <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}>
-        <DialogTitle>Đấu giá</DialogTitle>
+        <DialogTitle>Chỉnh sửa thông tin</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Vui lòng suy nghĩ kĩ trước khi đấu giá. Một khi tham gia vào quá trình đấu giá. Nếu bạn đấu trúng, bạn sẽ phải có trách nhiệm thanh toán tiền cho bên bán
+            Chỉnh sửa thông tin cá nhân của bạn. Nhưng thông tin này là cơ sở để người mua có thể liên lạc và có thể thấy độ uy tín của bạn
           </DialogContentText>
           <div className="update-info-container" style={{ marginTop: "25px" }}>
 

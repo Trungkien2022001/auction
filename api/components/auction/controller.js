@@ -221,6 +221,7 @@ exports.updateAuctionStatusAdmin = async (auctionId, status) => {
 exports.updateAuctionRaiseStatusAdmin = async (
     auctionId,
     raiseId,
+    raiseUserID,
     actionUser
 ) => {
     const auctionDetail = await auctionModel.getProductAuction(auctionId)
@@ -232,11 +233,17 @@ exports.updateAuctionRaiseStatusAdmin = async (
     } else {
         await auctionModel.blockAuctionRaise(raiseId)
         const currentAuctionRaiseWin = await auctionModel.getRaiseWin(auctionId)
+        if (!currentAuctionRaiseWin) {
+            currentAuctionRaiseWin.bet_amount = auctionDetail.start_price
+        }
         await auctionModel.updateAuctionSellPrice(
             auctionId,
             currentAuctionRaiseWin.bet_amount,
             auctionDetail.auction_count
         )
+        await notificationModel.createNotification(13, 319, auctionId, [
+            raiseUserID
+        ])
         // TODO: update elasticsearch
     }
 

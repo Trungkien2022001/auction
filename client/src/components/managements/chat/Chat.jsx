@@ -44,11 +44,13 @@ export const Chat = ({ socket }) => {
 
     useEffect(() => {
         if (socket.current) {
-            socket.current.on('updateUI', () => {
-                getData()
-                getAllLastMsg()
+            socket.current.on('updateUI',async () => {
+                console.log("Update UI")
+                await getData()
+                await getAllLastMsg()
             })
             socket.current.on('receive-client-msg', params => {
+                console.log(params)
                 if (params.user_id === clientId || !clientId) {
                     setData(prev => [...prev, { ...params, id: data[data.length-1]?.id+1,updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm') }])
                 }
@@ -61,6 +63,8 @@ export const Chat = ({ socket }) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket])
+
+    console.log(data)
 
     const onEnter = (e) => {
         if (e.keyCode === 13 && e.shiftKey === false) {
@@ -108,7 +112,7 @@ export const Chat = ({ socket }) => {
                     user_id: clientId,
                     is_admin: 1,
                     content: message,
-                    updated_at: moment(new Date()).format('DD/MM/YYYY HH:mm')
+                    updated_at: new Date()
                 }])
         }
         getAllLastMsg()
@@ -164,7 +168,7 @@ export const Chat = ({ socket }) => {
                                         <div className="content">
                                             {msg.content}
                                             <div className='time'>
-                                                {moment(msg.updated_at).format('DD/MM/YYYY HH:mm')}
+                                                {typeof msg.updated_at === 'string' ? msg.updated_at : moment(msg.updated_at).format('DD/MM/YYYY HH:mm')}
                                             </div>
                                         </div>
                                         <div className="avatar">
@@ -179,7 +183,7 @@ export const Chat = ({ socket }) => {
                                         <div className="content">
                                             {msg.content}
                                             <div className='time'>
-                                                {moment(msg.updated_at).format('DD/MM/YYYY HH:mm')}
+                                                {typeof msg.updated_at === 'string' ? msg.updated_at : moment(msg.updated_at).format('DD/MM/YYYY HH:mm')}
                                             </div>
                                         </div>
                                     </div>

@@ -138,7 +138,8 @@ async function addUser(user) {
 
         await redis.del('users')
     } catch (error) {
-        throw new Error(`unable to add user`)
+        console.log(error)
+        // throw new Error(`unable to add user`)
     }
 }
 

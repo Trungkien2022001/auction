@@ -64,24 +64,32 @@ async function raise(data, socket, listOnlineUser, socketIO) {
     socketIO.to(seller.socket).emit('updateUI')
 }
 
-async function clientSendMsg(data, listOnlineUser, socket) {
+async function clientSendMsg(data, listOnlineUser, socket, socketIo) {
     let chatId = await insertMessage(data)
     if (!data.chat_id) {
         const index = listOnlineUser.findIndex(i => i.user_id === data.user_id)
         if (index !== -1) {
             listOnlineUser[index].chatRoom.push(`chat:${chatId}`)
             socket.join([`chat:${chatId}`])
-            const lstAdmin = listOnlineUser.filter(i => i.is_admin)
-            for (let i = 0; i < lstAdmin.length; i += 1) {
-                const ad = lstAdmin[i]
-                socket.to(ad.chatRoom).emit('new-user-join-chat', chatId)
-            }
         }
-        socket.to(`chat:${chatId}`).emit('updateFirstMessUI')
+        socketIo.to(`chat:${chatId}`).emit('updateFirstMessUI')
+
+        // Todo check
+        // socketIo
+        //     .to(listOnlineUser.find(i=>i.is_admin).chatRoom[0])
+        //     .emit('receive-client-msg', { ...data, chat_id: chatId })
+        
+        socketIo.emit('updateUI')
     } else {
         chatId = data.chat_id
     }
-    socket
+    const lstAdmin = listOnlineUser.filter(i => i.is_admin)
+    for (let i = 0; i < lstAdmin.length; i += 1) {
+        const ad = lstAdmin[i]
+        socketIo.to(ad.chatRoom[0]).emit('updateUI')
+        socket.to(ad.chatRoom[0]).emit('new-user-join-chat', chatId)
+    }
+    socketIo
         .to(`chat:${chatId}`)
         .emit('receive-client-msg', { ...data, chat_id: chatId })
 }

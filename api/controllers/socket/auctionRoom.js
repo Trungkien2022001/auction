@@ -37,7 +37,7 @@ async function addToRoom(userId, socketId, isAdmin, listOnlineUser) {
         is_admin: isAdmin,
         socket: [socketId],
         auctionRooms,
-        chatRoom: chatRoom || null
+        chatRoom: chatRoom || []
     })
 
     return index === -1 ? listOnlineUser.length - 1 : index

@@ -127,7 +127,7 @@ exports.getAuctions = async params => {
                         created_date
                     ])
                 }
-                if (status !== '-1') {
+                if (!(status !== '-1' || status === -1)) {
                     this.where('a.status', status)
                 } else {
                     switch (sorted) {

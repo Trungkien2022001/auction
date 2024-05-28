@@ -66,7 +66,7 @@ socketIO.on('connection', socket => {
     })
 
     socket.on('client-send-msg', async data => {
-        await clientSendMsg(data, listOnlineUser)
+        await clientSendMsg(data, listOnlineUser, socket, socketIO)
     })
 
     socket.on('admin-send-msg', async data => {

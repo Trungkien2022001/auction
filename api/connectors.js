@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const Redis = require('ioredis')
 const ms = require('ms')
 // const AWS = require('aws-sdk')
@@ -106,15 +107,19 @@ async function cachedExecute({ key, ttl = 60, json = false }, fn) {
         time = ms(time) / 1000
     }
 
-    const cached = await redis.get(key)
-    if (!cached) {
-        const val = await fn()
-        redis.set(key, json ? JSON.stringify(val) : val, 'EX', time)
+    // const cached = await redis.get(key)
+    // if (!cached) {
+    //     const val = await fn()
+    //     redis.set(key, json ? JSON.stringify(val) : val, 'EX', time)
 
-        return val
-    }
+    //     return val
+    // }
 
-    return json ? JSON.parse(cached) : cached
+    // return json ? JSON.parse(cached) : cached
+
+    const val = await fn()
+
+    return val
 }
 
 redis.cachedExecute = cachedExecute

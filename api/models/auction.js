@@ -1,8 +1,10 @@
+/* eslint-disable consistent-return */
 /* eslint-disable radix */
 /* eslint-disable func-names */
 /* eslint no-use-before-define: "error" */
 /* eslint no-return-await: "error" */
 /* eslint-disable camelcase */
+/* eslint-disable consistent-return */
 const debug = require('debug')('auction:model:auction')
 const moment = require('moment')
 const { attachPaginate } = require('knex-paginate')
@@ -683,6 +685,19 @@ exports.getAllAuctionOfUser = async userId => {
     }
 }
 
+exports.getAllAuctionOfSeller = async userId => {
+    try {
+        const result = await knex('auction')
+            .select('id as auction_id')
+            .whereIn('status', [1, 2])
+            .andWhere('seller_id', userId)
+
+        return result
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
 exports.updateUserAuction = async auctionId => {
     debug('MODEL/auction updateUserAuction')
     try {
@@ -903,48 +918,54 @@ exports.checkingAllAuction = async () => {
     )
 }
 exports.finishedAuction = async id => {
-    await exports.updateAuction({ status: 3 }, id)
-    await knex('auction_history')
-        .update('is_success', 1)
-        .where('auction_id', id)
-    const win_auctioneer = await knex('auction_history')
-        .select()
-        .where('auction_id', id)
-        .andWhere('ah.is_blocked', 0)
-        .limit(1)
-        .offset(0)
-        .orderBy('id', 'desc')
-    const seller = await knex('auction')
-        .select()
-        .where('id', id)
-    await knex('auction')
-        .update({
-            auctioneer_win: win_auctioneer[0]
-                ? win_auctioneer[0].auctioneer_id
-                : 1,
-            status: 3
-        })
-        .where('id', id)
-    await knex('notification').insert([
-        {
-            user_id: seller[0].seller_id,
-            action_user_id: win_auctioneer[0]
-                ? win_auctioneer[0].auctioneer_id
-                : 1,
-            auction_id: id,
-            type: 2
-        },
-        {
-            action_user_id: seller[0].seller_id,
-            user_id: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
-            auction_id: id,
-            type: 4
-        }
-    ])
+    try {
+        await exports.updateAuction({ status: 3 }, id)
+        await knex('auction_history')
+            .update('is_success', 1)
+            .where('auction_id', id)
+        const win_auctioneer = await knex('auction_history')
+            .select()
+            .where('auction_id', id)
+            // .andWhere('ah.is_blocked', 0)
+            .limit(1)
+            .offset(0)
+            .orderBy('id', 'desc')
+        const seller = await knex('auction')
+            .select()
+            .where('id', id)
+        await knex('auction')
+            .update({
+                auctioneer_win: win_auctioneer[0]
+                    ? win_auctioneer[0].auctioneer_id
+                    : 1,
+                status: 3
+            })
+            .where('id', id)
+        await knex('notification').insert([
+            {
+                user_id: seller[0].seller_id,
+                action_user_id: win_auctioneer[0]
+                    ? win_auctioneer[0].auctioneer_id
+                    : 1,
+                auction_id: id,
+                type: 2
+            },
+            {
+                action_user_id: seller[0].seller_id,
+                user_id: win_auctioneer[0]
+                    ? win_auctioneer[0].auctioneer_id
+                    : 1,
+                auction_id: id,
+                type: 4
+            }
+        ])
 
-    return {
-        auctioneer: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
-        seller: seller[0].seller_id
+        return {
+            auctioneer: win_auctioneer[0] ? win_auctioneer[0].auctioneer_id : 1,
+            seller: seller[0].seller_id
+        }
+    } catch (error) {
+        console.log(error)
     }
 }
 

@@ -249,7 +249,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>
@@ -273,7 +273,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>
@@ -344,7 +344,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>
@@ -368,7 +368,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>
@@ -392,7 +392,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>
@@ -416,7 +416,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>
@@ -463,7 +463,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>
@@ -487,7 +487,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>
@@ -511,7 +511,7 @@ export const Header = ({ socket, systemConfig }) => {
                             <Avatar
                               sx={{ width: 55, height: 55 }}
                               alt="Action"
-                              src="https://decg5lu73tfmh.cloudfront.net/static/images/comprofiler/gallery/operator/operator_m_v_1501069185.png"
+                              src="http://res.cloudinary.com/nguyenkien2022001/image/upload/v1716652299/upload/em7dspu4e6fjcwberwua.png"
                             />
                           </Badge>
                         </div>

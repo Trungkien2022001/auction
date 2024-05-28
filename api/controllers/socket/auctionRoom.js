@@ -19,6 +19,7 @@ async function addToRoom(userId, socketId, isAdmin, listOnlineUser) {
         listOnlineUser[index].socket.push(socketId)
     }
     const auctionIds = await auctionModel.getAllAuctionOfUser(userId)
+    const sellerAuctionIds = await auctionModel.getAllAuctionOfSeller(userId)
     let chatRoom
     let chatIds
     if (isAdmin) {
@@ -30,7 +31,7 @@ async function addToRoom(userId, socketId, isAdmin, listOnlineUser) {
             chatRoom = [`chat:${chatIds}`]
         }
     }
-    const auctionRooms = createRoomsName(auctionIds)
+    const auctionRooms = createRoomsName([...auctionIds, ...sellerAuctionIds])
     listOnlineUser.push({
         user_id: userId,
         is_admin: isAdmin,

@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 const debug = require('debug')('auction:socket')
 const config = require('../../config')
 const { QUEUE_ACTION } = require('../../config/constant/queueActionConstant')
@@ -40,6 +41,7 @@ async function raise(data, socket, listOnlineUser, socketIO) {
     await handleRaise(data)
     checkHasExistRoom(data.user.id, data.auction.id, socket, listOnlineUser)
     await socketIO.to(createRoomName(data.auction.id)).emit('raise-reply', data)
+    // await socketIO.emit('raise-reply', data)
     await socketIO.to(createRoomName(data.auction.id)).emit('updateUI', {})
     const seller = listOnlineUser.find(
         i => i.user_id === data.auction.seller_id

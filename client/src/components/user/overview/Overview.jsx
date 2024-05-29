@@ -146,7 +146,8 @@ export const Overview = ({ currentUser, id }) => {
 
   useEffect(() => {
     async function getData() {
-      let result = await get(`/user/${id}`, currentUser)
+      // let result = await get(`/user/${id}`, currentUser)
+      let result = await get(`/me`, currentUser)
       if (checkApiResponse(result)) {
         const data = result.data.data
         setData(data)
@@ -223,35 +224,35 @@ export const Overview = ({ currentUser, id }) => {
               <div className='overview-part'>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Số phiên</div>
-                  <div className='overview-item__content'>{data.auction_history_count || 0}</div>
+                  <div className='overview-item__content'>{data.total_auction || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Số lần đấu giá</div>
-                  <div className='overview-item__content'>{data.all_auction_history_count || 0}</div>
+                  <div className='overview-item__content'>{data.total_auction_raise || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Thắng cược</div>
-                  <div className='overview-item__content'>{data.auction_won_count || 0}</div>
+                  <div className='overview-item__content'>{data.total_win || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Thành công</div>
-                  <div className='overview-item__content'>{data.auction_success || 0}</div>
+                  <div className='overview-item__content'>{data.total_win_success || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Đã bán</div>
-                  <div className='overview-item__content'>{data.auction_sale_all_count || 0}</div>
+                  <div className='overview-item__content'>{data.total_sell || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Thành công</div>
-                  <div className='overview-item__content'>{data.sell_success_count || 0}</div>
+                  <div className='overview-item__content'>{data.total_sell_success || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Đã giao hàng</div>
-                  <div className='overview-item__content'>{data.sell_success_count || 0}</div>
+                  <div className='overview-item__content'>{data.total_sell_success || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Thất bại</div>
-                  <div className='overview-item__content'>{data.sell_failed_count_by_auctioneer || 0}</div>
+                  <div className='overview-item__content'>{data.total_sell_failed || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Số dư</div>
@@ -259,11 +260,11 @@ export const Overview = ({ currentUser, id }) => {
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Lợi nhuận</div>
-                  <div className='overview-item__content'>{data.spent || 0}</div>
+                  <div className='overview-item__content'>{data.total_sell_amount || 0}</div>
                 </div>
                 <div className='overview-item'>
                   <div className='overview-item__title'>Đã chi</div>
-                  <div className='overview-item__content'>{data.spent || 0}</div>
+                  <div className='overview-item__content'>{data.total_buy_amount || 0}</div>
                 </div>
               </div>
               {data.prestige === 2 ?

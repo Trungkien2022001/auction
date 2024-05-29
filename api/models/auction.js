@@ -127,7 +127,7 @@ exports.getAuctions = async params => {
                         created_date
                     ])
                 }
-                if (!(status !== '-1' || status === -1)) {
+                if (!(status === '-1' || status === -1)) {
                     this.where('a.status', status)
                 } else {
                     switch (sorted) {
@@ -442,6 +442,70 @@ exports.auctionSpentSum = async userId => {
             .andWhere('a.status', '4')
 
         return result[0]
+    } catch (err) {
+        throw new Error(err.message || JSON.stringify(err))
+    }
+}
+
+exports.auctionInfoOfUser = async userId => {
+    debug('MODEL/auction auctionSpentSum')
+    try {
+        const allAuctions = await knex
+            .from('auction as a')
+            .where('a.auctioneer_win', userId)
+            .orWhere('a.seller_id', userId)
+        
+        const auctionRaise = await knex('auction_history')
+            .select()
+            .where('auctioneer_id', userId)
+            .andWhere('is_blocked', 0)
+
+        let sellAuctions = []
+        let buyAuctions = []
+        let totalWin = 0
+        let totalSell = 0
+        let totalSellWin = 0
+        let totalSellFailed = 0
+        let totalWinSuccess = 0
+        let totalWinFailed = 0
+        for (let idx = 0; idx < allAuctions.length; idx++) {
+            const auction = allAuctions[idx];
+            if(auction.seller_id === userId){
+                totalSell += 1
+                if(auction.status === 5){
+                    totalSellWin += 1
+                    sellAuctions.push(auction)
+                } else {
+                    totalSellFailed += 1
+                }
+            } else {
+                totalWin += 1
+                if(auction.status === 5){
+                    totalWinSuccess += 1
+                    buyAuctions.push(auction)
+                }
+                else {
+                    totalWinFailed += 1
+                }
+                
+            }
+            
+        }
+
+        
+
+        return {
+            total_auction: allAuctions.length,
+            total_auction_raise: auctionRaise.length,
+            total_win: totalWin,
+            total_win_success: totalWinSuccess,
+            total_win_failed: totalWinFailed,
+            total_sell: totalSell,
+            total_sell_success: totalSellWin,
+            total_sell_failed: totalSellFailed,
+            total_sell_amount: sellAuctions.reduce((prev, auction)=> prev + auction.sell_price, 0),
+            total_buy_amount: buyAuctions.reduce((prev, auction)=> prev + auction.sell_price, 0)
+        }
     } catch (err) {
         throw new Error(err.message || JSON.stringify(err))
     }

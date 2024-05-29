@@ -108,6 +108,47 @@ async function fetchUserByID(id, type = 'user') {
     )
 }
 
+async function myProfile(id) {
+    debug('MODEL/user fetchUserByID')
+    // const fetchUser = async () => {
+    //     const user = await knex
+    //         .first()
+    //         .from('user')
+    //         .where({ id })
+
+    //     if (!user) {
+    //         throw new Error('user not found')
+    //     }
+
+    //     return user
+    // }
+
+
+    // return redis.cachedExecute(
+    //     {
+    //         key: `user:${id}`,
+    //         ttl: '2 days',
+    //         json: true
+    //     },
+    //     fetchUser
+    // )
+    const user = await knex
+        .first()
+        .from('user')
+        .where('id', id)
+
+    if (!user) {
+        throw new Error('user not found')
+    }
+
+    const moreInfo = await auctionModels.auctionInfoOfUser(id)
+
+    return {
+        ...user,
+        ...moreInfo
+    }
+}
+
 async function getUserTransactionHistory(userId) {
     debug('MODEL/user getUserTransactionHistory')
     try {
@@ -187,5 +228,6 @@ module.exports = {
     addUser,
     getAllInfoSeller,
     getUserTransactionHistory,
-    blockUser
+    blockUser,
+    myProfile
 }

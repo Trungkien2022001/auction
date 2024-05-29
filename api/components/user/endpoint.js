@@ -56,6 +56,25 @@ router.get('/user/:user_id', genericSecure, validate(schema.get), async ctx => {
     }
 })
 
+router.get('/me', genericSecure, async ctx => {
+    debug('GET /user', ctx.User.id)
+
+    try {
+        const userInfo = await User.myProfile(ctx.User.id)
+
+        ctx.body = {
+            success: true,
+            data: { ...userInfo }
+        }
+    } catch (error) {
+        ctx.status = 500
+        ctx.body = {
+            success: false,
+            message: error.message || JSON.stringify(error)
+        }
+    }
+})
+
 router.get(
     '/user-overview/:user_id',
     genericSecure,

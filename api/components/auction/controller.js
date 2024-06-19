@@ -194,6 +194,11 @@ exports.getAuctionOverview = async params => {
         expensive
     }
 }
+exports.createFeedback = async body => {
+    await auctionModel.createFeedback(body)
+
+    return true
+}
 
 exports.updateAuctionStatusAdmin = async (auctionId, status) => {
     const auctionDetail = await auctionModel.getProductAuction(auctionId)

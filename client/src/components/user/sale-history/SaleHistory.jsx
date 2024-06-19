@@ -29,6 +29,7 @@ import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment'
 import { checkApiResponse } from '../../../utils/checkApiResponse';
+import Swal from 'sweetalert2';
 
 function createData(name, calories, fat, d, e, f, g, h, i, carbs, protein, a, b, c) {
   return {
@@ -284,7 +285,6 @@ export const SaleHistory = ({ currentUser, socket }) => {
   };
 
   const handleCloseAuctionDialog = (option) => {
-    setOpenAuctionDialog(false);
     if(option){
       socket.current.emit('seller_confirm', {
         userId: currentUser.id,
@@ -292,6 +292,13 @@ export const SaleHistory = ({ currentUser, socket }) => {
         status: option === 'cancel' ? 0 : 1
       })
     }
+    setOpenAuctionDialog(false)
+    Swal.fire({
+      icon: 'success',
+      title: 'Xác nhận phiên đấu giá thành công!',
+      showConfirmButton: false,
+      timer: 500
+    })
   };
 
   const handleRequestSort = (event, property) => {

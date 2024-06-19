@@ -454,25 +454,25 @@ exports.auctionInfoOfUser = async userId => {
             .from('auction as a')
             .where('a.auctioneer_win', userId)
             .orWhere('a.seller_id', userId)
-        
+
         const auctionRaise = await knex('auction_history')
             .select()
             .where('auctioneer_id', userId)
             .andWhere('is_blocked', 0)
 
-        let sellAuctions = []
-        let buyAuctions = []
+        const sellAuctions = []
+        const buyAuctions = []
         let totalWin = 0
         let totalSell = 0
         let totalSellWin = 0
         let totalSellFailed = 0
         let totalWinSuccess = 0
         let totalWinFailed = 0
-        for (let idx = 0; idx < allAuctions.length; idx++) {
-            const auction = allAuctions[idx];
-            if(auction.seller_id === userId){
+        for (let idx = 0; idx < allAuctions.length; idx += 1) {
+            const auction = allAuctions[idx]
+            if (auction.seller_id === userId) {
                 totalSell += 1
-                if(auction.status === 5){
+                if (auction.status === 5) {
                     totalSellWin += 1
                     sellAuctions.push(auction)
                 } else {
@@ -480,19 +480,14 @@ exports.auctionInfoOfUser = async userId => {
                 }
             } else {
                 totalWin += 1
-                if(auction.status === 5){
+                if (auction.status === 5) {
                     totalWinSuccess += 1
                     buyAuctions.push(auction)
-                }
-                else {
+                } else {
                     totalWinFailed += 1
                 }
-                
             }
-            
         }
-
-        
 
         return {
             total_auction: allAuctions.length,
@@ -503,8 +498,14 @@ exports.auctionInfoOfUser = async userId => {
             total_sell: totalSell,
             total_sell_success: totalSellWin,
             total_sell_failed: totalSellFailed,
-            total_sell_amount: sellAuctions.reduce((prev, auction)=> prev + auction.sell_price, 0),
-            total_buy_amount: buyAuctions.reduce((prev, auction)=> prev + auction.sell_price, 0)
+            total_sell_amount: sellAuctions.reduce(
+                (prev, auction) => prev + auction.sell_price,
+                0
+            ),
+            total_buy_amount: buyAuctions.reduce(
+                (prev, auction) => prev + auction.sell_price,
+                0
+            )
         }
     } catch (err) {
         throw new Error(err.message || JSON.stringify(err))
@@ -1144,4 +1145,7 @@ exports.updateAuctionSellPrice = async (auctionId, sellPrice, auctionCount) => {
             auction_count: auctionCount - 1
         })
         .where('id', auctionId)
+}
+exports.createFeedback = async body => {
+    await knex('feedback').insert(body)
 }

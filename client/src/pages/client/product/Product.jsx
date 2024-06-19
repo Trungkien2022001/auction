@@ -183,7 +183,7 @@ export const Product = ({ socket }) => {
         //   console.log(auctionHistoryData.filter(i=>i !== item.id).sort((a, b)=> a.bet_amount > b.bet_amount ? 1 : -1)[0])
         //   setData({...data, sell_price: auctionHistoryData.filter(i=>i !== item.id).sort((a, b)=> a.bet_amount > b.bet_amount ? 1 : -1)[0].bet_amount})
         // }
-        const r = await post(`/auction/block/${data.id}/${item.id}`, {}, currentUser)
+        const r = await post(`/auction/block/${data.id}/${item.id}/${item.auctioneer_id}`, {}, currentUser)
         if (r.data.success) {
           await getData()
           Swal.fire({

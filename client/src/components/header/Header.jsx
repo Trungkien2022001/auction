@@ -17,16 +17,17 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link } from 'react-router-dom';
-import { Avatar } from '@mui/material';
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import './Header.scss'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { get } from '../../utils/customRequest';
+import { get, post } from '../../utils/customRequest';
 import { useDispatch, useSelector } from "react-redux";
 import { userSlice } from "../../redux/userSlice";
 import Swal from 'sweetalert2';
 import { checkApiResponse } from '../../utils/checkApiResponse';
 import { tryParseJson } from '../../utils/common';
+import { authenticate } from '../../utils/authenticate';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -81,7 +82,9 @@ export const Header = ({ socket, systemConfig }) => {
   const [data, setData] = useState([])
   const [text, setText] = useState('')
   const [anchorE2, setAnchorE2] = React.useState(null);
+  const [feedback, setFeedback] = React.useState(null);
   const [anchorE3, setAnchorE3] = React.useState(null);
+  const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const openMenu = Boolean(anchorE2);
   const isMenuOpen = Boolean(anchorEl);
   const isNotificationOpen = Boolean(anchorE3);
@@ -89,6 +92,14 @@ export const Header = ({ socket, systemConfig }) => {
   if (!systemConfig) {
     systemConfig = tryParseJson(localStorage.getItem('sytem_config'))?.data || {}
   }
+
+  const handleClickOpenAuctionDialog = () => {
+    setOpenAuctionDialog(true);
+  };
+
+  const handleCloseAuctionDialog = () => {
+    setOpenAuctionDialog(false);
+  };
 
   const handleSearch = () => {
     if (text !== '') {
@@ -108,6 +119,37 @@ export const Header = ({ socket, systemConfig }) => {
     } else {
       setAnchorEl(event.currentTarget);
     }
+  };
+
+  const handleSubmitAuction = async () => {
+    if(!feedback){
+      return
+    }
+    setOpenAuctionDialog(false)
+    if (authenticate(currentUser)) {
+      return
+    }
+    let result = await post(`/auction/feedback`, {
+      feedback
+    }, currentUser)
+    if (result.data.success) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Gửi Feedback thành công!',
+        showConfirmButton: true,
+        timer: 4000
+      }).then(() => {
+        setOpenAuctionDialog(false)
+      })
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Đã xảy ra lỗi',
+        text: result.data.message,
+        showConfirmButton: true,
+      })
+    }
+    setFeedback('')
   };
 
   useEffect(() => {
@@ -699,6 +741,15 @@ export const Header = ({ socket, systemConfig }) => {
                   About Us
                 </Link>
               </div>
+             <>
+             {
+                currentUser && currentUser.id ? 
+              <div className="item" onClick={handleClickOpenAuctionDialog}>
+                Feedback
+              </div>
+              : <></>
+              }
+             </> 
             </div>
           </Box>
           <Box sx={{ display: "flex" }}>
@@ -750,6 +801,30 @@ export const Header = ({ socket, systemConfig }) => {
       {renderMobileMenu}
       {renderMenu}
       {renderNotification}
+      <Dialog open={openAuctionDialog} onClose={handleCloseAuctionDialog}>
+        <DialogTitle>Gửi Feebback</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+           Những ý kiến đóng góp, góp ý của bạn sẽ giúp chúng tôi có những sửa đổi, cái tiến đề phù hợp hơn với người dùng. Chúng tôi cảm ơn những đóng góp của bạn!
+          </DialogContentText>
+          <TextField
+            className='text-input text-input-95'
+            id="standard-basic"
+            multiline
+            rows={8}
+            maxRows={8}
+            label="Feedback"
+            variant="outlined"
+            placeholder='Ý kiến, góp ý...'
+            helperText='Không quá 1000 kí tự'
+            onChange={e => setFeedback(e.target.value )}
+        />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseAuctionDialog}>Hủy</Button>
+          <Button onClick={handleSubmitAuction} >Gửi góp ý</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

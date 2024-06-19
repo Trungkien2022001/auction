@@ -124,7 +124,7 @@ router.put(
 )
 
 router.post(
-    '/auction/block/:auction_id/:raise_id',
+    '/auction/block/:auction_id/:raise_id/:auctioneer_id',
     // validate(update),
     genericSecure,
     // checkPermission('dashboard_auction'),
@@ -133,10 +133,12 @@ router.post(
         // const { body } = ctx.request
         const auctionId = parseInt(ctx.params.auction_id)
         const raiseID = parseInt(ctx.params.raise_id)
+        const auctioneerID = parseInt(ctx.params.auctioneer_id)
         try {
             const data = await auctionController.updateAuctionRaiseStatusAdmin(
                 auctionId,
                 raiseID,
+                auctioneerID,
                 ctx.User
             )
             ctx.body = {
@@ -250,6 +252,26 @@ router.post('/auction/raise', genericSecure, async ctx => {
             auctionId: ctx.request.query.auction_id
         })
         ctx.body = check
+    } catch (err) {
+        ctx.status = 200
+        ctx.body = {
+            code: err.code || 500,
+            success: false,
+            message: err.message || JSON.stringify(err)
+        }
+    }
+})
+router.post('/auction/feedback', genericSecure, async ctx => {
+    debug('POST /auction/raise')
+
+    try {
+        await auctionController.createFeedback({
+            feedback: ctx.request.body.feedback,
+            user_id: ctx.User.id
+        })
+        ctx.body = {
+            success: true
+        }
     } catch (err) {
         ctx.status = 200
         ctx.body = {

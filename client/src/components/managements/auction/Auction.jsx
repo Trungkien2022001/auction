@@ -271,7 +271,7 @@ export const Auction = ({ currentUser, socket }) => {
 
   async function getData(stt) {
     setLoading(true)
-    let result = await post(`/auctions?type=dashboard&status=${stt}&created_date=${createdDate}&auction_id=${auctionId}&limit=100`, {}, currentUser)
+    let result = await post(`/auctions?type=dashboard&status=${stt}&created_date=${createdDate}&auction_id=${auctionId}&limit=500`, {}, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.data.products)
       setInitialData(result.data.data.products)
@@ -353,7 +353,7 @@ export const Auction = ({ currentUser, socket }) => {
           Swal.fire({
             icon: 'error',
             title: 'Đã xảy ra lỗi',
-            text: result.data.message,
+            text: r.data.message,
             showConfirmButton: true,
           })
         }

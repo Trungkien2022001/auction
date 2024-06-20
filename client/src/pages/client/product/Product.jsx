@@ -391,15 +391,15 @@ export const Product = ({ socket }) => {
                 </div>
                 <div className="seller-history">
                   <div className="history history__all">
-                    <div className="history-count">{data.seller.auction_sale_all_count || 100}</div>
+                    <div className="history-count">{data.seller.total_sell || 100}</div>
                     <div className="history-title ">Đã bán</div>
                   </div>
                   <div className="history  history__success">
-                    <div className="history-count">{data.seller.auction_sale_success_count || 5}</div>
+                    <div className="history-count">{data.seller.total_sell_success || 5}</div>
                     <div className="history-title">Thành công</div>
                   </div>
                   <div className="history  history__failed">
-                    <div className="history-count">{data.seller.auction_sale_failed_count || 95}</div>
+                    <div className="history-count">{data.seller.total_sell_failed || 95}</div>
                     <div className="history-title">Thất bại</div>
                   </div>
                 </div>

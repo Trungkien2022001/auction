@@ -21,7 +21,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import InfoIcon from '@mui/icons-material/Info';
-import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
+// import ChangeCircleIcon from '@mui/icons-material/ChangeCircle';
 import BlockIcon from '@mui/icons-material/Block';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 
@@ -271,7 +271,7 @@ export const Auction = ({ currentUser, socket }) => {
 
   async function getData(stt) {
     setLoading(true)
-    let result = await post(`/auctions?type=dashboard&status=${stt}&created_date=${createdDate}&auction_id=${auctionId}&limit=100`, {}, currentUser)
+    let result = await post(`/auctions?type=dashboard&status=${stt}&created_date=${createdDate}&auction_id=${auctionId}&limit=500`, {}, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.data.products)
       setInitialData(result.data.data.products)

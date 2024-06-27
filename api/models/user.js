@@ -59,6 +59,7 @@ async function fetchUserByEmail(email) {
 
 async function fetchUserByID(id, type = 'user') {
     debug('MODEL/user fetchUserByID')
+    let moreInfo = {}
     const fetchUser = async () => {
         const user = await knex
             .first()
@@ -89,13 +90,17 @@ async function fetchUserByID(id, type = 'user') {
                 delete user.amount
                 delete user.custom_config
                 delete user.refresh_token
+                moreInfo = await auctionModels.auctionInfoOfUser(id)
                 // delete user
             }
             default:
                 break
         }
 
-        return user
+        return {
+            ...user,
+            ...moreInfo
+        }
     }
 
     return redis.cachedExecute(
@@ -122,7 +127,6 @@ async function myProfile(id) {
 
     //     return user
     // }
-
 
     // return redis.cachedExecute(
     //     {

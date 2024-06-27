@@ -3,7 +3,6 @@
 import './BuyHistory.scss'
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,15 +19,17 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Radio, RadioGroup } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Radio, RadioGroup, Select, TextField } from '@mui/material';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { get } from '../../../utils/customRequest';
 import moment from 'moment';
 import { checkApiResponse } from '../../../utils/checkApiResponse';
+import Swal from 'sweetalert2';
+import { AUCTION_STATUS } from '../../../utils/constants';
+import { filterTable } from '../../../utils/filterTable';
 
 function createData(name, calories, fat, carbs, protein, a, b, c) {
   return {
@@ -127,6 +128,48 @@ const headCells = [
   },
 ];
 
+function EnhancedTableToolbar(props) {
+  const { fn, fn1} = props;
+
+  return (
+    <Toolbar
+      style={{ paddingTop: "20px" }}
+      sx={{
+        pl: { sm: 2 },
+      }}
+    >
+      <Typography
+        sx={{ flex: '1 1 100%' }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+      >
+        Lịch sử giao dịch
+      </Typography>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        defaultValue={-1}
+        label="Age"
+        placeholder='Lọc theo trạng thái'
+        style={{ width: "400px" }}
+        onChange={fn1}
+      >
+        <MenuItem value={-1}>Tất cả</MenuItem>
+        {AUCTION_STATUS.map((item, index) =>
+          <MenuItem key={index} value={item.value}>{item.title}</MenuItem>
+        )}
+      </Select>
+      <TextField style={{ width: "400px" }} id="outlined-basic" label="Tìm kiếm" variant="outlined" onChange={fn} />
+      <Tooltip title="Filter list">
+        <IconButton>
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
+    </Toolbar>
+  );
+}
+
 function EnhancedTableHead(props) {
   const { order, orderBy, onRequestSort } =
     props;
@@ -163,6 +206,7 @@ function EnhancedTableHead(props) {
   );
 }
 
+
 EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
@@ -171,56 +215,6 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Lịch sử giao dịch
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
-}
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
@@ -232,6 +226,7 @@ export const BuyHistory = ({ currentUser, socket }) => {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [initialData, setInitialData] = useState([])
   const [openAuctionDialog, setOpenAuctionDialog] = useState(false);
   const [data, setData] = useState({})
   const [currentAuctionId, setCurrentAuctionId] = useState()
@@ -240,6 +235,7 @@ export const BuyHistory = ({ currentUser, socket }) => {
     let result = await get(`/auction-purchase-history?user_id=${currentUser.id}`, currentUser)
     if (checkApiResponse(result)) {
       setData(result.data.result)
+      setInitialData(result.data.result)
     }
   }
   useEffect(() => {
@@ -258,8 +254,20 @@ export const BuyHistory = ({ currentUser, socket }) => {
     setOpenAuctionDialog(true);
   };
 
+  const handleSearch = (event) => {
+    const dataList = filterTable(event.target.value, initialData, headCells)
+    setData(dataList)
+  }
+  const handleFilterByStatus = (event) => {
+    const option = event.target.value
+    if(option === -1){
+      setData(initialData)
+    } else {
+      setData(initialData.filter(i=>i.auction_status===option))
+    }
+  }
+
   const handleCloseAuctionDialog = (option) => {
-    setOpenAuctionDialog(false);
     if(option){
       socket.current.emit('auctioneer_confirm', {
         userId: currentUser.id,
@@ -267,6 +275,13 @@ export const BuyHistory = ({ currentUser, socket }) => {
         status: option === 'cancel' ? 0 : 1
       })
     }
+    setOpenAuctionDialog(false)
+    Swal.fire({
+      icon: 'success',
+      title: 'Xác nhận phiên đấu giá thành công!',
+      showConfirmButton: false,
+      timer: 500
+    })
   };
 
   const handleRequestSort = (event, property) => {
@@ -297,6 +312,7 @@ export const BuyHistory = ({ currentUser, socket }) => {
     <div className='dashboard-container'>
       <div>
         <Box sx={{ width: '100%' }}>
+          <EnhancedTableToolbar fn={handleSearch} fn1={handleFilterByStatus}/>
           <Paper sx={{ width: '100%', mb: 2 }}>
             <TableContainer>
               <Table

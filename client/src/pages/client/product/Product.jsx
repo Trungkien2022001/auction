@@ -183,7 +183,7 @@ export const Product = ({ socket }) => {
         //   console.log(auctionHistoryData.filter(i=>i !== item.id).sort((a, b)=> a.bet_amount > b.bet_amount ? 1 : -1)[0])
         //   setData({...data, sell_price: auctionHistoryData.filter(i=>i !== item.id).sort((a, b)=> a.bet_amount > b.bet_amount ? 1 : -1)[0].bet_amount})
         // }
-        const r = await post(`/auction/block/${data.id}/${item.id}`, {}, currentUser)
+        const r = await post(`/auction/block/${data.id}/${item.id}/${item.auctioneer_id}`, {}, currentUser)
         if (r.data.success) {
           await getData()
           Swal.fire({
@@ -391,15 +391,15 @@ export const Product = ({ socket }) => {
                 </div>
                 <div className="seller-history">
                   <div className="history history__all">
-                    <div className="history-count">{data.seller.auction_sale_all_count || 100}</div>
+                    <div className="history-count">{data.seller.total_sell || 100}</div>
                     <div className="history-title ">Đã bán</div>
                   </div>
                   <div className="history  history__success">
-                    <div className="history-count">{data.seller.auction_sale_success_count || 5}</div>
+                    <div className="history-count">{data.seller.total_sell_success || 5}</div>
                     <div className="history-title">Thành công</div>
                   </div>
                   <div className="history  history__failed">
-                    <div className="history-count">{data.seller.auction_sale_failed_count || 95}</div>
+                    <div className="history-count">{data.seller.total_sell_failed || 95}</div>
                     <div className="history-title">Thất bại</div>
                   </div>
                 </div>

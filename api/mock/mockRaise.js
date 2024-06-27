@@ -8,6 +8,7 @@ const auctionModel = require('../models/auction')
 const notificationModel = require('../models/notification')
 const { sendToQueue } = require('../queue/kafka/producer.kafka')
 const { QUEUE_ACTION } = require('../config/constant/queueActionConstant')
+const config = require('../config')
 
 function getSample(arr, count) {
     const shuffledArr = _.shuffle(arr)
@@ -46,7 +47,8 @@ async function raise(userId, auctionId, price) {
                 price
             },
             user: {
-                id: userId
+                id: userId,
+                free_raise_remain: 10
             },
             auctionId
         })
@@ -66,13 +68,15 @@ async function raise(userId, auctionId, price) {
             auctionId,
             userIds
         )
-        sendToQueue(
-            {
-                auction_id: auctionId,
-                sell_price: price
-            },
-            QUEUE_ACTION.UPDATE_AUCTION
-        )
+        if (config.isUseKafka) {
+            sendToQueue(
+                {
+                    auction_id: auctionId,
+                    sell_price: price
+                },
+                QUEUE_ACTION.UPDATE_AUCTION
+            )
+        }
     } catch (error) {
         logger.error(error)
     }

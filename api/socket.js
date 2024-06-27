@@ -103,18 +103,18 @@ startChecking(socketIO, listOnlineUser)
 cron.schedule('* * * * *', async () => {
     try {
         logger.info(`Refreshing after 1 minute`)
-        if(config.allowMock){
+        if (config.allowMock) {
+            logger.info('Mock data!!!!!!!!!!!')
+            await createMockUser()
             await createMockAuction()
             await runMockRaise()
-            await createMockUser()
         }
         await initAuctionTime(socketIO, listOnlineUser)
         // if (!config.production) {
         // Mock data
         // }
-        
     } catch (err) {
-        logger.error("CronJob Error!", err)
+        logger.error('CronJob Error!', err)
     }
 })
 
@@ -123,14 +123,13 @@ cron.schedule('*/5 * * * *', async () => {
         logger.info(`Checking all auction after 5 minute`)
         await auctionModel.checkingAllAuction()
     } catch (err) {
-        logger.error("CronJob Error!", err)
+        logger.error('CronJob Error!', err)
     }
 })
 
 if (config.isUseKafka && config.isUseKafkaOnSocketServer) {
     logger.info('Using Kafka On Socket Server')
     const kafka = require('kafka-node')
-
 
     const { Consumer } = kafka
     const client = new kafka.KafkaClient({ kafkaHost: config.kafkaHost })
@@ -144,7 +143,7 @@ if (config.isUseKafka && config.isUseKafkaOnSocketServer) {
     consumer.on('message', async message => {
         await handleJob(message)
 
-        consumer.commit(() => { })
+        consumer.commit(() => {})
     })
 
     consumer.on('error', err => {

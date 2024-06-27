@@ -349,11 +349,12 @@ export const Auction = ({ currentUser, socket }) => {
             showConfirmButton: true,
             timer: 10000
           })
+          await getData()
         } else {
           Swal.fire({
             icon: 'error',
             title: 'Đã xảy ra lỗi',
-            text: result.data.message,
+            text: r.data.message,
             showConfirmButton: true,
           })
         }
@@ -383,11 +384,12 @@ export const Auction = ({ currentUser, socket }) => {
             showConfirmButton: true,
             timer: 10000
           })
+          await getData()
         } else {
           Swal.fire({
             icon: 'error',
             title: 'Đã xảy ra lỗi',
-            text: result.data.message,
+            text: r.data.message,
             showConfirmButton: true,
           })
         }

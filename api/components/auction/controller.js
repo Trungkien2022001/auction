@@ -19,6 +19,7 @@ const {
     updateUserFreeCreateAuctionRemain
 } = require('../payment/controller')
 const { PAYMENT_TYPES } = require('../../config/constant/paymentTypeConstant')
+const { logger } = require('../../utils/winston')
 
 exports.getAuctions = async params => {
     const model = config.isUseElasticSearch ? elasticModel : auctionModel
@@ -29,74 +30,82 @@ exports.getAuctions = async params => {
 
 exports.createAuction = async params => {
     const { body, user } = params
-    const product = {
-        ...body.product,
-        seller_id: user.id,
-        image: body.product.images[0]
-    }
-    const productsConfig = await commonModel.getProductCategory()
-    const pConfig = productsConfig.find(i => i.id === product.category_id)
-    const fee = pConfig.create_fee
-    if (fee) {
-        if (user.amount < fee) {
-            return {
-                success: false,
-                message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
-            }
+    try {
+        const product = {
+            ...body.product,
+            seller_id: user.id,
+            image: body.product.images[0]
         }
-    } else {
-        if (
-            user.create_free_auction_remain &&
-            user.create_free_auction_remain < 1
-        ) {
-            return {
-                success: false,
-                message: `Bạn đã dùng hết số lượt đấu giá miễn phí`
+        const productsConfig = await commonModel.getProductCategory()
+        const pConfig = productsConfig.find(i => i.id === product.category_id)
+        const fee = pConfig.create_fee
+        if (fee) {
+            if (user.amount < fee) {
+                return {
+                    success: false,
+                    message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
+                }
             }
+        } else {
+            if (
+                user.create_free_auction_remain &&
+                user.create_free_auction_remain < 1
+            ) {
+                return {
+                    success: false,
+                    message: `Bạn đã dùng hết số lượt đấu giá miễn phí`
+                }
+            }
+            await updateUserFreeCreateAuctionRemain(user)
         }
-        await updateUserFreeCreateAuctionRemain(user)
-    }
-    const auction = {
-        ...body.auction,
-        end_time: moment(body.auction.start_time)
-            .add(AUCTION_TIME[body.auction.auction_time], 'minutes')
-            .format('YYYY-MM-DD HH:mm:ss'),
-        seller_id: user.id,
-        start_price: product.start_price,
-        sell_price: product.start_price,
-        status: user.prestige === 2 ? 1 : 0
-    }
-    const { images } = product
-    delete product.images
+        const auction = {
+            ...body.auction,
+            end_time: moment(body.auction.start_time)
+                .add(AUCTION_TIME[body.auction.auction_time], 'minutes')
+                .format('YYYY-MM-DD HH:mm:ss'),
+            seller_id: user.id,
+            start_price: product.start_price,
+            sell_price: product.start_price,
+            status: user.prestige === 2 ? 1 : 0
+        }
+        const { images } = product
+        delete product.images
 
-    const [productId] = await productModel.addProduct(product)
-    auction.product_id = productId
-    await commonModel.saveImage(images, productId)
-    const result = await auctionModel.saveAuction(auction)
-    await pay({
-        user_id: user.id,
-        auction_id: result[0],
-        type: PAYMENT_TYPES.AUCTION_CREATE_FEE,
-        amount: fee
-    })
-    if (user.prestige !== 2) {
-        await notificationModel.createNotification(10, 319, result[0], [
-            user.id
-        ])
-    }
-    if (config.isUseElasticSearch) {
-        sendToQueue(
-            {
-                auction_id: result[0],
-                status: 1,
-                auction_status: AUCTION_STATUS[1]
-            },
-            QUEUE_ACTION.INSERT_AUCTION
-        )
-    }
+        const [productId] = await productModel.addProduct(product)
+        auction.product_id = productId
+        await commonModel.saveImage(images, productId)
+        const result = await auctionModel.saveAuction(auction)
+        await pay({
+            user_id: user.id,
+            auction_id: result[0],
+            type: PAYMENT_TYPES.AUCTION_CREATE_FEE,
+            amount: fee
+        })
+        if (user.prestige !== 2) {
+            await notificationModel.createNotification(10, 319, result[0], [
+                user.id
+            ])
+        }
+        if (config.isUseElasticSearch) {
+            sendToQueue(
+                {
+                    auction_id: result[0],
+                    status: 1,
+                    auction_status: AUCTION_STATUS[1]
+                },
+                QUEUE_ACTION.INSERT_AUCTION
+            )
+        }
 
-    return {
-        err: false
+        return {
+            err: false
+        }
+    } catch (error) {
+        logger.error(error)
+
+        return {
+            err: true
+        }
     }
 }
 
@@ -131,14 +140,16 @@ exports.createAuctionRaise = async params => {
         }
     }
 
-    if (
-        moment(body.time).isBefore(moment(auction.start_time)) ||
-        moment(body.time).isAfter(
-            moment(auction.start_time).add(auction.time, 'minutes')
-        )
-    ) {
-        throw new Error(`Auction raise error: invalid auction time`)
-    }
+    // Todo: CHeck
+
+    // if (
+    //     moment(body.time).isBefore(moment(auction.start_time)) ||
+    //     moment(body.time).isAfter(
+    //         moment(auction.start_time).add(auction.time, 'minutes')
+    //     )
+    // ) {
+    //     throw new Error(`Auction raise error: invalid auction time`)
+    // }
 
     const auctionCountByUser = await auctionModel.countAuctionRaiseByUser(
         user.id,

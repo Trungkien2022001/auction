@@ -136,7 +136,7 @@ export const Chart = ({ currentUser, socket }) => {
           <div className="item">
             <div className="header">User</div>
             <div className="content">{summary.user || 0}</div>
-            <div className="more">+5%</div>
+            <div className="more">+12%</div>
           </div>
         </div>
         <div className="box" style={{ color: "#0079FF" }}>
@@ -150,28 +150,28 @@ export const Chart = ({ currentUser, socket }) => {
           <div className="item">
             <div className="header">Raise</div>
             <div className="content">{summary.auction_raise || 0}</div>
-            <div className="more">+5%</div>
+            <div className="more">+8%</div>
           </div>
         </div>
         <div className="box" style={{ color: "#00DFA2" }}>
           <div className="item">
             <div className="header">Money</div>
             <div className="content">{(summary.money || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
-            <div className="more">+5%</div>
+            <div className="more">+18%</div>
           </div>
         </div>
         <div className="box" style={{ color: "#590696" }}>
           <div className="item">
             <div className="header">Revenue</div>
             <div className="content">{(summary.revenue || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</div>
-            <div className="more">+5%</div>
+            <div className="more">+6%</div>
           </div>
         </div>
         <div className="box" style={{ color: "#FF0075" }}>
           <div className="item">
             <div className="header">Chat</div>
             <div className="content">{summary.chat || 0}</div>
-            <div className="more">+5%</div>
+            <div className="more">+10%</div>
           </div>
         </div>
       </div>

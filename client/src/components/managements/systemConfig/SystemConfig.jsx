@@ -137,7 +137,7 @@ export const SystemConfig = ({ socket }) => {
                     Swal.fire({
                         icon: 'error',
                         title: 'Đã xảy ra lỗi',
-                        text: result.data.message,
+                        text: r.data.message,
                         showConfirmButton: true,
                     })
                 }

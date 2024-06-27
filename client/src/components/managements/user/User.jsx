@@ -240,7 +240,7 @@ export const User = ({ currentUser, socket }) => {
   if (!currentUser.role.dashboard_user) {
     window.location.href = `/management/dashboard`
   }
-
+  console.log(currentUserInfo)
   async function getData() {
     let result = await get(`/users`, currentUser)
     if (checkApiResponse(result)) {
@@ -294,11 +294,12 @@ export const User = ({ currentUser, socket }) => {
             showConfirmButton: true,
             timer: 10000
           })
+          await getData()
         } else {
           Swal.fire({
             icon: 'error',
             title: 'Đã xảy ra lỗi',
-            text: result.data.message,
+            text: r.data.message,
             showConfirmButton: true,
           })
         }
@@ -521,10 +522,12 @@ export const User = ({ currentUser, socket }) => {
                           id="demo-simple-select"
                           defaultValue={'normal_unblock'}
                           onChange={(e) => handleBlock(e.target.value)}
+                          value={currentUserInfo.is_blocked || 'normal_block'}
                         >
                           <MenuItem value={'normal_block'}>Chặn 1 tuần</MenuItem>
                           <MenuItem value={'permanent_block'}>Chặn vĩnh viễn</MenuItem>
                           <MenuItem value={'normal_unblock'}>Bỏ chặn</MenuItem>
+                          <MenuItem value={'0'}>Bình thường</MenuItem>
                         </Select>
                       </FormControl>
                     </div>

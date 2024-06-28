@@ -146,8 +146,12 @@ export const Overview = ({ currentUser, id }) => {
 
   useEffect(() => {
     async function getData() {
-      // let result = await get(`/user/${id}`, currentUser)
-      let result = await get(`/me`, currentUser)
+      let result
+      if(parseInt(id) === currentUser.id){
+        result = await get(`/me`, currentUser)
+      } else {
+        result = await get(`/user/${id}`, currentUser)
+      }
       if (checkApiResponse(result)) {
         const data = result.data.data
         setData(data)

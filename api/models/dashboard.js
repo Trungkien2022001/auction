@@ -5,6 +5,7 @@ const { knex } = require('../connectors')
 
 const baseFn = async (type, tableName) => {
     let result = []
+    let dateConditional
     switch (type) {
         case 'day':
             result = await knex(tableName)
@@ -13,44 +14,51 @@ const baseFn = async (type, tableName) => {
                 // .where('created_at', '>', dateConditional)
                 .groupBy('date')
                 .orderBy('date', 'desc')
-                .limit(30);
+                .limit(30)
             result = result.map(i => {
                 return {
-                    created_at: moment(i.date).format("DD-MM-YYYY"),
+                    created_at: moment(i.date).format('DD-MM-YYYY'),
                     count: i.count
                 }
             })
             break
         case 'hour':
-
             result = await knex(tableName)
-                .select(knex.raw('DATE_FORMAT(created_at, "%Y-%m-%d %H:00:00") as date'))
+                .select(
+                    knex.raw(
+                        'DATE_FORMAT(created_at, "%Y-%m-%d %H:00:00") as date'
+                    )
+                )
                 .count('* as count')
                 // .where('created_at', '>', dateConditional)
                 .groupBy('date')
                 .orderBy('date', 'desc')
-                .limit(24);
+                .limit(24)
             result = result.map(i => {
                 return {
-                    created_at: moment(i.date).format("DD-MM-YYYY HH:mm"),
+                    created_at: moment(i.date).format('DD-MM-YYYY HH:mm'),
                     count: i.count
                 }
             })
             break
         case 'minute':
-            dateConditional = new Date();
-            dateConditional.setMinutes(dateConditional.getMinutes() - 60);
+            dateConditional = new Date()
+            dateConditional.setMinutes(dateConditional.getMinutes() - 60)
 
             result = await knex(tableName)
-                .select(knex.raw('DATE_FORMAT(created_at, "%Y-%m-%d %H:%i:00") as date'))
+                .select(
+                    knex.raw(
+                        'DATE_FORMAT(created_at, "%Y-%m-%d %H:%i:00") as date'
+                    )
+                )
                 .count('* as count')
                 // .where('created_at', '>', dateConditional)
                 .groupBy('date')
                 .orderBy('date', 'desc')
-                .limit(60);
+                .limit(60)
             result = result.map(i => {
                 return {
-                    created_at: moment(i.date).format("DD-MM-YYYY HH:mm"),
+                    created_at: moment(i.date).format('DD-MM-YYYY HH:mm'),
                     count: i.count
                 }
             })
@@ -63,22 +71,23 @@ const baseFn = async (type, tableName) => {
 }
 
 exports.getAuctionRaise = async type => {
-    return baseFn(type, "user_auction")
+    return baseFn(type, 'user_auction')
 }
 exports.getAuction = async type => {
-    return baseFn(type, "auction")
+    return baseFn(type, 'auction')
 }
 exports.getUser = async type => {
-    return baseFn(type, "user")
+    return baseFn(type, 'user')
 }
 
 async function calculateMoney(dateConditional, format) {
-    result = await knex('auction')
+    const result = await knex('auction')
         .select('start_price', 'sell_price', 'end_time')
         .orderBy('end_time', 'desc')
         .whereBetween('end_time', [dateConditional, moment().format()])
-        // .whereIn('status', [3, 4, 5])
-        .where("status", 3)
+        .whereIn('status', [3, 4, 5])
+    // .where("status", 3)
+
     return _(result)
         .groupBy(i => moment(i.end_time).format(format))
         .map((key, value) => {
@@ -103,18 +112,18 @@ exports.getMoney = async type => {
     let dateConditional
     switch (type) {
         case 'day':
-            dateConditional = new Date();
-            dateConditional.setDate(dateConditional.getDate() - 30);
+            dateConditional = new Date()
+            dateConditional.setDate(dateConditional.getDate() - 360)
             result = calculateMoney(dateConditional, 'DD-MM-YYYY')
             break
         case 'hour':
-            dateConditional = new Date();
-            dateConditional.setHours(dateConditional.getHours() - 24);
+            dateConditional = new Date()
+            dateConditional.setHours(dateConditional.getHours() - 720)
             result = calculateMoney(dateConditional, 'DD-MM HH')
             break
         case 'minute':
-            dateConditional = new Date();
-            dateConditional.setMinutes(dateConditional.getMinutes() - 60);
+            dateConditional = new Date()
+            dateConditional.setMinutes(dateConditional.getMinutes() - 1440)
             result = calculateMoney(dateConditional, 'DD-MM HH:mm')
             break
         default:
@@ -139,11 +148,13 @@ exports.summary = async () => {
     const successAuctions = await knex('auction')
         // .where("auction_count", ">", 0)
         // .where("status", 5)
-        .whereIn("status", [5, 3, 4])
+        .whereIn('status', [5, 3, 4])
     // .sum('sell_price')
     // .then(result => result[0]['sum(`sell_price`)'])
-    const money = _.sum(successAuctions.map(auction => auction.sell_price))
-    const revenue = _.sum(successAuctions.map(auction => auction.sell_price - auction.start_price))
+    const money = _.sum(successAuctions.map(a => a.sell_price))
+    const revenue = _.sum(
+        successAuctions.map(a => a.sell_price - a.start_price)
+    )
 
     return {
         user,
@@ -163,7 +174,7 @@ exports.getRequestCount = async limit => {
         .sum('count as total_count')
         .groupBy('time')
         .orderBy('time', 'desc')
-        .limit(limit || 100);
+        .limit(limit || 100)
     // const data = await knex('request')
     //     .select()
     //     .limit(limit || 100)

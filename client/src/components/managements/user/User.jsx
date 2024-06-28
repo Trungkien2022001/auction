@@ -260,7 +260,7 @@ export const User = ({ currentUser, socket }) => {
     let textTitle = 'Bạn có chắc chắn muốn '
     const tmp = data.find(i=>i.id === currentUserId )
     switch (status) {
-      case 'normal_unblock':
+      case 'normal':
         textTitle += `bỏ chặn cho người dùng ${tmp.name}?`
         break;
 
@@ -526,8 +526,8 @@ export const User = ({ currentUser, socket }) => {
                         >
                           <MenuItem value={'normal_block'}>Chặn 1 tuần</MenuItem>
                           <MenuItem value={'permanent_block'}>Chặn vĩnh viễn</MenuItem>
-                          <MenuItem value={'normal_unblock'}>Bỏ chặn</MenuItem>
-                          <MenuItem value={'0'}>Bình thường</MenuItem>
+                          {/* <MenuItem value={'normal_unblock'}>Bỏ chặn</MenuItem> */}
+                          <MenuItem value={'normal'}>Bình thường</MenuItem>
                         </Select>
                       </FormControl>
                     </div>

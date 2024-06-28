@@ -219,9 +219,8 @@ exports.THEME = [
 exports.USER_STATUS = {
   'normal_block': 'Chặn 1 tuần',
   'permanent_block': 'Chặn vĩnh viễn',
-  'normal_block': 'Bình thường',
-  '': 'Bình thường',
-  '0': 'Hoạt động'
+  'normal': 'Bình thường',
+  '': 'Bình thường'
 }
 exports.AUCTION_TIMES = {
   1: '1 Phút',

@@ -57,7 +57,7 @@ async function fetchUserByEmail(email) {
     return user
 }
 
-async function fetchUserByID(id, type = 'user') {
+async function fetchUserByID(id, type = 'seller') {
     debug('MODEL/user fetchUserByID')
     let moreInfo = {}
     const fetchUser = async () => {
@@ -103,14 +103,18 @@ async function fetchUserByID(id, type = 'user') {
         }
     }
 
-    return redis.cachedExecute(
-        {
-            key: `user:${id}`,
-            ttl: '2 days',
-            json: true
-        },
-        fetchUser
-    )
+    const data = await fetchUser()
+
+    return data
+
+    // return redis.cachedExecute(
+    //     {
+    //         key: `user:${id}`,
+    //         ttl: '2 days',
+    //         json: true
+    //     },
+    //     fetchUser
+    // )
 }
 
 async function myProfile(id) {
@@ -183,8 +187,8 @@ async function addUser(user) {
 
         await redis.del('users')
     } catch (error) {
-        console.log(error)
-        // throw new Error(`unable to add user`)
+        // console.log(error)
+        throw new Error(`unable to add user`)
     }
 }
 
@@ -215,7 +219,7 @@ async function blockUser(params) {
                 .where('id', params.user_id)
         } else {
             await knex('user')
-                .update({ is_blocked: '' })
+                .update({ is_blocked: 'normal' })
                 .where('id', params.user_id)
         }
         await redis.del(`user:${params.user_id}`)

@@ -277,7 +277,7 @@ export const User = ({ socket }) => {
                     </ListItemIcon>
                     <ListItemText primary="Setting" />
                   </ListItemButton>
-                  <ListItemButton onClick={() => window.location.href = './'}>
+                  <ListItemButton onClick={() => window.location.href = '/'}>
                     <ListItemIcon>
                       <HomeIcon sx={{ color: `${selectedTheme.textColor}` }} />
                     </ListItemIcon>

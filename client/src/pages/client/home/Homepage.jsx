@@ -91,14 +91,14 @@ export const Homepage = ({ socket }) => {
     setLoadingMeta(true)
     setPreLoadingMeta(false)
     const f = async () => {
-      let tmp_product_category = tryParseJson(localStorage.getItem('product_category'))
-      let tmp_banner_image = tryParseJson(localStorage.getItem('system_config'))
-      if (
-        !tmp_product_category ||
-        !tmp_banner_image ||
-        moment().diff(moment(tmp_product_category.created_at), 'days') > 1 ||
-        moment().diff(moment(tmp_banner_image.created_at), 'days') > 1
-      ) {
+      // let tmp_product_category = tryParseJson(localStorage.getItem('product_category'))
+      // let tmp_banner_image = tryParseJson(localStorage.getItem('system_config'))
+      // if (
+      //   !tmp_product_category ||
+      //   !tmp_banner_image ||
+      //   moment().diff(moment(tmp_product_category.created_at), 'days') > 1 ||
+      //   moment().diff(moment(tmp_banner_image.created_at), 'days') > 1
+      // ) {
         let result = await get(`/auction-helper`, currentUser)
         if (checkApiResponse(result)) {
           setProductCategory(result.data.product_category || [])
@@ -107,10 +107,10 @@ export const Homepage = ({ socket }) => {
           localStorage.setItem('system_config', JSON.stringify({ data: result.data.system_config, created_at: moment().format() }));
         }
 
-      } else {
-        setProductCategory(tmp_product_category.data)
-        setSytemConfig(tmp_banner_image.data)
-      }
+      // } else {
+      //   setProductCategory(tmp_product_category.data)
+      //   setSytemConfig(tmp_banner_image.data)
+      // }
       setPreLoadingMeta(true)
       await getMessage()
     }

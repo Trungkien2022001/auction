@@ -311,7 +311,7 @@ export const Homepage = ({ socket }) => {
               </div>
               <div className='chat-input'>
                 <input
-                  style={{ width: "224px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
+                  style={{ width: "220px", height: "44px", borderRadius: "5px", border: "1px solid #ccc" }}
                   onKeyDown={onEnterPress}
                   value={message}
                   disabled={currentUser.id ? false : true}

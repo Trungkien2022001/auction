@@ -89,9 +89,9 @@ async function runMockRaise() {
         const auction = auctions[i]
         const priceRaise = auction.sell_price + _.random(1, 50) * 100000
         await raise(user.id, auction.id, priceRaise)
-        logger.info(
-            `Fake raise success, auction_id: ${auction.id}, user_id: ${user.id}, raise_price: ${priceRaise}`
-        )
+        // logger.info(
+        //     `Fake raise success, auction_id: ${auction.id}, user_id: ${user.id}, raise_price: ${priceRaise}`
+        // )
     }
 }
 module.exports = {

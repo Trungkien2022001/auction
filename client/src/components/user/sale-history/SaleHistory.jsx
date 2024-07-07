@@ -393,10 +393,10 @@ export const SaleHistory = ({ currentUser, socket }) => {
                           <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY')}</TableCell>
                           <TableCell align="center">{row.auction_time}</TableCell>
                           <TableCell align="center">
-                            {<row className="auction_status"></row> === 5 ? <Button color='success' variant="contained">Thành công</Button> : <></>}
+                            {row.auction_status === 5 ? <Button color='success' variant="contained">Thành công</Button> : <></>}
                             {row.auction_status === 6 ? <Button color='error' variant="contained">Chả ai mua</Button> : <></>}
-                            {row.auction_status === 3? <Button onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">Chờ xác nhận</Button> : <></>}
-                            {row.auction_status === 4? <Button  color='warning' variant="contained">Chờ người mua xác nhận</Button> : <></>}
+                            {row.auction_status === 3 ? <Button onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">Chờ xác nhận</Button> : <></>}
+                            {row.auction_status === 4 ? <Button  color='warning' variant="contained">Chờ người mua xác nhận</Button> : <></>}
                             {row.auction_status === 2 ? <Button variant="contained">Đang đấu giá</Button> : <></>}
                             {row.auction_status === 1 ? <Button color='secondary' variant="contained">Sắp đấu giá</Button> : <></>}
                             {[7,8].includes(row.auction_status) ? <Button color='secondary' variant="contained">Đã hủy</Button> : <></>}

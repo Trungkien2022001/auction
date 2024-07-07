@@ -364,7 +364,7 @@ export const BuyHistory = ({ currentUser, socket }) => {
                           <TableCell align="center">{moment(row.start_time).format('DD-MM-YYYY')}</TableCell>
                           <TableCell align="center">
                             {row.sell_status === 'Thành công' ? <Button className={row.c} color='success' variant="contained">{row.sell_status}</Button> : <></>}
-                            {row.sell_status === 'Người mua hủy đơn hàng' || row.sell_status === 'Người mua hủy đơn hàng'? <Button className="cancel" color='error' variant="contained">{row.sell_status}</Button> : <></>}
+                            {row.sell_status === 'Người bán hủy đơn hàng' || row.sell_status === 'Người mua hủy đơn hàng'? <Button className="cancel" color='error' variant="contained">{row.sell_status}</Button> : <></>}
                             {row.sell_status === 'Chờ người bán xác nhận' ? <Button className={row.c} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
                             {row.sell_status === 'Chờ người đấu xác nhận' ? <Button className={row.c} onClick={() => {handleClickOpenAuctionDialog(); setCurrentAuctionId(row.id)}} color='warning' variant="contained">{row.sell_status}</Button> : <></>}
                           </TableCell>

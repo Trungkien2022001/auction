@@ -615,7 +615,7 @@ exports.getAuctionPurchaseHistory = async userId => {
             .innerJoin('product_category as pc', 'p.category_id', 'pc.id')
             .where('a.auctioneer_win', userId)
             .limit(500)
-            .offset(1)
+            .offset(0)
 
         return result
     } catch (err) {
@@ -628,10 +628,10 @@ exports.getAuctionSellHistory = async userId => {
     try {
         const result = await knex
             .select(
+                'p.*',
                 'a.*',
                 'a.status as auction_status',
                 'at.title as auction_time',
-                'p.*',
                 'pc.name as category',
                 'aut.name as sell_status'
             )
@@ -643,7 +643,7 @@ exports.getAuctionSellHistory = async userId => {
             .where('a.seller_id', userId)
             .orderBy('a.created_at', 'desc')
             .limit(500)
-            .offset(1)
+            .offset(0)
 
         return result
     } catch (err) {
@@ -878,18 +878,36 @@ exports.checkingAllAuction = async () => {
                 .isBefore(moment(new Date()).subtract(1, 'days')) &&
             item.seller_confirm_time === null
         ) {
-            await knex('auction')
-                .update('status', 4)
-                .where('id', item.id)
+            if (config.allowToConfirmAuction) {
+                await knex('auction')
+                    .update({
+                        status: 4,
+                        seller_confirm_time: Date.now()
+                    })
+                    .where('id', item.id)
+            } else {
+                await knex('auction')
+                    .update('status', 4)
+                    .where('id', item.id)
+            }
         } else if (
             item.status === 4 &&
             moment(item.seller_confirm_time).isBefore(
                 moment(new Date()).subtract(1, 'days')
             )
         ) {
-            await knex('auction')
-                .update('status', 5)
-                .where('id', item.id)
+            if (config.allowToConfirmAuction) {
+                await knex('auction')
+                    .update({
+                        status: 5,
+                        auctioneer_confirm_time: Date.now()
+                    })
+                    .where('id', item.id)
+            } else {
+                await knex('auction')
+                    .update('status', 5)
+                    .where('id', item.id)
+            }
         } else if (
             item.status === 1 &&
             moment(item.start_time).isBefore(moment(new Date()))

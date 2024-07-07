@@ -288,7 +288,7 @@ export const NewProduct = ({ socket }) => {
                         >
                             {
                                 Object.keys(AUCTION_TIMES).map((key, index) => (
-                                    <MenuItem key={key} value={index}>{AUCTION_TIMES[key]}</MenuItem>
+                                    <MenuItem key={key} value={index + 1}>{AUCTION_TIMES[key]}</MenuItem>
                                 ))
                             }
                         </TextField>

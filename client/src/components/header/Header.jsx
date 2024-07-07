@@ -510,7 +510,7 @@ export const Header = ({ socket, systemConfig }) => {
                           </Badge>
                         </div>
                         <div className='notification-item-content'>
-                        <span style={{ fontWeight: 'bold' }}>From Admin: </span>Phiên đấu giá của bạn sẽ được đội ngũ admin phê duyệt và đưa vào đấsu giá
+                        <span style={{ fontWeight: 'bold' }}>From Admin: </span>Phiên đấu giá của bạn sẽ được đội ngũ admin phê duyệt và đưa vào đấu giá
                         </div>
                       </div>
                     )

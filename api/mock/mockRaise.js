@@ -78,7 +78,7 @@ async function raise(userId, auctionId, price) {
             )
         }
     } catch (error) {
-        logger.error(error)
+        logger.error('Error when create raise', error)
     }
 }
 async function runMockRaise() {

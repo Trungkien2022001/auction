@@ -17,6 +17,8 @@ async function addToRoom(userId, socketId, isAdmin, listOnlineUser) {
     const index = listOnlineUser.findIndex(item => item.user_id === userId)
     if (index !== -1) {
         listOnlineUser[index].socket.push(socketId)
+
+        return index
     }
     const auctionIds = await auctionModel.getAllAuctionOfUser(userId)
     const sellerAuctionIds = await auctionModel.getAllAuctionOfSeller(userId)

@@ -1,4 +1,5 @@
 /* eslint-disable global-require */
+/* eslint-disable no-unused-vars */
 require('dotenv').config({ path: '.env' })
 const Koa = require('koa')
 const cors = require('@koa/cors')
@@ -105,9 +106,9 @@ cron.schedule('* * * * *', async () => {
         logger.info(`Refreshing after 1 minute`)
         if (config.allowMock) {
             logger.info('Mock data!!!!!!!!!!!')
-            await createMockUser()
-            await createMockAuction()
-            await runMockRaise()
+            // await createMockUser()
+            // await createMockAuction()
+            // await runMockRaise()
         }
         await initAuctionTime(socketIO, listOnlineUser)
         // if (!config.production) {

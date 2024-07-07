@@ -28,8 +28,17 @@ async function updateUserFreeCreateAuctionRemain(user) {
         .where('id', user.id)
 }
 
+async function updateUserAmount(userId, amount) {
+    await knex('user')
+        .update({
+            amount: parseFloat(amount)
+        })
+        .where('id', userId)
+}
+
 module.exports = {
     pay,
+    updateUserAmount,
     updateUserFreeRaiseRemain,
     updateUserFreeCreateAuctionRemain
 }

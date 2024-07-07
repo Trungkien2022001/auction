@@ -16,7 +16,8 @@ const { AUCTION_TIME } = require('../../config/constant')
 const {
     pay,
     updateUserFreeRaiseRemain,
-    updateUserFreeCreateAuctionRemain
+    updateUserFreeCreateAuctionRemain,
+    updateUserAmount
 } = require('../payment/controller')
 const { PAYMENT_TYPES } = require('../../config/constant/paymentTypeConstant')
 const { logger } = require('../../utils/winston')
@@ -46,6 +47,7 @@ exports.createAuction = async params => {
                     message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
                 }
             }
+            await updateUserAmount(user.id, user.amount - fee)
         } else {
             if (
                 user.create_free_auction_remain &&

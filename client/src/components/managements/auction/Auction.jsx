@@ -349,7 +349,7 @@ export const Auction = ({ currentUser, socket }) => {
             showConfirmButton: true,
             timer: 10000
           })
-          await getData(-1)
+          await getData(status)
         } else {
           Swal.fire({
             icon: 'error',
@@ -384,7 +384,7 @@ export const Auction = ({ currentUser, socket }) => {
             showConfirmButton: true,
             timer: 10000
           })
-          await getData(-1)
+          await getData(status)
         } else {
           Swal.fire({
             icon: 'error',

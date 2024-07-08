@@ -320,7 +320,7 @@ export const Homepage = ({ socket }) => {
                   placeholder="Nhập tin nhắn"
                 />
                 <Button
-                  style={{ width: "70px", height: "44px" }}
+                  style={{ width: "60px", height: "44px" }}
                   onClick={sendMessage} variant="contained"
                   disabled={currentUser.id ? false : true}
                 >

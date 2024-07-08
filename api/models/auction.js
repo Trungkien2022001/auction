@@ -885,30 +885,35 @@ exports.checkingAllAuction = async () => {
                 await knex('auction')
                     .update({
                         status: 4,
-                        seller_confirm_time: Date.now()
+                        seller_confirm_time: moment().format(
+                            'YYYY-MM-DD HH:mm:ss'
+                        )
                     })
                     .where('id', item.id)
             } else {
                 await knex('auction')
-                    .update('status', 4)
+                    .update('status', 7)
                     .where('id', item.id)
             }
         } else if (
             item.status === 4 &&
             moment(item.seller_confirm_time).isBefore(
                 moment(new Date()).subtract(1, 'days')
-            )
+            ) &&
+            item.auctioneer_confirm_time === null
         ) {
             if (config.allowToConfirmAuction) {
                 await knex('auction')
                     .update({
                         status: 5,
-                        auctioneer_confirm_time: Date.now()
+                        auctioneer_confirm_time: moment().format(
+                            'YYYY-MM-DD HH:mm:ss'
+                        )
                     })
                     .where('id', item.id)
             } else {
                 await knex('auction')
-                    .update('status', 5)
+                    .update('status', 8)
                     .where('id', item.id)
             }
         } else if (
@@ -929,29 +934,29 @@ exports.checkingAllAuction = async () => {
                 .update('status', 2)
                 .where('id', item.id)
         } else if (item.status === 0) {
-            if (
-                moment(item.created_at)
-                    .add('1', 'days')
-                    .isBefore(moment(new Date()).subtract(1, 'days'))
-            ) {
-                if (moment(item.start_time).isAfter(moment(new Date()))) {
-                    await knex('auction')
-                        .update('status', 9)
-                        .where('id', item.id)
-                } else if (config.isUseElasticSearch) {
-                    sendToQueue(
-                        {
-                            auction_id: item.id,
-                            status: 2,
-                            auction_status: AUCTION_STATUS[2]
-                        },
-                        QUEUE_ACTION.UPDATE_AUCTION
-                    )
-                }
+            // if (
+            //     moment(item.created_at)
+            //         .add('1', 'days')
+            //         .isBefore(moment(new Date()).subtract(1, 'days'))
+            // ) {
+            if (moment(item.start_time).isAfter(moment(new Date()))) {
                 await knex('auction')
-                    .update('status', 2)
+                    .update('status', 9)
                     .where('id', item.id)
+            } else if (config.isUseElasticSearch) {
+                sendToQueue(
+                    {
+                        auction_id: item.id,
+                        status: 2,
+                        auction_status: AUCTION_STATUS[2]
+                    },
+                    QUEUE_ACTION.UPDATE_AUCTION
+                )
             }
+            await knex('auction')
+                .update('status', 2)
+                .where('id', item.id)
+            // }
         }
     })
     // )
@@ -1064,7 +1069,7 @@ exports.sellerConfirm = async (sellerId, auctionId, confirm) => {
     const win_auctioneer = await knex('auction_history')
         .select()
         .where('auction_id', auctionId)
-        .andWhere('ah.is_blocked', 0)
+        .andWhere('is_blocked', 0)
         .limit(1)
         .offset(0)
         .orderBy('id', 'desc')
@@ -1082,7 +1087,7 @@ exports.sellerConfirm = async (sellerId, auctionId, confirm) => {
 }
 
 exports.auctioneerConfirm = async (userId, auctionId, confirm) => {
-    const status = confirm ? 5 : 6
+    const status = confirm ? 5 : 8
     await exports.updateAuction(
         { status, auctioneer_confirm_time: new Date() },
         auctionId

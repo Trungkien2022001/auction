@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 const debug = require('debug')('auction:model:user')
 const { knex, redis } = require('../connectors')
+const { logger } = require('../utils/winston')
 const auctionModels = require('./auction')
 
 async function fetchUsers() {
@@ -188,6 +189,7 @@ async function addUser(user) {
         await redis.del('users')
     } catch (error) {
         // console.log(error)
+        logger.error('unable to add user', error)
         throw new Error(`unable to add user`)
     }
 }

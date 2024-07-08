@@ -84,7 +84,7 @@ function gen() {
 }
 
 async function createMockAuction() {
-    const total = randomRange(1, 10)
+    const total = randomRange(1, 3)
     await Promise.all(
         Array(total)
             .fill(0)

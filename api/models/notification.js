@@ -27,7 +27,9 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                         await knex('notification')
                             .update({
                                 action_user_id: actionUser,
-                                updated_at: moment().format()
+                                updated_at: moment().format(
+                                    'YYYY-MM-DD HH:mm:ss'
+                                )
                             })
                             .where({
                                 user_id: userId,
@@ -63,7 +65,7 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                     await knex('notification')
                         .update({
                             action_user_id: actionUser,
-                            updated_at: moment().format()
+                            updated_at: moment().format('YYYY-MM-DD HH:mm:ss')
                         })
                         .where({
                             user_id: userId,

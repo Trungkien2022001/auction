@@ -25,7 +25,7 @@ async function getRandomActiveAuction(userId) {
 
     return getSample(
         auctions,
-        _.random(10, auctions.length < 50 ? auctions.length : 50)
+        _.random(10, auctions.length < 25 ? auctions.length : 25)
     )
 }
 

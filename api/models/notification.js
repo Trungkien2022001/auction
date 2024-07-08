@@ -1,7 +1,10 @@
 /* eslint-disable no-case-declarations */
+/* eslint-disable no-await-in-loop */
+
 const debug = require('debug')('auction:model:notification')
 const moment = require('moment')
 const { knex } = require('../connectors')
+const { logger } = require('../utils/winston')
 
 exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
     debug(
@@ -15,7 +18,8 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
         switch (type) {
             case 4:
                 // Promise.all(
-                userIDs.map(async userId => {
+                for (let idx = 0; idx < userIDs.length; idx += 1) {
+                    const userId = userIDs[idx]
                     const exist = await knex('notification')
                         .select()
                         .where({
@@ -43,7 +47,36 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                             type: 4
                         })
                     }
-                })
+                }
+                // userIDs.map(async userId => {
+                //     const exist = await knex('notification')
+                //         .select()
+                //         .where({
+                //             user_id: userId,
+                //             auction_id: auctionId,
+                //             type: 4
+                //         })
+                //     if (exist.length) {
+                //         await knex('notification')
+                //             .update({
+                //                 action_user_id: actionUser,
+                //                 updated_at: moment().format(
+                //                     'YYYY-MM-DD HH:mm:ss'
+                //                 )
+                //             })
+                //             .where({
+                //                 user_id: userId,
+                //                 auction_id: auctionId
+                //             })
+                //     } else {
+                //         await knex('notification').insert({
+                //             user_id: userId,
+                //             auction_id: auctionId,
+                //             action_user_id: actionUser,
+                //             type: 4
+                //         })
+                //     }
+                // })
                 // )
                 break
             case 9:
@@ -112,10 +145,8 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                 break
         }
     } catch (err) {
-        throw new Error(
-            'error when create notification',
-            err.message || JSON.stringify(err)
-        )
+        logger.error('Error when create notif', err)
+        throw new Error('error when create notification', err)
     }
 }
 

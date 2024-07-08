@@ -166,6 +166,9 @@ exports.getAuctions = async params => {
             default:
                 break
         }
+        if (type === 'dashboard') {
+            query.orderBy('a.created_at', 'desc')
+        }
         const result = await query.paginate({
             perPage: limit,
             currentPage: page,

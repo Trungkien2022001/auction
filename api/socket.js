@@ -106,9 +106,9 @@ cron.schedule('* * * * *', async () => {
         logger.info(`Refreshing after 1 minute`)
         if (config.allowMock) {
             logger.info('Mock data!!!!!!!!!!!')
-            // await createMockUser()
-            // await createMockAuction()
-            // await runMockRaise()
+            await createMockUser()
+            await createMockAuction()
+            await runMockRaise()
         }
         await initAuctionTime(socketIO, listOnlineUser)
         // if (!config.production) {

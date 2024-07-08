@@ -49,7 +49,7 @@ async function get() {
                 })
                 await handleRaise({ auctionId, userId: user.id })
             } catch (error) {
-                logger.error(error)
+                logger.error('Error when create raise', error)
             }
         }
     }

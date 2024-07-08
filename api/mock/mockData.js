@@ -71,7 +71,7 @@ async function run() {
         logger.error(error)
     }
 }
-run()
+// run()
 const main = async () => {
     for (let i = 0; i < 80000; i += 1) {
         try {
@@ -91,4 +91,9 @@ const main = async () => {
         }
     }
 }
-main()
+// main()
+
+module.exports = {
+    run,
+    main
+}

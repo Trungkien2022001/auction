@@ -16,6 +16,8 @@ const { QUEUE_ACTION } = require('../config/constant/queueActionConstant')
 const { AUCTION_STATUS } = require('../config/constant/auctionStatusConstant')
 const { sendToQueue } = require('../queue/kafka/producer.kafka')
 const config = require('../config')
+const { pay } = require('../components/payment/controller')
+const { PAYMENT_TYPES } = require('../config/constant/paymentTypeConstant')
 
 attachPaginate()
 const collationVietnamese = 'utf8mb4_unicode_ci'
@@ -1091,8 +1093,16 @@ exports.auctioneerConfirm = async (userId, auctionId, confirm) => {
         user_id: seller[0].seller_id,
         action_user_id: userId,
         auction_id: auctionId,
-        type: status ? 8 : 5
+        type: confirm ? 8 : 5
     })
+    if (confirm) {
+        await pay({
+            user_id: seller[0].seller_id,
+            auction_id: auctionId,
+            type: PAYMENT_TYPES.AUCTION_SUCCESS_FEE,
+            amount: parseInt(seller.sell_price * 0.05)
+        })
+    }
 
     return seller[0].id
 }

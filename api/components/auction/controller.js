@@ -103,7 +103,7 @@ exports.createAuction = async params => {
             err: false
         }
     } catch (error) {
-        logger.error(error)
+        logger.error('Error when create auction', error)
 
         return {
             err: true
@@ -126,6 +126,7 @@ exports.createAuctionRaise = async params => {
                 message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
             }
         }
+        await updateUserAmount(user.id, user.amount - fee || 1000000)
     } else {
         if (user.free_raise_remain && user.free_raise_remain < 1) {
             return {
@@ -180,7 +181,7 @@ exports.createAuctionRaise = async params => {
     )
 
     await pay({
-        user,
+        user_id: user.id,
         auction_id: auction.id,
         type: PAYMENT_TYPES.AUCTION_RAISE_FEE,
         amount: fee

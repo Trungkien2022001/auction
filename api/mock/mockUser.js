@@ -20,7 +20,7 @@ function getRandomValue(arr) {
 }
 
 function buildUsernameFromName(str) {
-    if(!str) return ""
+    if (!str) return ''
     str = str.toLowerCase()
     str = str.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, 'a')
     str = str.replace(/[èéẹẻẽêềếệểễ]/g, 'e')
@@ -60,7 +60,7 @@ function gen() {
 }
 
 async function createMockUser() {
-    const total = randomRange(1, 10)
+    const total = randomRange(1, 5)
     await Promise.all(
         Array(total)
             .fill(0)

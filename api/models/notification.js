@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
 const debug = require('debug')('auction:model:notification')
+const moment = require('moment')
 const { knex } = require('../connectors')
 
 exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
@@ -25,7 +26,8 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                     if (exist.length) {
                         await knex('notification')
                             .update({
-                                action_user_id: actionUser
+                                action_user_id: actionUser,
+                                updated_at: moment().format()
                             })
                             .where({
                                 user_id: userId,
@@ -60,7 +62,8 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                 if (exist.length) {
                     await knex('notification')
                         .update({
-                            action_user_id: actionUser
+                            action_user_id: actionUser,
+                            updated_at: moment().format()
                         })
                         .where({
                             user_id: userId,
@@ -107,7 +110,10 @@ exports.createNotification = async (type, actionUser, auctionId, userIDs) => {
                 break
         }
     } catch (err) {
-        throw new Error(err.message || JSON.stringify(err))
+        throw new Error(
+            'error when create notification',
+            err.message || JSON.stringify(err)
+        )
     }
 }
 

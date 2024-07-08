@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 /* eslint-disable radix */
+/* eslint-disable no-console */
 /* eslint-disable func-names */
 /* eslint no-use-before-define: "error" */
 /* eslint no-return-await: "error" */

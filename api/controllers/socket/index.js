@@ -6,6 +6,7 @@ const auctionModel = require('../../models/auction')
 const messageModel = require('../../models/message')
 const { insertMessage } = require('../../models/message')
 const { sendToQueue } = require('../../queue/kafka/producer.kafka')
+const { logger } = require('../../utils/winston')
 const { handleRaise } = require('./auctionRaise')
 const {
     addToRoom,
@@ -38,30 +39,36 @@ async function authenticate(user, socket, listOnlineUser) {
 }
 
 async function raise(data, socket, listOnlineUser, socketIO) {
-    await handleRaise(data)
-    checkHasExistRoom(data.user.id, data.auction.id, socket, listOnlineUser)
-    await socketIO.to(createRoomName(data.auction.id)).emit('raise-reply', data)
-    // await socketIO.emit('raise-reply', data)
-    await socketIO.to(createRoomName(data.auction.id)).emit('updateUI', {})
-    const seller = listOnlineUser.find(
-        i => i.user_id === data.auction.seller_id
-    )
-    if (config.isUseElasticSearch) {
-        sendToQueue(
-            {
-                auction_id: data.auction.id,
-                auction_count: data.auction.auction_count + 1,
-                sell_price: parseInt(data.bet.bet_price)
-            },
-            QUEUE_ACTION.UPDATE_AUCTION
+    try {
+        await handleRaise(data)
+        checkHasExistRoom(data.user.id, data.auction.id, socket, listOnlineUser)
+        await socketIO
+            .to(createRoomName(data.auction.id))
+            .emit('raise-reply', data)
+        // await socketIO.emit('raise-reply', data)
+        await socketIO.to(createRoomName(data.auction.id)).emit('updateUI', {})
+        const seller = listOnlineUser.find(
+            i => i.user_id === data.auction.seller_id
         )
+        if (config.isUseElasticSearch) {
+            sendToQueue(
+                {
+                    auction_id: data.auction.id,
+                    auction_count: data.auction.auction_count + 1,
+                    sell_price: parseInt(data.bet.bet_price)
+                },
+                QUEUE_ACTION.UPDATE_AUCTION
+            )
+        }
+        if (seller) {
+            socketIO.to(seller.socket).emit('notif-to-seller', {
+                auction_id: data.auction.id
+            })
+            socketIO.to(seller.socket).emit('updateUI')
+        }
+    } catch (error) {
+        logger.error('Error', error)
     }
-    if (seller) {
-        socketIO.to(seller.socket).emit('notif-to-seller', {
-            auction_id: data.auction.product.id
-        })
-    }
-    socketIO.to(seller.socket).emit('updateUI')
 }
 
 async function clientSendMsg(data, listOnlineUser, socket, socketIo) {
@@ -78,7 +85,7 @@ async function clientSendMsg(data, listOnlineUser, socket, socketIo) {
         // socketIo
         //     .to(listOnlineUser.find(i=>i.is_admin).chatRoom[0])
         //     .emit('receive-client-msg', { ...data, chat_id: chatId })
-        
+
         socketIo.emit('updateUI')
     } else {
         chatId = data.chat_id

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable camelcase */
 const moment = require('moment')
 const commonModel = require('../../models/common')
@@ -21,6 +22,8 @@ const {
 } = require('../payment/controller')
 const { PAYMENT_TYPES } = require('../../config/constant/paymentTypeConstant')
 const { logger } = require('../../utils/winston')
+const { sleep } = require('../../utils/common')
+const { redis } = require('../../connectors')
 
 exports.getAuctions = async params => {
     const model = config.isUseElasticSearch ? elasticModel : auctionModel
@@ -84,9 +87,7 @@ exports.createAuction = async params => {
             amount: fee
         })
         if (user.prestige !== 2) {
-            await notificationModel.createNotification(10, 319, result[0], [
-                user.id
-            ])
+            notificationModel.createNotification(10, 319, result[0], [user.id])
         }
         if (config.isUseElasticSearch) {
             sendToQueue(
@@ -111,14 +112,54 @@ exports.createAuction = async params => {
     }
 }
 
+async function loopbackCheck(auctionId, user, body, bidIncrement) {
+    const auction = await exports.getAuctionDetail({ id: auctionId })
+    if (bidIncrement > body.price - auction.sell_price) {
+        throw new Error(
+            `Auction raise error : price must be > ${auction.sell_price}`
+        )
+    }
+    const workingKey = `auction:raise:${auctionId}`
+    const res = await redis.set(workingKey, '1', 'NX', 'PX', 5000)
+    logger.info(
+        `Checking for auction ${auctionId}, user ${user.id}, price: ${body.price}, status: ${res}`
+    )
+    if (res !== 'OK') {
+        await sleep(200)
+        await loopbackCheck(auctionId, user, body, bidIncrement)
+    } else {
+        logger.info(`Job executing for user ${user.id}`)
+        const toAuctionHistoryInsert = {
+            auction_id: auctionId,
+            auctioneer_id: user.id,
+            bet_time: body.time,
+            bet_amount: body.price
+        }
+        const toAuctionUpdate = {
+            sell_price: body.price,
+            auction_count: auction.auction_count + 1
+        }
+        await auctionModel.updateAuction(toAuctionUpdate, auctionId)
+        await auctionModel.createAuctionLogHistory(
+            toAuctionHistoryInsert,
+            auctionId
+        )
+        logger.info('Job success!......')
+        await redis.del(workingKey)
+    }
+}
+
 exports.createAuctionRaise = async params => {
     const { body, user, auctionId } = params
+    body.time = moment().format('YYYY-MM-DD HH:mm:ss')
     const auction = await exports.getAuctionDetail({ id: auctionId })
     const productsConfig = await commonModel.getProductCategory()
     const pConfig = productsConfig.find(
         i => i.name === auction.product_category
     )
-    const { fee } = pConfig
+    const { fee, bid_increment } = pConfig
+
+    let isFreeRaise = true
     if (fee) {
         if (user.amount < fee) {
             return {
@@ -126,20 +167,24 @@ exports.createAuctionRaise = async params => {
                 message: `Tài khoản không đủ, vui lòng nạp thêm tiền`
             }
         }
-        await updateUserAmount(user.id, user.amount - fee || 1000000)
-    } else {
-        if (user.free_raise_remain && user.free_raise_remain < 1) {
-            return {
-                success: false,
-                message: `Bạn đã dùng hết số lượt đấu giá miễn phí`
-            }
-        }
-        await updateUserFreeRaiseRemain(user)
-    }
-    if (pConfig.bid_increment > body.price - auction.sell_price) {
+        isFreeRaise = false
+    } else if (user.free_raise_remain && user.free_raise_remain < 1) {
         return {
             success: false,
-            message: `Auction raise error : price must be > ${auction.sell_price}`
+            message: `Bạn đã dùng hết số lượt đấu giá miễn phí`
+        }
+    }
+
+    await loopbackCheck(auctionId, user, body, bid_increment)
+
+    const auctionCountByUser = await auctionModel.countAuctionRaiseByUser(
+        user.id,
+        auctionId
+    )
+    if (auctionCountByUser > 10) {
+        return {
+            success: false,
+            message: `Bạn đã đấu giá 10 lần cho sản phẩm này, bạn không thể đấu giá thêm`
         }
     }
 
@@ -154,31 +199,11 @@ exports.createAuctionRaise = async params => {
     //     throw new Error(`Auction raise error: invalid auction time`)
     // }
 
-    const auctionCountByUser = await auctionModel.countAuctionRaiseByUser(
-        user.id,
-        auctionId
-    )
-    if (auctionCountByUser > 10) {
-        return {
-            success: false,
-            message: `Bạn đã đấu giá 10 lần cho sản phẩm này, bạn không thể đấu giá thêm`
-        }
+    if (isFreeRaise) {
+        await updateUserFreeRaiseRemain(user)
+    } else {
+        await updateUserAmount(user.id, user.amount - fee || 1000000)
     }
-    const toAuctionHistoryInsert = {
-        auction_id: auctionId,
-        auctioneer_id: user.id,
-        bet_time: body.time,
-        bet_amount: body.price
-    }
-    const toAuctionUpdate = {
-        sell_price: body.price,
-        auction_count: auction.auction_count + 1
-    }
-    await auctionModel.updateAuction(toAuctionUpdate, auctionId)
-    await auctionModel.createAuctionLogHistory(
-        toAuctionHistoryInsert,
-        auctionId
-    )
 
     await pay({
         user_id: user.id,
@@ -224,7 +249,7 @@ exports.updateAuctionStatusAdmin = async (auctionId, status) => {
             status === 'block' ? 9 : 1
         )
         const notificationStatus = status === 'block' ? 12 : 11
-        await notificationModel.createNotification(
+        notificationModel.createNotification(
             notificationStatus,
             319,
             auctionId,
@@ -260,9 +285,7 @@ exports.updateAuctionRaiseStatusAdmin = async (
             currentAuctionRaiseWin.bet_amount,
             auctionDetail.auction_count
         )
-        await notificationModel.createNotification(13, 319, auctionId, [
-            raiseUserID
-        ])
+        notificationModel.createNotification(13, 319, auctionId, [raiseUserID])
         // TODO: update elasticsearch
     }
 

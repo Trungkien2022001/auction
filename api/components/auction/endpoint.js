@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 const debug = require('debug')('auction:route:auction')
 const Router = require('@koa/router')
 const { genericSecure, checkPermission } = require('../../middleware/security')

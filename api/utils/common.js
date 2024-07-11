@@ -8,6 +8,10 @@ const config = require('../config')
 
 const cacheTime = config.searchCacheTimeInSeconds
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 function logRequest({ requestId, data }) {
     debug('logRequest')
     process.nextTick(() => {
@@ -105,6 +109,7 @@ module.exports = {
     encode,
     logRequest,
     makeCacheKey,
+    sleep,
     markRequestComplete,
     tryParseJson
 }

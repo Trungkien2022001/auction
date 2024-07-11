@@ -15,8 +15,8 @@ async function handleRaise(params) {
     const userIds = await auctionModel.getAllAuctioneerOfAuction(auctionId)
     const index = userIds.findIndex(i => i === userId)
     userIds.splice(index, 1)
-    await notificationModel.createNotification(4, userId, auctionId, userIds)
-    await notificationModel.createNotification(9, userId, auctionId, userIds)
+    notificationModel.createNotification(4, userId, auctionId, userIds)
+    notificationModel.createNotification(9, userId, auctionId, userIds)
 }
 async function get() {
     const users = await knex('user')

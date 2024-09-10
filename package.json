@@ -1,15 +1,11 @@
 {
-  "devDependencies": {
-    "husky": "^9.1.5",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0"
-  },
   "name": "auction",
   "version": "1.0.0",
   "description": "Auction Hub",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -30,11 +26,17 @@
     ]
   },
   "lint-staged": {
-    "{src,test}/**/*.ts*": [
+    "**/*.ts*": [
       "eslint --fix",
       "prettier --write"
     ]
   },
+  "husky": {
+		"hooks": {
+			"commit-msg": "commitlint",
+			"pre-commit": "pretty-quick --no-verify --staged"
+		}
+	},
   "prettier": {
     "printWidth": 120,
     "singleQuote": true,

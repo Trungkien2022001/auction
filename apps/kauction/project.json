@@ -1,0 +1,26 @@
+{
+  "name": "kauction",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/kauction/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["build"],
+      "options": {
+        "buildTarget": "kauction:build",
+        "runBuildTargetDependencies": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "kauction:build:development"
+        },
+        "production": {
+          "buildTarget": "kauction:build:production"
+        }
+      }
+    }
+  }
+}

@@ -1,20 +1,20 @@
 {
 	"compilerOptions": {
-		"outDir": "./dist/out-tsc",
-		"resolveJsonModule": true,
-		"typeRoots": ["node_modules/@types"],
-		"paths": {
-			"@auction/core": ["./packages/core/src/index.ts"],
-			"@auction/common": ["./packages/common/src/index.ts"],
-			"@auction/config": ["./packages/config/src/index.ts"],
-			"@auction/contracts": ["./packages/contracts/src/index.ts"],
-		},
-		"preserveConstEnums": true,
-		"allowSyntheticDefaultImports": true,
-		"noUnusedLocals": false,
-		"noImplicitAny": false,
-		"esModuleInterop": false,
-		"useDefineForClassFields": false
+	  "baseUrl": ".",
+	  "paths": {
+		"@auction/core": ["packages/core/src"],
+		"@auction/common": ["packages/common/src"]
+	  }
 	},
-	"extends": "./tsconfig.base.json"
-}
+	"files": [],
+	"references": [
+	  {
+		"path": "packages/core"
+	  },
+	  {
+		"path": "packages/common"
+	  }
+	],
+	"extends": ["./tsconfig.base.json"]
+  }
+  

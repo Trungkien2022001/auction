@@ -2,7 +2,9 @@
   "name": "@kauction/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "start": "nx run kauction:serve:production --verbose"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^10.0.2",

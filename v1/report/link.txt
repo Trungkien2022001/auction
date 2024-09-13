@@ -1,3 +1,0 @@
-Figma:
--- Auction: https://www.figma.com/file/pJxRNe7BWlrAb47VcAvvVQ/Auction?type=design&node-id=6-6133&mode=design&t=EaKy5K3sNY1H1BYG-0
--- ECommerce Demo: https://www.figma.com/file/J8sOtkVbxMyxVTYAS8KAGk/E-commerce-UI---Figma-Ecommerce-UI-Kit-(Demo-Version)-(Community)?type=design&node-id=2793-708&mode=design&t=Q7MqvYqdgYWIgmzm-0

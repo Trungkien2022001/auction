@@ -1,3 +1,9 @@
 1. Init Husky
 - npx husky install
 - cmd: npx lint-staged
+2. Init nx
+- npx create-nx-workspace@latest nx-test --preset=nest
+- npm i @nx/react --save
+- nx generate @nx/react:application apps/admin-panel
+- npm i @nx/js --save
+- nx generate @nx/js:library packages/core

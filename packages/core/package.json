@@ -1,0 +1,19 @@
+{
+  "name": "@kauction/core",
+  "version": "0.0.1",
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "tslib": "^2.3.0"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts",
+  "private": true,
+  "description": "This library was generated with [Nx](https://nx.dev).",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"outDir": "./dist/out-tsc",
+		"resolveJsonModule": true,
+		"typeRoots": ["node_modules/@types"],
+		"preserveConstEnums": true,
+		"allowSyntheticDefaultImports": true,
+		"noUnusedLocals": false,
+		"noImplicitAny": false,
+		"esModuleInterop": false,
+		"useDefineForClassFields": false
+	},
+	"extends": "./tsconfig.base.json"
+}

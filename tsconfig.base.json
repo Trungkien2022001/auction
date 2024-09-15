@@ -18,6 +18,7 @@
       "@kauction/auth": ["packages/auth/src/index.ts"],
       "@kauction/common": ["packages/common/src/index.ts"],
       "@kauction/config": ["packages/config/src/index.ts"],
+      "@kauction/constant": ["packages/constant/src/index.ts"],
       "@kauction/contracts": ["packages/contracts/src/index.ts"],
       "@kauction/core": ["packages/core/src/index.ts"],
       "@kauction/types": ["packages/types/src/index.ts"]

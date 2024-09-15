@@ -1,0 +1,19 @@
+{
+  "name": "constant",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/constant/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/constant",
+        "main": "packages/constant/src/index.ts",
+        "tsConfig": "packages/constant/tsconfig.lib.json",
+        "assets": ["packages/constant/*.md"]
+      }
+    }
+  }
+}

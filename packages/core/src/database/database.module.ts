@@ -8,7 +8,6 @@ import { entities } from '../core/entities';
       imports: [ApiConfigModule],
       inject: [ApiConfigService],
       useFactory: (config: ApiConfigService) => {
-        console.log(Object.values(entities));
         return {
           ...config.mysqlConfig,
           entities: Object.values(entities),

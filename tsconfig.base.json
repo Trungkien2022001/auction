@@ -21,6 +21,7 @@
       "@kauction/constant": ["packages/constant/src/index.ts"],
       "@kauction/contracts": ["packages/contracts/src/index.ts"],
       "@kauction/core": ["packages/core/src/index.ts"],
+      "@kauction/enums": ["packages/enums/src/index.ts"],
       "@kauction/types": ["packages/types/src/index.ts"]
     }
   },

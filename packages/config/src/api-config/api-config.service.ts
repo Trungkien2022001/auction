@@ -54,10 +54,8 @@ export class ApiConfigService {
   }
 
   get mysqlConfig(): TypeOrmModuleOptions {
-    const entities = [
-      __dirname + '/../../**/*.entity{.ts,.js}',
-      __dirname + '/../../**/*.view-entity{.ts,.js}',
-    ];
+    //TODO define entity
+    const entities: string[] = [];
     const migrations = [__dirname + '/../../database/migrations/*{.ts,.js}'];
 
     const host = this.configService.get<string>('DATABASE_HOST', 'localhost');

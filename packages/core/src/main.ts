@@ -14,7 +14,6 @@ export async function bootstrap() {
   app.setGlobalPrefix(globalPrefix);
   const port = process.env['PORT'] || 3000;
   await app.listen(port);
-  console.log('Kiiieieieiei ẻvge');
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
   );

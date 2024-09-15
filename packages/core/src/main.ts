@@ -7,7 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
-import { API_PORT, API_PREFIX, API_HOST } from '@kauction/constant';
+import { API_PORT, API_PREFIX } from '@kauction/config';
 
 export async function bootstrap() {
   const app = await NestFactory.create(AppModule);

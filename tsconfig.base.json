@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@kauction/auth": ["packages/auth/src/index.ts"],
       "@kauction/common": ["packages/common/src/index.ts"],
       "@kauction/config": ["packages/config/src/index.ts"],
       "@kauction/contracts": ["packages/contracts/src/index.ts"],

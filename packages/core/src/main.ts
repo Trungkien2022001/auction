@@ -1,16 +1,55 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
-import { Logger } from '@nestjs/common';
+import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import helmet from 'helmet';
+import * as bodyParser from 'body-parser';
 
 import { AppModule } from './app/app.module';
 import { API_PORT, API_PREFIX } from '@kauction/config';
+import { ValidationError } from 'class-validator';
+import {
+  LoggingInterceptor,
+  TransformInterceptor,
+  TrimPipe,
+} from '@kauction/common';
 
 export async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<INestApplication>(AppModule);
+
+  app.enableCors();
+  app.use(helmet());
+
+  // const options = new DocumentBuilder()
+  // .setTitle('APP Service API')
+  // .setDescription('APP Service API Doccument')
+  // .setVersion('1.0')
+  // .build();
+
+  // app.enableVersioning({
+  //   type: VersioningType.URI,
+  // })
+
+  // const document = SwaggerModule.createDocument(app, options);
+  // SwaggerModule.setup(`API_PREFIX/docs`, app, document);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        return errors[0];
+      },
+    })
+  );
+
+  app.useGlobalInterceptors(
+    new LoggingInterceptor(),
+    new TransformInterceptor()
+  );
+
+  app.useGlobalPipes(new TrimPipe());
+
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   app.setGlobalPrefix(API_PREFIX);
   await app.listen(API_PORT);
   Logger.log(

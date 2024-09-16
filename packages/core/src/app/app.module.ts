@@ -12,9 +12,10 @@ import {
   AppMetatadaExceptionFilter,
   ValidationExceptionFilter,
 } from '../core/filters';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [DatabaseModule, RedisModule],
+  imports: [DatabaseModule, RedisModule, AuthModule],
   controllers: [AppController],
   providers: [
     AppService,

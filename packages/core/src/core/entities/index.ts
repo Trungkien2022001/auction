@@ -1,2 +1,2 @@
-// export * from './internal'
-export * as entities from './collections';
+export * from './internal';
+export * from './collections';

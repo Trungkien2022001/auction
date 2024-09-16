@@ -2,8 +2,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
+import * as path from 'path';
 import * as bodyParser from 'body-parser';
-
 import { AppModule } from './app/app.module';
 import { API_PORT, API_PREFIX } from '@kauction/config';
 import { ValidationError } from 'class-validator';
@@ -12,6 +12,21 @@ import {
   TransformInterceptor,
   TrimPipe,
 } from '@kauction/common';
+import * as i18n from 'i18n';
+
+i18n.configure({
+  locales: ['en', 'vi'],
+  directory: path.join(
+    __dirname,
+    '../',
+    '../',
+    'packages',
+    'core',
+    'src',
+    'shared',
+    'locales'
+  ),
+});
 
 export async function bootstrap() {
   const app = await NestFactory.create<INestApplication>(AppModule);

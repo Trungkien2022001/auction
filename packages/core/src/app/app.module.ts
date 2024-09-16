@@ -9,6 +9,7 @@ import {
   AllExceptionFilter,
   AppDataExceptionFilter,
   AppExceptionFilter,
+  AppMetatadaExceptionFilter,
   ValidationExceptionFilter,
 } from '../core/filters';
 
@@ -32,6 +33,10 @@ import {
     {
       provide: APP_FILTER,
       useClass: AppDataExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AppMetatadaExceptionFilter,
     },
   ],
 })

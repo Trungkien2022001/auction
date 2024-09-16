@@ -7,12 +7,13 @@ import {
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import * as i18n from 'i18n';
-import { ActionLogsRepo } from '../repositories';
 import { ERROR } from '@kauction/constant';
+import { Connection } from 'typeorm';
+import { ActionLogs } from '../entities/collections';
 
 @Catch(ValidationError)
 export class ValidationExceptionFilter implements ExceptionFilter {
-  constructor(private readonly actionLogsRepo: ActionLogsRepo) {}
+  constructor(private readonly connection: Connection) {}
   catch(exception: ValidationError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
@@ -38,21 +39,22 @@ export class ValidationExceptionFilter implements ExceptionFilter {
     }
     const msg = errorMessage.join(', ');
 
-    this.actionLogsRepo.insert({
-      client_ip: request.ip,
-      path: request.url,
-      matched_route: request.originalUrl,
-      user: request.user ? JSON.stringify(request.user) : 'Anonymous',
-      method: request.method,
-      status: response.statusCode || 200,
-      request: JSON.stringify({
-        body: request.body,
-        params: request.params,
-      }),
-      header: JSON.stringify(request.headers),
-      error: msg,
-      error_code: ERROR.VALIDATION_ERROR,
+    const actionLog = new ActionLogs();
+    actionLog.client_ip = request.ip;
+    actionLog.path = request.url;
+    actionLog.matched_route = request.originalUrl;
+    actionLog.user = request.user ? JSON.stringify(request.user) : 'Anonymous';
+    actionLog.method = request.method;
+    actionLog.status = response.statusCode || 200;
+    actionLog.request = JSON.stringify({
+      body: request.body,
+      params: request.params,
     });
+    actionLog.header = JSON.stringify(request.headers);
+    actionLog.error = msg; // Giả sử 'msg' là biến chứa thông tin lỗi
+    actionLog.error_code = ERROR.VALIDATION_ERROR;
+
+    this.connection.getRepository(ActionLogs).save(actionLog);
 
     const errTitle = i18n.__({
       phrase: ERROR.VALIDATION_ERROR,

@@ -6,12 +6,13 @@ import {
   Logger,
 } from '@nestjs/common';
 import * as i18n from 'i18n';
-import { ActionLogsRepo } from '../repositories';
 import { AppDataError } from '@kauction/common';
+import { ActionLogs } from '../entities/collections';
+import { Connection } from 'typeorm';
 
 @Catch(AppDataError)
 export class AppDataExceptionFilter implements ExceptionFilter {
-  constructor(private readonly actionLogsRepo: ActionLogsRepo) {}
+  constructor(private readonly connection: Connection) {}
 
   catch(exception: AppDataError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -31,21 +32,22 @@ export class AppDataExceptionFilter implements ExceptionFilter {
     );
     Logger.error(request.body);
 
-    this.actionLogsRepo.insert({
-      client_ip: request.ip,
-      path: request.url,
-      matched_route: request.originalUrl,
-      user: request.user ? JSON.stringify(request.user) : 'Anonymous',
-      method: request.method,
-      status: response.statusCode || 200,
-      request: JSON.stringify({
-        body: request.body,
-        params: request.params,
-      }),
-      header: JSON.stringify(request.headers),
-      error: exception.stack,
-      error_code: exception.code,
+    const actionLog = new ActionLogs();
+    actionLog.client_ip = request.ip;
+    actionLog.path = request.url;
+    actionLog.matched_route = request.originalUrl;
+    actionLog.user = request.user ? JSON.stringify(request.user) : 'Anonymous';
+    actionLog.method = request.method;
+    actionLog.status = response.statusCode || 200;
+    actionLog.request = JSON.stringify({
+      body: request.body,
+      params: request.params,
     });
+    actionLog.header = JSON.stringify(request.headers);
+    actionLog.error = exception.stack || null;
+    actionLog.error_code = exception.code;
+
+    this.connection.getRepository(ActionLogs).save(actionLog);
 
     response.status(HttpStatus.OK).send({
       status: 'error',

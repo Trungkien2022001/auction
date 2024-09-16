@@ -9,11 +9,16 @@ import {
 import * as i18n from 'i18n';
 import { ERROR } from '@kauction/constant';
 import { EStandardError } from '@kauction/enums';
-import { ActionLogsRepo } from '../repositories';
+import { ActionLogs } from '../entities/collections';
+import { Connection } from 'typeorm';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
-  constructor(private readonly actionLogsRepo: ActionLogsRepo) {}
+  constructor(
+    // @InjectRepository(ActionLogs)
+    // private readonly actionLogsRepo: ActionLogsRepository
+    private readonly connection: Connection
+  ) {}
 
   catch(exception: Error | HttpException | any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -35,21 +40,23 @@ export class AllExceptionFilter implements ExceptionFilter {
     );
     Logger.error(request.body);
 
-    this.actionLogsRepo.insert({
-      client_ip: request.ip,
-      path: request.url,
-      matched_route: request.originalUrl,
-      user: request.user ? JSON.stringify(request.user) : 'Anonymous',
-      method: request.method,
-      status: response.statusCode || 200,
-      request: JSON.stringify({
-        body: request.body,
-        params: request.params,
-      }),
-      header: JSON.stringify(request.headers),
-      error: exception.stack,
-      error_code: exception.code || EStandardError.INTERNAL_SERVER_ERROR,
+    const actionLog = new ActionLogs();
+    actionLog.client_ip = request.ip;
+    actionLog.path = request.url;
+    actionLog.matched_route = request.originalUrl;
+    actionLog.user = request.user ? JSON.stringify(request.user) : 'Anonymous';
+    actionLog.method = request.method;
+    actionLog.status = response.statusCode || 200;
+    actionLog.request = JSON.stringify({
+      body: request.body,
+      params: request.params,
     });
+    actionLog.header = JSON.stringify(request.headers);
+    actionLog.error = exception.stack;
+    actionLog.error_code =
+      exception.code || EStandardError.INTERNAL_SERVER_ERROR;
+
+    this.connection.getRepository(ActionLogs).save(actionLog);
 
     if (httpStatus === 401) {
       return response.status(HttpStatus.UNAUTHORIZED).send({

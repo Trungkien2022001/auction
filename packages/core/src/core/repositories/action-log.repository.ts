@@ -4,7 +4,7 @@ import { ActionLogs } from '../entities/collections';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class ActionLogsRepo extends Repository<ActionLogs> {
+export class ActionLogsRepository extends Repository<ActionLogs> {
   constructor(
     @InjectRepository(ActionLogs)
     readonly repository: Repository<ActionLogs>

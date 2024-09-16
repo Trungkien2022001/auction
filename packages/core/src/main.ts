@@ -1,3 +1,4 @@
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { INestApplication, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import helmet from 'helmet';
@@ -18,18 +19,14 @@ export async function bootstrap() {
   app.enableCors();
   app.use(helmet());
 
-  // const options = new DocumentBuilder()
-  // .setTitle('APP Service API')
-  // .setDescription('APP Service API Doccument')
-  // .setVersion('1.0')
-  // .build();
+  const options = new DocumentBuilder()
+    .setTitle('APP Service API')
+    .setDescription('APP Service API Doccument')
+    .setVersion('1.0')
+    .build();
 
-  // app.enableVersioning({
-  //   type: VersioningType.URI,
-  // })
-
-  // const document = SwaggerModule.createDocument(app, options);
-  // SwaggerModule.setup(`API_PREFIX/docs`, app, document);
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup(`API_PREFIX/docs`, app, document);
 
   app.useGlobalPipes(
     new ValidationPipe({

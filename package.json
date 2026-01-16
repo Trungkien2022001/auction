@@ -3,9 +3,12 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start": "nx run kauction:serve:production --verbose"
+    "start": "npm start --workspace=packages/core"
   },
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "dependencies": {
     "@nestjs/common": "^10.0.2",
     "@nestjs/config": "^3.2.3",
@@ -13,6 +16,7 @@
     "@nestjs/platform-express": "^10.0.2",
     "@nestjs/swagger": "^7.1.15",
     "@nestjs/typeorm": "^10.0.2",
+    "@nrwl/cli": "^15.9.3",
     "@types/i18n": "^0.13.12",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
@@ -79,6 +83,7 @@
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jest-environment-node": "^29.7.0",
+    "nodemon": "^3.1.4",
     "nx": "19.7.3",
     "postcss": "8.4.38",
     "prettier": "^2.6.2",

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true
+  },
+  "projects": {
+    "kauction": {
+      "type": "application",
+      "root": "apps/core",
+      "entryFile": "core/main.js",
+      "sourceRoot": "apps/kauction/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/kauction/tsconfig.test.json"
+      }
+    }
+  }
+}

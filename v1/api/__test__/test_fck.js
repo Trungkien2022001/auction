@@ -13,7 +13,7 @@ function countLines(filePath) {
 let all = 0
 let  arr = []
 function processFilesInFolder(folderPath) {
-    const fileExtensions = ['.js', '.json', '.jsx', '.scss', '.css', '.java', '.ts', '.py']
+    const fileExtensions = ['.js', '.ts', '.json', '.jsx', '.scss', '.css', '.java', '.ts', '.py']
 
     fs.readdirSync(folderPath).forEach(file => {
         const filePath = path.join(folderPath, file)

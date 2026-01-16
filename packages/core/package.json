@@ -15,7 +15,8 @@
   "private": true,
   "description": "This library was generated with [Nx](https://nx.dev).",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node -r tsconfig-paths/register main.ts"
   },
   "author": "",
   "license": "ISC"
